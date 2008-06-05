@@ -1,0 +1,3 @@
+#summary Front page
+
+Welcome to the Wiki of this test project!
