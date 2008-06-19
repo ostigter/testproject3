@@ -1,0 +1,12 @@
+TO DO
+=====
+
+- persistency (nextId, collections, documents, indexes)
+- index hierarchy per collection
+- automatic indexing (key extraction)
+- collection.xconf files
+- validation
+- Saxon XQuery support
+- Management console
+- WebDAV interface
+- REST interface
