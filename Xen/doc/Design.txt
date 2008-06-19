@@ -1,0 +1,67 @@
+Design
+======
+
+
+interface Database {
+    Collection getCollection(String uri) throws XmldbException
+    Collection createCollection(String uri) throws XmldbException
+    void deleteCollection(boolean recursive) throws XmldbException
+    OutputStream storeDocument(String uri) throws XmldbException     // Java API
+    void storeDocument(Node node, String uri) throws XmldbException  // XQuery API
+    InputStream retrieveDocument(String uri) throws XmldbException   // Java API
+    String[] findDocuments(Key[] keys)
+}
+
+
+XQuery API:
+    void deleteDocument(String uri) throws XmldbException
+
+
+public class Collection {
+    String getName()
+    void setName(String name) throws XmldbException
+    Date getCreated()
+    Date getModified()
+    Set<Collection> getCollections()
+    Collection getCollection(String name)
+    Set<Document> getDocuments()
+    Document getDocument(String name)
+    Set<Document> findDocuments(Key[] keys)
+    Collection createCollection(String name) throws XmldbException
+    Document createDocument() throws XmldbException
+    Document createDocument(String name) throws XmldbException
+    void delete() throws XmldbException
+}
+
+
+public class Document {
+    String getName()
+    void setName(String name) throws XmldbException
+    Date getCreated()
+    Date getModified()
+    long getSize()
+    InputStream getContent() throws XmldbException
+    OutputStream setContent() throws XmldbException
+    Set<Key> getKeys()
+    Object getKey(String name)
+    void setKeys(Keys[] keys)
+    void setKey(String name, Object value)
+    void move(Collection col) throws XmldbException
+    void copy(Collection col) throws XmldbException
+    void copy(Collection col, String name) throws XmldbException
+    void delete() throws XmldbException
+}
+
+
+public class Key {
+    String getName()
+    void setName(String name)
+    Object getValue()
+    void setValue(Object value)
+}
+
+
+public class XmldbException {
+    XmldbException(String msg)
+    XmldbException(String msg, Throwable t)
+}

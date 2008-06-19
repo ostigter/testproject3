@@ -1,0 +1,40 @@
+Requirements
+============
+
+
+Java API
+--------
+
+interface Database {
+    Collection getRootCollection()
+    Collection createCollection(String name, Collection parent)
+    void deleteCollection(Collection col, boolean force)
+}
+
+
+XQuery API
+----------
+
+void createCollection(String uri)
+String[] listCollection(String uri)
+void deleteCollection(String uri, boolean force)
+
+
+WebDAV API
+----------
+
+Create Collection:      MKCOL   <col_uri>
+List Collection:        GET     <col_uri>
+Delete Collection:      DELETE  <col_uri>
+Store Document:         PUT     <doc_uri>
+Retrieve Document:      GET     <doc_uri>
+Delete Document:        DELETE  <doc_uri>
+
+
+REST API
+--------
+
+Create Collection:      PUT     <col_uri>
+Find Documents:         GET     <col_uri>?<key_name>=<key_value>[&<key_name>=<key_value>]...
+Execute XQuery Module:  GET     <module_uri>
+Execute XQuery:         GET     query?<xquery>
