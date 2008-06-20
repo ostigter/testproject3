@@ -3,6 +3,9 @@ package xen;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
+
 
 /**
  * Test driver for the database.
@@ -12,7 +15,14 @@ import java.util.Set;
 public class DatabaseTest {
 	
 	
+	private static final Logger logger = Logger.getLogger(DatabaseTest.class);
+	
+	
 	public static void main(String[] args) {
+    	DOMConfigurator.configure("log4j.xml");
+    	
+		logger.debug("DatabaseTest started.");
+		
 		Database database = new DatabaseImpl();
 		
 		try {
@@ -20,14 +30,14 @@ public class DatabaseTest {
 		
     		// Create a collection for ADELcd documents.
 		    Collection rootCol = database.getRootCollection();
-    		Collection adelCdCol = rootCol.createCollection("ADELcd");
+//    		Collection adelCdCol = rootCol.createCollection("ADELcd");
     		
-    		// Create an ADELcd document.
-    		Document doc = adelCdCol.createDocument("ADELcd_0001.xml");
-    		doc.setKey("DocumentType", "ADELcd");
-    		doc.setKey("DocumentId", "ADELcd_0001");
-            doc.setKey("LotId", "LotId_0001");
-    		doc.setContent("<Document>\n  <DocumentId>ADELcd_0001</DocumentId>\n</Document>");
+//    		// Create an ADELcd document.
+//    		Document doc = adelCdCol.createDocument("ADELcd_0001.xml");
+//    		doc.setKey("DocumentType", "ADELcd");
+//    		doc.setKey("DocumentId", "ADELcd_0001");
+//            doc.setKey("LotId", "LotId_0001");
+//    		doc.setContent("<Document>\n  <DocumentId>ADELcd_0001</DocumentId>\n</Document>");
     
             // Retrieve an ADELcd document.
             Key[] keys = new Key[] {
@@ -36,18 +46,20 @@ public class DatabaseTest {
     		};
     		Set<Document> docs = database.findDocuments(keys);
             if (docs.size() == 0) {
-                System.out.println("No document found.");
+                logger.info("No document found.");
             } else {
-                System.out.println("Documents found:");
+            	logger.info("Documents found:");
                 for (Document d : docs) {
-                    System.out.println("  " + d);
+                	logger.info("  " + d);
                 }
             }
             
             database.shutdown();
 		} catch (XmldbException e) {
-		    System.err.println(e);
+			logger.error(e);
 		}
+		
+		logger.debug("DatabaseTest finished.");
 	}
 
 

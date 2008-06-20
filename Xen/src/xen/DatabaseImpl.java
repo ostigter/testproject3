@@ -7,23 +7,44 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
+
 
 /**
- * Default implementation of the Document Manager.
+ * Default implementation of the database.
  * 
  * @author  Oscar Stigter
  */
 public class DatabaseImpl implements Database {
 	
 	
+	/** log4j logger. */
+	private static final Logger logger = Logger.getLogger(DatabaseImpl.class);
+	
     /** Database directory. */
     private static final String DB_DIR = "data";
+    
+    /** Meta data file. */
+    private static final File metaDataFile =
+    		new File(DB_DIR + "/metadata.dbx");
+    
+    /** Collections file. */
+    private static final File collectionsFile =
+    		new File(DB_DIR + "/collections.dbx");
+    
+//    /** Documents file. */
+//    private static final File documentsFile =
+//    		new File(DB_DIR + "/documents.dbx");
+//    
+//    /** Indexes file. */
+//    private static final File indexesFile =
+//    		new File(DB_DIR + "/indexes.dbx");
     
     /** Whether the database is running. */
     private boolean isRunning;
@@ -50,10 +71,14 @@ public class DatabaseImpl implements Database {
      * Zero-argument constructor.
      */
     public DatabaseImpl() {
+    	configureLog4j();
+    	
 		documents = new HashMap<Integer, Document>();
         indexes = new HashMap<String, Index>();
 		
 		isRunning = false;
+		
+		logger.debug("Database created.");
 	}
     
     
@@ -67,15 +92,12 @@ public class DatabaseImpl implements Database {
             throw new XmldbException("Database already running");
         }
         
+		logger.debug("Starting database.");
+		
         // Create database directory if necessary. 
         File dir = new File(DB_DIR);
         if (!dir.exists()) {
             dir.mkdirs();
-        }
-        
-        // TODO: Use persistent storage for collections.
-        if (rootCollection == null) {
-            rootCollection = new Collection(this, "db", null);
         }
         
         readMetaData();
@@ -83,17 +105,23 @@ public class DatabaseImpl implements Database {
         readCollections();
         
         isRunning = true;
+
+		logger.debug("Database started.");
     }
     
     
     public void shutdown() throws XmldbException {
         checkRunning();
         
+		logger.debug("Shutting down database.");
+		
         writeMetaData();
         
         writeCollections();
         
         isRunning = false;
+        
+		logger.debug("Database shut down.");
     }
     
     
@@ -108,12 +136,12 @@ public class DatabaseImpl implements Database {
     }
     
     
-	@SuppressWarnings("unchecked")  // new Set[]
+	@SuppressWarnings("unchecked")  // new HashSet[]
     public Set<Document> findDocuments(Key[] keys) throws XmldbException {
 	    checkRunning();
 	    
         int noOfKeys = keys.length;
-        Set<Integer>[] docsPerKey = new Set[noOfKeys];
+        Set<Integer>[] docsPerKey = new HashSet[noOfKeys];
 
         // Find documents (ID's) that match any key.
         for (int i = 0; i < noOfKeys; i++) {
@@ -195,6 +223,11 @@ public class DatabaseImpl implements Database {
     //------------------------------------------------------------------------
     
     
+    private void configureLog4j() {
+    	DOMConfigurator.configure("log4j.xml");
+    }
+    
+    
     private void checkRunning() throws XmldbException {
         if (!isRunning) {
             throw new XmldbException("Database not running");
@@ -203,15 +236,14 @@ public class DatabaseImpl implements Database {
     
     
     private void readMetaData() {
-    	File file = new File(DB_DIR + "/metadata.dbx");
-    	if (file.exists()) {
+    	if (metaDataFile.exists()) {
     		try {
     			DataInputStream dis =
-    					new DataInputStream(new FileInputStream(file));
+    					new DataInputStream(new FileInputStream(metaDataFile));
     			nextId = dis.readInt();
     			dis.close();
     		} catch (IOException e) {
-    			System.err.println("ERROR: Could not read metadata.dbx: " + e);
+    			System.err.println("ERROR: Could not read metadata file: " + e);
     		}
     	} else {
     		nextId = 1;
@@ -220,10 +252,9 @@ public class DatabaseImpl implements Database {
     
     
     private void writeMetaData() {
-    	File file = new File(DB_DIR + "/metadata.dbx");
 		try {
 			DataOutputStream dos =
-					new DataOutputStream(new FileOutputStream(file));
+					new DataOutputStream(new FileOutputStream(metaDataFile));
 			dos.writeInt(nextId);
 			dos.close();
 		} catch (IOException e) {
@@ -233,30 +264,32 @@ public class DatabaseImpl implements Database {
     
     
     private void readCollections() {
-    	File file = new File(DB_DIR + "/collections.dbx");
-    	if (file.exists()) {
+    	if (collectionsFile.exists()) {
     		try {
-    			DataInputStream dis =
-    					new DataInputStream(new FileInputStream(file));
+    			DataInputStream dis = new DataInputStream(
+    					new FileInputStream(collectionsFile));
     			dis.close();
     		} catch (IOException e) {
-    			System.err.println("ERROR: Could not read collections.dbx: " + e);
+    			System.err.println("ERROR: Could not read collections file: " + e);
     		}
     	} else {
-    		nextId = 1;
+    		// TODO
     	}
+    	
+        if (rootCollection == null) {
+            rootCollection = new Collection(this, "db", null);
+        }
     }
     
     
     private void writeCollections() {
-    	File file = new File(DB_DIR + "/collections.dbx");
 		try {
-			DataOutputStream dos =
-					new DataOutputStream(new FileOutputStream(file));
+			DataOutputStream dos = new DataOutputStream(
+					new FileOutputStream(collectionsFile));
 			writeCollection(rootCollection, dos);
 			dos.close();
 		} catch (IOException e) {
-			System.err.println("ERROR: Could not write collections.dbx: " + e);
+			System.err.println("ERROR: Could not write collections file: " + e);
 		}
     }
     
@@ -278,44 +311,4 @@ public class DatabaseImpl implements Database {
     }
     
     
-    
-    
-    
-//    private void flush(Collection col) {
-//        System.out.println("Flushing collection: " + col);
-//        
-//        File dir = new File(DB_DIR + col.getUri());
-//        if (!dir.exists()) {
-//        	dir.mkdirs();
-//        }
-//        
-//    	for (Document doc : col.getDocuments()) {
-//    		flush(doc);
-//    	}
-//    	
-//    	for (Collection col2 : col.getCollections()) {
-//    		flush(col2);
-//    	}
-//    }
-//    
-//    
-//    private void flush(Document doc) {
-//		if (doc.isDirty()) {
-//	        System.out.println("Flushing document: " + doc);
-//	        
-//			try {
-//				OutputStream os = new FileOutputStream(DB_DIR + doc.getUri());
-//				os.write(doc.getContent().getBytes());
-//				os.close();
-//			} catch (IOException e) {
-//				System.err.println("Could not store document: " + e.getMessage());
-//			}
-//			
-//			indexDocument(doc);
-//			
-//			doc.setDirty(false);
-//		}
-//    }
-	
-
 }
