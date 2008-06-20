@@ -20,8 +20,10 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 
@@ -98,7 +100,7 @@ public class StreamValidator {
             parserFactory.setSchema(schema);
             reader = parserFactory.newSAXParser().getXMLReader();
             reader.setFeature(SAX_VALIDATION_FEATURE, false);
-            reader.setErrorHandler(new MyErrorHandler());
+            reader.setErrorHandler(new ValidationErrorHandler());
         } catch (Exception e) {
             throw new RuntimeException(
                     "ERROR: Could not create Transformer: " + e.getMessage());
@@ -147,4 +149,26 @@ public class StreamValidator {
     }
 
 
-}
+
+    private class ValidationErrorHandler implements ErrorHandler {
+
+
+        public void error(SAXParseException e) throws SAXException {
+            System.out.println("SAX error: " + e.getMessage());
+        }
+
+        
+        public void fatalError(SAXParseException e) throws SAXException {
+            System.out.println("SAX fatal error: " + e.getMessage());
+        }
+
+
+        public void warning(SAXParseException e) throws SAXException {
+            System.out.println("SAX parser warning: " + e.getMessage());
+        }
+
+
+    } // ValidationErrorHandler
+    
+    
+} // StreamValidator
