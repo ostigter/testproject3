@@ -19,7 +19,7 @@ public class DatabaseTest {
 	
 	
 	public static void main(String[] args) {
-    	DOMConfigurator.configure("log4j.xml");
+    	Util.initLog4j();
     	
 		logger.debug("DatabaseTest started.");
 		
