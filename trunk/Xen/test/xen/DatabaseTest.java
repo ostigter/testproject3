@@ -44,7 +44,7 @@ public class DatabaseTest {
                 }
             }
             
-            database.stop();
+            database.shutdown();
 		} catch (XmldbException e) {
 		    System.err.println(e);
 		}
