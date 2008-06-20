@@ -19,7 +19,6 @@ XQuery API:
 
 public class Collection {
     String getName()
-    void setName(String name) throws XmldbException
     Date getCreated()
     Date getModified()
     Set<Collection> getCollections()
@@ -74,8 +73,34 @@ Storage
 metadata.dbx
   <nextId> (4 bytes)
 
+
 collections.dbx
+---------------
+
+db/ (id 1)
+  ADELcd/ (id 2)
+    ADELcd_0001.xml (id 3)
+
+1           # col ID
+db          # col name
+-1          # parent col ID
+0           # doc count
+1           # col count
+2           # col ID
+ADELcd      # name
+1           # parent col ID
+1           # doc count
+3           # doc ID
+0           # col count
+
 
 documents.dbx
+-------------
 
-indexes.dbx
+TODO
+
+
+indices.dbx
+-----------
+
+TODO

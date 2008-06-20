@@ -24,13 +24,13 @@ public class Collection {
 	private String name;
 	
 	/** Parent collection. */
-	private Collection parent;
+	private int parent;
 	
 	/** Child collections. */
-	private Set<Collection> collections;
+	private Set<Integer> collections;
 	
 	/** Documents. */
-	private Set<Document> documents;
+	private Set<Integer> documents;
 	
 	
     //------------------------------------------------------------------------
@@ -39,26 +39,27 @@ public class Collection {
 
 	
 	/* package */ Collection(
-			DatabaseImpl database, String name, Collection parent) {
+			DatabaseImpl database, int id, String name, int parent) {
+	    this.id = id;
 		this.database = database;
 		this.name = name;
 		this.parent = parent;
 		
-		id = database.getNextId(); 
-		
-		collections = new HashSet<Collection>();
-		documents = new HashSet<Document>();
+		collections = new HashSet<Integer>();
+		documents = new HashSet<Integer>();
 		
 		// Create corresponding directory on file system.
 		File dir = new File(database.getDatabaseDir() + getUri());
 		if (!dir.exists()) {
 		    dir.mkdir();
 		}
+		
+		database.addCollection(this);
 	}
 	
 	
     //------------------------------------------------------------------------
-    //  Accessor methods
+    //  Public methods
     //------------------------------------------------------------------------
 
 	
@@ -68,24 +69,31 @@ public class Collection {
 	
 	
 	public Collection getParent() {
-		return parent;
+		return database.getCollection(parent);
 	}
 	
 	
 	public Set<Collection> getCollections() {
-		return collections;
+	    Set<Collection> cols = new HashSet<Collection>();
+	    
+	    for (int id : collections) {
+	        cols.add(database.getCollection(id));
+	    }
+	    
+		return cols;
 	}
 	
 
 	public Set<Document> getDocuments() {
-		return documents;
+        Set<Document> docs = new HashSet<Document>();
+        
+        for (int id : documents) {
+            docs.add(database.getDocument(id));
+        }
+        
+        return docs;
 	}
 	
-	
-    //------------------------------------------------------------------------
-    //  Non-accessor methods
-    //------------------------------------------------------------------------
-    
 	
 	public String getUri() {
 		StringBuilder sb = new StringBuilder();
@@ -102,15 +110,16 @@ public class Collection {
 	
 	
 	public Collection createCollection(String name) {
-		Collection col = new Collection(database, name, this);
-		collections.add(col);
+	    int childId = database.getNextId(); 
+		Collection col = new Collection(database, childId, name, id);
+		collections.add(childId);
 		return col;
 	}
 	
 	
 	public Document createDocument(String name) {
 		Document doc = new Document(database, name, this);
-		documents.add(doc);
+		documents.add(doc.getId());
 		return doc;
 	}
 	

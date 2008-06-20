@@ -1,11 +1,10 @@
 TO DO
 =====
 
-- persistency (nextId, collections, documents, indexes)
-- index hierarchy per collection
-- automatic indexing (key extraction)
-- collection.xconf files
-- validation
+- document persistency
+- index persistency (per collection, inheritance tree)
+- automatic indexing of XML documents
+- XML validation
 - Saxon XQuery support
 - Management console
 - WebDAV interface
