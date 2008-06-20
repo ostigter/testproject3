@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
 
 
 /**
@@ -71,7 +70,7 @@ public class DatabaseImpl implements Database {
      * Zero-argument constructor.
      */
     public DatabaseImpl() {
-    	configureLog4j();
+    	Util.initLog4j();
     	
 		documents = new HashMap<Integer, Document>();
         indexes = new HashMap<String, Index>();
@@ -221,11 +220,6 @@ public class DatabaseImpl implements Database {
     //------------------------------------------------------------------------
     //  Private methods
     //------------------------------------------------------------------------
-    
-    
-    private void configureLog4j() {
-    	DOMConfigurator.configure("log4j.xml");
-    }
     
     
     private void checkRunning() throws XmldbException {
