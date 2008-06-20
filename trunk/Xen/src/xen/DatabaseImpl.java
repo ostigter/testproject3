@@ -51,14 +51,17 @@ public class DatabaseImpl implements Database {
 	/** Root collection. */
 	private Collection rootCollection;
 	
+	/** Collections mapped by ID. */
+	private Map<Integer, Collection> collections;
+    
 	/** Documents mapped by ID. */
 	private Map<Integer, Document> documents;
 	
-    /** Next document ID. */
-    private int nextId;
-    
     /** Indexes mapped by key name. */
     private Map<String, Index> indexes;
+    
+    /** Next document ID. */
+    private int nextId;
     
 	
     //------------------------------------------------------------------------
@@ -72,7 +75,8 @@ public class DatabaseImpl implements Database {
     public DatabaseImpl() {
     	Util.initLog4j();
     	
-		documents = new HashMap<Integer, Document>();
+    	collections = new HashMap<Integer, Collection>();
+    	documents = new HashMap<Integer, Document>();
         indexes = new HashMap<String, Index>();
 		
 		isRunning = false;
@@ -198,13 +202,27 @@ public class DatabaseImpl implements Database {
 	}
 	
 	
+	/* package */ Collection getCollection(int id) {
+	    return collections.get(id);
+	}
+	
+	
+    /* package */ Document getDocument(int id) {
+        return documents.get(id);
+    }
+    
+    
+    /* package */ void addCollection(Collection col) {
+        collections.put(col.getId(), col);
+    }
+    
+    
 	/* package */ void addDocument(Document doc) {
 		documents.put(doc.getId(), doc);
 	}
 	
 	
     /* package */ void indexDocument(Document doc) {
-//        System.out.println("Indexing document: " + doc);
         for (Key key : doc.getKeys()) {
             String keyName = key.getName();
             Index index = indexes.get(keyName);
@@ -262,17 +280,23 @@ public class DatabaseImpl implements Database {
     		try {
     			DataInputStream dis = new DataInputStream(
     					new FileInputStream(collectionsFile));
+    			rootCollection = readCollection(dis);
     			dis.close();
     		} catch (IOException e) {
     			System.err.println("ERROR: Could not read collections file: " + e);
     		}
     	} else {
-    		// TODO
+    	    int id = getNextId();
+            rootCollection = new Collection(this, id, "db", -1);
     	}
-    	
-        if (rootCollection == null) {
-            rootCollection = new Collection(this, "db", null);
-        }
+    }
+    
+    
+    private Collection readCollection(DataInputStream dis) throws IOException {
+        int id = dis.readInt();
+        String name = dis.readUTF();
+        int parent = dis.readInt();
+        return new Collection(this, id, name, parent);
     }
     
     
@@ -290,8 +314,15 @@ public class DatabaseImpl implements Database {
     
     private void writeCollection(Collection col, DataOutputStream dos)
     		throws IOException {
+        logger.debug("Writing collection " + col);
     	dos.writeInt(col.getId());
     	dos.writeUTF(col.getName());
+    	Collection parent = col.getParent();
+    	if (parent != null) {
+            dos.writeInt(parent.getId());
+    	} else {
+    	    dos.writeInt(-1);
+    	}
     	Set<Document> docs = col.getDocuments();
     	dos.writeInt(docs.size());
     	for (Document doc : docs) {
@@ -300,7 +331,7 @@ public class DatabaseImpl implements Database {
     	Set<Collection> cols = col.getCollections();
     	dos.writeInt(cols.size());
     	for (Collection c : cols) {
-    		writeCollection(c, dos);
+	        writeCollection(c, dos);
     	}
     }
     

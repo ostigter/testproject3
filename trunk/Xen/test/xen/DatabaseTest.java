@@ -4,7 +4,6 @@ package xen;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
 
 
 /**
@@ -29,15 +28,15 @@ public class DatabaseTest {
 		    database.start();
 		
     		// Create a collection for ADELcd documents.
-//		    Collection rootCol = database.getRootCollection();
-//    		Collection adelCdCol = rootCol.createCollection("ADELcd");
+		    Collection rootCol = database.getRootCollection();
+    		Collection adelCdCol = rootCol.createCollection("ADELcd");
     		
-//    		// Create an ADELcd document.
-//    		Document doc = adelCdCol.createDocument("ADELcd_0001.xml");
-//    		doc.setKey("DocumentType", "ADELcd");
-//    		doc.setKey("DocumentId", "ADELcd_0001");
-//            doc.setKey("LotId", "LotId_0001");
-//    		doc.setContent("<Document>\n  <DocumentId>ADELcd_0001</DocumentId>\n</Document>");
+    		// Create an ADELcd document.
+    		Document doc = adelCdCol.createDocument("ADELcd_0001.xml");
+    		doc.setKey("DocumentType", "ADELcd");
+    		doc.setKey("DocumentId", "ADELcd_0001");
+            doc.setKey("LotId", "LotId_0001");
+    		doc.setContent("<Document>\n  <DocumentId>ADELcd_0001</DocumentId>\n</Document>");
     
             // Retrieve an ADELcd document.
             Key[] keys = new Key[] {
