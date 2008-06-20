@@ -23,12 +23,12 @@ interface Database {
 
     
     /**
-     * Stops the database.
+     * Shuts down the database.
      * 
      * @throws XmldbException
      *             if the database is not running
      */
-    public void stop() throws XmldbException;
+    public void shutdown() throws XmldbException;
 
     
     /**

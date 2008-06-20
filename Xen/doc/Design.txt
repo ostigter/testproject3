@@ -65,3 +65,17 @@ public class XmldbException {
     XmldbException(String msg)
     XmldbException(String msg, Throwable t)
 }
+
+
+
+Storage
+-------
+
+metadata.dbx
+  <nextId> (4 bytes)
+
+collections.dbx
+
+documents.dbx
+
+indexes.dbx

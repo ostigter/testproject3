@@ -1,7 +1,13 @@
 package xen;
 
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -72,15 +78,20 @@ public class DatabaseImpl implements Database {
             rootCollection = new Collection(this, "db", null);
         }
         
-        // TODO: Use persistent storage for nextId.
-        nextId = 1;
+        readMetaData();
+        
+        readCollections();
         
         isRunning = true;
     }
     
     
-    public void stop() throws XmldbException {
+    public void shutdown() throws XmldbException {
         checkRunning();
+        
+        writeMetaData();
+        
+        writeCollections();
         
         isRunning = false;
     }
@@ -189,6 +200,85 @@ public class DatabaseImpl implements Database {
             throw new XmldbException("Database not running");
         }
     }
+    
+    
+    private void readMetaData() {
+    	File file = new File(DB_DIR + "/metadata.dbx");
+    	if (file.exists()) {
+    		try {
+    			DataInputStream dis =
+    					new DataInputStream(new FileInputStream(file));
+    			nextId = dis.readInt();
+    			dis.close();
+    		} catch (IOException e) {
+    			System.err.println("ERROR: Could not read metadata.dbx: " + e);
+    		}
+    	} else {
+    		nextId = 1;
+    	}
+    }
+    
+    
+    private void writeMetaData() {
+    	File file = new File(DB_DIR + "/metadata.dbx");
+		try {
+			DataOutputStream dos =
+					new DataOutputStream(new FileOutputStream(file));
+			dos.writeInt(nextId);
+			dos.close();
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+    }
+    
+    
+    private void readCollections() {
+    	File file = new File(DB_DIR + "/collections.dbx");
+    	if (file.exists()) {
+    		try {
+    			DataInputStream dis =
+    					new DataInputStream(new FileInputStream(file));
+    			dis.close();
+    		} catch (IOException e) {
+    			System.err.println("ERROR: Could not read collections.dbx: " + e);
+    		}
+    	} else {
+    		nextId = 1;
+    	}
+    }
+    
+    
+    private void writeCollections() {
+    	File file = new File(DB_DIR + "/collections.dbx");
+		try {
+			DataOutputStream dos =
+					new DataOutputStream(new FileOutputStream(file));
+			writeCollection(rootCollection, dos);
+			dos.close();
+		} catch (IOException e) {
+			System.err.println("ERROR: Could not write collections.dbx: " + e);
+		}
+    }
+    
+    
+    private void writeCollection(Collection col, DataOutputStream dos)
+    		throws IOException {
+    	dos.writeInt(col.getId());
+    	dos.writeUTF(col.getName());
+    	Set<Document> docs = col.getDocuments();
+    	dos.writeInt(docs.size());
+    	for (Document doc : docs) {
+    		dos.writeInt(doc.getId());
+    	}
+    	Set<Collection> cols = col.getCollections();
+    	dos.writeInt(cols.size());
+    	for (Collection c : cols) {
+    		writeCollection(c, dos);
+    	}
+    }
+    
+    
+    
     
     
 //    private void flush(Collection col) {
