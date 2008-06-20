@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Books>
+    <Book>
+        <Author>Dick Bruna</Author>
+        <Title>Nijntje in de dierentuin</Title>
+        <Year>1979</Year>
+   </Book>
+    <Book>
+        <Author>Herman Brood</Author>
+        <Title>The Giant Leap</Title>
+        <Year>2005</Year>
+   </Book>
+</Books>
