@@ -29,7 +29,7 @@ public class DatabaseTest {
 		    database.start();
 		
     		// Create a collection for ADELcd documents.
-		    Collection rootCol = database.getRootCollection();
+//		    Collection rootCol = database.getRootCollection();
 //    		Collection adelCdCol = rootCol.createCollection("ADELcd");
     		
 //    		// Create an ADELcd document.
