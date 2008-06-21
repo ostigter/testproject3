@@ -2,20 +2,16 @@ Design
 ======
 
 
+Java interface
+--------------
+
 interface Database {
-    Collection getCollection(String uri) throws XmldbException
-    Collection createCollection(String uri) throws XmldbException
-    void deleteCollection(boolean recursive) throws XmldbException
-    OutputStream storeDocument(String uri) throws XmldbException     // Java API
-    void storeDocument(Node node, String uri) throws XmldbException  // XQuery API
-    InputStream retrieveDocument(String uri) throws XmldbException   // Java API
-    String[] findDocuments(Key[] keys)
+    void start() throws XmldbException
+    void shutdown() throws XmldbException
+    boolean isRunning()
+    Collection getRootCollection() throws XmldbException
+    Set<Document> findDocuments(Key[] keys)                          // Move to Collection
 }
-
-
-XQuery API:
-    void deleteDocument(String uri) throws XmldbException
-
 
 public class Collection {
     String getName()
@@ -27,11 +23,9 @@ public class Collection {
     Document getDocument(String name)
     Set<Document> findDocuments(Key[] keys)
     Collection createCollection(String name) throws XmldbException
-    Document createDocument() throws XmldbException
     Document createDocument(String name) throws XmldbException
-    void delete() throws XmldbException
+    void delete(boolean recursive) throws XmldbException
 }
-
 
 public class Document {
     String getName()
@@ -51,14 +45,12 @@ public class Document {
     void delete() throws XmldbException
 }
 
-
 public class Key {
     String getName()
     void setName(String name)
     Object getValue()
     void setValue(Object value)
 }
-
 
 public class XmldbException {
     XmldbException(String msg)
@@ -71,33 +63,47 @@ Storage
 -------
 
 metadata.dbx
-  <nextId> (4 bytes)
+------------
+
+<nextId> (4 bytes)
 
 
 collections.dbx
 ---------------
 
-db/ (id 1)
-  ADELcd/ (id 2)
-    ADELcd_0001.xml (id 3)
+Example:
 
-1           # col ID
-db          # col name
--1          # parent col ID
-0           # doc count
-1           # col count
-2           # col ID
-ADELcd      # name
-1           # parent col ID
-1           # doc count
-3           # doc ID
-0           # col count
+db/ (ID 1)
+  data/ (ID 2)
+    doc_0001.xml (ID 3)
+    doc_0002.xml (ID 4)
+  modules/ (ID 5)
+    main.xqy (ID 6)
+    util.xqy (ID 7)
 
-
-documents.dbx
--------------
-
-TODO
+1                       # col ID
+"db"                    # col name
+-1                      # parent ID
+0                       # doc count
+2                       # col count
+  2                     # col ID
+  "data"                # name
+  1                     # parent ID
+  2                     # doc count
+    3                   # doc ID
+    "doc_0001.xml"      # doc name
+    4                   # doc ID
+    "doc_0002.xml"      # doc name
+  0                     # col count
+  5                     # col ID
+  "modules"             # col name
+  1                     # parent ID
+  2                     # doc count
+    6                   # doc ID
+    "main.xqy"          # doc name
+    7                   # doc ID
+    "util.xqy"          # doc name
+  0                     # col count
 
 
 indices.dbx

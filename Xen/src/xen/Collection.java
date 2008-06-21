@@ -2,8 +2,8 @@ package xen;
 
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 
 /**
@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @author Oscar Stigter
  */
-public class Collection {
+public class Collection implements Comparable<Collection> {
 	
 	
 	/** Back-reference to the database. */
@@ -45,8 +45,8 @@ public class Collection {
 		this.name = name;
 		this.parent = parent;
 		
-		collections = new HashSet<Integer>();
-		documents = new HashSet<Integer>();
+		collections = new TreeSet<Integer>();
+		documents = new TreeSet<Integer>();
 		
 		// Create corresponding directory on file system.
 		File dir = new File(database.getDatabaseDir() + getUri());
@@ -74,7 +74,7 @@ public class Collection {
 	
 	
 	public Set<Collection> getCollections() {
-	    Set<Collection> cols = new HashSet<Collection>();
+	    Set<Collection> cols = new TreeSet<Collection>();
 	    
 	    for (int id : collections) {
 	        cols.add(database.getCollection(id));
@@ -85,7 +85,7 @@ public class Collection {
 	
 
 	public Set<Document> getDocuments() {
-        Set<Document> docs = new HashSet<Document>();
+        Set<Document> docs = new TreeSet<Document>();
         
         for (int id : documents) {
             docs.add(database.getDocument(id));
@@ -125,6 +125,17 @@ public class Collection {
 	
 	
     //------------------------------------------------------------------------
+    //  Interface implementation: Comparable
+    //------------------------------------------------------------------------
+
+	
+	@Override
+	public int compareTo(Collection col) {
+		return name.compareTo(col.getName());
+	}
+	
+
+    //------------------------------------------------------------------------
     //  Overriden methods: Object
     //------------------------------------------------------------------------
 
@@ -143,6 +154,6 @@ public class Collection {
 	/* package */ int getId() {
 		return id;
 	}
-	
-	
+
+
 }
