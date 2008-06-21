@@ -109,4 +109,12 @@ db/ (ID 1)
 indices.dbx
 -----------
 
-TODO
+Index (XML):
+  Name
+  Path (element or attribute)
+  Type (string, integer, date)
+
+Examples:
+  {"DocumentId",   "/Header/Document/Id", Index.STRING)
+  ("DocumentType", "/Header/Document/@type", Index.STRING)
+  ("OrderNr",      "/Body/Order/Number"
