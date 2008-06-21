@@ -37,16 +37,8 @@ public class DatabaseImpl implements Database {
     private static final File collectionsFile =
     		new File(DB_DIR + "/collections.dbx");
     
-//    /** Documents file. */
-//    private static final File documentsFile =
-//    		new File(DB_DIR + "/documents.dbx");
-//    
-//    /** Indexes file. */
-//    private static final File indexesFile =
-//    		new File(DB_DIR + "/indexes.dbx");
-    
     /** Whether the database is running. */
-    private boolean isRunning;
+    private boolean isRunning = false;
 
 	/** Root collection. */
 	private Collection rootCollection;
@@ -78,8 +70,6 @@ public class DatabaseImpl implements Database {
     	collections = new HashMap<Integer, Collection>();
     	documents = new HashMap<Integer, Document>();
         indexes = new HashMap<String, Index>();
-		
-		isRunning = false;
 		
 		logger.debug("Database created.");
 	}
@@ -143,7 +133,19 @@ public class DatabaseImpl implements Database {
     public Set<Document> findDocuments(Key[] keys) throws XmldbException {
 	    checkRunning();
 	    
+	    if (keys == null) {
+	    	String msg = "findDocuments(): Null value for keys";
+	    	logger.error(msg);
+	    	throw new IllegalArgumentException(msg);
+	    }
+	    
         int noOfKeys = keys.length;
+	    if (noOfKeys == 0) {
+	    	String msg = "findDocuments(): Empty key array";
+	    	logger.error(msg);
+	    	throw new IllegalArgumentException(msg);
+	    }
+        
         Set<Integer>[] docsPerKey = new HashSet[noOfKeys];
 
         // Find documents (ID's) that match any key.
@@ -314,7 +316,6 @@ public class DatabaseImpl implements Database {
     
     private void writeCollection(Collection col, DataOutputStream dos)
     		throws IOException {
-        logger.debug("Writing collection " + col);
     	dos.writeInt(col.getId());
     	dos.writeUTF(col.getName());
     	Collection parent = col.getParent();

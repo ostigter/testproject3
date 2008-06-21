@@ -1,9 +1,10 @@
 package xen;
 
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 
 /**
@@ -15,7 +16,7 @@ class Index {
 	
 
 	/** Document ID's by key values. */
-	private HashMap<Object, Set<Integer>> documents;
+	private Map<Object, Set<Integer>> documents;
 	
 	
     //------------------------------------------------------------------------
@@ -23,20 +24,20 @@ class Index {
     //------------------------------------------------------------------------
 
 	
-	/* package */ Index() {
-		documents = new HashMap<Object, Set<Integer>>();
+	public Index() {
+		documents = new TreeMap<Object, Set<Integer>>();
 	}
 	
 	
     //------------------------------------------------------------------------
-    //  Non-accessor methods
+    //  Public methods
     //------------------------------------------------------------------------
 	
     
 	public void indexDocument(Document doc, Object value) {
 		Set<Integer> docs = documents.get(value);
 		if (docs == null) {
-			docs = new HashSet<Integer>();
+			docs = new TreeSet<Integer>();
 			documents.put(value, docs);
 		}
 		docs.add(doc.getId());
@@ -44,7 +45,7 @@ class Index {
 	
 	
 	public Set<Integer> findDocuments(Object value) {
-	    Set<Integer> docs = new HashSet<Integer>();
+	    Set<Integer> docs = new TreeSet<Integer>();
 	    
 	    Set<Integer> ids = documents.get(value);
 	    if (ids != null) {

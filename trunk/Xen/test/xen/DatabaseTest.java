@@ -27,21 +27,30 @@ public class DatabaseTest {
 		try {
 		    database.start();
 		
-    		// Create a collection for ADELcd documents.
+    		// Create collections.
 		    Collection rootCol = database.getRootCollection();
-    		Collection adelCdCol = rootCol.createCollection("ADELcd");
+		    Collection dataCol = rootCol.createCollection("data");
+		    Collection fooCol = dataCol.createCollection("Foo");
+		    Collection modulesCol = rootCol.createCollection("modules");
     		
-    		// Create an ADELcd document.
-    		Document doc = adelCdCol.createDocument("ADELcd_0001.xml");
-    		doc.setKey("DocumentType", "ADELcd");
-    		doc.setKey("DocumentId", "ADELcd_0001");
-            doc.setKey("LotId", "LotId_0001");
-    		doc.setContent("<Document>\n  <DocumentId>ADELcd_0001</DocumentId>\n</Document>");
+    		// Add documents.
+    		Document doc = fooCol.createDocument("0001.xml");
+    		doc.setKey("DocumentId", 1);
+    		doc.setKey("DocumentType", "Foo");
+    		doc.setContent("<Document>\n  <Id>1</Id>\n  <Type>Foo</Type>\n</Document>");
+    		doc = fooCol.createDocument("0002.xml");
+    		doc.setKey("DocumentId", 2);
+    		doc.setKey("DocumentType", "Foo");
+    		doc.setContent("<Document>\n  <Id>2</Id>\n  <Type>Foo</Type>\n</Document>");
+    		doc = fooCol.createDocument("0003.xml");
+    		doc.setKey("DocumentId", 3);
+    		doc.setKey("DocumentType", "Bar");
+    		doc.setContent("<Document>\n  <Id>3</Id>\n  <Type>Bar</Type>\n</Document>");
     
-            // Retrieve an ADELcd document.
+            // Retrieve a document.
             Key[] keys = new Key[] {
-            		new Key("DocumentType", "ADELcd"),
-                    new Key("LotId",        "LotId_0001"),
+            		new Key("DocumentType", "Foo"),
+//                    new Key("DocumentId",   2),
     		};
     		Set<Document> docs = database.findDocuments(keys);
             if (docs.size() == 0) {
@@ -54,6 +63,7 @@ public class DatabaseTest {
             }
             
             database.shutdown();
+            
 		} catch (XmldbException e) {
 			logger.error(e);
 		}

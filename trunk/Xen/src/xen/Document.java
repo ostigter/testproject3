@@ -13,24 +13,30 @@ import java.util.Map;
  * 
  * @author Oscar Stigter
  */
-public class Document {
+public class Document implements Comparable<Document> {
 	
 	
-    private DatabaseImpl database;
-    
-    private int id;
+	/** Back-reference to the database. */
+	private DatabaseImpl database;
+
+	/** ID. */
+	private int id;
 	
+	/** Name. */
 	private String name;
 	
+	/** Parent collection. */
 	private Collection parent;
 	
-    private Map<String, Key> keys;
+	/** Keys mapped by their name. */
+	private Map<String, Key> keys;
 	
 	
     //------------------------------------------------------------------------
     //  Constructors
     //------------------------------------------------------------------------
-    
+
+	
 	/* package */ Document(
 	        DatabaseImpl database, String name, Collection parent) {
 	    this.database = database;
@@ -45,7 +51,7 @@ public class Document {
 	
 	
     //------------------------------------------------------------------------
-    //  Accessor methods
+    //  Public methods
     //------------------------------------------------------------------------
 
 	
@@ -86,11 +92,6 @@ public class Document {
 	}
 	
 	
-    //------------------------------------------------------------------------
-    //  Non-accessor methods
-    //------------------------------------------------------------------------
-    
-	
 	public String getUri() {
 		return parent.getUri() + '/' + name; 
 	}
@@ -117,7 +118,18 @@ public class Document {
 	
 	
     //------------------------------------------------------------------------
-    //  Override methods: Object
+    //  Interface implementation: Comparable
+    //------------------------------------------------------------------------
+
+	
+	@Override
+	public int compareTo(Document doc) {
+		return name.compareTo(doc.getName());
+	}
+	
+
+    //------------------------------------------------------------------------
+    //  Overriden methods: Object
     //------------------------------------------------------------------------
 
 	
