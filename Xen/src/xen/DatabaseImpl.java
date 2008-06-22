@@ -50,7 +50,7 @@ public class DatabaseImpl implements Database {
 	private Map<Integer, Document> documents;
 	
     /** Indexes mapped by key name. */
-    private Map<String, Index> indexes;
+    private Map<String, IndexValue> indexes;
     
     /** Next document ID. */
     private int nextId;
@@ -69,7 +69,7 @@ public class DatabaseImpl implements Database {
     	
     	collections = new HashMap<Integer, Collection>();
     	documents = new HashMap<Integer, Document>();
-        indexes = new HashMap<String, Index>();
+        indexes = new HashMap<String, IndexValue>();
 		
 		logger.debug("Database created.");
 	}
@@ -152,7 +152,7 @@ public class DatabaseImpl implements Database {
         for (int i = 0; i < noOfKeys; i++) {
             Key key = keys[i];
             docsPerKey[i] = new HashSet<Integer>();
-            Index index = indexes.get(key.getName());
+            IndexValue index = indexes.get(key.getName());
             if (index != null) {
                 docsPerKey[i].addAll(index.findDocuments(key.getValue()));
             }
@@ -227,9 +227,9 @@ public class DatabaseImpl implements Database {
     /* package */ void indexDocument(Document doc) {
         for (Key key : doc.getKeys()) {
             String keyName = key.getName();
-            Index index = indexes.get(keyName);
+            IndexValue index = indexes.get(keyName);
             if (index == null) {
-                index = new Index();
+                index = new IndexValue();
                 indexes.put(keyName, index);
             }
             index.indexDocument(doc, key.getValue());
