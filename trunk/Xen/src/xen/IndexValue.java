@@ -12,7 +12,7 @@ import java.util.TreeSet;
  * 
  * @author Oscar Stigter
  */
-class Index {
+class IndexValue {
 	
 
 	/** Document ID's by key values. */
@@ -24,7 +24,7 @@ class Index {
     //------------------------------------------------------------------------
 
 	
-	public Index() {
+	public IndexValue() {
 		documents = new TreeMap<Object, Set<Integer>>();
 	}
 	

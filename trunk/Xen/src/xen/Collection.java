@@ -32,6 +32,9 @@ public class Collection implements Comparable<Collection> {
 	/** Documents. */
 	private Set<Integer> documents;
 	
+	/** Indices. */
+	private Set<Index> indices;
+	
 	
     //------------------------------------------------------------------------
     //  Constructors
@@ -47,6 +50,7 @@ public class Collection implements Comparable<Collection> {
 		
 		collections = new TreeSet<Integer>();
 		documents = new TreeSet<Integer>();
+		indices = new TreeSet<Index>();
 		
 		// Create corresponding directory on file system.
 		File dir = new File(database.getDatabaseDir() + getUri());
@@ -92,6 +96,49 @@ public class Collection implements Comparable<Collection> {
         }
         
         return docs;
+	}
+	
+	
+	public Set<Index> getIndices() {
+		Set<Index> indices2 = new TreeSet<Index>();
+		
+		// Add indices from this collection.
+		indices2.addAll(indices);
+		
+		// Add inherited indices from parent collections.
+		Collection col = getParent();
+		if (col != null) {
+			indices2.addAll(col.getIndices());
+		}
+		
+		return indices2;
+	}
+	
+	
+	public Index getIndex(String name) {
+		Index index = null;
+		
+		Set<Index> inheritedIndices = getIndices();
+		for (Index i : inheritedIndices) {
+			if (i.getName().equals(name)) {
+				index = i;
+				break;
+			}
+		}
+		
+		return index;
+	}
+	
+	
+	public void addIndex(String name, String path) {
+		Index index = getIndex(name);
+		if (index == null) {
+			int newId = database.getNextId();
+			indices.add(new Index(newId, name, path));
+		} else {
+			String msg = "Index name already used (possibly inherited)";
+			throw new IllegalArgumentException(msg);
+		}
 	}
 	
 	
