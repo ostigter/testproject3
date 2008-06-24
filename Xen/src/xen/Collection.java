@@ -176,7 +176,6 @@ public class Collection implements Comparable<Collection> {
     //------------------------------------------------------------------------
 
 	
-	@Override
 	public int compareTo(Collection col) {
 		return name.compareTo(col.getName());
 	}
