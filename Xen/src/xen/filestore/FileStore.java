@@ -8,10 +8,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -21,13 +20,13 @@ import java.util.TreeSet;
  * The file contents are handled as a byte array.
  *
  * Files are physically stored in a single binary file ('data.dbx').
- * File positions are stored in a second binary file ('index.dbx').
+ * File entries are stored in a second binary file ('index.dbx').
  *
  * All database files are stored in a configurable directory (by default
  * 'data'). If this directory does not exists, it will be created.
  *
- * The positioning algorithm for storing a file is simple; it just inserts the
- * file at the first free position it fits in, or it appends the file at the
+ * The entryitioning algorithm for storing a file is simple; it just inserts the
+ * file at the first free entryition it fits in, or it appends the file at the
  * end.
  *
  * @author Oscar Stigter
@@ -37,13 +36,11 @@ public class FileStore {
 
 	private static final String DEFAULT_DATA_DIR = "data";
 	
-    private static final String INDEX_FILE       = "index.dbx";
+    private static final String INDEX_FILE = "entries.dbx";
     
-    private static final String DATA_FILE        = "data.dbx";
+    private static final String DATA_FILE = "contents.dbx";
     
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
-
-    private final TreeSet<FileEntry> positions;
+    private final Map<Integer, FileEntry> entries;
     
     private boolean isRunning = false;
     
@@ -64,7 +61,7 @@ public class FileStore {
 
     public FileStore(String dataDirectory) {
         this.dataDirectory = dataDirectory;
-        positions = new TreeSet<FileEntry>();
+        entries = new TreeMap<Integer, FileEntry>();
     }
     
 
@@ -78,9 +75,9 @@ public class FileStore {
      * 
      * @throws FileStoreException  If the FileStore could not be started
      */
-    public synchronized void start() throws FileStoreException {
+    public void start() throws FileStoreException {
         if (!isRunning) {
-//            System.out.println("FileStore: Starting...");
+            System.out.println("FileStore: Starting");
             
             try {
                 // Create data directory.
@@ -112,7 +109,7 @@ public class FileStore {
 
             isRunning = true;
             
-//            System.out.println("FileStore: Started successfully.");
+            System.out.println("FileStore: Started");
         } else {
             System.err.println("WARNING: Already running.");
         }
@@ -124,9 +121,9 @@ public class FileStore {
      * 
      * @throws FileStoreException  If the FileStore could not be shut down
      */
-    public synchronized void shutdown() throws FileStoreException {
+    public void shutdown() throws FileStoreException {
         if (isRunning) {
-//            System.out.println("FileStore: Shutting down...");
+            System.out.println("FileStore: Shutting down");
             
             sync();
             
@@ -137,57 +134,35 @@ public class FileStore {
             } finally {
                 isRunning = false;
             }
-//            System.out.println("FileStore: Shut down successfully.");
+            System.out.println("FileStore: Shut down");
         } else {
             throw new FileStoreException("FileStore not started");
         }
     }
     
 
-    public synchronized int size() {
-        return positions.size();
+    public int size() {
+        return entries.size();
     }
     
 
-    public synchronized String[] getFileNames() {
-        List<String> list = new ArrayList<String>(size());
-        for (FileEntry pos : positions) {
-            list.add(pos.getName());
-        }
-        return list.toArray(EMPTY_STRING_ARRAY);
-    }
-    
-
-    public synchronized void list() {
-        System.out.println("Entries:");
-        if (positions.size() > 0) {
-            for (FileEntry pos : positions) {
-                System.out.println(String.format(
-                        "  %s (%d bytes)", pos.getName(), pos.getLength()));
-            }
-        } else {
-            System.out.println("  (None)");
-        }
-    }
-    
-
-    public synchronized byte[] retrieve(String name)
-            throws FileStoreException {
+    public byte[] retrieve(int id) throws FileStoreException {
         byte[] data = null;
         if (isRunning) {
-            FileEntry pos = getPosition(name);
-            if (pos != null) {
-//                System.out.println("FileStore: Retrieving '" + name + "'...");
-                data = new byte[(int) pos.getLength()];
+            System.out.println("FileStore: Retrieving entry with ID " + id);
+            FileEntry entry = entries.get(id);
+            if (entry != null) {
+                data = new byte[entry.getLength()];
                 try {
-                    dataFile.seek(pos.getOffset());
+                    dataFile.seek(entry.getOffset());
                     dataFile.read(data);
-                } catch (Exception e) {
-                    e.printStackTrace(System.err);
-                    throw new FileStoreException("Could not read file '" + name + "'");
+                } catch (IOException e) {
+                    throw new FileStoreException(
+                            "Could not read entry with ID " + id);
                 }
             } else {
-                throw new FileStoreException("File '" + name + "' not found");
+                throw new FileStoreException(
+                        "Entry with ID " + id + " not found");
             }
         } else {
             throw new FileStoreException("FileStore not started");
@@ -199,27 +174,27 @@ public class FileStore {
     /**
      * Stores an entry based on an byte array.
      * 
-     * @param name  the entry name
+     * @param id    the entry ID
      * @param data  the data
      * @throws FileStoreException  If the entry could not be stored
      */
-    public synchronized void store(String name, byte[] data)
+    public void store(int id, byte[] data)
             throws FileStoreException {
         if (isRunning) {
-            System.out.println("FileStore: Storing '" + name + "'...");
-            FileEntry pos = getPosition(name);
-            if (pos == null) {
+            System.out.println("FileStore: Storing entry with ID " + id);
+            FileEntry entry = entries.get(id);
+            if (entry == null) {
                 // Insert new entry.
                 
                 // Find a free position.
-                long offset = findFreePosition(data.length);
-//                System.out.println("FileStore: Creating new entry with offset " + offset + " and length " + data.length + "...");
+                int offset = findFreePosition(data.length);
+                System.out.println("FileStore: Creating new entry with offset " + offset + " and length " + data.length + "...");
                 
                 // Create new index entry.
-                pos = new FileEntry(name);
-                pos.setOffset(offset);
-                pos.setLength(data.length);
-                positions.add(pos);
+                entry = new FileEntry(id);
+                entry.setOffset(offset);
+                entry.setLength(data.length);
+                entries.put(id, entry);
                 
                 // Write entry.
                 try {
@@ -227,21 +202,21 @@ public class FileStore {
                     dataFile.write(data);
                     sync();
                 } catch (IOException e) {
-                    positions.remove(pos);
+                    entries.remove(entry);
                     throw new FileStoreException("Error updating data file", e);
                 }
             } else {
                 // Update existing entry.
-                if (data.length <= pos.getLength()) {
-                    // Fits; overwrite same position.
-//                    System.out.println("FileStore: Updating existing entry with offset " + pos.getOffset() + " and length " + data.length + "...");
+                if (data.length <= entry.getLength()) {
+                    // Fits; overwrite same entryition.
+                    System.out.println("FileStore: Updating existing entry with offset " + entry.getOffset() + " and length " + data.length + "...");
 
                     // Update length.
-                    pos.setLength(data.length);
+                    entry.setLength(data.length);
                     
                     // Write data.
                     try {
-                        dataFile.seek(pos.getOffset());
+                        dataFile.seek(entry.getOffset());
                         dataFile.write(data);
                         sync();
                     } catch (IOException e) {
@@ -249,17 +224,17 @@ public class FileStore {
                     }
                 } else {
                     // Does not fit; delete old entry.
-                    positions.remove(pos);
+                    entries.remove(entry);
                     
-                    // Find a free position.
-                    long offset = findFreePosition(data.length);
+                    // Find a free entryition.
+                    int offset = findFreePosition(data.length);
                     
-//                    System.out.println("FileStore: Moving existing entry with offset " + offset + " and length " + data.length + "...");
+                    System.out.println("FileStore: Moving existing entry with offset " + offset + " and length " + data.length + "...");
                     
                     // Update index entry.
-                    pos.setOffset(offset);
-                    pos.setLength(data.length);
-                    positions.add(pos);
+                    entry.setOffset(offset);
+                    entry.setLength(data.length);
+                    entries.put(id, entry);
                     
                     // Write entry.
                     try {
@@ -277,19 +252,19 @@ public class FileStore {
     }
     
 
-    public boolean contains(String name) {
-        return (getPosition(name) != null);
+    public boolean contains(int id) {
+        return entries.containsKey(id);
     }
     
 
-    public synchronized void delete(String name) {
+    public void delete(int id) {
         if (isRunning) {
-            FileEntry pos = getPosition(name);
-            if (pos != null) {
-                positions.remove(pos);
-//                System.out.println("FileStore: Deleted '" + name + "' with offset " + pos.getOffset() + " and length " + pos.getLength());
+            FileEntry entry = entries.get(id);
+            if (entry != null) {
+                entries.remove(entry);
+                System.out.println("FileStore: Deleted entry with ID '" + id + "' with offset " + entry.getOffset() + " and length " + entry.getLength());
             } else {
-                System.err.println("FileStore: WARNING: File '" + name + "' not found.");
+                System.err.println("FileStore: WARNING: Entry with ID " + id + " not found");
             }
         } else {
             System.err.println("ERROR: Not started.");
@@ -297,20 +272,20 @@ public class FileStore {
     }
     
 
-    public synchronized void deleteAll() {
-        positions.clear();
+    public void deleteAll() {
+        entries.clear();
         sync();
         try {
             dataFile.setLength(0L);
         } catch (IOException e) {
             System.err.println("FileStore: ERROR clearing data file: " + e);
         }
-//        System.out.println("FileStore: Deleted all entries.");
+        System.out.println("FileStore: Deleted all entries.");
     }
     
 
-    public synchronized void sync() {
-//      System.out.println("FileStore: Sync'ing to disk...");
+    public void sync() {
+      System.out.println("FileStore: Sync'ing to disk...");
       try {
           writeIndexFile();
       } catch (IOException e) {
@@ -319,7 +294,7 @@ public class FileStore {
   }
   
 
-    public synchronized void printSizeInfo() {
+    public void printSizeInfo() {
         long stored = getStoredSpace();
         long used = getUsedSpace();
         long wasted = stored - used;
@@ -339,29 +314,17 @@ public class FileStore {
     //------------------------------------------------------------------------
     
 
-    private FileEntry getPosition(String name) {
-        FileEntry foundPos = null;
-        for (FileEntry pos : positions) {
-            if (pos.getName().equals(name)) {
-                foundPos = pos;
-                break;
-            }
-        }
-        return foundPos;
-    }
-    
-    
-    private long findFreePosition(long length) {
-        long offset = 0L;
-        for (FileEntry pos : positions) {
-            // Determine any free space between positions.
-            long free = pos.getOffset() - offset;
+    private int findFreePosition(int length) {
+        int offset = 0;
+        for (FileEntry entry : entries.values()) {
+            // Determine any free space between entries.
+            long free = entry.getOffset() - offset;
             if (free >= length) {
                 // Found a free spot!
                 break;
             } else {
-                // Proceed to next position.
-                offset = pos.getOffset() + pos.getLength();
+                // Proceed to next entry.
+                offset = entry.getOffset() + entry.getLength();
             }
         }
         return offset;
@@ -369,20 +332,20 @@ public class FileStore {
     
     
     private void readIndexFile() throws IOException {
-        positions.clear();
+        entries.clear();
         File file = new File(dataDirectory + '/' + INDEX_FILE);
         if (file.exists()) {
             DataInputStream dis =
                     new DataInputStream(new FileInputStream(file));
             int noOfEntries = dis.readInt();
             for (int i = 0; i < noOfEntries; i++) {
-                String name = dis.readUTF();
-                long offset = dis.readLong();
-                long length = dis.readLong();
-                FileEntry pos = new FileEntry(name);
-                pos.setOffset(offset);
-                pos.setLength(length);
-                positions.add(pos);
+                int id = dis.readInt();
+                int offset = dis.readInt();
+                int length = dis.readInt();
+                FileEntry entry = new FileEntry(id);
+                entry.setOffset(offset);
+                entry.setLength(length);
+                entries.put(id, entry);
             }
             dis.close();
         }
@@ -392,12 +355,11 @@ public class FileStore {
     private void writeIndexFile() throws IOException {
         DataOutputStream dos = new DataOutputStream(
                 new FileOutputStream(dataDirectory + '/' + INDEX_FILE));
-        dos.writeInt(positions.size());
-        for (FileEntry pos : positions) {
-            String name = pos.getName();
-            dos.writeUTF(name);
-            dos.writeLong(pos.getOffset());
-            dos.writeLong(pos.getLength());
+        dos.writeInt(entries.size());
+        for (FileEntry entry : entries.values()) {
+            dos.writeInt(entry.getId());
+            dos.writeInt(entry.getOffset());
+            dos.writeInt(entry.getLength());
         }
         dos.close();
     }
@@ -431,8 +393,8 @@ public class FileStore {
 
     private long getUsedSpace() {
         long size = 0L;
-        for (FileEntry pos : positions) {
-            size += pos.getLength();
+        for (FileEntry entry : entries.values()) {
+            size += entry.getLength();
         }
         return size;
     }
