@@ -122,7 +122,6 @@ public class Document implements Comparable<Document> {
     //------------------------------------------------------------------------
 
 	
-	@Override
 	public int compareTo(Document doc) {
 		return name.compareTo(doc.getName());
 	}
