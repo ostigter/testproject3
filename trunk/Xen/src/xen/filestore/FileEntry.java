@@ -11,62 +11,62 @@ package xen.filestore;
 public class FileEntry implements Comparable<FileEntry> {
 	
 
-	private String name;
+	private int id;
 	
-	private long offset;
+	private int offset;
 	
-	private long length;
+	private int length;
 	
 
-	public FileEntry(String name) {
-		this.name = name;
+	public FileEntry(int id) {
+		this.id = id;
 	}
 
 
-	public String getName() {
-		return name;
+	public int getId() {
+		return id;
 	}
 
 
-	public long getOffset() {
+	public int getOffset() {
 		return offset;
 	}
 
 
-	public void setOffset(long offset) {
+	public void setOffset(int offset) {
 		this.offset = offset;
 	}
 
 
-	public long getLength() {
+	public int getLength() {
 		return length;
 	}
 
 
-	public void setLength(long length) {
+	public void setLength(int length) {
 		this.length = length;
 	}
 
 
 	@Override
 	public String toString() {
-		return "{'" + name + "', " + offset + ", " + length + "}";
+		return "{'" + id + "', " + offset + ", " + length + "}";
 	}
 
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof FileEntry) {
-			FileEntry pos = (FileEntry) obj;
-			return pos.offset == offset;
+			FileEntry entry = (FileEntry) obj;
+			return entry.getId() == id;
 		} else {
 			return false;
 		}
 	}
 
 
-	public int compareTo(FileEntry pos) {
-		long otherOffset = pos.getOffset();
+	public int compareTo(FileEntry entry) {
+		int otherOffset = entry.getOffset();
 		if (offset > otherOffset) {
 			return 1;
 		} else if (offset < otherOffset) {
