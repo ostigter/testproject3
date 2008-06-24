@@ -1,7 +1,13 @@
-package xen;
+package xantippe;
 
 
 import org.apache.log4j.Logger;
+
+import xantippe.Collection;
+import xantippe.Database;
+import xantippe.DatabaseImpl;
+import xantippe.Util;
+import xantippe.XmldbException;
 
 
 /**
@@ -34,8 +40,8 @@ public class DatabaseTest {
 		    // Create indices.
 		    dataCol.addIndex("DocumentId", "/Document/Id");
 		    fooCol.addIndex("DocumentType", "/Document/Type");
-		    System.out.println(dataCol.getIndices());
-		    System.out.println(fooCol.getIndices());
+		    logger.info(dataCol.getIndices());
+		    logger.info(fooCol.getIndices());
 		    
 //    		// Add documents.
 //    		Document doc = fooCol.createDocument("0001.xml");
