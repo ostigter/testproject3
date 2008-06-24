@@ -2,6 +2,8 @@ TO DO
 =====
 
 - document persistency
+- adapt and use FileStore
+- media types
 - index persistency (per collection, inheritance tree)
 - automatic indexing of XML documents
 - XML validation
@@ -9,3 +11,4 @@ TO DO
 - Management console
 - WebDAV interface
 - REST interface
+- use (optional) ZIP compression (FileStore)
