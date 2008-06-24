@@ -1,4 +1,4 @@
-package xen;
+package xantippe;
 
 
 public class XmldbException extends Exception {
