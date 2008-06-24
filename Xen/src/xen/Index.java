@@ -51,7 +51,6 @@ public class Index implements Comparable<Index> {
     //------------------------------------------------------------------------
 
 	
-	@Override
 	public int compareTo(Index index) {
 		return name.compareTo(index.getName());
 	}
