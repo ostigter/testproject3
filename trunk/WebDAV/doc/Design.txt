@@ -1,0 +1,72 @@
+Design
+======
+
+Server
+Client
+Resource
+Property
+    xmln:D="DAV:"
+    D:displayname
+    D:resourcetype
+        D:resource
+        D:collection
+    D:creationdate
+    D:getlastmodified
+Collection
+Request
+Response
+Method
+Header
+Body
+Status
+PROPFIND
+    Depth
+MKCOL
+GET
+PUT
+DELETE
+
+
+
+
+Windows XP:
+
+Method: PROPFIND
+URI:    /
+Header: 'Accept-Language' = 'nl, en-us;q=0.2'
+Header: 'Content-Language' = 'en-us'
+Header: 'Host' = 'localhost:5000'
+Header: 'Content-Length' = '489'
+Header: 'Translate' = 'f'
+Header: 'User-Agent' = 'Microsoft Data Access Internet Publishing Provider DAV'
+Header: 'Depth' = '1'
+Header: 'Connection' = 'Keep-Alive'
+Header: 'Content-Type' = 'text/xml'
+Body:
+<?xml version="1.0" encoding="UTF-8" ?>
+<a:propfind xmlns:a="DAV:" xmlns:b="urn:schemas-microsoft-com:datatypes">
+<a:prop>
+
+<a:href/>
+<a:displayname/>
+<a:resourcetype/>
+<a:creationdate/>
+
+<a:getcontenttype/>
+<a:getcontentlength/>
+<a:getcontentlanguage/>
+<a:getlastmodified/>
+
+<a:name/>
+<a:parentname/>
+<a:iscollection/>
+<a:isroot/>
+<a:isreadonly/>
+<a:ishidden/>
+<a:contentclass/>
+<a:lastaccessed/>
+<a:isstructureddocument/>
+<a:defaultdocument/>
+
+</a:prop>
+</a:propfind>
