@@ -12,7 +12,12 @@
     </init-param>
     <init-param>
       <param-name>rootpath</param-name>
-      <param-value>D:/Workspace/webdav-servlet/data</param-value>
+      <!--param-value>D:/Workspace/webdav-servlet/data</param-value-->
+      <param-value>C:/LocalData/Workspace/webdav-servlet/data</param-value>
+    </init-param>
+    <init-param>
+      <param-name>servletDebug</param-name>
+      <param-value>1</param-value>
     </init-param>
     <init-param>
       <param-name>storeDebug</param-name>
@@ -22,7 +27,7 @@
   
   <servlet-mapping>
   	<servlet-name>WebdavServlet</servlet-name>
-  	<url-pattern>/webdav/*</url-pattern>
+  	<url-pattern>/db/*</url-pattern>
   </servlet-mapping>
   
   <welcome-file-list>
