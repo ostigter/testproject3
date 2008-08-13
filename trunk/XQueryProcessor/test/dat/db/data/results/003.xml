@@ -1,0 +1,23 @@
+<TestResult>
+  <Header>
+    <Document>
+      <Id>/db/data/results/003</Id>
+      <Type>
+        <Name>TestResult</Name>
+        <Version>1.0</Version>
+      </Type>
+      <Created>
+        <By>Oscar Stigter</By>
+        <At>2007-11-08T14:00:00+01:00</At>
+      </Created>
+    </Document>
+  </Header>
+  <Body>
+    <Test>
+      <Name>masp</Name>
+      <Version>1.0</Version>
+    </Test>
+    <MachineId>m1002</MachineId>
+    <Result>1.003</Result>
+  </Body>
+</TestResult>
