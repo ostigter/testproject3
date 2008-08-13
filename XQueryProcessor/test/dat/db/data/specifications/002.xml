@@ -1,0 +1,22 @@
+<TestSpecifications>
+  <Header>
+    <Document>
+      <ID>/db/data/specifications/002</ID>
+      <Type>
+        <Name>TestSpecifications</Name>
+        <Version>1.0</Version>
+      </Type>
+      <Created>
+        <By>Oscar Stigter</By>
+        <At>2007-11-08T12:10:00+01:00</At>
+      </Created>
+    </Document>
+  </Header>
+  <Body>
+    <Test>
+      <Name>masp</Name>
+      <Version>1.0</Version>
+    </Test>
+    <ATP>2.000</ATP>
+  </Body>
+</TestSpecifications>
