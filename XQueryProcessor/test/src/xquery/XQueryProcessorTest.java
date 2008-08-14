@@ -4,15 +4,17 @@ package xquery;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 
 import junit.framework.Assert;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.InputSource;
+
+import xquery.util.Util;
 
 
 /**
@@ -21,10 +23,34 @@ import org.xml.sax.InputSource;
  * @author Oscar Stigter
  */
 public class XQueryProcessorTest {
+	
+	
+	@BeforeClass
+	public static void beforeClass() {
+		Util.initLog4j();
+	}
 
 
     @Test
-    public void main() {
+    public void executeQuery() {
+        try {
+            // Setup XQuery processor.
+            XQueryProcessor xqp = new SaxonXQueryProcessor();
+            
+            String query = "<Result>OK</Result>";
+            
+            // Call XQuery function.
+            String result = xqp.executeQuery(query).toString();
+            Assert.assertTrue(result.endsWith(query));
+            
+        } catch (Exception e) {
+            Assert.fail(e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void executeFunction() {
         try {
             // Setup input documents.
             InputStream is1 = new FileInputStream(
@@ -39,12 +65,10 @@ public class XQueryProcessorTest {
             xqp.addModuleLocation("test/dat/db/modules");
             
             // Call XQuery function.
-            OutputStream result = xqp.executeFunction(
+            String result = xqp.executeFunction(
                     "http://www.example.com/converter", "convert",
-                    doc1, doc2, new String[] {"multiply"});
-            
-            // Print query result.
-            System.out.print(result);
+                    doc1, doc2, new String[] {"multiply"}).toString();
+            Assert.assertTrue(result.contains("<MergedValue>6</MergedValue>"));
             
         } catch (Exception e) {
             Assert.fail(e.getMessage());

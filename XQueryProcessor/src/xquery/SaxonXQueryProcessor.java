@@ -20,8 +20,58 @@ import net.sf.saxon.trans.XPathException;
  * @author Oscar Stigter
  */
 public class SaxonXQueryProcessor extends AbstractXQueryProcessor {
+	
+	
+	/** Saxon configuration. */
+	private final Configuration config;
+	
+	/** Static query context. */
+	private final StaticQueryContext staticQueryContext;
+	
+	/** Dynamic query context. */
+	private final DynamicQueryContext dynamicQueryContext;
+	
+	
+    //------------------------------------------------------------------------
+    //  Constructor
+    //------------------------------------------------------------------------
 
+    
+	/**
+	 * Constructor.
+	 */
+	public SaxonXQueryProcessor() {
+		super();
+		
+		config = new Configuration();
+		staticQueryContext = new StaticQueryContext(config);
+        dynamicQueryContext = new DynamicQueryContext(config);
+	}
+	
+	
+    //------------------------------------------------------------------------
+    //  Interface implementation: XQueryProcessor
+    //------------------------------------------------------------------------
 
+    
+    // See XQueryProcessor documentation.
+    public OutputStream executeQuery(String query) throws XQueryException {
+        logger.debug("Executing query: \n" + query);
+        try {
+            XQueryExpression expr = staticQueryContext.compileQuery(query);
+            dynamicQueryContext.clearParameters();
+            OutputStream os = new ByteArrayOutputStream();
+            Result result = new StreamResult(os);
+            expr.run(dynamicQueryContext, result, null);
+            return os;
+        } catch (XPathException e) {
+            throw new XQueryException(
+            		"Error executing query: " + e.getMessage());
+        }
+    }
+    
+    
+    // See XQueryProcessor documentation.
     public OutputStream executeFunction(
             String namespace, String function,  Object ... params)
             throws XQueryException {
@@ -31,24 +81,22 @@ public class SaxonXQueryProcessor extends AbstractXQueryProcessor {
                     "Namespace " + namespace + " is not supported");
         }
         String query = createQuery(namespace, location, function, params);
-        System.out.println("Query: \n" + query);
-
+        logger.debug("Executing query: \n" + query);
+        
         try {
-            Configuration config = new Configuration();
-            StaticQueryContext sqc = new StaticQueryContext(config);
-            XQueryExpression expr = sqc.compileQuery(query);
-            DynamicQueryContext dqc = new DynamicQueryContext(config);
+            XQueryExpression expr = staticQueryContext.compileQuery(query);
+            dynamicQueryContext.clearParameters();
             for(int i = 0; i < params.length; i++) {
-                dqc.setParameter("par" + String.valueOf(i + 1), params[i]);
+                dynamicQueryContext.setParameter(
+                		"par" + String.valueOf(i + 1), params[i]);
             }
             OutputStream os = new ByteArrayOutputStream();
             Result result = new StreamResult(os);
-            expr.run(dqc, result, null);
+            expr.run(dynamicQueryContext, result, null);
             return os;
         } catch (XPathException xpe) {
             throw new XQueryException(xpe.getMessage());
         }
-
     }
 
 
