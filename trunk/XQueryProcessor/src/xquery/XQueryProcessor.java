@@ -11,6 +11,9 @@ import java.io.OutputStream;
  * @author Oscar Stigter
  */
 public interface XQueryProcessor {
+	
+	
+	OutputStream executeQuery(String query) throws XQueryException;
     
 
     /**
