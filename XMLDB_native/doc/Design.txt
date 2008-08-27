@@ -1,0 +1,107 @@
+Document storage
+----------------
+
+XML file:
+----------------
+<Foo>
+  <Bar>Baz</Bar>
+</Foo>
+----------------
+Length: 30 bytes
+
+
+element("Foo")
+  element("Bar")
+    text("Baz")
+
+Node types:
+ 00 element
+ 01 attribute
+ 02 text
+
+
+Method 1:
+
+Binary file:
+--------------------------
+  03  (name length)
+  'F' (element name)
+  'o'
+  'o'
+  01  (child count)
+  00  (element node)
+  03  (name length)
+  'B' (element name)
+  'a'
+  'r'
+  01  (child count)
+  02  (text node)
+  03  (text length)
+  'B' (text value)
+  'a'
+  'z'
+--------------------------
+Length: 16 bytes (53 %)
+
+
+Method 2:
+
+Binary file:
+--------------------------
+  00  (element node)
+  03  (string length)
+  'F' (element name)
+  'o'
+  'o'
+  00  (element node)
+  03  (name length)
+  'B' (element name)
+  'a'
+  'r'
+  02  (text node)
+  03  (text length)
+  'B' (text value)
+  'a'
+  'z'
+  99  (end node)
+  99  (end node)
+--------------------------
+Length: 16 bytes (53 %)
+
+
+
+Classes
+-------
+
+Database
+  nodes
+  addNode(Node)
+  getNode(ID)
+  storeDocument(Document, String uri)
+
+IdGenerator
+  getNextId : ID
+
+Node
+  id
+  parent
+  name
+  children
+  toString()
+
+Collection : Node
+
+Document : Node
+  getType() : DocumentType
+  setType(DocumentType)
+  getContent() : InputStream
+  setContent(File)
+
+DocumentType
+  XML
+  PLAIN_TEXT
+  BINARY
+
+Element : Node
+
+Attribute : Node
