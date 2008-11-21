@@ -1,142 +1,83 @@
 package mediacenter;
 
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.JFrame;
 
 
-public class Main extends JFrame {
+/**
+ * Main application.
+ * 
+ * @author Oscar Stigter
+ */
+public class Main extends JFrame implements Application {
     
     
+    /** Serial version UID. */
     private static final long serialVersionUID = -1L;
+    
+    /** The screens. */
+    private final Screen[] screens = {
+            new MainScreen(this),
+            new VideoScreen(this),
+            new MusicScreen(this),
+            new PicturesScreen(this),
+    };
+    
+    /** The current screen. */
+    private Screen screen;
 	
 	
-	public Main() {
+    /**
+     * Constructor.
+     */
+    public Main() {
 	    super("Media Center");
-	    createUI();
+        setUndecorated(true);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
+        
+        setScreen(Constants.MAIN);
 	}
 	
 	
-	public static void main(String[] args) {
+    /**
+     * The application's entry point.
+     * 
+     * @param  args  command line arguments
+     */
+    public static void main(String[] args) {
 		new Main();
 	}
 	
 	
-    private void createUI() {
-        setUndecorated(true);
-        getContentPane().setBackground(Constants.BACKGROUND);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
-
-        GridBagConstraints gc = new GridBagConstraints();
-        
-        Label titleLabel = new Label("Media Center", 500, 125);
-        gc.gridx = 0;
-        gc.gridy = 1;
-        gc.gridwidth = 2;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.NORTH;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 0.0;
-        gc.weighty = 0.0;
-        gc.insets = new Insets(10, 10, 10, 10);
-        getContentPane().add(titleLabel, gc);
-        
-        Button button = new Button("_", 50, 50);
-        button.addButtonListener(new ButtonListener() {
-            public void buttonClicked(Button button) {
-                minimize();
-            }
-        });
-        gc.gridx = 0;
-        gc.gridy = 0;
-        gc.gridwidth = 1;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.NORTHEAST;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 1.0;
-        gc.weighty = 0.0;
-        gc.insets = new Insets(10, 0, 0, 0);
-        getContentPane().add(button, gc);
-        
-        button = new Button("X", 50, 50);
-        button.addButtonListener(new ButtonListener() {
-            public void buttonClicked(Button button) {
-                exit();
-            }
-        });
-        gc.gridx = 1;
-        gc.gridy = 0;
-        gc.gridwidth = 1;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.NORTH;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 0.0;
-        gc.weighty = 0.0;
-        gc.insets = new Insets(10, 0, 0, 10);
-        getContentPane().add(button, gc);
-        
-        button = new Button("Video", 300, 75);
-        button.addButtonListener(new ButtonListener() {
-            public void buttonClicked(Button button) {
-            }
-        });
-        gc.gridx = 0;
-        gc.gridy = 1;
-        gc.gridwidth = 2;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.SOUTH;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 1.0;
-        gc.weighty = 1.0;
-        getContentPane().add(button, gc);
-        
-        button = new Button("Music", 300, 75);
-        button.addButtonListener(new ButtonListener() {
-            public void buttonClicked(Button button) {
-            }
-        });
-        gc.gridx = 0;
-        gc.gridy = 2;
-        gc.gridwidth = 2;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.CENTER;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 1.0;
-        gc.weighty = 1.0;
-        getContentPane().add(button, gc);
-        
-        button = new Button("Pictures", 300, 75);
-        button.addButtonListener(new ButtonListener() {
-            public void buttonClicked(Button button) {
-            }
-        });
-        gc.gridx = 0;
-        gc.gridy = 3;
-        gc.gridwidth = 2;
-        gc.gridheight = 1;
-        gc.anchor = GridBagConstraints.NORTH;
-        gc.fill = GridBagConstraints.NONE;
-        gc.weightx = 1.0;
-        gc.weighty = 1.0;
-        getContentPane().add(button, gc);
-        
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        setSize(600, 400);
-//        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-
-    private void minimize() {
+	public void setScreen(int index) {
+	    if (index < 0 || index > screens.length - 1) {
+	        throw new IllegalArgumentException(
+	                "Invalid screen index: " + index);
+	    }
+	    
+	    if (screen != null) {
+	        getContentPane().remove(screen);
+	    }
+	    screen = screens[index];
+        getContentPane().add(screen);
+        validate();
+        repaint();
+	}
+	
+	
+	public void back() {
+	    setScreen(Constants.MAIN);
+	}
+	
+	
+    public void minimize() {
         setExtendedState(getExtendedState() | JFrame.ICONIFIED);
     }
 
 
-	private void exit() {
+	public void exit() {
 		dispose();
 	}
 
