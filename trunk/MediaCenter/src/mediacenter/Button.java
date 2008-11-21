@@ -1,8 +1,8 @@
 package mediacenter;
 
 
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -31,15 +31,12 @@ public class Button extends JComponent {
 	private boolean isSelected = false;
 	
 
-	public Button(int width, int height, String text) {
+	public Button(String text, int width, int height) {
         listeners = new HashSet<ButtonListener>();
         
         setPreferredSize(new Dimension(width, height));
-		setBackground(Constants.BACKGROUND);
-        setForeground(Color.BLACK);
         
         addMouseListener(new MouseAdapter() {
-
             @Override
             public void mouseEntered(MouseEvent e) {
                 isSelected = true;
@@ -56,14 +53,15 @@ public class Button extends JComponent {
             public void mouseClicked(MouseEvent e) {
                 fireButtonClicked();
             }
-
         });
+        
 		setText(text);
 	}
 	
 	
 	public void setText(String text) {
 		this.text = text;
+		repaint();
 	}
 	
 	
@@ -85,12 +83,12 @@ public class Button extends JComponent {
 	
     @Override
     protected void paintComponent(Graphics g) {
-         super.paintComponent(g);
-         
          int width = getWidth();
          int height = getHeight();
          
-         g.setFont(Constants.FONT);
+         int fontSize = height * 6 / 10;
+         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, fontSize);
+         g.setFont(font);
          FontMetrics fm = g.getFontMetrics();
          Rectangle2D r = fm.getStringBounds(text, g);
          int textWidth = (int) r.getWidth();
@@ -101,15 +99,13 @@ public class Button extends JComponent {
          g.drawRect(0, 0, width - 2, height - 2);
          if (isSelected) {
              g.setColor(Constants.SELECTION);
-         } else {
-             g.setColor(Constants.FOREGROUND);
          }
          int x = (width / 2) - (textWidth / 2);
-         int y = 2 + (Constants.FONT_SIZE / 4) + (height / 2);
+         int y = 2 + (fontSize / 4) + (height / 2);
          g.drawString(text, x, y);
     }
-	
-
+    
+    
     private void fireButtonClicked() {
         for (ButtonListener listener : listeners) {
             listener.buttonClicked(this);
