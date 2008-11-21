@@ -52,6 +52,7 @@ public class Button extends JComponent {
             @Override
             public void mouseClicked(MouseEvent e) {
                 fireButtonClicked();
+                isSelected = false;
             }
         });
         

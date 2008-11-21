@@ -35,12 +35,14 @@ public class Label extends JComponent {
 
     @Override
     protected void paintComponent(Graphics g) {
+//        int width = getWidth();
         int height = getHeight();
         int fontSize = height * 6 / 10;
         Font font = new Font(Font.SANS_SERIF, Font.PLAIN, fontSize);
         g.setFont(font);
         g.setColor(Constants.FOREGROUND);
         int y = 2 + (fontSize / 4) + (height / 2);
+//        g.drawRect(0, 0, width - 1, height - 1);
         g.drawString(text, 0, y);
     }
          
