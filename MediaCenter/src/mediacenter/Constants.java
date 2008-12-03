@@ -14,11 +14,13 @@ public interface Constants {
 
     int MAIN = 0;
     
-    int VIDEO = 1;
+    int TV_SERIES = 1;
     
-    int MUSIC = 2;
+    int MOVIES = 2;
     
-    int PICTURES = 3;
+    int MUSIC = 3;
+    
+    int PICTURES = 4;
     
     /** Background color. */
     Color BACKGROUND = new Color(0, 100, 255);  // dark blue

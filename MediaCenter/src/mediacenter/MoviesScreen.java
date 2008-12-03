@@ -5,13 +5,13 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
 
-public class VideoScreen extends Screen {
+public class MoviesScreen extends Screen {
     
     
     private static final long serialVersionUID = 1L;
     
     
-    public VideoScreen(Application application) {
+    public MoviesScreen(Application application) {
         super(application);
     }
     
@@ -63,7 +63,7 @@ public class VideoScreen extends Screen {
         gc.insets = new Insets(10, 10, 10, 10);
         add(label, gc);
         
-        label = new Label("Video", 125, 75);
+        label = new Label("Movies", 150, 75);
         gc.gridx = 0;
         gc.gridy = 2;
         gc.gridwidth = 2;
