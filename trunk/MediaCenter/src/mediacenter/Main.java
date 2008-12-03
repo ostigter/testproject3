@@ -18,7 +18,8 @@ public class Main extends JFrame implements Application {
     /** The screens. */
     private final Screen[] screens = {
             new MainScreen(this),
-            new VideoScreen(this),
+            new TvSeriesScreen(this),
+            new MoviesScreen(this),
             new MusicScreen(this),
             new PicturesScreen(this),
     };
