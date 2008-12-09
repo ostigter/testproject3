@@ -8,7 +8,7 @@ import java.net.Socket;
 import sun.misc.BASE64Encoder;
 
 
-public class WebDavClient {
+public class Client {
     
     
     private static final int PORT = 5000; 
@@ -31,28 +31,28 @@ public class WebDavClient {
         String credentials = new BASE64Encoder().encode(
                 (USERNAME + ":" + PASSWORD).getBytes());
         
-//        String entity =
-//            "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + CRLF +
-//            "<D:propfind xmlns:D=\"DAV:\"><D:allprop/></D:propfind>" + CRLF;
+        String entity =
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + CRLF +
+            "<D:propfind xmlns:D=\"DAV:\"><D:allprop/></D:propfind>" + CRLF;
+        String request =
+            "PROPFIND /db HTTP/1.1" + CRLF +
+            "Host: localhost:8080" + CRLF +
+            "Authorization: Basic " + credentials + CRLF +
+            "Depth: 1" + CRLF +
+            "Content-Type: text/xml; charset=\"utf-8\"" + CRLF +
+            "Content-Length: " + entity.length() + CRLF +
+            CRLF +
+            entity;
+        
+//        String entity = "";
 //        String request =
-//            "PROPFIND /exist/webdav/db/ HTTP/1.1" + CRLF +
+//            "OPTIONS / HTTP/1.1" + CRLF +
 //            "Host: localhost:8080" + CRLF +
 //            "Authorization: Basic " + credentials + CRLF +
-//            "Depth: 1" + CRLF +
 //            "Content-Type: text/xml; charset=\"utf-8\"" + CRLF +
 //            "Content-Length: " + entity.length() + CRLF +
 //            CRLF +
 //            entity;
-        
-        String entity = "";
-        String request =
-            "OPTIONS / HTTP/1.1" + CRLF +
-            "Host: localhost:8080" + CRLF +
-//            "Authorization: Basic " + credentials + CRLF +
-//            "Content-Type: text/xml; charset=\"utf-8\"" + CRLF +
-            "Content-Length: " + entity.length() + CRLF +
-            CRLF +
-            entity;
         
         OutputStream os = socket.getOutputStream();
         os.write(request.getBytes());
