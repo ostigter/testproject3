@@ -31,9 +31,11 @@ public class Button extends JComponent {
 	private boolean isSelected = false;
 	
 
-	public Button(String text, int width, int height) {
+	public Button(String text, double widthPerc, double heightPerc) {
         listeners = new HashSet<ButtonListener>();
         
+        int width = (int) (Constants.SCREEN_WIDTH * widthPerc);
+        int height = (int) (Constants.SCREEN_HEIGHT * heightPerc);
         setPreferredSize(new Dimension(width, height));
         
         addMouseListener(new MouseAdapter() {
