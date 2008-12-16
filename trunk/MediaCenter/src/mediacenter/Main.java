@@ -33,12 +33,15 @@ public class Main extends JFrame implements Application {
      */
     public Main() {
 	    super("Media Center");
-        setUndecorated(true);
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        setUndecorated(true);
+//        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
         
         setScreen(Constants.MAIN);
+
+        setSize(Constants.SCREEN_WIDTH, Constants.SCREEN_HEIGHT);
+        setLocationRelativeTo(null);
+        setVisible(true);
 	}
 	
 	
