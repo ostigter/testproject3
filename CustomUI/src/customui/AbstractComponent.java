@@ -1,10 +1,13 @@
 package customui;
 
 
+import java.awt.Graphics;
+
+
 public abstract class AbstractComponent implements Component {
 	
 
-	private Container parent;
+	private Panel parent;
 	
 	private int x;
 	
@@ -15,13 +18,13 @@ public abstract class AbstractComponent implements Component {
 	private int height;
 	
 	
-	public AbstractComponent(Container parent) {
-		this.parent = parent;
-	}
-
-
-	public Component getParent() {
+	public Panel getParent() {
 		return parent;
+	}
+	
+	
+	/* package */ void setParent(Panel parent) {
+		this.parent = parent;
 	}
 	
 	
@@ -30,7 +33,7 @@ public abstract class AbstractComponent implements Component {
 	}
 
 
-	public void setX(int x) {
+	/* package */ void setX(int x) {
 		this.x = x;
 	}
 
@@ -40,7 +43,7 @@ public abstract class AbstractComponent implements Component {
 	}
 
 	
-	public void setY(int y) {
+	/* package */ void setY(int y) {
 		this.y = y;
 	}
 
@@ -50,7 +53,7 @@ public abstract class AbstractComponent implements Component {
 	}
 
 
-	public void setWidth(int width) {
+	/* package */ void setWidth(int width) {
 		this.width = width;
 	}
 
@@ -60,9 +63,15 @@ public abstract class AbstractComponent implements Component {
 	}
 
 	
-	public void setHeight(int height) {
+	/* package */ void setHeight(int height) {
 		this.height = height;
 	}
+	
+	
+	public abstract void doLayout();
+	
+
+	public abstract void paintComponent(Graphics g);
 
 
 }
