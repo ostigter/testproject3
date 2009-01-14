@@ -1,0 +1,25 @@
+@CHARSET "UTF-8";
+
+.pageHeader {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: blue;
+}
+
+.label {
+    font-style: italic;
+	color: green;
+}
+
+.textField {
+	color: gray;
+}
+
+.messages {
+	color: red;
+}
+
+.button {
+    font-weight: bold;
+	color: purple;
+}
