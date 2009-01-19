@@ -1,0 +1,72 @@
+OzMUD - Design
+==============
+
+
+class World
+    - rooms
+    - creatures
+    - items
+
+class Item
+    - name
+    - description
+
+class Creature
+    - strength
+    - dexterity
+    - endurance
+    - hitPoints
+    - inventory
+    - wornItems
+    - wieldedItems
+    + getMaxHitPoints()
+    + getWeight()
+    + getMaxWeight()
+
+class Player : Creature
+
+class Monster : Creature
+
+Race
+    Human
+    Elf
+    Dwarf
+    Orc
+
+class Item {
+    - name
+    - description
+    - weight
+    - price
+}
+
+class Weapon : Item
+    - damage
+    - type : WeaponType
+
+enum WeaponType {
+    ONE_HANDED
+    TWO_HANDED
+}
+
+class Armour : Item
+    - ac
+    - bodyPart
+
+enum BodyPart {
+    HEAD
+    BODY
+    LEFT_ARM
+    RIGHT_ARM
+    LEFT_HAND
+    RIGHT_HAND
+    LEGS
+    FEET
+    SHIELD
+
+class Room
+    - name
+    - description
+    - exists
+    - items
+    - creatures
