@@ -1,10 +1,11 @@
 package ozmud.world;
 
 import java.io.IOException;
-
 import ozmud.server.TelnetConnection;
 
+
 public class Player extends Creature implements Runnable {
+
 
 	/** Connection states. */
 	public static final int OFFLINE = 0;
@@ -26,14 +27,17 @@ public class Player extends Creature implements Runnable {
 		setPassword(password);
 	}
 
+
 	public String getPassword() {
 		return password;
 	}
 
+	
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	
 	/**
 	 * Returns the connection state.
 	 * 
@@ -43,10 +47,12 @@ public class Player extends Creature implements Runnable {
 		return connectionState;
 	}
 
+	
 	public void connect(TelnetConnection connection) {
 		this.connection = connection;
 		connectionState = ONLINE;
 	}
+
 
 	/**
 	 * Disconnects the player from the client.
@@ -67,6 +73,7 @@ public class Player extends Creature implements Runnable {
 		System.out.println(getName() + " has disconnected.");
 	}
 	
+	
 	/**
 	 * Processes an incoming message.
 	 * 
@@ -77,7 +84,9 @@ public class Player extends Creature implements Runnable {
 		connection.send(message);
 	}
 
+
 	public void run() {
+		// TODO
 	}
 
 }
