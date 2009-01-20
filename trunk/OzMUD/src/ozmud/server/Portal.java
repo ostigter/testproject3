@@ -57,27 +57,27 @@ public class Portal implements Runnable {
 
 						// Send intro
 						connection
-								.sendString("{/BLUE}\r\n\r\n###############################\n\r");
+								.send("{/BLUE}\r\n\r\n###############################\n\r");
 						connection
-								.sendString("{/BLUE}#####{/CYAN}  Welcome to OzMUD!  {/BLUE}#####\n\r");
+								.send("{/BLUE}#####{/CYAN}  Welcome to OzMUD!  {/BLUE}#####\n\r");
 						connection
-								.sendString("{/BLUE}###############################\n\r");
+								.send("{/BLUE}###############################\n\r");
 						connection
-								.sendString("{/GRAY}\n\r\n\r(c)2009 Oscar Stigter\n\r");
+								.send("{/GRAY}\n\r\n\r(c)2009 Oscar Stigter\n\r");
 
 						// Ask for name
 						connection
-								.sendString("{/GREEN}\n\r\n\rPlease enter your character's name: ");
+								.send("{/GREEN}\n\r\n\rPlease enter your character's name: ");
 						name = connection.receiveCommand();
 						if (name.length() == 0) {
 							nameOK = false;
 							connection
-									.sendString("{/RED}You must enter a name. Please try again.\r\n\r");
+									.send("{/RED}You must enter a name. Please try again.\r\n\r");
 						}
 						if (name.length() > 15) {
 							nameOK = false;
 							connection
-									.sendString("{/RED}Name is too long (max. 15 characters). Please choose another.\r\n\r");
+									.send("{/RED}Name is too long (max. 15 characters). Please choose another.\r\n\r");
 						}
 					} while (!nameOK);
 
@@ -86,7 +86,7 @@ public class Portal implements Runnable {
 					if (player == null) {
 						// New player
 						connection
-								.sendString("{/GREEN}\n\r"
+								.send("{/GREEN}\n\r"
 										+ name
 										+ " is not a registered character.\n\rCreate this character? (y/n) : ");
 						while (!connection.dataAvailable())
@@ -98,30 +98,30 @@ public class Portal implements Runnable {
 								do {
 									passwordOK = true;
 									connection
-											.sendString("{/GREEN}\n\rType a new password for this character: ");
+											.send("{/GREEN}\n\rType a new password for this character: ");
 									while (!connection.dataAvailable())
 										;
 									password = connection.receiveCommand();
 									if (password.length() == 0) {
 										passwordOK = false;
 										connection
-												.sendString("{/RED}You must enter a password. Please try again.\n\r");
+												.send("{/RED}You must enter a password. Please try again.\n\r");
 									}
 									if (password.length() > 12) {
 										passwordOK = false;
 										connection
-												.sendString("{/RED}Password is too long (max. 12 characters). Please choose another.\n\r");
+												.send("{/RED}Password is too long (max. 12 characters). Please choose another.\n\r");
 									}
 								} while (!passwordOK);
 								connection
-										.sendString("{/GREEN}Retype the password for verification  : ");
+										.send("{/GREEN}Retype the password for verification  : ");
 								while (!connection.dataAvailable())
 									;
 								text = connection.receiveCommand();
 								if (!text.equals(password)) {
 									passwordOK = false;
 									connection
-											.sendString("{/RED}Passwords are not identical. Please try again.\n\r");
+											.send("{/RED}Passwords are not identical. Please try again.\n\r");
 								}
 							} while (!passwordOK);
 							world.addPlayer(name, password);
@@ -131,15 +131,14 @@ public class Portal implements Runnable {
 						// Existing player
 						passwordOK = false;
 						connection
-								.sendString("{/GREEN}\n\rPlease enter your password: ");
+								.send("{/GREEN}\n\rPlease enter your password: ");
 						while (!connection.dataAvailable())
 							;
 						password = connection.receiveCommand();
 						// System.out.println("Login attempt: player '" + name +
 						// "' with password '" + password + "'.");
 						if (!password.equals(player.getPassword())) {
-							connection
-									.sendString("{/RED}Incorrect password.\n\r");
+							connection.send("{/RED}Incorrect password.\n\r");
 						} else {
 							passwordOK = true;
 						}
@@ -147,7 +146,7 @@ public class Portal implements Runnable {
 				} while (!(nameOK && passwordOK));
 
 				connection
-						.sendString("{/CYAN}\n\r\n\rYou enter the Realm of Oz...\n\r\n\r\n\r\n\r");
+						.send("{/CYAN}\n\r\n\rYou enter the Realm of Oz...\n\r\n\r\n\r\n\r");
 
 				// Connect player to this connection.
 				player.connect(connection);

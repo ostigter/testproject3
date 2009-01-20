@@ -64,5 +64,42 @@ public class Room {
 	public void removeCreature(Creature creature) {
 		creatures.remove(creature);
 	}
-
+	
+	public void broadcast(
+			String message, Creature sender, Creature target) {
+		for (Creature creature : creatures) {
+			Perspective perspective = Perspective.OTHERS;
+			if (creature.equals(sender)) {
+				perspective = Perspective.SELF;
+			} else if (creature.equals(target)){
+				perspective = Perspective.TARGET;
+			}
+			creature.processMessage(
+					format(message, sender, target, perspective));
+		}
+	}
+	
+	public String format(String message, Creature sender, Creature target,
+			Perspective perspective) {
+		switch (perspective) {
+			case SELF:
+				message = Util.replace(message, "${sender}", "you");
+				message = Util.replace(message, "${s}", "");
+				message = Util.replace(message, "${target}", target.getName());
+				break;
+			case TARGET:
+				message = Util.replace(message, "${sender}", sender.getName());
+				message = Util.replace(message, "${s}", "s");
+				message = Util.replace(message, "${target}", "you");
+				break;
+			case OTHERS:
+				message = Util.replace(message, "${sender}", sender.getName());
+				message = Util.replace(message, "${s}", "s");
+				message = Util.replace(message, "${target}", target.getName());
+				break;
+		}
+		
+		return Util.capitalize(message);
+	}
+	
 }

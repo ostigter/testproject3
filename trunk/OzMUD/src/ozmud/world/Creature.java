@@ -23,5 +23,7 @@ public abstract class Creature {
 	public String getDescription() {
 		return description;
 	}
+	
+	public abstract void processMessage(String message);
 
 }
