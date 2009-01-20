@@ -19,9 +19,10 @@ public class Player extends Creature implements Runnable {
 
 	/** Connection state. */
 	private int connectionState = OFFLINE;
+	
 
-	public Player(String name, String password) {
-		super(name, null);
+	public Player(String name, Gender gender, String password) {
+		super(name, gender, null);
 		setPassword(password);
 	}
 
