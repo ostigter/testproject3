@@ -1,9 +1,11 @@
-package ozmud.world;
+package ozmud;
 
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+
+import ozmud.Util;
 
 
 public class UtilTest {

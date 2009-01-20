@@ -1,78 +1,99 @@
 package ozmud.server;
 
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import ozmud.Util;
+
+
 /**
- * Handles the communication using the Telnet protocol.
+ * Telnet connection with ANSI color support.
  */
-public class TelnetConnection implements Connection {
+public class TelnetConnection extends AbstractConnection {
 
-	public static final String[][] COLORS = new String[][] {
-			{ "{/BLACK}", "\033[0;30m" }, { "{/GRAY}", "\033[0;37m" },
-			{ "{/WHITE}", "\033[1;37m" }, { "{/YELLOW}", "\033[1;33m" },
-			{ "{/RED}", "\033[1;31m" }, { "{/BLUE}", "\033[1;34m" },
-			{ "{/GREEN}", "\033[1;32m" }, { "{/CYAN}", "\033[1;36m" },
-			{ "{/MAGENTA}", "\033[1;35m" }, { "{/BROWN}", "\033[0;33m" },
-			{ "{/DGRAY}", "\033[1;30m" }, { "{/DRED}", "\033[0;31m" },
-			{ "{/DGREEN}", "\033[0;32m" }, { "{/DBLUE}", "\033[0;34m" },
-			{ "{/DMAGENTA}", "\033[0;35m" }, { "{/DCYAN}", "\033[0;36m" } };
 
-	/** Local TCP/IP socket. */
-	protected Socket connection;
+	/** ANSI color codes. */
+	private static final String[][] COLORS = new String[][] {
+			{ "${BLACK}",    "\033[0;30m" },
+			{ "${GRAY}",     "\033[0;37m" },
+			{ "${WHITE}",    "\033[1;37m" },
+			{ "${YELLOW}",   "\033[1;33m" },
+			{ "${RED}",      "\033[1;31m" },
+			{ "${BLUE}",     "\033[1;34m" },
+			{ "${GREEN}",    "\033[1;32m" },
+			{ "${CYAN}",     "\033[1;36m" },
+			{ "${MAGENTA}",  "\033[1;35m" },
+			{ "${BROWN}",    "\033[0;33m" },
+			{ "${DGRAY}",    "\033[1;30m" },
+			{ "${DRED}",     "\033[0;31m" },
+			{ "${DGREEN}",   "\033[0;32m" },
+			{ "${DBLUE}",    "\033[0;34m" },
+			{ "${DMAGENTA}", "\033[0;35m" },
+			{ "${DCYAN}",    "\033[0;36m" } };
+
+	/** Buffer size in bytes. */
+	private static final int BUFFER_SIZE = 8192;
+	
+	/** Buffer for incoming data. */
+	private final byte[] buffer = new byte[BUFFER_SIZE];
+
+	/** TCP/IP socket. */
+	private Socket socket;
 
 	/** Input stream for incoming data. */
-	protected BufferedInputStream input;
+	private BufferedInputStream input;
 
 	/** Output stream for outgoing data. */
-	protected BufferedOutputStream output;
+	private BufferedOutputStream output;
+	
 
 	/**
-	 * Creates a telnet connection based on an already open connection.
+	 * Constructor.
 	 * 
-	 * @param connection
-	 *            the open connection
+	 * @param  socket  an open TCP/IP socket
+	 * 
+	 * @throws  IOException  if the connection could not be opened
 	 */
-	public TelnetConnection(Socket connection) throws IOException {
-		try {
-			this.connection = connection;
-			input = new BufferedInputStream(connection.getInputStream());
-			output = new BufferedOutputStream(connection.getOutputStream());
-		} catch (IOException e) {
-			this.connection = null;
-			input = null;
-			output = null;
-			throw new IOException("Could not establish connection: "
-					+ e.getMessage());
+	public TelnetConnection(Socket socket) throws IOException {
+		if (socket == null) {
+			throw new IllegalArgumentException("Null socket");
 		}
-	}
 
-	/**
-	 * Disconnects.
-	 */
-	public void disconnect() throws IOException {
+		if (!socket.isConnected()) {
+			throw new IllegalStateException("Socket not open");
+		}
+		
 		try {
-			connection.close();
+			this.socket = socket;
+			input = new BufferedInputStream(socket.getInputStream());
+			output = new BufferedOutputStream(socket.getOutputStream());
+			super.open();
 		} catch (IOException e) {
-			throw new IOException("Could not properly disconnect: "
-					+ e.getMessage());
-		} finally {
-			connection = null;
-			input = null;
-			output = null;
+			throw new IOException(
+					"Could not open telnet connection: " + e.getMessage());
 		}
 	}
 
 	/**
 	 * Sends a message.
+	 * The messages may include ANSI color codes. 
 	 * 
-	 * @param s
-	 *            string to send
+	 * @param  s  message to send
 	 */
 	public void send(String message) {
+		if (message == null) {
+			throw new IllegalArgumentException("Null message");
+		}
+		
+		if (!isOpen()) {
+			throw new IllegalStateException("Connection closed");
+		}
+		
 		message = parseColors(message);
+		
 		try {
 			output.write(message.getBytes(), 0, message.getBytes().length);
 			output.flush();
@@ -81,55 +102,66 @@ public class TelnetConnection implements Connection {
 		}
 	}
 
-	public boolean isDataAvailable() {
-		// TODO
-		return false;
-	}
-
-
-	public String receive() {
-		// TODO
-		return null;
-	}
-
-
-	public void addConnectionListener(ConnectionListener listener) {
-		// TODO
-	}
-
-
-	public void removeConnectionListener(ConnectionListener listener) {
-		// TODO
-	}
-
 
 	/**
-	 * Returns TRUE if data is available.
+	 * Returns true if data is available.
 	 * 
-	 * @return TRUE if data is available
+	 * @return true if data is available
 	 */
 	public boolean dataAvailable() {
-		boolean isAvailable = false;
+		if (!isOpen()) {
+			throw new IllegalStateException("Connection closed");
+		}
+		
+		boolean dataAvailable = false;
 		try {
-			isAvailable = (input.available() != 0);
+			dataAvailable = (input.available() != 0);
 		} catch (IOException e) {
 			System.err.println(
 					"I/O error while probing for available data: "
 					+ e.getMessage());
 		}
-		return isAvailable;
+		return dataAvailable;
 	}
 
+
 	/**
-	 * Receives an incoming command, ending with a CR ('\r') character. This
-	 * method will block until a command has been completely received. This
-	 * method filters out any CR ('\r') or NL ('\n') characters.
-	 * 
-	 * @return the received command
+	 * Close the connection.
 	 */
-	public String receiveCommand() throws IOException {
+	public void close() {
+		if (!isOpen()) {
+			throw new IllegalStateException("Connection not open");
+		}
+		
+		try {
+			socket.close();
+		} catch (IOException e) {
+			System.err.println(
+					"Could not properly close connection: " + e.getMessage());
+		} finally {
+			super.close();
+			socket = null;
+			input = null;
+			output = null;
+			isOpen = false;
+		}
+	}
+
+
+	/**
+	 * Receives an incoming message, ending with a CR or LF character.
+	 * Blocks until a message has been completely received.
+	 * 
+	 * @return  the received message
+	 */
+	public String receive() {
+		if (!isOpen()) {
+			throw new IllegalStateException("Connection closed");
+		}
+		
+		// TODO: Receive any and all data immediately; no filtering or blocking.
+		
 		StringBuilder s = new StringBuilder();
-		byte[] buffer = new byte[256];
 		int b = -1;
 		boolean done = false;
 		try {
@@ -148,8 +180,8 @@ public class TelnetConnection implements Connection {
 				}
 			}
 		} catch (IOException e) {
-			throw new IOException("I/O error while receiving data: "
-					+ e.getMessage());
+			System.err.println(
+					"I/O error while receiving data: " + e.getMessage());
 		}
 		return s.toString();
 	}
@@ -159,27 +191,13 @@ public class TelnetConnection implements Connection {
 	 * Parses a string for color codes and replaces them with the corresponding
 	 * ANSI code.
 	 * 
-	 * @param s
-	 *            string to parse
+	 * @param s  string to parse
 	 * @return the parsed string
 	 */
 	private static String parseColors(String s) {
-		boolean isDone = false;
-		int i, p;
-
-		do {
-			isDone = true;
-
-			for (i = 0; i < COLORS.length; ++i) {
-				p = s.indexOf(COLORS[i][0]);
-				if (p != -1) {
-					s = s.substring(0, p) + COLORS[i][1]
-							+ s.substring(p + COLORS[i][0].length());
-					isDone = false;
-				}
-			}
-		} while (!isDone);
-
+		for (String[] color : COLORS) {
+			s = Util.replace(s, color[0], color[1]);
+		}
 		return s;
 	}
 

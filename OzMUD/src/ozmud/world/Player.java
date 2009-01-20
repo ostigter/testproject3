@@ -1,29 +1,35 @@
 package ozmud.world;
 
-import java.io.IOException;
-import ozmud.server.TelnetConnection;
+
+import ozmud.server.Connection;
+import ozmud.server.ConnectionListener;
 
 
-public class Player extends Creature implements Runnable {
+/**
+ * A human-controlled player character.
+ * 
+ * @author Oscar Stigter
+ */
+public class Player extends Creature implements ConnectionListener {
 
 
 	/** Connection states. */
 	public static final int OFFLINE = 0;
 	public static final int ONLINE = 1;
 	public static final int LINKDEAD = 2;
-
+	
 	/** Players's password. */
 	private String password;
 
-	/** Telnet connection. */
-	private TelnetConnection connection;
+	/** Connection. */
+	private Connection connection;
 
 	/** Connection state. */
 	private int connectionState = OFFLINE;
 	
 
-	public Player(String name, Gender gender, String password) {
-		super(name, gender, null);
+	public Player(String name, Gender gender, String password, World world) {
+		super(name, gender, null, world);
 		setPassword(password);
 	}
 
@@ -48,28 +54,26 @@ public class Player extends Creature implements Runnable {
 	}
 
 	
-	public void connect(TelnetConnection connection) {
+	/**
+	 * Connect to an open connection.
+	 * 
+	 * @param  connection  the connection
+	 */
+	public void connect(Connection connection) {
 		this.connection = connection;
 		connectionState = ONLINE;
 	}
 
 
 	/**
-	 * Disconnects the player from the client.
+	 * Disconnects.
 	 */
 	public void disconnect() {
-		// location.removeCreature(this);
-
-		try {
-			connection.disconnect();
-		} catch (IOException e) {
-			System.err.println("*** Warning: Could not properly disconnect "
-					+ getName() + ": " + e);
+		if (connection != null) {
+			connection.close();
+			connection = null;
 		}
-
-		connection = null;
 		connectionState = OFFLINE;
-
 		System.out.println(getName() + " has disconnected.");
 	}
 	
@@ -80,13 +84,23 @@ public class Player extends Creature implements Runnable {
 	 * @param  message  the message
 	 */
 	public void processMessage(String message) {
-		// Send message to player's telnet client.
+		if (connection == null) {
+			throw new IllegalStateException("Connection closed");
+		}
+		
 		connection.send(message);
 	}
 
 
-	public void run() {
-		// TODO
+	public void messageReceived(String message) {
+		processMessage(message);
 	}
+
+
+	public void start() {
+		setRoom(world.getRoom(0));
+		connection.addListener(this);
+	}
+
 
 }

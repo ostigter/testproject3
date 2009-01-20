@@ -1,41 +1,40 @@
 package ozmud.server;
 
-import java.io.IOException;
-import java.net.Socket;
 
+import java.io.IOException;
+
+import ozmud.Util;
+import ozmud.world.Gender;
 import ozmud.world.Player;
 import ozmud.world.World;
 
+
 /**
- * Handles the login procedure for existing players and the creation of new
- * players.
+ * Handles the login procedure for existing players and the creation procedure
+ * for new player characters.
  */
 public class Portal implements Runnable {
+	
 
-	/** Telnet connection. */
-	private TelnetConnection connection;
+	/** Welcome text. */
+	private static final String WELCOME_TEXT =
+			"${CYAN}\n\r\n\rYou enter the Realm of Oz...\n\r\n\r\n\r\n\r"; 
+
+	/** Connection. */
+	private final Connection connection;
 
 	/** The world. */
 	private World world;
 
-	/** Flag indicating whether connected or not. */
-	private boolean isRunning = true;
 
 	/**
-	 * Creates a portal with the specified connection.
+	 * Constructor.
 	 * 
-	 * @param connection
-	 *            the open connection
+	 * @param connection  an open socket
 	 */
-	public Portal(Socket connection, World world) throws IOException {
-		try {
-			this.connection = new TelnetConnection(connection);
-			this.world = world;
-			// System.out.println("Portal connected to client.");
-		} catch (IOException e) {
-			throw new IOException("Portal could not connect to client: "
-					+ e.getMessage(), e);
-		}
+	public Portal(Connection connection, World world) throws IOException {
+		this.connection = connection;
+		this.world = world;
 	}
 
 	/**
@@ -45,122 +44,116 @@ public class Portal implements Runnable {
 		String text = null;
 		String name = null;
 		String password = null;
-		boolean nameOK = false;
-		boolean passwordOK = false;
+		Gender gender = null;
 		Player player = null;
 
-		while (isRunning) {
-			try {
-				do {
-					do {
-						nameOK = true;
+		while (player == null) {
+			boolean nameOK = false;
+			while (!nameOK) {
+				// Send welcome text.
+				connection.send("${BLUE}\r\n\r\n###############################\n\r");
+				connection.send("#####${CYAN}  Welcome to OzMUD!  ${BLUE}#####\n\r");
+				connection.send("###############################\n\r");
+				connection.send("${GRAY}\n\r\n\r(c)2009 Oscar Stigter\n\r");
 
-						// Send intro
-						connection
-								.send("{/BLUE}\r\n\r\n###############################\n\r");
-						connection
-								.send("{/BLUE}#####{/CYAN}  Welcome to OzMUD!  {/BLUE}#####\n\r");
-						connection
-								.send("{/BLUE}###############################\n\r");
-						connection
-								.send("{/GRAY}\n\r\n\r(c)2009 Oscar Stigter\n\r");
+				// Ask for player's name.
+				connection.send("${GREEN}\n\r\n\rPlease enter your character's name: ");
+				text = connection.receive();
+				if (text.length() == 0) {
+					connection.send("${RED}You must enter a name. Please try again.\r\n\r");
+				} else if (text.length() > 15) {
+					connection.send("${RED}Name is too long (max. 15 characters). Please choose another.\r\n\r");
+				} else {
+					name = Util.capitalize(text);
+					nameOK = true;
+				}
+			}
 
-						// Ask for name
-						connection
-								.send("{/GREEN}\n\r\n\rPlease enter your character's name: ");
-						name = connection.receiveCommand();
-						if (name.length() == 0) {
-							nameOK = false;
-							connection
-									.send("{/RED}You must enter a name. Please try again.\r\n\r");
+			// Lookup character.
+			player = world.getPlayer(name);
+			if (player == null) {
+				// New character; ask whether to create it now.
+				connection.send("${GREEN}\n\r" + name
+						+ " is not a registered character.\n\r"
+						+ "Create this character? (Yes/No) : ");
+				while (!connection.dataAvailable()) {
+					// Wait.
+				}
+				text = connection.receive().toLowerCase();
+				if (text.length() > 0 && text.charAt(0) == 'y') {
+					boolean passwordOK = false;
+					while (!passwordOK) {
+						// Enter new password.
+						connection.send("${GREEN}\n\rType a new password: ");
+						while (!connection.dataAvailable()) {
+							// Wait.
 						}
-						if (name.length() > 15) {
-							nameOK = false;
-							connection
-									.send("{/RED}Name is too long (max. 15 characters). Please choose another.\r\n\r");
-						}
-					} while (!nameOK);
-
-					// Lookup player
-					player = world.getPlayer(name);
-					if (player == null) {
-						// New player
-						connection
-								.send("{/GREEN}\n\r"
-										+ name
-										+ " is not a registered character.\n\rCreate this character? (y/n) : ");
-						while (!connection.dataAvailable())
-							;
-						text = connection.receiveCommand();
-						if ((text.length() != 0)
-								&& (text.charAt(0) == 'y' || text.charAt(0) == 'Y')) {
-							do {
-								do {
-									passwordOK = true;
-									connection
-											.send("{/GREEN}\n\rType a new password for this character: ");
-									while (!connection.dataAvailable())
-										;
-									password = connection.receiveCommand();
-									if (password.length() == 0) {
-										passwordOK = false;
-										connection
-												.send("{/RED}You must enter a password. Please try again.\n\r");
-									}
-									if (password.length() > 12) {
-										passwordOK = false;
-										connection
-												.send("{/RED}Password is too long (max. 12 characters). Please choose another.\n\r");
-									}
-								} while (!passwordOK);
-								connection
-										.send("{/GREEN}Retype the password for verification  : ");
-								while (!connection.dataAvailable())
-									;
-								text = connection.receiveCommand();
-								if (!text.equals(password)) {
-									passwordOK = false;
-									connection
-											.send("{/RED}Passwords are not identical. Please try again.\n\r");
-								}
-							} while (!passwordOK);
-							world.addPlayer(name, password);
-							nameOK = true;
-						}
-					} else {
-						// Existing player
-						passwordOK = false;
-						connection
-								.send("{/GREEN}\n\rPlease enter your password: ");
-						while (!connection.dataAvailable())
-							;
-						password = connection.receiveCommand();
-						// System.out.println("Login attempt: player '" + name +
-						// "' with password '" + password + "'.");
-						if (!password.equals(player.getPassword())) {
-							connection.send("{/RED}Incorrect password.\n\r");
+						password = connection.receive();
+						if (password.length() == 0) {
+							connection.send("${RED}You must enter a password. Please try again.\n\r");
+						} else if (password.length() > 15) {
+							connection.send("${RED}Password is too long (max. 15 characters). Please choose another.\n\r");
 						} else {
 							passwordOK = true;
 						}
+						
+						if (passwordOK) {
+							// Re-enter password.
+							connection .send("${GREEN}Retype the password for verification  : ");
+							while (!connection.dataAvailable()) {
+								// Wait.
+							}
+							text = connection.receive();
+							if (!text.equals(password)) {
+								connection.send("${RED}Passwords do not match. Please try again.\n\r");
+								passwordOK = false;
+							}
+						}
 					}
-				} while (!(nameOK && passwordOK));
-
-				connection
-						.send("{/CYAN}\n\r\n\rYou enter the Realm of Oz...\n\r\n\r\n\r\n\r");
-
-				// Connect player to this connection.
-				player.connect(connection);
-
-				// Let player continue in new thread.
-				new Thread(player).start();
-
-				// End this portal thread.
-				isRunning = false;
-
-			} catch (Exception e) {
-				System.err.println("*** Portal error: " + e.getMessage());
+					
+					// Select gender.
+					while (gender == null) {
+						connection.send("${GREEN}\n\rPlease choose a gender (Male/Female) : ");
+						while (!connection.dataAvailable()) {
+							// Wait.
+						}
+						text = connection.receive().toLowerCase();
+						if (text.length() > 0) {
+							if (text.charAt(0) == 'm') {
+								gender = Gender.MALE;
+							} else if (text.charAt(0) == 'f') {
+								gender = Gender.FEMALE;
+							}
+						}
+						if (gender == null) {
+							connection.send("${RED}Invalid selection. Please try again.\n\r");
+						}
+					}
+					
+					// Register player.
+					player = new Player(name, gender, password, world);
+					world.addPlayer(player);
+				}
+			} else {
+				// Existing player; check password.
+				connection.send("${GREEN}\n\rPlease enter your password: ");
+				while (!connection.dataAvailable()) {
+					// Wait.
+				}
+				password = connection.receive();
+				if (!password.equals(player.getPassword())) {
+					connection.send("${RED}Incorrect password.\n\r");
+					System.out.println(String.format(
+							"*** WARNING: Failed login attempt for character %s!\n",
+							name));
+					player = null;
+				}
 			}
 		}
+
+		player.connect(connection);
+		player.processMessage(WELCOME_TEXT);
+		player.start();
 	}
 
 }

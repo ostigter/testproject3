@@ -1,12 +1,22 @@
 package ozmud.world;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * The MUD world.
+ * 
+ * @author Oscar Stigter
+ */
 public class World {
 
+
 	private final Map<Integer, Room> rooms;
+	
 	private final Map<String, Player> players;
+
 
 	public World() {
 		rooms = new HashMap<Integer, Room>();
@@ -14,13 +24,21 @@ public class World {
 		init();
 	}
 
+
 	public Player getPlayer(String name) {
 		return players.get(name);
 	}
 
-	public void addPlayer(String name, String password) {
-		players.put(name.toLowerCase(), new Player(name, Gender.MALE, password));
+
+	public void addPlayer(Player player) {
+		players.put(player.getName(), player);
 	}
+	
+	
+	public Room getRoom(int id) {
+		return rooms.get(0);
+	}
+
 
 	private void init() {
 		Room room = null;
@@ -34,7 +52,8 @@ public class World {
 		room.addExit(new Exit("west", 0));
 		rooms.put(1, room);
 
-		addPlayer("oscar", "apple");
+		addPlayer(new Player("Gandalf", Gender.MALE, "admin", this));
 	}
+
 
 }
