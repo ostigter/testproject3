@@ -8,7 +8,7 @@ import java.net.Socket;
 /**
  * Handles the communication using the Telnet protocol.
  */
-public class TelnetConnection {
+public class TelnetConnection implements Connection {
 
 	public static final String[][] COLORS = new String[][] {
 			{ "{/BLACK}", "\033[0;30m" }, { "{/GRAY}", "\033[0;37m" },
@@ -66,48 +66,42 @@ public class TelnetConnection {
 	}
 
 	/**
-	 * Parses a string for color codes and replaces them with the corresponding
-	 * ANSI code.
-	 * 
-	 * @param s
-	 *            string to parse
-	 * @return the parsed string
-	 */
-	public String parseColors(String s) {
-		boolean isDone = false;
-		int i, p;
-
-		do {
-			isDone = true;
-
-			for (i = 0; i < COLORS.length; ++i) {
-				p = s.indexOf(COLORS[i][0]);
-				if (p != -1) {
-					s = s.substring(0, p) + COLORS[i][1]
-							+ s.substring(p + COLORS[i][0].length());
-					isDone = false;
-				}
-			}
-		} while (!isDone);
-
-		return s;
-	}
-
-	/**
-	 * Sends a string.
+	 * Sends a message.
 	 * 
 	 * @param s
 	 *            string to send
 	 */
-	public void send(String s) {
-		s = parseColors(s);
+	public void send(String message) {
+		message = parseColors(message);
 		try {
-			output.write(s.getBytes(), 0, s.getBytes().length);
+			output.write(message.getBytes(), 0, message.getBytes().length);
 			output.flush();
 		} catch (IOException e) {
 			System.err.println("I/O error while sending data: " + e.getMessage());
 		}
 	}
+
+	public boolean isDataAvailable() {
+		// TODO
+		return false;
+	}
+
+
+	public String receive() {
+		// TODO
+		return null;
+	}
+
+
+	public void addConnectionListener(ConnectionListener listener) {
+		// TODO
+	}
+
+
+	public void removeConnectionListener(ConnectionListener listener) {
+		// TODO
+	}
+
 
 	/**
 	 * Returns TRUE if data is available.
@@ -159,5 +153,35 @@ public class TelnetConnection {
 		}
 		return s.toString();
 	}
+
+	
+	/**
+	 * Parses a string for color codes and replaces them with the corresponding
+	 * ANSI code.
+	 * 
+	 * @param s
+	 *            string to parse
+	 * @return the parsed string
+	 */
+	private static String parseColors(String s) {
+		boolean isDone = false;
+		int i, p;
+
+		do {
+			isDone = true;
+
+			for (i = 0; i < COLORS.length; ++i) {
+				p = s.indexOf(COLORS[i][0]);
+				if (p != -1) {
+					s = s.substring(0, p) + COLORS[i][1]
+							+ s.substring(p + COLORS[i][0].length());
+					isDone = false;
+				}
+			}
+		} while (!isDone);
+
+		return s;
+	}
+
 
 }
