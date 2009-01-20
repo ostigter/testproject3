@@ -13,13 +13,13 @@ public class World {
 		players = new HashMap<String, Player>();
 		init();
 	}
-	
+
 	public Player getPlayer(String name) {
 		return players.get(name);
 	}
-	
+
 	public void addPlayer(String name, String password) {
-		players.put(name.toLowerCase(), new Player(name, password));
+		players.put(name.toLowerCase(), new Player(name, Gender.MALE, password));
 	}
 
 	private void init() {
@@ -34,7 +34,7 @@ public class World {
 		room.addExit(new Exit("west", 0));
 		rooms.put(1, room);
 
-		players.put("oscar", new Player("Oscar", "apple"));
+		addPlayer("oscar", "apple");
 	}
 
 }
