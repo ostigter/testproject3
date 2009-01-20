@@ -7,9 +7,9 @@ import ozmud.server.TelnetConnection;
 public class Player extends Creature implements Runnable {
 
 	/** Connection states. */
+	public static final int OFFLINE = 0;
 	public static final int ONLINE = 1;
 	public static final int LINKDEAD = 2;
-	public static final int OFFLINE = 3;
 
 	/** Players's password. */
 	private String password;
@@ -65,6 +65,16 @@ public class Player extends Creature implements Runnable {
 		connectionState = OFFLINE;
 
 		System.out.println(getName() + " has disconnected.");
+	}
+	
+	/**
+	 * Processes an incoming message.
+	 * 
+	 * @param  message  the message
+	 */
+	public void processMessage(String message) {
+		// Send message to player's telnet client.
+		connection.send(message);
 	}
 
 	public void run() {

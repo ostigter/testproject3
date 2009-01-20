@@ -99,14 +99,13 @@ public class TelnetConnection {
 	 * @param s
 	 *            string to send
 	 */
-	public void sendString(String s) throws IOException {
+	public void send(String s) {
 		s = parseColors(s);
 		try {
 			output.write(s.getBytes(), 0, s.getBytes().length);
 			output.flush();
-		} catch (Exception e) {
-			throw new IOException("I/O error while sending data: "
-					+ e.getMessage());
+		} catch (IOException e) {
+			System.err.println("I/O error while sending data: " + e.getMessage());
 		}
 	}
 
@@ -115,14 +114,14 @@ public class TelnetConnection {
 	 * 
 	 * @return TRUE if data is available
 	 */
-	public boolean dataAvailable() throws IOException {
-		boolean isAvailable;
+	public boolean dataAvailable() {
+		boolean isAvailable = false;
 		try {
 			isAvailable = (input.available() != 0);
 		} catch (IOException e) {
-			throw new IOException(
+			System.err.println(
 					"I/O error while probing for available data: "
-							+ e.getMessage());
+					+ e.getMessage());
 		}
 		return isAvailable;
 	}
