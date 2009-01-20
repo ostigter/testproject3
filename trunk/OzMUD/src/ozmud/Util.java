@@ -1,4 +1,4 @@
-package ozmud.world;
+package ozmud;
 
 
 /**

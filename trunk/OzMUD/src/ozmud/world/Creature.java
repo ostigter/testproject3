@@ -1,29 +1,60 @@
 package ozmud.world;
 
+
+/**
+ * Base class for all creatures.
+ * 
+ * @author Oscar Stigter
+ */
 public abstract class Creature {
 	
-	private final String name;
-	private final Gender gender;
-	private final String description;
+
+	protected final String name;
 	
-	public Creature(String name, Gender gender, String description) {
+	protected final Gender gender;
+	
+	protected final String description;
+	
+	protected final World world;
+	
+	protected Room room;
+	
+	
+	public Creature(String name, Gender gender, String description, World world) {
 		this.name = name;
 		this.gender = gender;
 		this.description = description;
+		this.world = world;
 	}
 	
-	public String getName() {
+
+	public final String getName() {
 		return name;
 	}
 	
-	public Gender getGender() {
+	
+	public final Gender getGender() {
 		return gender;
 	}
 	
-	public String getDescription() {
+	
+	public final String getDescription() {
 		return description;
 	}
 	
-	public abstract void processMessage(String message);
+	
+	public final Room getRoom() {
+		return room;
+	}
+	
+
+	public final void setRoom(Room room) {
+		this.room = room;
+	}
+	
+
+	public void processMessage(String message) {
+		// Empty implementation.
+	}
 
 }

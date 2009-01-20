@@ -1,5 +1,6 @@
 package ozmud.server;
 
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ServerSocket;
@@ -7,10 +8,12 @@ import java.net.Socket;
 
 import ozmud.world.World;
 
+
 /**
- * Server handling the player connections.
+ * OzMUD server.
  */
 public class Server {
+
 
 	/** Local port clients can connect to. */
 	private static final int PORT = 5000;
@@ -23,6 +26,7 @@ public class Server {
 
 	/** Indicates whether the server is running or not. */
 	protected boolean isRunning = false;
+
 
 	/**
 	 * Constructor.
@@ -40,18 +44,12 @@ public class Server {
 		System.out.println("Server initialized.");
 	}
 
-	/**
-	 * Program's main entry point.
-	 * 
-	 * @param args
-	 *            command line arguments
-	 */
-	public static void main(String[] args) {
-		new Server().start();
-	}
 
 	/**
-	 * Main loop for the server which handles client requests.
+	 * Starts the server.
+	 * 
+	 * Contains the main loop for the server which handles incoming client
+	 * requests.
 	 */
 	public void start() {
 		isRunning = true;
@@ -60,32 +58,39 @@ public class Server {
 				+ "...");
 		while (isRunning) {
 			try {
-				// Wait for client to connect...
 				Socket clientSocket = serverSocket.accept();
 				System.out.println("Client connected from "
 						+ clientSocket.getInetAddress() + ".");
-				// ...then redirect client to portal in separate thread.
-				Portal portal = new Portal(clientSocket, world);
+				TelnetConnection connection =
+						new TelnetConnection(clientSocket);
+				Portal portal = new Portal(connection, world);
 				new Thread(portal).start();
 			} catch (InterruptedIOException e) {
-				System.err.println("*** ERROR: Interrupted: " + e.getMessage());
+				System.err.println(
+						"*** ERROR: Interrupted: " + e.getMessage());
 			} catch (IOException e) {
-				System.err.println("*** Error: Could not connect client: "
+				System.err.println(
+						"*** Error: Could not connect client: "
 						+ e.getMessage());
 			}
 		}
 	}
 
+
+	/**
+	 * Shuts down the server.
+	 */
 	public void shutdown() {
 		System.out.println("Shutting down server...");
 		try {
 			serverSocket.close();
 			System.out.println("Server shut down.");
 		} catch (Exception e) {
-			System.err
-					.println("*** Error: Could not close server socket properly: "
-							+ e.getMessage());
+			System.err.println(
+					"*** Error: Could not close server socket properly: "
+					+ e.getMessage());
 		}
 	}
+
 
 }

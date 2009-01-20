@@ -3,6 +3,8 @@ package ozmud.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import ozmud.Util;
+
 public class Room {
 	
 	private final int id;
