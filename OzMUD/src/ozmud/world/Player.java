@@ -88,7 +88,9 @@ public class Player extends Creature implements ConnectionListener {
 			throw new IllegalStateException("Connection closed");
 		}
 		
-		connection.send(message);
+		System.out.println(name + ": processMessage: " + message);
+		
+		world.getCommandInterpreter().executeCommand(this, message);
 	}
 
 
