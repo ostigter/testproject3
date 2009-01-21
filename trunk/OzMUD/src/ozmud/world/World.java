@@ -4,6 +4,8 @@ package ozmud.world;
 import java.util.HashMap;
 import java.util.Map;
 
+import ozmud.commands.CommandInterpreter;
+
 
 /**
  * The MUD world.
@@ -13,15 +15,24 @@ import java.util.Map;
 public class World {
 
 
+	private final CommandInterpreter commandInterpreter;
+	
 	private final Map<Integer, Room> rooms;
 	
 	private final Map<String, Player> players;
 
 
 	public World() {
+		commandInterpreter = new CommandInterpreter();
 		rooms = new HashMap<Integer, Room>();
 		players = new HashMap<String, Player>();
+		
 		init();
+	}
+	
+	
+	public CommandInterpreter getCommandInterpreter() {
+		return commandInterpreter;
 	}
 
 
