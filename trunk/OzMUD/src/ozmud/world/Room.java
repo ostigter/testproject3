@@ -31,7 +31,7 @@ public class Room {
 		return name;
 	}
 	
-	public String getDesciption() {
+	public String getDescription() {
 		return description;
 	}
 	
@@ -82,21 +82,23 @@ public class Room {
 	
 	public String format(String message, Creature sender, Creature target,
 			Perspective perspective) {
+		String senderName = (sender != null) ? sender.getName() : null;
+		String targetName = (target != null) ? target.getName() : null;
 		switch (perspective) {
 			case SELF:
 				message = Util.replace(message, "${sender}", "you");
 				message = Util.replace(message, "${s}", "");
-				message = Util.replace(message, "${target}", target.getName());
+				message = Util.replace(message, "${target}", targetName);
 				break;
 			case TARGET:
-				message = Util.replace(message, "${sender}", sender.getName());
+				message = Util.replace(message, "${sender}", senderName);
 				message = Util.replace(message, "${s}", "s");
 				message = Util.replace(message, "${target}", "you");
 				break;
 			case OTHERS:
-				message = Util.replace(message, "${sender}", sender.getName());
+				message = Util.replace(message, "${sender}", senderName);
 				message = Util.replace(message, "${s}", "s");
-				message = Util.replace(message, "${target}", target.getName());
+				message = Util.replace(message, "${target}", targetName);
 				break;
 		}
 		

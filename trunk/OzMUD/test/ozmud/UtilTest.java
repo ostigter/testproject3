@@ -20,7 +20,8 @@ public class UtilTest {
 		Assert.assertEquals("", Util.replace("", "", ""));
 		Assert.assertEquals("", Util.replace("", "", "X"));
 		Assert.assertEquals("", Util.replace("a", "a", ""));
-		Assert.assertEquals("", Util.replace("a", "a", ""));
+		Assert.assertEquals("", Util.replace("a", "a", null));
+		Assert.assertEquals("ab", Util.replace("XaXbX", "X", null));
 		Assert.assertEquals(null, Util.replace(null, "", ""));
 		Assert.assertEquals(null, Util.replace(null, "a", "X"));
 	}

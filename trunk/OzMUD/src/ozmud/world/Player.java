@@ -77,7 +77,7 @@ public class Player extends Creature implements ConnectionListener {
 			connection = null;
 		}
 		connectionState = OFFLINE;
-		System.out.println(getName() + " has disconnected.");
+		System.out.println(name + " has logged out");
 	}
 	
 	
@@ -86,8 +86,17 @@ public class Player extends Creature implements ConnectionListener {
 	}
 	
 	
-	public void send(String message) {
-		connection.send(message);
+	public void start() {
+		// Enter the starting room.
+		setRoom(world.getRoom(0));
+		room.addCreature(this);
+		String message = "${sender} appear${s} out of thin air.\n\r";
+		room.broadcast(message, this, null);
+		
+		// Listen for and handle incoming commands.
+		connection.addListener(this);
+		setHandlingCommands(true);
+		sendPrompt();
 	}
 	
 	
@@ -102,20 +111,37 @@ public class Player extends Creature implements ConnectionListener {
 		}
 		
 		world.getCommandInterpreter().executeCommand(this, command);
+		sendPrompt();
 	}
 
 
+	/**
+	 * Sends the prompt.
+	 */
+	public void sendPrompt() {
+		send("> ");
+	}
+	
+	
+	/**
+	 * Sends a message to the client.
+	 */
+	public void send(String message) {
+		if (connection != null &&
+				connection.isOpen() && connectionState == ONLINE) {
+			connection.send(message);
+		}
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.server.ConnectionListener#messageReceived(java.lang.String)
+	 */
 	public void messageReceived(String message) {
 		if (isHandlingCommands) {
 			handleCommand(message);
 		}
-	}
-
-
-	public void start() {
-		setRoom(world.getRoom(0));
-		connection.addListener(this);
-		setHandlingCommands(true);
 	}
 
 

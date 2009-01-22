@@ -1,23 +1,33 @@
 package ozmud.commands;
 
 
-import ozmud.world.Creature;
+import ozmud.world.Player;
 
 
 public class QuitCommand implements Command {
 	
+	
+	private static final String GOODBYE = "Goodbye!\n\r"; 
+
+	private static final String LEAVE =
+			"${sender} disappear${s} into thin air.\n\r";
+	
+	private static final String INVALID = "You can't quit that.\n\r"; 
+
 	
 	public String getName() {
 		return "quit";
 	}
 
 
-	public void execute(Creature sender, String argument) {
+	public void execute(Player player, String argument) {
 		if (argument == null) {
-			String message = "${sender} vanishes${s} in thin air.";
-			sender.getRoom().broadcast(message, sender, null);
+			player.send(GOODBYE);
+			player.broadcast(LEAVE, null);
+			player.moveTo(null);
+			player.disconnect();
 		} else {
-			sender.send("You can't quit that.");
+			player.send(INVALID);
 		}
 	}
 

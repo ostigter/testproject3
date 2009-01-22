@@ -51,10 +51,10 @@ public class Portal implements Runnable {
 			boolean nameOK = false;
 			while (!nameOK) {
 				// Send welcome text.
-				connection.send("${BLUE}\r\n\r\n###############################\n\r");
-				connection.send("#####${CYAN}  Welcome to OzMUD!  ${BLUE}#####\n\r");
-				connection.send("###############################\n\r");
-				connection.send("${GRAY}\n\r\n\r(c)2009 Oscar Stigter\n\r");
+//				connection.send("${BLUE}\r\n\r\n###############################\n\r");
+//				connection.send("#####${CYAN}  Welcome to OzMUD!  ${BLUE}#####\n\r");
+//				connection.send("###############################\n\r");
+//				connection.send("${GRAY}\n\r\n\r(c)2009 Oscar Stigter\n\r");
 
 				// Ask for player's name.
 				connection.send("${GREEN}\n\r\n\rPlease enter your character's name: ");
@@ -151,9 +151,11 @@ public class Portal implements Runnable {
 			}
 		}
 
+		System.out.println(String.format("%s has logged in", name));
 		player.connect(connection);
 		player.send(WELCOME_TEXT);
 		player.start();
 	}
+
 
 }

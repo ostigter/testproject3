@@ -28,34 +28,63 @@ public abstract class Creature {
 	}
 	
 
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 	
 	
-	public final Gender getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 	
 	
-	public final String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 	
 	
-	public final Room getRoom() {
+	public Room getRoom() {
 		return room;
 	}
 	
 
-	public final void setRoom(Room room) {
+	public void setRoom(Room room) {
 		this.room = room;
 	}
 	
 
-	public void send(String message) {
-		// Empty implementation.
+	public void moveTo(Room newRoom) {
+		if (room != null) {
+			room.removeCreature(this);
+			broadcast("${sender} leaves.\n\r", null);
+		}
+		room = newRoom;
+		if (room != null) {
+			room.addCreature(this);
+			broadcast("${sender} enters.\n\r", null);
+		}
 	}
+	
+	
+	/**
+	 * Broadcasts a message to everyone in the room.
+	 * 
+	 * @param message  the message
+	 * @param target   an optional target
+	 */
+	public void broadcast(String message, Creature target) {
+		if (room != null) {
+			room.broadcast(message, this, target);
+		}
+	}
+	
+	
+	/**
+	 * Sends a message to the client.
+	 * 
+	 * @param message  the message
+	 */
+	public abstract void send(String message);
 
 
 }

@@ -49,6 +49,9 @@ public class TelnetConnection extends AbstractConnection {
 	/** Output stream for outgoing data. */
 	private BufferedOutputStream output;
 	
+	/** Whether ANSI colors are enabled. */
+	private boolean colorsEnabled = false;
+	
 
 	/**
 	 * Constructor.
@@ -130,8 +133,10 @@ public class TelnetConnection extends AbstractConnection {
 	 */
 	public void close() {
 		if (!isOpen()) {
-			throw new IllegalStateException("Connection not open");
+			throw new IllegalStateException("Connection already closed");
 		}
+		
+		super.close();
 		
 		try {
 			socket.close();
@@ -139,11 +144,9 @@ public class TelnetConnection extends AbstractConnection {
 			System.err.println(
 					"Could not properly close connection: " + e.getMessage());
 		} finally {
-			super.close();
 			socket = null;
 			input = null;
 			output = null;
-			isOpen = false;
 		}
 	}
 
@@ -160,7 +163,6 @@ public class TelnetConnection extends AbstractConnection {
 		}
 		
 		// TODO: Receive any and all data immediately; no filtering or blocking.
-		
 		StringBuilder s = new StringBuilder();
 		int b = -1;
 		boolean done = false;
@@ -189,14 +191,14 @@ public class TelnetConnection extends AbstractConnection {
 	
 	/**
 	 * Parses a string for color codes and replaces them with the corresponding
-	 * ANSI code.
+	 * ANSI code if color support is enabled, otherwise removing them.
 	 * 
 	 * @param s  string to parse
 	 * @return the parsed string
 	 */
-	private static String parseColors(String s) {
+	private String parseColors(String s) {
 		for (String[] color : COLORS) {
-			s = Util.replace(s, color[0], color[1]);
+			s = Util.replace(s, color[0], colorsEnabled ? color[1] : null);
 		}
 		return s;
 	}
