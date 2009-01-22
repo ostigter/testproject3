@@ -18,10 +18,6 @@ public abstract class Util {
 			throw new IllegalArgumentException("null search");
 		}
 		
-		if (replace == null) {
-			throw new IllegalArgumentException("null replace");
-		}
-		
 		final int searchLength = search.length();
 		
 		if (searchLength == 0) {
@@ -33,7 +29,9 @@ public abstract class Util {
 	    int oldIndex = 0;
 	    while ((oldIndex = source.indexOf(search, startIndex)) >= 0) {
 	    	result.append(source.substring(startIndex, oldIndex));
-	    	result.append(replace);
+	    	if (replace != null) {
+	    		result.append(replace);
+	    	}
 	    	startIndex = oldIndex + searchLength;
 	    }
 	    result.append(source.substring(startIndex));

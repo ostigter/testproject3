@@ -15,6 +15,8 @@ import ozmud.world.Player;
 public class CommandInterpreter {
 	
 	
+	private static final String UNKNOWN_COMMAND = "What?\n\r";
+	
 	private final Map<String, Command> commands;
 	
 	
@@ -48,7 +50,7 @@ public class CommandInterpreter {
 					command.execute(player, argument);
 				} else {
 					// Unknown command.
-					player.send("What?");
+					player.send(UNKNOWN_COMMAND);
 				}
 			}
 		}
@@ -56,7 +58,8 @@ public class CommandInterpreter {
 	
 	
 	private void populateCommands() {
-		// TODO: Use reflection to automagically populate commands
+		// TODO: Use reflection to automatically populate commands
+		addCommand(new LookCommand());
 		addCommand(new SayCommand());
 		addCommand(new QuitCommand());
 	}

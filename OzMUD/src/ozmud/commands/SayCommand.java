@@ -1,10 +1,15 @@
 package ozmud.commands;
 
 
-import ozmud.world.Creature;
+import ozmud.world.Player;
 
 
 public class SayCommand implements Command {
+	
+	
+	private static final String MESSAGE = "${sender} say${s}: %s\n\r";
+
+	private static final String INVALID = "Say what?\n\r";
 	
 	
 	public String getName() {
@@ -12,12 +17,11 @@ public class SayCommand implements Command {
 	}
 
 
-	public void execute(Creature sender, String argument) {
+	public void execute(Player player, String argument) {
 		if (argument != null) {
-			String message = "${sender} say${s}: " + argument; 
-			sender.getRoom().broadcast(message, sender, null);
+			player.broadcast(String.format(MESSAGE, argument), null);
 		} else {
-			sender.send("Say what?");
+			player.send(INVALID);
 		}
 	}
 

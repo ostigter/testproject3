@@ -15,6 +15,12 @@ public class NPC extends Creature {
 	public NPC(String name, Gender gender, String description, World world) {
 		super(name, gender, description, world);
 	}
+
+
+	@Override
+	public void send(String message) {
+		// Empty implemention because an NPC has no connection.
+	}
 	
 
 }

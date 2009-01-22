@@ -27,23 +27,18 @@ public abstract class AbstractConnection implements Connection {
 	
 	
 	public void open() {
-		receiver.start();
 		isOpen = true;
+		receiver.start();
 	}
 	
 	
 	public void close() {
-		receiver.interrupt();
-		try {
-			receiver.join();
-		} catch (InterruptedException e) {
-			// Safe to ignore.
-		}
+		receiver.shutdown();
 		isOpen = false;
 	}
 	
 	
-	public final boolean isOpen() {
+	public boolean isOpen() {
 		return isOpen;
 	}
 	
@@ -53,7 +48,7 @@ public abstract class AbstractConnection implements Connection {
 	 * 
 	 * @param  listener  the listener
 	 */
-	public final void addListener(ConnectionListener listener) {
+	public void addListener(ConnectionListener listener) {
 		listeners.add(listener);
 	}
 
@@ -63,7 +58,7 @@ public abstract class AbstractConnection implements Connection {
 	 * 
 	 * @param  listener  the listener
 	 */
-	public final void removeListener(ConnectionListener listener) {
+	public void removeListener(ConnectionListener listener) {
 		listeners.remove(listener);
 	}
 	
@@ -100,7 +95,6 @@ public abstract class AbstractConnection implements Connection {
 		}
 		
 
-		@Override
 		public void run() {
 //			System.out.println("Receiver: Started");
 			while (isRunning) {
@@ -111,15 +105,20 @@ public abstract class AbstractConnection implements Connection {
 					}
 					Thread.sleep(DELAY);
 				} catch (InterruptedException e) {
-					System.out.println("Receiver: Interrupted");
-					isRunning = false;
+					// Expected after shutdown().
 				}
 			}
-//			System.out.println("Receiver: Finished");
+//			System.out.println("Receiver: Shut down.");
 		}
-
 		
-	} // Receiver
+		
+		public void shutdown() {
+			isRunning = false;
+			interrupt();
+		}
+		
+		
+	} // ReceiverThread
 
 
 } // AbstractConnection

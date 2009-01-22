@@ -1,7 +1,7 @@
 package ozmud.commands;
 
 
-import ozmud.world.Creature;
+import ozmud.world.Player;
 
 
 public interface Command {
@@ -10,7 +10,7 @@ public interface Command {
 	String getName();
 	
 	
-	void execute(Creature sender, String argument);
+	void execute(Player player, String argument);
 	
 	
 }
