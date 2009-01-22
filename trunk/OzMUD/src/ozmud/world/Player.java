@@ -27,6 +27,9 @@ public class Player extends Creature implements ConnectionListener {
 	/** Connection state. */
 	private int connectionState = OFFLINE;
 	
+	/** Whether to handle incoming commands. */
+	private boolean isHandlingCommands = false;
+	
 
 	public Player(String name, Gender gender, String password, World world) {
 		super(name, gender, null, world);
@@ -78,30 +81,41 @@ public class Player extends Creature implements ConnectionListener {
 	}
 	
 	
+	public void setHandlingCommands(boolean isHandlingCommands) {
+		this.isHandlingCommands = isHandlingCommands;
+	}
+	
+	
+	public void send(String message) {
+		connection.send(message);
+	}
+	
+	
 	/**
-	 * Processes an incoming message.
+	 * Processes an incoming command.
 	 * 
 	 * @param  message  the message
 	 */
-	public void processMessage(String message) {
+	public void handleCommand(String command) {
 		if (connection == null) {
 			throw new IllegalStateException("Connection closed");
 		}
 		
-		System.out.println(name + ": processMessage: " + message);
-		
-		world.getCommandInterpreter().executeCommand(this, message);
+		world.getCommandInterpreter().executeCommand(this, command);
 	}
 
 
 	public void messageReceived(String message) {
-		processMessage(message);
+		if (isHandlingCommands) {
+			handleCommand(message);
+		}
 	}
 
 
 	public void start() {
 		setRoom(world.getRoom(0));
 		connection.addListener(this);
+		setHandlingCommands(true);
 	}
 
 

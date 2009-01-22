@@ -76,8 +76,7 @@ public class Room {
 			} else if (creature.equals(target)){
 				perspective = Perspective.TARGET;
 			}
-			creature.processMessage(
-					format(message, sender, target, perspective));
+			creature.send(format(message, sender, target, perspective));
 		}
 	}
 	

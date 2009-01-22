@@ -48,7 +48,7 @@ public class CommandInterpreter {
 					command.execute(player, argument);
 				} else {
 					// Unknown command.
-					player.processMessage("What?");
+					player.send("What?");
 				}
 			}
 		}
