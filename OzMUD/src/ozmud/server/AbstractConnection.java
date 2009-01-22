@@ -102,7 +102,7 @@ public abstract class AbstractConnection implements Connection {
 
 		@Override
 		public void run() {
-			System.out.println("Receiver: Started");
+//			System.out.println("Receiver: Started");
 			while (isRunning) {
 				try {
 					if (connection.dataAvailable()) {
@@ -115,7 +115,7 @@ public abstract class AbstractConnection implements Connection {
 					isRunning = false;
 				}
 			}
-			System.out.println("Receiver: Finished");
+//			System.out.println("Receiver: Finished");
 		}
 
 		

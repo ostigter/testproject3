@@ -152,7 +152,7 @@ public class Portal implements Runnable {
 		}
 
 		player.connect(connection);
-		player.processMessage(WELCOME_TEXT);
+		player.send(WELCOME_TEXT);
 		player.start();
 	}
 

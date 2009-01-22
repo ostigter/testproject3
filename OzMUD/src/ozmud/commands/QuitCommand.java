@@ -4,19 +4,20 @@ package ozmud.commands;
 import ozmud.world.Creature;
 
 
-public class QuitCommand extends AbstractCommand {
+public class QuitCommand implements Command {
 	
 	
-	protected static final String NAME = "quit";
+	public String getName() {
+		return "quit";
+	}
 
 
-	@Override
 	public void execute(Creature sender, String argument) {
 		if (argument == null) {
 			String message = "${sender} vanishes${s} in thin air.";
 			sender.getRoom().broadcast(message, sender, null);
 		} else {
-			sender.processMessage("You can't quit that.");
+			sender.send("You can't quit that.");
 		}
 	}
 

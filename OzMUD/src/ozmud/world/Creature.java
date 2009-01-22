@@ -53,8 +53,9 @@ public abstract class Creature {
 	}
 	
 
-	public void processMessage(String message) {
+	public void send(String message) {
 		// Empty implementation.
 	}
+
 
 }
