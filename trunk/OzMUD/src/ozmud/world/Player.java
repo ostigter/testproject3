@@ -1,6 +1,8 @@
 package ozmud.world;
 
 
+import java.io.IOException;
+
 import ozmud.server.Connection;
 import ozmud.server.ConnectionListener;
 
@@ -13,10 +15,17 @@ import ozmud.server.ConnectionListener;
 public class Player extends Creature implements ConnectionListener {
 
 
-	/** Connection states. */
+	/** Offline connection state. */
 	public static final int OFFLINE = 0;
+
+	/** Online connection state. */
 	public static final int ONLINE = 1;
-	public static final int LINKDEAD = 2;
+
+//	/** Linkdead connection state. */
+//	public static final int LINKDEAD = 2;
+	
+	/** The prompt. */
+	private static final String PROMPT = "> ";
 	
 	/** Players's password. */
 	private String password;
@@ -27,8 +36,8 @@ public class Player extends Creature implements ConnectionListener {
 	/** Connection state. */
 	private int connectionState = OFFLINE;
 	
-	/** Whether to handle incoming commands. */
-	private boolean isHandlingCommands = false;
+//	/** Whether to handle incoming commands. */
+//	private boolean isHandlingCommands = false;
 	
 
 	public Player(String name, Gender gender, String password, World world) {
@@ -69,7 +78,7 @@ public class Player extends Creature implements ConnectionListener {
 
 
 	/**
-	 * Disconnects.
+	 * Disconnects and ends the session.
 	 */
 	public void disconnect() {
 		if (connection != null) {
@@ -81,22 +90,48 @@ public class Player extends Creature implements ConnectionListener {
 	}
 	
 	
-	public void setHandlingCommands(boolean isHandlingCommands) {
-		this.isHandlingCommands = isHandlingCommands;
+	/**
+	 * Starts the session.
+	 */
+	public void start() {
+		// Enter the starting room.
+		moveTo(world.getRoom(0));
+
+		// Handle incoming commands.
+		connection.addListener(this);
+		connection.setReceiving(true);
+		// TODO: Configure ANSI color support.
+		connection.setColorsEnabled(true);
+
+		// Announce presence. 
+		String message = "${sender} appear${s} out of thin air.\n\r";
+		broadcast(message, null);
+		
+		// Look around.
+		handleCommand("look");
 	}
 	
 	
-	public void start() {
-		// Enter the starting room.
-		setRoom(world.getRoom(0));
-		room.addCreature(this);
-		String message = "${sender} appear${s} out of thin air.\n\r";
-		room.broadcast(message, this, null);
-		
-		// Listen for and handle incoming commands.
-		connection.addListener(this);
-		setHandlingCommands(true);
-		sendPrompt();
+	/**
+	 * Sends the prompt.
+	 */
+	public void sendPrompt() {
+		send(PROMPT);
+	}
+	
+	
+	/**
+	 * Sends a message to the client.
+	 */
+	public void send(String message) {
+		if (connection != null &&
+				connection.isOpen() && connectionState == ONLINE) {
+			try {
+				connection.send(message);
+			} catch (IOException e) {
+				System.err.println("*** ERROR: I/O error while sending message: " + e.getMessage());
+			}
+		}
 	}
 	
 	
@@ -111,37 +146,17 @@ public class Player extends Creature implements ConnectionListener {
 		}
 		
 		world.getCommandInterpreter().executeCommand(this, command);
+		
 		sendPrompt();
 	}
 
 
-	/**
-	 * Sends the prompt.
-	 */
-	public void sendPrompt() {
-		send("> ");
-	}
-	
-	
-	/**
-	 * Sends a message to the client.
-	 */
-	public void send(String message) {
-		if (connection != null &&
-				connection.isOpen() && connectionState == ONLINE) {
-			connection.send(message);
-		}
-	}
-	
-	
 	/*
 	 * (non-Javadoc)
 	 * @see ozmud.server.ConnectionListener#messageReceived(java.lang.String)
 	 */
 	public void messageReceived(String message) {
-		if (isHandlingCommands) {
-			handleCommand(message);
-		}
+		handleCommand(message);
 	}
 
 

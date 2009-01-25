@@ -5,19 +5,40 @@ import ozmud.world.Player;
 import ozmud.world.Room;
 
 
+/**
+ * Command 'look' to look around at the room or at a specific creature or item.
+ * 
+ * @author Oscar Stigter
+ */
 public class LookCommand implements Command {
 	
 	
-//	private static final String MESSAGE = "${sender} say${s}: %s\n\r";
-
-	private static final String UNKNOWN = "You look but can't see it.\n\r";
+	/** Message when trying to look at a non-existing target. */
+	private static final String UNKNOWN = "Look at what?\n\r";
 	
 	
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.commands.Command#getName()
+	 */
 	public String getName() {
 		return "look";
 	}
 
 
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.commands.Command#getAlias()
+	 */
+	public String getAlias() {
+		return "l";
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.commands.Command#execute(ozmud.world.Player, java.lang.String)
+	 */
 	public void execute(Player player, String argument) {
 		if (argument != null) {
 			// TODO: Look at target

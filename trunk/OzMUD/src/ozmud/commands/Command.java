@@ -10,6 +10,9 @@ public interface Command {
 	String getName();
 	
 	
+	String getAlias();
+	
+	
 	void execute(Player player, String argument);
 	
 	

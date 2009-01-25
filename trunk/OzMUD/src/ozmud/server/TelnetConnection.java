@@ -10,7 +10,7 @@ import ozmud.Util;
 
 
 /**
- * Telnet connection with ANSI color support.
+ * Implementation of a telnet connection with ANSI color support.
  */
 public class TelnetConnection extends AbstractConnection {
 
@@ -34,6 +34,9 @@ public class TelnetConnection extends AbstractConnection {
 			{ "${DMAGENTA}", "\033[0;35m" },
 			{ "${DCYAN}",    "\033[0;36m" } };
 
+	/** Interval in milliseconds while polling for received data. */
+	private static final int POLLING_DELAY = 10;
+	
 	/** Buffer size in bytes. */
 	private static final int BUFFER_SIZE = 8192;
 	
@@ -79,14 +82,22 @@ public class TelnetConnection extends AbstractConnection {
 					"Could not open telnet connection: " + e.getMessage());
 		}
 	}
-
-	/**
-	 * Sends a message.
-	 * The messages may include ANSI color codes. 
-	 * 
-	 * @param  s  message to send
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.server.Connection#setColorsEnabled(boolean)
 	 */
-	public void send(String message) {
+	public void setColorsEnabled(boolean colorsEnabled) {
+		this.colorsEnabled = colorsEnabled;
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.server.Connection#send(java.lang.String)
+	 */
+	public void send(String message) throws IOException {
 		if (message == null) {
 			throw new IllegalArgumentException("Null message");
 		}
@@ -101,15 +112,15 @@ public class TelnetConnection extends AbstractConnection {
 			output.write(message.getBytes(), 0, message.getBytes().length);
 			output.flush();
 		} catch (IOException e) {
-			System.err.println("I/O error while sending data: " + e.getMessage());
+			String msg = "I/O error while sending message: " + e.getMessage();
+			throw new IOException(msg, e);
 		}
 	}
 
 
-	/**
-	 * Returns true if data is available.
-	 * 
-	 * @return true if data is available
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.server.Connection#dataAvailable()
 	 */
 	public boolean dataAvailable() {
 		if (!isOpen()) {
@@ -117,6 +128,7 @@ public class TelnetConnection extends AbstractConnection {
 		}
 		
 		boolean dataAvailable = false;
+		
 		try {
 			dataAvailable = (input.available() != 0);
 		} catch (IOException e) {
@@ -124,13 +136,59 @@ public class TelnetConnection extends AbstractConnection {
 					"I/O error while probing for available data: "
 					+ e.getMessage());
 		}
+		
 		return dataAvailable;
 	}
 
 
-	/**
-	 * Close the connection.
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.server.Connection#receive(boolean)
 	 */
+	public String receive(boolean asCommand) throws IOException {
+		if (!isOpen()) {
+			throw new IllegalStateException("Connection closed");
+		}
+		
+		String message = null;
+		
+		try {
+			StringBuilder sb = new StringBuilder();
+			boolean blocking = asCommand;
+			do {
+				if (dataAvailable()) {
+					int read = input.read(buffer);
+					for (int i = 0; i < read; i++) {
+						sb.append((char) buffer[i]);
+					}
+					blocking = false;
+				} else {
+					try {
+						Thread.sleep(POLLING_DELAY);
+					} catch (InterruptedException e) {
+						// Ignore.
+					}
+				}
+			} while (blocking);
+			message = sb.toString();
+			if (asCommand) {
+				// Remove LF and CR characters.
+				message = message.replaceAll("[\n\r]", "");
+			}
+		} catch (IOException e) {
+			String msg = "I/O error while receiving data: " + e.getMessage(); 
+			throw new IOException(msg, e);
+		}
+		
+		return message;
+	}
+	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.server.AbstractConnection#close()
+	 */
+	@Override
 	public void close() {
 		if (!isOpen()) {
 			throw new IllegalStateException("Connection already closed");
@@ -151,44 +209,6 @@ public class TelnetConnection extends AbstractConnection {
 	}
 
 
-	/**
-	 * Receives an incoming message, ending with a CR or LF character.
-	 * Blocks until a message has been completely received.
-	 * 
-	 * @return  the received message
-	 */
-	public String receive() {
-		if (!isOpen()) {
-			throw new IllegalStateException("Connection closed");
-		}
-		
-		// TODO: Receive any and all data immediately; no filtering or blocking.
-		StringBuilder s = new StringBuilder();
-		int b = -1;
-		boolean done = false;
-		try {
-			while (!done) {
-				int available = input.available();
-				if (available > 0) {
-					int read = input.read(buffer);
-					for (int i = 0; i < read; i++) {
-						b = buffer[i];
-						if (b == '\r' || b == '\n') {
-							done = true;
-						} else {
-							s.append((char) b);
-						}
-					}
-				}
-			}
-		} catch (IOException e) {
-			System.err.println(
-					"I/O error while receiving data: " + e.getMessage());
-		}
-		return s.toString();
-	}
-
-	
 	/**
 	 * Parses a string for color codes and replaces them with the corresponding
 	 * ANSI code if color support is enabled, otherwise removing them.
