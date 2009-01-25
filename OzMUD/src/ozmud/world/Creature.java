@@ -20,7 +20,8 @@ public abstract class Creature {
 	protected Room room;
 	
 	
-	public Creature(String name, Gender gender, String description, World world) {
+	public Creature(String name, Gender gender, String description,
+			World world) {
 		this.name = name;
 		this.gender = gender;
 		this.description = description;
@@ -56,12 +57,12 @@ public abstract class Creature {
 	public void moveTo(Room newRoom) {
 		if (room != null) {
 			room.removeCreature(this);
-			broadcast("${sender} leaves.\n\r", null);
+			room.broadcast("${sender} leaves.\n\r", this, null);
 		}
 		room = newRoom;
 		if (room != null) {
 			room.addCreature(this);
-			broadcast("${sender} enters.\n\r", null);
+			room.broadcastOthers("${sender} enters.\n\r", this, null);
 		}
 	}
 	
@@ -75,6 +76,21 @@ public abstract class Creature {
 	public void broadcast(String message, Creature target) {
 		if (room != null) {
 			room.broadcast(message, this, target);
+		}
+	}
+	
+	
+	/**
+	 * Broadcasts a message to everyone in the room.
+	 * 
+	 * @param message
+	 *            the message
+	 * @param target
+	 *            an optional target
+	 */
+	public void broadcastOthers(String message, Creature target) {
+		if (room != null) {
+			room.broadcastOthers(message, this, target);
 		}
 	}
 	

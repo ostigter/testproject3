@@ -1,18 +1,27 @@
 package ozmud.world;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ozmud.Util;
 
+
 public class Room {
 	
+
 	private final int id;
+	
 	private final String name;
+	
 	private final String description;
+	
 	private final List<Exit> exits;
+	
 	private final List<Item> items;
+	
 	private final List<Creature> creatures;
+	
 	
 	public Room(int id, String name, String description) {
 		this.id = id;
@@ -23,49 +32,61 @@ public class Room {
 		this.creatures = new ArrayList<Creature>();
 	}
 	
+	
 	public int getId() {
 		return id;
 	}
+	
 	
 	public String getName() {
 		return name;
 	}
 	
+	
 	public String getDescription() {
 		return description;
 	}
+	
 	
 	public List<Exit> getExits() {
 		return exits;
 	}
 	
+	
 	public void addExit(Exit exit) {
 		exits.add(exit);
 	}
+	
 	
 	public List<Item> getItems() {
 		return items;
 	}
 	
+	
 	public void addItem(Item item) {
 		items.add(item);
 	}
+	
 	
 	public void removeItem(Item item) {
 		items.remove(item);
 	}
 
+
 	public List<Creature> getCreatures() {
 		return creatures;
 	}
+	
 	
 	public void addCreature(Creature creature) {
 		creatures.add(creature);
 	}
 	
+	
 	public void removeCreature(Creature creature) {
 		creatures.remove(creature);
 	}
+	
 	
 	public void broadcast(
 			String message, Creature sender, Creature target) {
@@ -80,8 +101,21 @@ public class Room {
 		}
 	}
 	
-	public String format(String message, Creature sender, Creature target,
-			Perspective perspective) {
+
+	public void broadcastOthers(
+			String message, Creature sender, Creature target) {
+		for (Creature creature : creatures) {
+			if (!creature.equals(sender)) {
+				Perspective perspective = creature.equals(target) ?
+								Perspective.TARGET : Perspective.OTHERS;
+				creature.send(format(message, sender, target, perspective));
+			}
+		}
+	}
+	
+
+	/* package */ String format(String message, Creature sender,
+			Creature target, Perspective perspective) {
 		String senderName = (sender != null) ? sender.getName() : null;
 		String targetName = (target != null) ? target.getName() : null;
 		switch (perspective) {
@@ -105,4 +139,5 @@ public class Room {
 		return Util.capitalize(message);
 	}
 	
+
 }
