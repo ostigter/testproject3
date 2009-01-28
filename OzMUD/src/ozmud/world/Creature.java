@@ -53,16 +53,26 @@ public abstract class Creature {
 		this.room = room;
 	}
 	
+	
+	public void moveTo(int roomId) {
+		Room room = world.getRoom(roomId);
+		if (room != null) {
+			moveTo(room);
+		} else {
+			System.err.println("*** ERROR: Room not found: " + roomId);
+		}
+	}
+	
 
 	public void moveTo(Room newRoom) {
 		if (room != null) {
 			room.removeCreature(this);
-			room.broadcast("${sender} leaves.\n\r", this, null);
+			room.broadcast("${sender} leave${s}.\n\r", this, null);
 		}
 		room = newRoom;
 		if (room != null) {
 			room.addCreature(this);
-			room.broadcastOthers("${sender} enters.\n\r", this, null);
+			room.broadcastOthers("${sender} enter${s}.\n\r", this, null);
 		}
 	}
 	
@@ -92,6 +102,12 @@ public abstract class Creature {
 		if (room != null) {
 			room.broadcastOthers(message, this, target);
 		}
+	}
+	
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 	
 	

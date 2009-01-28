@@ -80,6 +80,10 @@ public class CommandInterpreter {
 	private void populateCommands() {
 		// TODO: Use reflection to automatically populate commands
 		addCommand(new LookCommand());
+		addCommand(new DirectionalCommand("north", "n"));
+		addCommand(new DirectionalCommand("east", "e"));
+		addCommand(new DirectionalCommand("south", "s"));
+		addCommand(new DirectionalCommand("west", "w"));
 		addCommand(new SayCommand());
 		addCommand(new QuitCommand());
 	}
@@ -87,6 +91,7 @@ public class CommandInterpreter {
 	
 	/**
 	 * Adds a command.
+	 * The command is separately mapped by name and alias for performance.
 	 * 
 	 * @param command  the command
 	 */

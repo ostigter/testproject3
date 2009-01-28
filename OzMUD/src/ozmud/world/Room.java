@@ -53,6 +53,16 @@ public class Room {
 	}
 	
 	
+	public Exit getExit(String name) {
+		for (Exit exit : exits) {
+			if (exit.getName().equals(name)) {
+				return exit;
+			}
+		}
+		return null;
+	}
+	
+	
 	public void addExit(Exit exit) {
 		exits.add(exit);
 	}
@@ -111,6 +121,12 @@ public class Room {
 				creature.send(format(message, sender, target, perspective));
 			}
 		}
+	}
+	
+	
+	@Override
+	public String toString() {
+		return name;
 	}
 	
 

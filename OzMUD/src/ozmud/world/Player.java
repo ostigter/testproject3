@@ -101,7 +101,7 @@ public class Player extends Creature implements ConnectionListener {
 		connection.addListener(this);
 		connection.setReceiving(true);
 		// TODO: Configure ANSI color support.
-		connection.setColorsEnabled(true);
+		connection.setColorsEnabled(false);
 
 		// Announce presence. 
 		String message = "${sender} appear${s} out of thin air.\n\r";
@@ -146,8 +146,6 @@ public class Player extends Creature implements ConnectionListener {
 		}
 		
 		world.getCommandInterpreter().executeCommand(this, command);
-		
-		sendPrompt();
 	}
 
 
@@ -157,6 +155,7 @@ public class Player extends Creature implements ConnectionListener {
 	 */
 	public void messageReceived(String message) {
 		handleCommand(message);
+		sendPrompt();
 	}
 
 
