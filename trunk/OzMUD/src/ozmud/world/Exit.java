@@ -25,4 +25,10 @@ public class Exit {
 	}
 
 
+	@Override
+	public String toString() {
+		return name;
+	}
+	
+	
 }

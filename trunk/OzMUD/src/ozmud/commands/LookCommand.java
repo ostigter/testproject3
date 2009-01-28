@@ -47,6 +47,8 @@ public class LookCommand implements Command {
 			// Just look around the room.
 			Room room = player.getRoom();
 			player.send(String.format(
+					"${YELLOW}\n\r<<< %s >>>\n\r", room.getName()));
+			player.send(String.format(
 					"${GREEN}%s\n\r", room.getDescription()));
 		}
 	}
