@@ -2,71 +2,151 @@ OzMUD - Design
 ==============
 
 
-class World
-    - rooms
-    - creatures
-    - items
-
-class Item
-    - name
-    - description
-
-class Creature
-    - strength
-    - dexterity
-    - endurance
-    - hitPoints
-    - inventory
-    - wornItems
-    - wieldedItems
-    + getMaxHitPoints()
-    + getWeight()
-    + getMaxWeight()
-
-class Player : Creature
-
-class Monster : Creature
-
-Race
-    Human
-    Elf
-    Dwarf
-    Orc
-
-class Item {
-    - name
-    - description
-    - weight
-    - price
+class World {
+    - rooms : Map<Integer, Room>
+    - players : Map<String, Player>
 }
 
-class Weapon : Item
-    - damage
+abstract class MudObject {
+    - shortName : String
+    - fullName : String
+    - aliasses : String[]
+    - description : String
+
+class Room : MudObject {
+    - id : int
+    - exits : List<String, Exit>
+    - items : List<Item>
+    - creatures : List<Creature>
+}
+
+class Exit : MudObject {
+    - roomId : int
+}
+
+enum Gender {
+    MALE
+    FEMALE
+    NEUTRAL
+}
+
+class Race {
+    - noun       # e.g. Elf
+    - adjective  # e.g. Elven
+    - minStrength
+    - maxStrength
+    - minDexterity
+    - maxDexterity
+    - minEndurance
+    - maxEndurance
+    - minIntelligence
+    - maxIntelligence
+    - minWisdom
+    - maxWisdom
+    - expirienceRate
+}
+
+races:
+    Human   (human)
+    Elf     (elven)
+    Dwarf   (dwarven)
+    Orc     (orcish)
+
+abstract class Creature : MudObject
+    - race : Race
+    - gender : Gender
+    - level : int
+    - alignment : int
+    - strength : int
+    - dexterity : int
+    - endurance : int
+    - intelligence : int
+    - wisdom : int
+    - hitPoints : int
+    - body : Body
+    - inventory : List<Item>
+    - worn : List<WornItem>
+    - wielded : Weapon
+    - cashMoney : int
+    - bankMoney : int
+    - opponent : Creature
+    - enemies : Set<Creature>
+    + getMaxHitPoints()
+    + getEncumberance()
+    + getMaxEncumberance()
+
+class Body {
+    head : Armour
+    body : Armour
+    arms : Armour
+    hands : Armour
+    legs : Armour
+    feet : Armour
+}
+
+class NPC : Creature {
+    - aggressive : boolean
+    - follows : boolean
+}
+
+class Player : Creature {
+    - password : String
+    - colorsEnabled : boolean
+    - connectionState : ConnectionState
+    - isResting : boolean
+}
+
+enum ConnectionState {
+    OFFLINE
+    ONLINE
+    LINKDEAD
+}
+
+class Item : MudObject {
+    - weight : double
+    - value : int
+}
+
+class Weapon : Item {
     - type : WeaponType
+    - twoHanded : boolean
+    - damage : int
+    - endurance : int
+}
 
 enum WeaponType {
-    ONE_HANDED
-    TWO_HANDED
+    DAGGER
+    SWORD
+    AXE
+    BLUNT
+    SPEAR
+    - damageType : DamageType
+}
+
+enum DamageType {
+    PIERCING
+    SLASHING
+    CRUSHING
 }
 
 class Armour : Item
-    - ac
-    - bodyPart
+    - type : ArmourType
+    - protection : int
+    - endurance : int
+}
 
-enum BodyPart {
+enum ArmourType {
     HEAD
     BODY
-    LEFT_ARM
-    RIGHT_ARM
-    LEFT_HAND
-    RIGHT_HAND
+    ARMS
+    HANDS
+    RING
     LEGS
     FEET
     SHIELD
+}
 
-class Room
+class Skill {
     - name
-    - description
-    - exists
-    - items
-    - creatures
+    - cost
+}
