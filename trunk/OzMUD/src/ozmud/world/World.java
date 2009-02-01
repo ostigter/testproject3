@@ -15,6 +15,8 @@ import ozmud.commands.CommandInterpreter;
 public class World {
 
 
+	private static final World instance = new World();
+	
 	private final CommandInterpreter commandInterpreter;
 	
 	private final Map<Integer, Room> rooms;
@@ -22,12 +24,25 @@ public class World {
 	private final Map<String, Player> players;
 
 
-	public World() {
+	/**
+	 * Default constructor.
+	 */
+	private World() {
 		commandInterpreter = new CommandInterpreter();
 		rooms = new HashMap<Integer, Room>();
 		players = new HashMap<String, Player>();
 		
 		init();
+	}
+	
+	
+	/**
+	 * Returns the singleton instance.
+	 * 
+	 * @return The singleton instance
+	 */
+	public static World getInstance() {
+		return instance;
 	}
 	
 	
@@ -42,7 +57,7 @@ public class World {
 
 
 	public void addPlayer(Player player) {
-		players.put(player.getName(), player);
+		players.put(player.getShortName(), player);
 	}
 	
 	
@@ -59,7 +74,10 @@ public class World {
 	private void init() {
 		Room room;
 
-		room = new Room(0, "The Plaza",
+		room = new Room();
+		room.setId(0);
+		room.setShortName("The Plaza");
+		room.setDescription(
 				"You are standing in the large town plaza, the natural "
 				+ "gathering place for town folk, merchants and adventurers "
 				+ "alike. You see people of all races and classes passing by "
@@ -67,7 +85,10 @@ public class World {
 		room.addExit(new Exit("east", 1));
 		addRoom(room);
 
-		room = new Room(1, "East Road",
+		room = new Room();
+		room.setId(1);
+		room.setShortName("East Road");
+		room.setDescription(
 				"You are on a wide east-west road leading through town. "
 				+ "Many shops can be found here, like a general store to the "
 				+ "north and the town's bank to the south. To the west you "
@@ -79,7 +100,17 @@ public class World {
 		room.addExit(new Exit("west",  0));
 		addRoom(room);
 
-		room = new Room(2, "Bank",
+		room = new Room();
+		room.setId(2);
+		room.setShortName("General store");
+		room.setDescription("You are in a small general store.");
+		room.addExit(new Exit("south", 1));
+		addRoom(room);
+
+		room = new Room();
+		room.setId(3);
+		room.setShortName("Bank");
+		room.setDescription(
 				"You are inside the town's large bank. The floor and high ceiling "
 				+ "are made of black marble, giving the place a luxureous "
 				+ "look. Golden decorations can be found everywhere. You feel "
@@ -87,12 +118,10 @@ public class World {
 		room.addExit(new Exit("north", 1));
 		addRoom(room);
 
-		room = new Room(3, "General store",
-				"You are in a small general store.");
-		room.addExit(new Exit("south", 1));
-		addRoom(room);
-
-		room = new Room(4, "East town gate",
+		room = new Room();
+		room.setId(4);
+		room.setShortName("East town gate");
+		room.setDescription(
 				"You stand before the town's massive eastern gate. A heavy "
 				+ "steel gate, currently risen, can be quickly closed to "
 				+ "protect the town from any invasion from the wilderness "
@@ -103,14 +132,21 @@ public class World {
 		room.addExit(new Exit("west", 1));
 		addRoom(room);
 
-		room = new Room(5, "Outside the east gate",
+		room = new Room();
+		room.setId(5);
+		room.setShortName("Outside the east gate");
+		room.setDescription(
 				"You stand just outside the town's eastern gates. The "
 				+ "wilderness stretches out in all directions as far as your"
 				+ "eyes can see.");
 		room.addExit(new Exit("west", 4));
 		addRoom(room);
 
-		addPlayer(new Player("Guest", Gender.MALE, "guest", this));
+		Player player = new Player();
+		player.setShortName("Guest");
+		player.setFullName("Guest");
+		player.setGender(Gender.MALE);
+		addPlayer(player);
 	}
 	
 	

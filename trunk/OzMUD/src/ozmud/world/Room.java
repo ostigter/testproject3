@@ -7,26 +7,29 @@ import java.util.List;
 import ozmud.Util;
 
 
-public class Room {
+public class Room extends MudObject {
 	
 
-	private final int id;
+	/** Serial version UID. */
+	private static final long serialVersionUID = 1L;
+
+	/** Room ID. */
+	private int id;
 	
-	private final String name;
-	
-	private final String description;
-	
+	/** The room's exits. */
 	private final List<Exit> exits;
 	
+	/** Items located in this room. */
 	private final List<Item> items;
 	
+	/** Creatures located in this room. */
 	private final List<Creature> creatures;
 	
 	
-	public Room(int id, String name, String description) {
-		this.id = id;
-		this.name = name;
-		this.description = description;
+	/**
+	 * Default constructor.
+	 */
+	public Room() {
 		this.exits = new ArrayList<Exit>();
 		this.items = new ArrayList<Item>();
 		this.creatures = new ArrayList<Creature>();
@@ -38,13 +41,8 @@ public class Room {
 	}
 	
 	
-	public String getName() {
-		return name;
-	}
-	
-	
-	public String getDescription() {
-		return description;
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 	
@@ -124,16 +122,10 @@ public class Room {
 	}
 	
 	
-	@Override
-	public String toString() {
-		return name;
-	}
-	
-
 	/* package */ String format(String message, Creature sender,
 			Creature target, Perspective perspective) {
-		String senderName = (sender != null) ? sender.getName() : null;
-		String targetName = (target != null) ? target.getName() : null;
+		String senderName = (sender != null) ? sender.getShortName() : null;
+		String targetName = (target != null) ? target.getShortName() : null;
 		switch (perspective) {
 			case SELF:
 				message = Util.replace(message, "${sender}", "you");

@@ -23,18 +23,14 @@ public class Portal implements Runnable {
 	/** Connection. */
 	private final Connection connection;
 
-	/** The world. */
-	private World world;
-
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param connection  an open socket
 	 */
-	public Portal(Connection connection, World world) throws IOException {
+	public Portal(Connection connection) throws IOException {
 		this.connection = connection;
-		this.world = world;
 	}
 
 
@@ -74,7 +70,7 @@ public class Portal implements Runnable {
 				}
 	
 				// Lookup character.
-				player = world.getPlayer(name);
+				player = World.getInstance().getPlayer(name);
 				if (player == null) {
 					// New character; ask whether to create it now.
 					connection.send("${GREEN}\n\r" + name
@@ -135,8 +131,12 @@ public class Portal implements Runnable {
 						}
 						
 						// Register player.
-						player = new Player(name, gender, password, world);
-						world.addPlayer(player);
+						player = new Player();
+						player.setShortName(name);
+						player.setFullName(name);
+						player.setGender(gender);
+						player.setPassword(password);
+						World.getInstance().addPlayer(player);
 					}
 				} else {
 					// Existing player; check password.

@@ -1,50 +1,62 @@
 package ozmud.world;
 
 
-public abstract class Item {
-	
+/**
+ * An item that can be picked up.
+ * 
+ * @author Oscar Stigter
+ */
+public abstract class Item extends MudObject {
 
-	private String name;
+
+	/** The serial version UID. */
+	private static final long serialVersionUID = 1L;
 	
-	private String description;
+	/** The weight in stones. */
+	private double weight;
+
+	/** The value in gold. */
+	private int value;
+
 	
-	private int weight;
-	
-	private int price;
-	
-	
-	public Item(String name, String description, int weight, int price) {
-		this.name = name;
-		this.description = description;
-		this.weight = weight;
-		this.price = price;
-	}
-	
-	
-	public String getName() {
-		return name;
-	}
-	
-	
-	public String getDescription() {
-		return description;
-	}
-	
-	
-	public int getWeight() {
+	/**
+	 * Returns the weight in stones.
+	 * 
+	 * @return  The weight in stones
+	 */
+	public double getWeight() {
 		return weight;
 	}
 	
-	
-	public int getPrice() {
-		return price;
+
+	/**
+	 * Sets the weight in stones.
+	 * 
+	 * @param weight  The weight in stones
+	 */
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 
 
-	@Override
-	public String toString() {
-		return name;
+	/**
+	 * Returns the value in gold pieces.
+	 * 
+	 * @return  The value in gold pieces
+	 */
+	public int getValue() {
+		return value;
 	}
 	
-	
+
+	/**
+	 * Sets the value in gold pieces.
+	 * 
+	 * @param value  The value in gold pieces
+	 */
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+
 }
