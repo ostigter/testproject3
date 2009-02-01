@@ -6,41 +6,32 @@ package ozmud.world;
  * 
  * @author Oscar Stigter
  */
-public abstract class Creature {
+public abstract class Creature extends MudObject {
 	
 
-	protected final String name;
+	/** Serial version UID. */
+	private static final long serialVersionUID = 1L;
+
+	private Gender gender;
 	
-	protected final Gender gender;
-	
-	protected final String description;
-	
-	protected final World world;
-	
-	protected Room room;
+	private Room room;
 	
 	
-	public Creature(String name, Gender gender, String description,
-			World world) {
-		this.name = name;
-		this.gender = gender;
-		this.description = description;
-		this.world = world;
+	/**
+	 * Default constructor.
+	 */
+	public Creature() {
+		// Empty implementation.
 	}
 	
 
-	public String getName() {
-		return name;
-	}
-	
-	
 	public Gender getGender() {
 		return gender;
 	}
 	
 	
-	public String getDescription() {
-		return description;
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 	
 	
@@ -55,7 +46,7 @@ public abstract class Creature {
 	
 	
 	public void moveTo(int roomId) {
-		Room room = world.getRoom(roomId);
+		Room room = World.getInstance().getRoom(roomId);
 		if (room != null) {
 			moveTo(room);
 		} else {
@@ -102,12 +93,6 @@ public abstract class Creature {
 		if (room != null) {
 			room.broadcastOthers(message, this, target);
 		}
-	}
-	
-	
-	@Override
-	public String toString() {
-		return name;
 	}
 	
 	

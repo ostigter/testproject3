@@ -2,21 +2,29 @@ package ozmud.world;
 
 
 /**
- * A Non-Player Character (NPC).
+ * A non-player (computer controlled) character (NPC).
  * 
  * @author Oscar Stigter
  */
 public class NPC extends Creature {
 	
 
+	/** Serial version UID. */
+	private static final long serialVersionUID = 1L;
+
+
 	/**
-	 * Constructor.
+	 * Default constructor.
 	 */
-	public NPC(String name, Gender gender, String description, World world) {
-		super(name, gender, description, world);
+	public NPC() {
+		// Empty implementation.
 	}
 
 
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.world.Creature#send(java.lang.String)
+	 */
 	@Override
 	public void send(String message) {
 		// Empty implemention because an NPC has no connection.

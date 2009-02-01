@@ -18,9 +18,6 @@ public class Server {
 	/** Local port clients can connect to. */
 	private static final int PORT = 5000;
 
-	/** The world. */
-	private final World world;
-
 	/** TCP/IP socket clients can connect to. */
 	private ServerSocket serverSocket;
 
@@ -39,8 +36,6 @@ public class Server {
 			System.exit(1);
 		}
 		
-		world = new World();
-
 		System.out.println("Server initialized.");
 	}
 
@@ -63,7 +58,7 @@ public class Server {
 						+ clientSocket.getInetAddress() + ".");
 				TelnetConnection connection =
 						new TelnetConnection(clientSocket);
-				Portal portal = new Portal(connection, world);
+				Portal portal = new Portal(connection);
 				new Thread(portal).start();
 			} catch (InterruptedIOException e) {
 				System.err.println(
