@@ -20,9 +20,6 @@ public class Portal implements Runnable {
 	private static final String WELCOME_TEXT =
 			"${CYAN}\n\rYou enter the Realm of Oz...\n\r\n\r"; 
 
-	/** The world. */
-	private final World world;
-
 	/** The connection to the client's client. */
 	private final Connection connection;
 	
@@ -32,8 +29,7 @@ public class Portal implements Runnable {
 	 * 
 	 * @param connection  an open socket
 	 */
-	public Portal(World world, Connection connection) throws IOException {
-		this.world = world;
+	public Portal(Connection connection) throws IOException {
 		this.connection = connection;
 	}
 
@@ -74,7 +70,7 @@ public class Portal implements Runnable {
 				}
 	
 				// Lookup character.
-				player = world.getPlayer(name);
+				player = World.getInstance().getPlayer(name);
 				if (player == null) {
 					// New character; ask whether to create it now.
 					connection.send("${GREEN}\n\r" + name
@@ -140,7 +136,7 @@ public class Portal implements Runnable {
 						player.setFullName(name);
 						player.setGender(gender);
 						player.setPassword(password);
-						world.addPlayer(player);
+						World.getInstance().addPlayer(player);
 					}
 				} else {
 					// Existing player; check password.
