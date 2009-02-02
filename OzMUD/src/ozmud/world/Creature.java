@@ -48,7 +48,7 @@ public abstract class Creature extends MudObject {
 	
 	
 	public void moveTo(int roomId) {
-		Room room = getWorld().getRoom(roomId);
+		Room room = World.getInstance().getRoom(roomId);
 		if (room != null) {
 			moveTo(room);
 		} else {

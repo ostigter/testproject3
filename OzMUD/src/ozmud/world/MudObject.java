@@ -25,8 +25,6 @@ public abstract class MudObject implements Serializable {
 	/** Description. */
 	private String description;
 	
-	private World world;
-
 	
 	/**
 	 * Default constructor.
@@ -96,16 +94,6 @@ public abstract class MudObject implements Serializable {
 	}
 	
 	
-	public World getWorld() {
-		return world;
-	}
-	
-	
-	public void setWorld(World world) {
-		this.world = world;
-	}
-
-
 	/**
 	 * Returns the <code>String</code> representation of this object.
 	 * 

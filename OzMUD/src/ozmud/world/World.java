@@ -15,6 +15,9 @@ import ozmud.commands.CommandInterpreter;
 public class World {
 
 
+	/** Singleton instance. */
+	private static final World instance = new World(); 
+	
 	private final CommandInterpreter commandInterpreter;
 	
 	private final Map<Integer, Room> rooms;
@@ -25,11 +28,15 @@ public class World {
 	/**
 	 * Default constructor.
 	 */
-	public World() {
+	private World() {
 		commandInterpreter = new CommandInterpreter();
 		rooms = new HashMap<Integer, Room>();
 		players = new HashMap<String, Player>();
-		init();
+	}
+	
+	
+	public static World getInstance() {
+		return instance;
 	}
 	
 	
@@ -58,7 +65,7 @@ public class World {
 	}
 
 
-	private void init() {
+	public void init() {
 		Room room;
 
 		room = new Room();
@@ -71,6 +78,12 @@ public class World {
 				+ "as they go about their business.");
 		room.addExit(new Exit("east", 1));
 		addRoom(room);
+		
+		NPC guard = new NPC();
+		guard.setShortName("Guard");
+		guard.setFullName("A town guard");
+		guard.setGender(Gender.MALE);
+		guard.setRoom(room);
 
 		room = new Room();
 		room.setId(1);
@@ -132,6 +145,7 @@ public class World {
 		Player player = new Player();
 		player.setShortName("Guest");
 		player.setFullName("Guest");
+		player.setPassword("guest");
 		player.setGender(Gender.MALE);
 		addPlayer(player);
 	}
