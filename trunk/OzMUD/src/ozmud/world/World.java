@@ -15,8 +15,6 @@ import ozmud.commands.CommandInterpreter;
 public class World {
 
 
-	private static final World instance = new World();
-	
 	private final CommandInterpreter commandInterpreter;
 	
 	private final Map<Integer, Room> rooms;
@@ -27,22 +25,11 @@ public class World {
 	/**
 	 * Default constructor.
 	 */
-	private World() {
+	public World() {
 		commandInterpreter = new CommandInterpreter();
 		rooms = new HashMap<Integer, Room>();
 		players = new HashMap<String, Player>();
-		
 		init();
-	}
-	
-	
-	/**
-	 * Returns the singleton instance.
-	 * 
-	 * @return The singleton instance
-	 */
-	public static World getInstance() {
-		return instance;
 	}
 	
 	

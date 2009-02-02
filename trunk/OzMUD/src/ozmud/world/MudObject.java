@@ -24,6 +24,8 @@ public abstract class MudObject implements Serializable {
 	
 	/** Description. */
 	private String description;
+	
+	private World world;
 
 	
 	/**
@@ -91,6 +93,16 @@ public abstract class MudObject implements Serializable {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	
+	public World getWorld() {
+		return world;
+	}
+	
+	
+	public void setWorld(World world) {
+		this.world = world;
 	}
 
 
