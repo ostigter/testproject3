@@ -18,9 +18,12 @@ public class Server {
 	/** Local port clients can connect to. */
 	private static final int PORT = 5000;
 
+	/** The world. */
+	private final World world;
+
 	/** TCP/IP socket clients can connect to. */
 	private ServerSocket serverSocket;
-
+	
 	/** Indicates whether the server is running or not. */
 	protected boolean isRunning = false;
 
@@ -35,6 +38,8 @@ public class Server {
 			System.err.println("*** Error: Could not create server socket.");
 			System.exit(1);
 		}
+		
+		world = new World();
 		
 		System.out.println("Server initialized.");
 	}
@@ -58,7 +63,7 @@ public class Server {
 						+ clientSocket.getInetAddress() + ".");
 				TelnetConnection connection =
 						new TelnetConnection(clientSocket);
-				Portal portal = new Portal(connection);
+				Portal portal = new Portal(world, connection);
 				new Thread(portal).start();
 			} catch (InterruptedIOException e) {
 				System.err.println(

@@ -12,8 +12,10 @@ public abstract class Creature extends MudObject {
 	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
 
-	private Gender gender;
+	/** The creature's gender. */
+	private Gender gender = Gender.NEUTRAL;
 	
+	/** The room this creature is currently in. */
 	private Room room;
 	
 	
@@ -46,7 +48,7 @@ public abstract class Creature extends MudObject {
 	
 	
 	public void moveTo(int roomId) {
-		Room room = World.getInstance().getRoom(roomId);
+		Room room = getWorld().getRoom(roomId);
 		if (room != null) {
 			moveTo(room);
 		} else {

@@ -29,7 +29,7 @@ public class Player extends Creature implements ConnectionListener {
 	private Connection connection;
 	
 	/** Command interpreter. */
-	private final CommandInterpreter commandInterpreter;
+	private CommandInterpreter commandInterpreter;
 
 	/** Connection state. */
 	private ConnectionState connectionState = ConnectionState.OFFLINE;
@@ -39,17 +39,22 @@ public class Player extends Creature implements ConnectionListener {
 	 * Default constructor.
 	 */
 	public Player() {
-		commandInterpreter = World.getInstance().getCommandInterpreter();
+		// Empty implementation.
 	}
 
 
 	public String getPassword() {
 		return password;
 	}
-
+	
 	
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	
+	public void setCommandInterpreter(CommandInterpreter commandInterpreter) {
+		this.commandInterpreter = commandInterpreter;
 	}
 
 	
@@ -92,7 +97,7 @@ public class Player extends Creature implements ConnectionListener {
 	 */
 	public void start() {
 		// Enter the starting room.
-		moveTo(World.getInstance().getRoom(0));
+		moveTo(getWorld().getRoom(0));
 
 		// Handle incoming commands.
 		connection.addListener(this);
