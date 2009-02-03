@@ -53,7 +53,7 @@ public class DirectionalCommand implements Command {
 			Room room = player.getRoom();
 			Exit exit = room.getExit(name);
 			if (exit != null) {
-				player.moveTo(exit.getRoomId());
+				player.moveTo(exit.getRoomId(), name);
 				player.handleCommand("look");
 			} else {
 				player.send(INVALID);

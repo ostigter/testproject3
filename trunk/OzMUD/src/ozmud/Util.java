@@ -43,15 +43,26 @@ public abstract class Util {
 		if (s != null) {
 			final int length = s.length();
 			if (length > 0) {
+				int index = 0;
 				final StringBuilder sb = new StringBuilder(length);
-				char c = s.charAt(0);
-				if (c >= 'a' && c <= 'z') {
-					c -= 32;
-					sb.append(c);
-					if (length > 1) {
-						sb.append(s.substring(1));
+				int pos = s.indexOf("${");
+				if (pos == 0) {
+					pos = s.indexOf("}", pos);
+					if (pos != -1) {
+						sb.append(s.substring(0, pos + 1));
+						index = pos + 1;
 					}
-					s = sb.toString();
+				}
+				if (index < length) {
+					char c = s.charAt(index);
+					if (c >= 'a' && c <= 'z') {
+						c -= 32;
+						sb.append(c);
+						if (length > (index + 1)) {
+							sb.append(s.substring(index + 1));
+						}
+						s = sb.toString();
+					}
 				}
 			}
 		}

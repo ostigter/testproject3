@@ -24,17 +24,23 @@ public class RoomTest {
 		sender.setGender(Gender.MALE);
 		
 		Creature target = new NPC();
-		target.setShortName("Goblin");
-		target.setFullName("A nasty goblin skirmisher");
-		target.setGender(Gender.MALE);
+		target.setShortName("Guard");
+		target.setFullName("A strong female guard");
+		target.setGender(Gender.FEMALE);
 
-		String message = "${sender} hit${s} ${target} very hard.";
-		Assert.assertEquals("You hit Goblin very hard.",
+		String message = "${CYAN}${sender} look${s} at ${target}.";
+		Assert.assertEquals("${CYAN}You look at yourself.",
+				room.format(message, sender, sender, Perspective.SELF));
+		Assert.assertEquals("${CYAN}You look at Guard.",
 				room.format(message, sender, target, Perspective.SELF));
-		Assert.assertEquals("Frodo hits you very hard.",
+		Assert.assertEquals("${CYAN}Frodo looks at you.",
 				room.format(message, sender, target, Perspective.TARGET));
-		Assert.assertEquals("Frodo hits Goblin very hard.",
+		Assert.assertEquals("${CYAN}Frodo looks at himself.",
+				room.format(message, sender, sender, Perspective.OTHERS));
+		Assert.assertEquals("${CYAN}Frodo looks at Guard.",
 				room.format(message, sender, target, Perspective.OTHERS));
+		Assert.assertEquals("${CYAN}Guard looks at herself.",
+				room.format(message, target, target, Perspective.OTHERS));
 	}
 	
 

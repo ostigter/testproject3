@@ -12,8 +12,6 @@ import ozmud.world.Player;
 public class QuitCommand implements Command {
 	
 	
-	private static final String GOODBYE = "Goodbye!\n\r"; 
-
 	private static final String LEAVE =
 			"${sender} disappear${s} into thin air.\n\r";
 	
@@ -45,7 +43,6 @@ public class QuitCommand implements Command {
 	 */
 	public void execute(Player player, String argument) {
 		if (argument == null) {
-			player.send(GOODBYE);
 			player.broadcast(LEAVE, null);
 			player.moveTo(null);
 			player.disconnect();

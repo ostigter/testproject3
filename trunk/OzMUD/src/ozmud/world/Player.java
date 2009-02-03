@@ -92,7 +92,7 @@ public class Player extends Creature implements ConnectionListener {
 	 */
 	public void start() {
 		// Enter the starting room.
-		moveTo(World.getInstance().getRoom(0));
+		moveTo(World.getInstance().getStartingRoom());
 
 		// Handle incoming commands.
 		connection.addListener(this);
