@@ -18,7 +18,7 @@ public class Portal implements Runnable {
 
 	/** Welcome text. */
 	private static final String WELCOME_TEXT =
-			"${CYAN}\n\rYou enter the Realm of Oz...\n\r\n\r"; 
+			"${CYAN}\n\rYou enter the Realm of Oz.\n\r\n\r"; 
 
 	/** The connection to the client's client. */
 	private final Connection connection;

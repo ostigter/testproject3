@@ -1,9 +1,11 @@
 package ozmud.commands;
 
 
+import ozmud.Util;
 import ozmud.world.Creature;
 import ozmud.world.Gender;
 import ozmud.world.Item;
+import ozmud.world.MudObject;
 import ozmud.world.Player;
 import ozmud.world.Room;
 
@@ -16,9 +18,13 @@ import ozmud.world.Room;
 public class LookCommand implements Command {
 	
 	
+	/** Message when looking at a creature. */
+	private static final String CREATURE =
+			"${CYAN}${sender} look${s} at ${target}.\n\r";
+		
 	/** Message when trying to look at a non-existing target. */
-	private static final String UNKNOWN = "Look at what?\n\r";
-	
+	private static final String NOT_FOUND = "${GRAY}Look at what?\n\r";
+
 	
 	/*
 	 * (non-Javadoc)
@@ -44,26 +50,31 @@ public class LookCommand implements Command {
 	 */
 	public void execute(Player player, String argument) {
 		if (argument == null) {
-			lookAtRoom(player);
+			look(player);
 		} else {
-			lookAtTarget(player, argument);
+			look(player, argument);
 		}
 	}
 	
 	
-	private void lookAtRoom(Player player) {
+	/**
+	 * Look around the room (no target).
+	 * 
+	 * @param player  The player
+	 */
+	private void look(Player player) {
 		Room room = player.getRoom();
 		// Show room name and description.
 		player.send(String.format(
 				"${YELLOW}%s\n\r", room.getShortName()));
 		player.send(String.format(
 				"${GREEN}%s\n\r", room.getDescription()));
-		// Show items present.
+		// First show any items present...
 		for (Item item : room.getItems()) {
 			player.send(String.format(
 					"  %s\n\r", item.getFullName()));
 		}
-		// Show creatures present (besides yourself).
+		// ...then show any creatures present (besides yourself).
 		for (Creature creature : room.getCreatures()) {
 			if (!creature.equals(player)) {
 				player.send(String.format(
@@ -71,26 +82,60 @@ public class LookCommand implements Command {
 			}
 		}
 	}
-	
-	
-	private void lookAtTarget(Player player, String target) {
-		// Are we looking at ourselves?
-		if (target.equals("me") ||
-				target.equalsIgnoreCase(player.getShortName())) {
-			lookAtCreature(player, player);
+
+
+	/**
+	 * Look at a specific target in the room.
+	 * 
+	 * @param player      The player
+	 * @param targetName  The target's name or alias
+	 */
+	private void look(Player player, String targetName) {
+		MudObject target = player.getTarget(targetName);
+		if (target != null) {
+			if (target instanceof Item) {
+				look(player, (Item) target);
+			} else if (target instanceof Creature) {
+				look(player, (Creature) target);
+			} else {
+				// This should never happen.
+				System.err.println(
+						"ERROR: 'look' target not Creature or Item");
+			}
 		} else {
-			// TODO: Look at other targets.
-			player.send(UNKNOWN);
+			player.send(NOT_FOUND);
 		}
 	}
-	
-	
-	private void lookAtCreature(Player player, Creature creature) {
+
+
+	/**
+	 * Look at a specific target in the room.
+	 * 
+	 * @param player      The player
+	 * @param creature    The target
+	 */
+	private void look(Player player, Item item) {
+		player.send(String.format(
+				"${GREEN}%s\n\r", item.getDescription()));
+	}
+
+
+	/**
+	 * Look at a specific creature in the room.
+	 * 
+	 * @param player      The player
+	 * @param creature    The creature
+	 */
+	private void look(Player player, Creature creature) {
+		player.broadcast(CREATURE, creature);
 		player.send(String.format(
 				"${GREEN}%s\n\r", creature.getDescription()));
 		Gender gender = creature.getGender();
-		player.send(String.format(
-				"%s is a %s.\n\r", gender.getPronoun(), gender.getName()));
+		String pronoun = gender.getPronoun();
+		String message = creature.equals(player) ?
+				String.format("You are a %s.\n\r", gender) :
+					String.format("%s is a %s.\n\r", pronoun, gender);
+		player.send(Util.capitalize(message));
 	}
 
 

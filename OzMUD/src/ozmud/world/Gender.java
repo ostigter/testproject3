@@ -10,36 +10,40 @@ public enum Gender {
 	
 
 	/** Male. */
-	MALE("male", "he", "his"),
+	MALE("male", "he", "his", "himself"),
 
 	/** Female. */
-	FEMALE("female", "she", "her"),
+	FEMALE("female", "she", "her", "herself"),
 
 	/** Neutral (no gender). */
-	NEUTRAL("neutral", "it", "its");
+	NEUTRAL("neutral", "it", "its", "itself");
 	
 
 	/** Name. */
 	private final String name;
 
-	/** Pronoun form. */
+	/** Pronoun. */
 	private final String pronoun;
 	
-	/** Possessive form. */
-	private final String possessiveForm;
+	/** Possessive. */
+	private final String possessive;
+	
+	/** Self reference. */
+	private final String self;
 	
 	
 	/**
 	 * Constructor.
 	 * 
-	 * @param name  The name
-	 * @param pronoun  The pronoun
-	 * @param possessiveForm  The possessive form
+	 * @param name        The name
+	 * @param pronoun     The pronoun
+	 * @param possessive  The possessive form
 	 */
-	Gender(String name, String pronoun, String possessiveForm) {
+	Gender(String name, String pronoun, String possessive, String self) {
 		this.name = name;
 		this.pronoun = pronoun;
-		this.possessiveForm = possessiveForm;
+		this.possessive = possessive;
+		this.self = self;
 	}
 	
 	
@@ -68,8 +72,19 @@ public enum Gender {
 	 * 
 	 * @return The possessive form
 	 */
-	public String getPossessiveForm() {
-		return possessiveForm;
+	public String getPossessive() {
+		return possessive;
+	}
+	
+	
+	
+	/**
+	 * Returns the self reference.
+	 * 
+	 * @return The self reference
+	 */
+	public String getSelf() {
+		return self;
 	}
 	
 	

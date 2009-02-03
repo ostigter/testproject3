@@ -96,6 +96,32 @@ public class Room extends MudObject {
 	}
 	
 	
+	/**
+	 * Returns a specific target from this room, or null if not found.
+	 * 
+	 * @param name  The targets's name
+	 * 
+	 * @return  The target if found, otherwise null
+	 */
+	public MudObject getTarget(String name) {
+		// First try the items in this room...
+		for (Item item : items) {
+			if (item.matches(name)) {
+				return item;
+			}
+		}
+		// ...then the creatures.
+		for (Creature creature : creatures) {
+			if (creature.matches(name)) {
+				return creature;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
+	
+	
 	public void broadcast(
 			String message, Creature sender, Creature target) {
 		for (Creature creature : creatures) {
@@ -129,8 +155,12 @@ public class Room extends MudObject {
 		switch (perspective) {
 			case SELF:
 				message = Util.replace(message, "${sender}", "you");
+				if (sender != null && sender.equals(target)) {
+					message = Util.replace(message, "${target}", "yourself");
+				} else {
+					message = Util.replace(message, "${target}", targetName);
+				}
 				message = Util.replace(message, "${s}", "");
-				message = Util.replace(message, "${target}", targetName);
 				break;
 			case TARGET:
 				message = Util.replace(message, "${sender}", senderName);
@@ -138,9 +168,14 @@ public class Room extends MudObject {
 				message = Util.replace(message, "${target}", "you");
 				break;
 			case OTHERS:
+				if (sender != null && sender.equals(target)) {
+					String self = sender.getGender().getSelf();
+					message = Util.replace(message, "${target}", self);
+				} else {
+					message = Util.replace(message, "${target}", targetName);
+				}
 				message = Util.replace(message, "${sender}", senderName);
 				message = Util.replace(message, "${s}", "s");
-				message = Util.replace(message, "${target}", targetName);
 				break;
 		}
 		

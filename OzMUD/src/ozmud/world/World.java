@@ -81,10 +81,27 @@ public class World {
 		
 		NPC guard = new NPC();
 		guard.setShortName("Guard");
-		guard.setFullName("A town guard");
-		guard.setGender(Gender.MALE);
+		guard.setFullName("A strong female guard");
+		guard.setDescription("The tall and heavily armoured guard "
+				+ "carefully watches the croud, keeping the peace. She sure "
+				+ "looks like she could handle herself in a fight.");
+		guard.setGender(Gender.FEMALE);
 		guard.setRoom(room);
+		guard.setAliasses(new String[] {"man"});
+		guard.setAliasses(new String[] {"human"});
 		room.addCreature(guard);
+
+		Weapon dagger = new Weapon();
+		dagger.setShortName("shortsword");
+		dagger.setFullName("A rusty iron shortsword");
+		dagger.setDescription("The blade is old, rusty and worn. It will probably do little damage.");
+		dagger.setAliasses(new String[] {"sword", "blade"});
+		dagger.setDamage(10);
+		dagger.setWeight(0.5);
+		dagger.setValue(10);
+		dagger.setMaximumHpoints(100);
+		dagger.setHitpoints(20);
+		room.addItem(dagger);
 
 		room = new Room();
 		room.setId(1);
@@ -95,9 +112,9 @@ public class World {
 				+ "north and the town's bank to the south. To the west you "
 				+ "hear the sounds from many people on the town's plaza. to "
 				+ "the east you see the town's east gate.");
-		room.addExit(new Exit("north", 3));
+		room.addExit(new Exit("north", 2));
 		room.addExit(new Exit("east",  4));
-		room.addExit(new Exit("south", 2));
+		room.addExit(new Exit("south", 3));
 		room.addExit(new Exit("west",  0));
 		addRoom(room);
 

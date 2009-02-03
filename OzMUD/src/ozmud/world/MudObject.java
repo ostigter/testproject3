@@ -25,6 +25,9 @@ public abstract class MudObject implements Serializable {
 	/** Description. */
 	private String description;
 	
+	/** Aliasses. */
+	private String[] aliasses;
+	
 	
 	/**
 	 * Default constructor.
@@ -72,8 +75,8 @@ public abstract class MudObject implements Serializable {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
-
-
+	
+	
 	/**
 	 * Returns the description.
 	 * 
@@ -91,6 +94,40 @@ public abstract class MudObject implements Serializable {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	
+	/**
+	 * Sets the aliasses.
+	 * 
+	 * @param aliasses  The aliasses
+	 */
+	public void setAliasses(String[] aliasses) {
+		this.aliasses = aliasses;
+	}
+
+
+	/**
+	 * Returns true if this object matches the specified name.
+	 * The name is compared to the object's shortname and aliasses.
+	 * 
+	 * @param name  The name
+	 * 
+	 * @return True if a match, otherwise false
+	 */
+	public boolean matches(String name) {
+		if (name.equalsIgnoreCase(shortName)) {
+			return true;
+		} else {
+			if (aliasses != null) {
+				for (String alias : aliasses) {
+					if (alias.equalsIgnoreCase(name)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 	
 	
