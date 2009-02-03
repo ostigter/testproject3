@@ -1,6 +1,8 @@
 package ozmud.commands;
 
 
+import ozmud.world.Creature;
+import ozmud.world.Item;
 import ozmud.world.Player;
 import ozmud.world.Room;
 
@@ -40,17 +42,51 @@ public class LookCommand implements Command {
 	 * @see ozmud.commands.Command#execute(ozmud.world.Player, java.lang.String)
 	 */
 	public void execute(Player player, String argument) {
-		if (argument != null) {
-			// TODO: Look at target
-			player.send(UNKNOWN);
+		if (argument == null) {
+			lookAtRoom(player);
 		} else {
-			// Just look around the room.
-			Room room = player.getRoom();
-			player.send(String.format(
-					"${YELLOW}<<< %s >>>\n\r", room.getShortName()));
-			player.send(String.format(
-					"${GREEN}%s\n\r", room.getDescription()));
+			lookAtTarget(player, argument);
 		}
+	}
+	
+	
+	private void lookAtRoom(Player player) {
+		Room room = player.getRoom();
+		// Show room name and description.
+		player.send(String.format(
+				"${YELLOW}%s\n\r", room.getShortName()));
+		player.send(String.format(
+				"${GREEN}%s\n\r", room.getDescription()));
+		// Show items present.
+		for (Item item : room.getItems()) {
+			player.send(String.format(
+					"  %s\n\r", item.getFullName()));
+		}
+		// Show creatures present (besides yourself).
+		for (Creature creature : room.getCreatures()) {
+			if (!creature.equals(player)) {
+				player.send(String.format(
+						"  %s\n\r", creature.getFullName()));
+			}
+		}
+	}
+	
+	
+	private void lookAtTarget(Player player, String target) {
+		// Are we looking at ourselves?
+		if (target.equals("me") ||
+				target.equalsIgnoreCase(player.getShortName())) {
+			lookAtCreature(player, player);
+		} else {
+			// TODO: Look at other targets.
+			player.send(UNKNOWN);
+		}
+	}
+	
+	
+	private void lookAtCreature(Player player, Creature creature) {
+		player.send(String.format(
+				"${GREEN}%s\n\r", creature.getDescription()));
 	}
 
 

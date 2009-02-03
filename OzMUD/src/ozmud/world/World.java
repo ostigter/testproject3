@@ -84,6 +84,7 @@ public class World {
 		guard.setFullName("A town guard");
 		guard.setGender(Gender.MALE);
 		guard.setRoom(room);
+		room.addCreature(guard);
 
 		room = new Room();
 		room.setId(1);
@@ -144,7 +145,8 @@ public class World {
 
 		Player player = new Player();
 		player.setShortName("Guest");
-		player.setFullName("Guest");
+		player.setFullName("Guest the Curious Explorer");
+		player.setDescription("A guest exploring the world.");
 		player.setPassword("guest");
 		player.setGender(Gender.MALE);
 		addPlayer(player);
