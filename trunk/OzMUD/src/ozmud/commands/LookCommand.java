@@ -2,6 +2,7 @@ package ozmud.commands;
 
 
 import ozmud.world.Creature;
+import ozmud.world.Gender;
 import ozmud.world.Item;
 import ozmud.world.Player;
 import ozmud.world.Room;
@@ -87,6 +88,9 @@ public class LookCommand implements Command {
 	private void lookAtCreature(Player player, Creature creature) {
 		player.send(String.format(
 				"${GREEN}%s\n\r", creature.getDescription()));
+		Gender gender = creature.getGender();
+		player.send(String.format(
+				"%s is a %s.\n\r", gender.getPronoun(), gender.getName()));
 	}
 
 
