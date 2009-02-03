@@ -20,7 +20,7 @@ public class Player extends Creature implements ConnectionListener {
 	private static final long serialVersionUID = 1L;
 
 	/** The prompt. */
-	private static final String PROMPT = "> ";
+	private static final String PROMPT = "${GRAY}> ";
 	
 	/** The players's password. */
 	private String password;
@@ -101,7 +101,7 @@ public class Player extends Creature implements ConnectionListener {
 		connection.setColorsEnabled(true);
 
 		// Announce presence. 
-		String message = "${sender} appear${s} out of thin air.\n\r";
+		String message = "${GRAY}${sender} appear${s} out of thin air.\n\r";
 		broadcast(message, null);
 		
 		// Look around.
