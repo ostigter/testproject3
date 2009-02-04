@@ -1,7 +1,9 @@
 package ozmud.world;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -24,8 +26,13 @@ public abstract class Creature extends MudObject {
 	/** The room this creature is currently in. */
 	private Room room;
 	
-	private final List<Item> items;
+	/** Inventory (carried items). */
+	private final Set<Item> items;
 	
+	/** Worn items mapped by body part. */
+	private final Map<BodyPart, WornItem> wornItems;
+	
+	/** The currently wielded weapon. */
 	private Weapon weapon; 
 	
 	
@@ -33,7 +40,8 @@ public abstract class Creature extends MudObject {
 	 * Default constructor.
 	 */
 	public Creature() {
-		items = new ArrayList<Item>();
+		items = new HashSet<Item>();
+		wornItems = new HashMap<BodyPart, WornItem>();
 	}
 	
 
@@ -89,6 +97,26 @@ public abstract class Creature extends MudObject {
 			room.broadcastOthers(
 					"${CYAN}${sender} enter${s}.\n\r", this, null);
 		}
+	}
+	
+	
+	public void addItem(Item item) {
+		items.add(item);
+	}
+	
+	
+	public void removeItem(Item item) {
+		items.remove(item);
+	}
+	
+	
+	public void wearItem(BodyPart bodyPart, WornItem item) {
+		wornItems.put(bodyPart, item);
+	}
+	
+	
+	public void removeItem(BodyPart bodyPart) {
+		wornItems.remove(bodyPart);
 	}
 	
 	
