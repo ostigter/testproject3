@@ -101,7 +101,7 @@ public class Player extends Creature implements ConnectionListener {
 		connection.setColorsEnabled(true);
 
 		// Announce presence. 
-		String message = "${GRAY}${sender} appear${s} out of thin air.\n\r";
+		String message = "${CYAN}${sender} appear${s} out of thin air.\n\r";
 		broadcast(message, null);
 		
 		// Look around.

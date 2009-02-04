@@ -75,21 +75,6 @@ public class CommandInterpreter {
 	
 	
 	/**
-	 * Populates the list of known commands.
-	 */
-	private void populateCommands() {
-		addCommand(new LookCommand());
-		addCommand(new DirectionalCommand("north", "n"));
-		addCommand(new DirectionalCommand("east",  "e"));
-		addCommand(new DirectionalCommand("south", "s"));
-		addCommand(new DirectionalCommand("west",  "w"));
-		addCommand(new SayCommand());
-		addCommand(new GetCommand());
-		addCommand(new QuitCommand());
-	}
-	
-	
-	/**
 	 * Adds a command.
 	 * The command is separately mapped by name and alias for performance.
 	 * 
@@ -104,4 +89,31 @@ public class CommandInterpreter {
 	}
 
 
+	/**
+	 * Populates the list of known commands.
+	 */
+	private void populateCommands() {
+		// Miscellaneous.
+		addCommand(new QuitCommand());
+		// Navigation.
+		addCommand(new LookCommand());
+		addCommand(new DirectionalCommand("north",     "n"));
+		addCommand(new DirectionalCommand("northeast", "ne"));
+		addCommand(new DirectionalCommand("east",      "e"));
+		addCommand(new DirectionalCommand("southeast", "se"));
+		addCommand(new DirectionalCommand("south",     "s"));
+		addCommand(new DirectionalCommand("southwest", "sw"));
+		addCommand(new DirectionalCommand("west",      "w"));
+		addCommand(new DirectionalCommand("northwest", "nw"));
+		addCommand(new DirectionalCommand("up",        "u"));
+		addCommand(new DirectionalCommand("down",      "d"));
+		// Equipment.
+		addCommand(new InventoryCommand());
+		addCommand(new GetCommand());
+		addCommand(new DropCommand());
+		// Communication.
+		addCommand(new SayCommand());
+	}
+	
+	
 }

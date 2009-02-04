@@ -99,6 +99,33 @@ public abstract class Creature extends MudObject {
 					"${CYAN}${sender} enter${s}.\n\r", this, null);
 		}
 	}
+	
+	
+	/**
+	 * Returns the inventory items.
+	 * 
+	 * @return  The inventory items
+	 */
+	public Set<Item> getItems() {
+		return items;
+	}
+	
+	
+	/**
+	 * Returns a specific inventory item, or null if not found.
+	 * 
+	 * @param name  The item's name
+	 * 
+	 * @return  The item if found, otherwise null
+	 */
+	public Item getItem(String name) {
+		for (Item item : items) {
+			if (item.matches(name)) {
+				return item;
+			}
+		}
+		return null;
+	}
 
 
 	/**
@@ -128,6 +155,16 @@ public abstract class Creature extends MudObject {
 
 	public void removeItem(BodyPart bodyPart) {
 		wornItems.remove(bodyPart);
+	}
+	
+	
+	public boolean isWearing(Item item) {
+		for (WornItem wornItem : wornItems.values()) {
+			if (wornItem.equals(item)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
