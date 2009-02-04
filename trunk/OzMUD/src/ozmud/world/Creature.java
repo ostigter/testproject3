@@ -1,5 +1,6 @@
 package ozmud.world;
 
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -49,7 +50,7 @@ public abstract class Creature extends MudObject {
 		return gender;
 	}
 	
-	
+
 	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
@@ -98,43 +99,63 @@ public abstract class Creature extends MudObject {
 					"${CYAN}${sender} enter${s}.\n\r", this, null);
 		}
 	}
-	
-	
+
+
+	/**
+	 * Adds an item to the inventory.
+	 *
+	 * @param item  The item
+	 */
 	public void addItem(Item item) {
 		items.add(item);
 	}
-	
-	
+
+
+	/**
+	 * Removes an item from the inventory.
+	 *
+	 * @param item  The item
+	 */
 	public void removeItem(Item item) {
 		items.remove(item);
 	}
-	
-	
+
+
 	public void wearItem(BodyPart bodyPart, WornItem item) {
 		wornItems.put(bodyPart, item);
 	}
-	
-	
+
+
 	public void removeItem(BodyPart bodyPart) {
 		wornItems.remove(bodyPart);
 	}
-	
-	
+
+
+	/**
+	 * Returns the wielded weapon.
+	 *
+	 * @return  The weapon
+	 */
 	public Weapon getWeapon() {
 		return weapon;
 	}
-	
-	
+
+
+	/**
+	 * Sets the wielded weapon.
+	 *
+	 * @param weapon  The weapon
+	 */
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
 	}
-	
-	
+
+
 	/**
 	 * Returns a specific target, or null if not found.
-	 * 
+	 *
 	 * @param name  The target's name
-	 * 
+	 *
 	 * @return  The target if found, otherwise null
 	 */
 	public MudObject getTarget(String name) {
@@ -142,14 +163,12 @@ public abstract class Creature extends MudObject {
 		if (name.equals(ME) || matches(name)) {
 			return this;
 		}
-		
 		// ...then search our inventory...
 		for (Item item : items) {
 			if (item.matches(name)) {
 				return item;
 			}
 		}
-		
 		// ...then search the room we're in.
 		if (room != null) {
 			MudObject target = room.getTarget(name);
@@ -157,15 +176,14 @@ public abstract class Creature extends MudObject {
 				return target;
 			}
 		}
-
 		// Not found.
 		return null;
 	}
-	
-	
+
+
 	/**
 	 * Broadcasts a message to all creatures in the room.
-	 * 
+	 *
 	 * @param message  The message
 	 * @param target   An optional target
 	 */

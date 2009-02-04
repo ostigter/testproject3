@@ -78,13 +78,13 @@ public class CommandInterpreter {
 	 * Populates the list of known commands.
 	 */
 	private void populateCommands() {
-		// TODO: Use reflection to automatically populate commands
 		addCommand(new LookCommand());
 		addCommand(new DirectionalCommand("north", "n"));
-		addCommand(new DirectionalCommand("east", "e"));
+		addCommand(new DirectionalCommand("east",  "e"));
 		addCommand(new DirectionalCommand("south", "s"));
-		addCommand(new DirectionalCommand("west", "w"));
+		addCommand(new DirectionalCommand("west",  "w"));
 		addCommand(new SayCommand());
+		addCommand(new GetCommand());
 		addCommand(new QuitCommand());
 	}
 	
