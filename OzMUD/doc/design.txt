@@ -3,26 +3,26 @@ OzMUD - Design
 
 
 class World {
-    - rooms : Map<Integer, Room>
-    - players : Map<String, Player>
+    -rooms : Map<Integer, Room>
+    -players : Map<String, Player>
 }
 
 abstract class MudObject {
-    - shortName : String
-    - fullName : String
-    - aliasses : String[]
-    - description : String
+    -shortName : String
+    -fullName : String
+    -aliasses : String[]
+    -description : String
     + boolean matches(String name)
 
 class Room : MudObject {
-    - id : int
-    - exits : List<String, Exit>
-    - items : List<Item>
-    - creatures : List<Creature>
+    -id : int
+    -exits : List<String, Exit>
+    -items : List<Item>
+    -creatures : List<Creature>
 }
 
 class Exit : MudObject {
-    - roomId : int
+    -roomId : int
 }
 
 enum Gender {
@@ -32,26 +32,26 @@ enum Gender {
 }
 
 abstract class Creature : MudObject
-    - race : Race
-    - gender : Gender
-    - level : int
-    - alignment : int
-    - strength : int
-    - dexterity : int
-    - endurance : int
-    - intelligence : int
-    - wisdom : int
-    - hitPoints : int
-    - body : Body
-    - inventory : List<Item>
-    - wielded : Weapon
-    - cashMoney : int
-    - bankMoney : int
-    - opponent : Creature
-    - enemies : Set<Creature>
-    + getMaxHitPoints() : int
-    + getEncumberance() : double
-    + getMaxEncumberance() : double
+    -race : Race
+    -gender : Gender
+    -level : int
+    -alignment : int
+    -strength : int
+    -dexterity : int
+    -endurance : int
+    -intelligence : int
+    -wisdom : int
+    -hitPoints : int
+    -items : Set<Item>
+    -wornItems : Map<BodyPart, WornItem>
+    -weapon : Weapon
+    -cashMoney : int
+    -bankMoney : int
+    -opponent : Creature
+    -enemies : Set<Creature>
+    +getMaxHitPoints() : int
+    +getEncumberance() : double
+    +getMaxEncumberance() : double
 
 class Race {
     - noun       # e.g. Elf

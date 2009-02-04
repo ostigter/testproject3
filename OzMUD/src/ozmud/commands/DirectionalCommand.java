@@ -6,6 +6,11 @@ import ozmud.world.Player;
 import ozmud.world.Room;
 
 
+/**
+ * A directional command to move to another room.
+ * 
+ * @author Oscar Stigter
+ */
 public class DirectionalCommand implements Command {
 	
 	

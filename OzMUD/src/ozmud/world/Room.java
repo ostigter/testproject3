@@ -105,19 +105,36 @@ public class Room extends MudObject {
 	 */
 	public MudObject getTarget(String name) {
 		// First try the items in this room...
+		MudObject target = getItem(name);
+		if (target != null) {
+			return target;
+		}
+		// ...then the creatures.
+		target = getCreature(name);
+		if (target != null) {
+			return target;
+		}
+		// Not found.
+		return null;
+	}
+	
+	
+	public Item getItem(String name) {
 		for (Item item : items) {
 			if (item.matches(name)) {
 				return item;
 			}
 		}
-		// ...then the creatures.
+		return null;
+	}
+	
+	
+	public Creature getCreature(String name) {
 		for (Creature creature : creatures) {
 			if (creature.matches(name)) {
 				return creature;
 			}
 		}
-
-		// Not found.
 		return null;
 	}
 	

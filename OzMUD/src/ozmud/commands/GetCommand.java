@@ -1,6 +1,8 @@
 package ozmud.commands;
 
+import ozmud.world.Item;
 import ozmud.world.Player;
+import ozmud.world.Room;
 
 
 /**
@@ -41,9 +43,18 @@ public class GetCommand implements Command {
 		if (argument == null) {
 			player.send(INVALID);
 		} else {
+			Room room = player.getRoom();
+			Item item = room.getItem(argument);
+			if (item != null) {
+				room.removeItem(item);
+				player.addItem(item);
+				String message = String.format(
+						"${CYAN}${sender} get${s} %s.\n\r",
+						item.getFullName());
+				player.broadcast(message, null);
+			}
 		}
 	}
-	
 	
 
 }
