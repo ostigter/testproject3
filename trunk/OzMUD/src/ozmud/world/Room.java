@@ -66,8 +66,8 @@ public class Room extends MudObject {
 	}
 	
 	
-	public List<Item> getItems() {
-		return items;
+	public Item[] getItems() {
+		return items.toArray(new Item[0]);
 	}
 	
 	
@@ -109,7 +109,7 @@ public class Room extends MudObject {
 		if (target != null) {
 			return target;
 		}
-		// ...then the creatures.
+		// ...then the creatures in this room.
 		target = getCreature(name);
 		if (target != null) {
 			return target;

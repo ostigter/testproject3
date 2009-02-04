@@ -66,19 +66,19 @@ public class LookCommand implements Command {
 		Room room = player.getRoom();
 		// Show room name and description.
 		player.send(String.format(
-				"${YELLOW}%s\n\r", room.getShortName()));
+				"\n\r${YELLOW}%s\n\r", room.getShortName()));
 		player.send(String.format(
 				"${GREEN}%s\n\r", room.getDescription()));
 		// First show any items present...
 		for (Item item : room.getItems()) {
 			player.send(String.format(
-					"  %s\n\r", item.getFullName()));
+					"${MAGENTA}  %s\n\r", item.getFullName()));
 		}
 		// ...then show any creatures present (besides yourself).
 		for (Creature creature : room.getCreatures()) {
 			if (!creature.equals(player)) {
 				player.send(String.format(
-						"  %s\n\r", creature.getFullName()));
+						"${MAGENTA}  %s\n\r", creature.getFullName()));
 			}
 		}
 	}
