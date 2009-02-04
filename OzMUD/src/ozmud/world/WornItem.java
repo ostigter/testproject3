@@ -12,6 +12,9 @@ public class WornItem extends Item {
 	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
 	
+	/** The body part this item is worn. */
+	private BodyPart bodyPart;
+	
 	/** The protection gained by wearing this item. */
 	private int protection;
 	
@@ -21,6 +24,16 @@ public class WornItem extends Item {
 	 */
 	public WornItem() {
 		// Empty implementation.
+	}
+	
+	
+	public BodyPart getBodyPart() {
+		return bodyPart;
+	}
+	
+	
+	public void setBodyPart(BodyPart bodyPart) {
+		this.bodyPart = bodyPart;
 	}
 	
 	

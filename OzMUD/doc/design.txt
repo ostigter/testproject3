@@ -12,6 +12,7 @@ abstract class MudObject {
     - fullName : String
     - aliasses : String[]
     - description : String
+    + boolean matches(String name)
 
 class Room : MudObject {
     - id : int
@@ -30,6 +31,28 @@ enum Gender {
     NEUTRAL
 }
 
+abstract class Creature : MudObject
+    - race : Race
+    - gender : Gender
+    - level : int
+    - alignment : int
+    - strength : int
+    - dexterity : int
+    - endurance : int
+    - intelligence : int
+    - wisdom : int
+    - hitPoints : int
+    - body : Body
+    - inventory : List<Item>
+    - wielded : Weapon
+    - cashMoney : int
+    - bankMoney : int
+    - opponent : Creature
+    - enemies : Set<Creature>
+    + getMaxHitPoints() : int
+    + getEncumberance() : double
+    + getMaxEncumberance() : double
+
 class Race {
     - noun       # e.g. Elf
     - adjective  # e.g. Elven
@@ -46,55 +69,68 @@ class Race {
     - expirienceRate
 }
 
-races:
+Races:
     Human   (human)
     Elf     (elven)
     Dwarf   (dwarven)
     Orc     (orcish)
 
-abstract class Creature : MudObject
-    - race : Race
-    - gender : Gender
-    - level : int
-    - alignment : int
-    - strength : int
-    - dexterity : int
-    - endurance : int
-    - intelligence : int
-    - wisdom : int
-    - hitPoints : int
-    - body : Body
-    - inventory : List<Item>
-    - worn : List<WornItem>
-    - wielded : Weapon
-    - cashMoney : int
-    - bankMoney : int
-    - opponent : Creature
-    - enemies : Set<Creature>
-    + getMaxHitPoints()
-    + getEncumberance()
-    + getMaxEncumberance()
+Lclass Body {
+    -bodyParts : Map<BodyPart, WornItem>
+    +wear(WornItem item)
+    +remove(WornItem item)
+    +remove(BodyPart bodyPart)
+    +getProtection() : int
+}
 
-class Body {
-    head : Armour
-    body : Armour
-    arms : Armour
-    hands : Armour
-    legs : Armour
-    feet : Armour
+enum BodyPart {
+    HEAD
+    NECK
+    BODY
+    ARMS
+    HANDS
+    RING_LEFT
+    RING_RIGHT
+    BELT
+    LEGS
+    FEET
+    SHIELD
+    WEAPON
 }
 
 class NPC : Creature {
-    - aggressive : boolean
-    - follows : boolean
+    -isAggressive : boolean
+    -doesFollow : boolean
 }
 
 class Player : Creature {
-    - password : String
-    - colorsEnabled : boolean
-    - connectionState : ConnectionState
-    - isResting : boolean
+    -password : String
+    -colorsEnabled : boolean
+    -connectionState : ConnectionState
+    -isResting : boolean
 }
+
+enum PlayerState {
+    NORMAL
+    IDLE
+    RESTING
+    KNOCKED_DOWN
+    STUNNED
+    DEAD
+}
+
+Levels/Titels:
+1000  Admin
+ 900  Arch-Wizard
+ 800  Elder
+ 700  Wizard
+ 600  Creator
+ 500  Apprentice
+ 200  Hero/Heroin
+ 100  Legend
+  75  Champion
+  50  Lord/Lady
+   1  Adventurer/Adventuress
 
 enum ConnectionState {
     OFFLINE
@@ -135,18 +171,75 @@ class Armour : Item
     - endurance : int
 }
 
-enum ArmourType {
-    HEAD
-    BODY
-    ARMS
-    HANDS
-    RING
-    LEGS
-    FEET
-    SHIELD
-}
-
 class Skill {
     - name
     - cost
 }
+
+Commands:
+    Miscellaneous
+        quit
+        who
+        time
+        uptime
+        save
+        stats
+        alias
+    Exploration
+        look
+        north
+        northeast
+        east
+        southeast
+        south
+        southwest
+        west
+        northwest
+        up
+        down
+        open
+        close
+        lock
+        unlock
+        search
+        listen
+        push
+        pull
+    Equipment
+        inventory
+        get
+        drop
+        give
+        wield
+        unwield
+        wear
+        remove
+    Combat
+        consider
+        kill
+        rest
+    Stats
+        exp
+    Improvement
+        increase
+        skills
+        train
+    Shops
+        list
+        buy
+        sell
+        dispose
+    Banking
+        money
+        deposit
+        withdraw
+    Partying
+        party
+        follow
+        loose
+    Communication
+        say
+        tell
+        shout
+        tune
+        gossip
