@@ -1,6 +1,7 @@
 package ozmud.world;
 
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,8 +28,8 @@ public abstract class Creature extends MudObject {
 	/** The room this creature is currently in. */
 	private Room room;
 	
-	/** Inventory (carried items). */
-	private final Set<Item> items;
+	/** Ccarried items. */
+	private final Set<Item> carriedItems;
 	
 	/** Worn items mapped by body part. */
 	private final Map<BodyPart, WornItem> wornItems;
@@ -41,7 +42,7 @@ public abstract class Creature extends MudObject {
 	 * Default constructor.
 	 */
 	public Creature() {
-		items = new HashSet<Item>();
+		carriedItems = new HashSet<Item>();
 		wornItems = new HashMap<BodyPart, WornItem>();
 	}
 	
@@ -102,24 +103,30 @@ public abstract class Creature extends MudObject {
 	
 	
 	/**
-	 * Returns the inventory items.
+	 * Returns the carried items.
 	 * 
-	 * @return  The inventory items
+	 * @return  The carried items
 	 */
-	public Set<Item> getItems() {
-		return items;
+	public Set<Item> getCarriedItems() {
+		return carriedItems;
 	}
 	
 	
 	/**
 	 * Returns a specific inventory item, or null if not found.
+	 * First the worn equipment is checked, then the carried items.
 	 * 
 	 * @param name  The item's name
 	 * 
 	 * @return  The item if found, otherwise null
 	 */
 	public Item getItem(String name) {
-		for (Item item : items) {
+		for (Item item : wornItems.values()) {
+			if (item.matches(name)) {
+				return item;
+			}
+		}
+		for (Item item : carriedItems) {
 			if (item.matches(name)) {
 				return item;
 			}
@@ -133,8 +140,8 @@ public abstract class Creature extends MudObject {
 	 *
 	 * @param item  The item
 	 */
-	public void addItem(Item item) {
-		items.add(item);
+	public void addCarriedItem(Item item) {
+		carriedItems.add(item);
 	}
 
 
@@ -143,28 +150,63 @@ public abstract class Creature extends MudObject {
 	 *
 	 * @param item  The item
 	 */
-	public void removeItem(Item item) {
-		items.remove(item);
+	public void removeCarriedItem(Item item) {
+		carriedItems.remove(item);
 	}
 
 
-	public void wearItem(BodyPart bodyPart, WornItem item) {
-		wornItems.put(bodyPart, item);
+	/**
+	 * Returns true if a specific item is being carried.
+	 * 
+	 * @param item  The item
+	 * 
+	 * @return True if carried, otherwise false
+	 */
+	public boolean isCarried(Item item) {
+		return carriedItems.contains(item);
+	}
+	
+	
+	/**
+	 * Returns the worn items.
+	 * 
+	 * @return  The worn items
+	 */
+	public Collection<WornItem> getWornItems() {
+		return wornItems.values();
+	}
+	
+	
+	/**
+	 * Wears an item.
+	 * 
+	 * @param bodyPart  The body part to wear in on
+	 * @param item      The item
+	 */
+	public void wearItem(WornItem item) {
+		wornItems.put(item.getBodyPart(), item);
 	}
 
 
-	public void removeItem(BodyPart bodyPart) {
+	/**
+	 * Removes a worn item.
+	 * 
+	 * @param bodyPart  The body part the item is worn on
+	 */
+	public void removeWornItem(BodyPart bodyPart) {
 		wornItems.remove(bodyPart);
 	}
 	
 	
+	/**
+	 * Returns true if a specific item is being worn.
+	 * 
+	 * @param item  The item
+	 * 
+	 * @return True if worn, otherwise false
+	 */
 	public boolean isWearing(Item item) {
-		for (WornItem wornItem : wornItems.values()) {
-			if (wornItem.equals(item)) {
-				return true;
-			}
-		}
-		return false;
+		return wornItems.containsValue(item);
 	}
 
 
@@ -186,27 +228,60 @@ public abstract class Creature extends MudObject {
 	public void setWeapon(Weapon weapon) {
 		this.weapon = weapon;
 	}
+	
+	
+	/**
+	 * Returns true if an item is the currently wielded weapon.
+	 * 
+	 * @param item  The item
+	 * 
+	 * @return True if an item is the currently wielded weapon
+	 */
+	public boolean isWielding(Item item) {
+		return item.equals(weapon);
+	}
 
 
 	/**
 	 * Returns a specific target, or null if not found.
+	 * The target is searched for in this specific order:
+	 * <ul>
+	 * <li>the creature itself (self-reference)</li>
+	 * <li>the wielded weapon</li>
+	 * <li>a worn item</li>
+	 * <li>a carried item</li>
+	 * <li>an item in the room</li>
+	 * </ul>
+	 * 
+	 * The target can be either the creature itself (self reference), a worn
+	 * item, the wielded weapon, a carried item or an item in the room.
 	 *
 	 * @param name  The target's name
 	 *
 	 * @return  The target if found, otherwise null
 	 */
 	public MudObject getTarget(String name) {
-		// First see if we are looking for ourselves...
+		// See if we are looking for ourselves.
 		if (name.equals(ME) || matches(name)) {
 			return this;
 		}
-		// ...then search our inventory...
-		for (Item item : items) {
+		// Check the wielded weapon.
+		if (weapon != null && weapon.matches(name)) {
+			return weapon;
+		}
+		// Sarch the worn items.
+		for (Item item : wornItems.values()) {
 			if (item.matches(name)) {
 				return item;
 			}
 		}
-		// ...then search the room we're in.
+		// Search the carried items.
+		for (Item item : carriedItems) {
+			if (item.matches(name)) {
+				return item;
+			}
+		}
+		// Search the room we're in.
 		if (room != null) {
 			MudObject target = room.getTarget(name);
 			if (target != null) {

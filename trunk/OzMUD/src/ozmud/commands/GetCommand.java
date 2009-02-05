@@ -1,8 +1,6 @@
 package ozmud.commands;
 
 
-import java.util.List;
-
 import ozmud.world.Item;
 import ozmud.world.Player;
 import ozmud.world.Room;
@@ -22,15 +20,15 @@ public class GetCommand implements Command {
 	/** Reference to all items in the room. */
 	private static final String ALL = "all";
 	
+	/** Error message when nothing can be found. */
+	private static final String NOTHING =
+			"${GRAY}There is nothing here to get.\n\r";
+	
 	/** Message when the item cannot be taken. */
 	private static final String INVALID = "${GRAY}You can't get that.\n\r";
 	
 	/** Message when the item cannot be found. */
 	private static final String NOT_FOUND = "${GRAY}You don't see it.\n\r";
-	
-	/** Error message when nothing can be found. */
-	private static final String NOTHING =
-			"${GRAY}There is nothing to get.\n\r";
 	
 	/** Emote when the item is taken. */
 	private static final String TAKEN = "${CYAN}${sender} get${s} %s.\n\r";
@@ -92,7 +90,7 @@ public class GetCommand implements Command {
 	
 	private void get(Player player, Item item) {
 		player.getRoom().removeItem(item);
-		player.addItem(item);
+		player.addCarriedItem(item);
 		player.broadcast(String.format(TAKEN, item.getFullName()), null);
 	}
 	
