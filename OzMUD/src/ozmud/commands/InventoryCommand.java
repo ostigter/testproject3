@@ -1,7 +1,8 @@
 package ozmud.commands;
 
 
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import ozmud.world.Item;
 import ozmud.world.Player;
@@ -20,7 +21,7 @@ public class InventoryCommand implements Command {
 	
 	/** Message when no items are present. */
 	private static final String EMPTY =
-			"${GRAY}You are not carrying any items.\n\r";
+			"${GRAY}You aren't carrying anything.\n\r";
 	
 
 	/*
@@ -49,13 +50,28 @@ public class InventoryCommand implements Command {
 		if (argument != null) {
 			player.send(INVALID);
 		} else {
-			Set<Item> items = player.getItems();
-			if (items.size() == 0) {
+			List<Item> inventory = new LinkedList<Item>();
+			for (Item item : player.getCarriedItems()) {
+				inventory.add(item);
+			}
+			for (Item item : player.getWornItems()) {
+				inventory.add(item);
+			}
+			if (inventory.size() == 0) {
 				player.send(EMPTY);
 			} else {
 				player.send("${GRAY}You are carrying:\n\r");
-				for (Item item : items) {
-					player.send(String.format("  %s\n\r", item.getFullName()));
+				for (Item item : inventory) {
+					String name = item.getFullName();
+					String message;
+					if (player.isWielding(item)) {
+						message = "  %s (wielded)\n\r";
+					} else if (player.isWearing(item)) {
+						message = "  %s (worn)\n\r"; 
+					} else {
+						message = "  %s\n\r"; 
+					}
+					player.send(String.format(message, name));
 				}
 			}
 		}
