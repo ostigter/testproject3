@@ -15,13 +15,16 @@ import ozmud.commands.CommandInterpreter;
 public class World {
 
 
-	/** Singleton instance. */
+	/** The singleton instance. */
 	private static final World instance = new World(); 
 	
+	/** The command interpreter. */
 	private final CommandInterpreter commandInterpreter;
 	
+	/** The rooms mapped by their ID. */
 	private final Map<Integer, Room> rooms;
 	
+	/** The player characters mapped by their username (short name). */
 	private final Map<String, Player> players;
 
 
@@ -94,15 +97,72 @@ public class World {
 		Weapon dagger = new Weapon();
 		dagger.setShortName("shortsword");
 		dagger.setFullName("A rusty iron shortsword");
-		dagger.setDescription("The blade is old, rusty and worn. It will probably do little damage.");
+		dagger.setDescription(
+				"The blade is old, rusty and worn. It will probably do little damage.");
 		dagger.setAliasses(new String[] {"sword", "blade"});
 		dagger.setDamage(10);
-		dagger.setWeight(0.5);
-		dagger.setValue(10);
 		dagger.setMaximumHpoints(100);
 		dagger.setHitpoints(20);
+		dagger.setWeight(0.5);
+		dagger.setValue(10);
 		room.addItem(dagger);
-
+		
+		WornItem leatherCuirass = new WornItem();
+		leatherCuirass.setShortName("leather cuirass");
+		leatherCuirass.setFullName("A leather cuirass");
+		leatherCuirass.setDescription(
+				"The sturdy cuirass is made of high quality leather and "
+				+ "should offer decent protection from light attacks.");
+		leatherCuirass.setAliasses(new String[] {"cuirass", "armour"});
+		leatherCuirass.setBodyPart(BodyPart.BODY);
+		leatherCuirass.setProtection(10);
+		leatherCuirass.setWeight(5.0);
+		leatherCuirass.setValue(100);
+		room.addItem(leatherCuirass);
+		
+		WornItem woodenBuckler = new WornItem();
+		woodenBuckler.setShortName("wooden buckler");
+		woodenBuckler.setFullName("A wooden buckler");
+		woodenBuckler.setDescription(
+				"The light, wooden shield should offer some protection, but "
+				+ "you doubt it will survive many direct hits.");
+		woodenBuckler.setAliasses(
+				new String[] {"buckler", "shield", "armour"});
+		woodenBuckler.setBodyPart(BodyPart.SHIELD);
+		woodenBuckler.setProtection(5);
+		woodenBuckler.setWeight(5.0);
+		woodenBuckler.setValue(50);
+		room.addItem(woodenBuckler);
+		
+		WornItem plateCuirass = new WornItem();
+		plateCuirass.setShortName("steel cuirass");
+		plateCuirass.setFullName("A steel cuirass");
+		plateCuirass.setDescription(
+				"The massive steel plate cuirass is crafted from the finest "
+				+ "steel and should offer great protection from heavy attacks, "
+				+ "although it will greatly impede the wearer's flexibility "
+				+ "and speed.");
+		plateCuirass.setAliasses(new String[] {"cuirass", "armour"});
+		plateCuirass.setBodyPart(BodyPart.BODY);
+		plateCuirass.setProtection(50);
+		plateCuirass.setWeight(60.0);
+		plateCuirass.setValue(1000);
+		room.addItem(plateCuirass);
+		
+		WornItem steelTowerShield = new WornItem();
+		steelTowerShield.setShortName("steel tower shield");
+		steelTowerShield.setFullName("A steel tower shield");
+		steelTowerShield.setDescription(
+				"The large shield is made of heavy plate steel and should "
+				+ "offer great protection and last many hits.");
+		steelTowerShield.setAliasses(
+				new String[] {"tower shield", "shield", "armour"});
+		steelTowerShield.setBodyPart(BodyPart.SHIELD);
+		steelTowerShield.setProtection(20);
+		steelTowerShield.setWeight(30.0);
+		steelTowerShield.setValue(500);
+		room.addItem(steelTowerShield);
+		
 		room = new Room();
 		room.setId(1);
 		room.setShortName("East Road");

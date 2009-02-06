@@ -1,7 +1,6 @@
 package ozmud.world;
 
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -107,31 +106,56 @@ public abstract class Creature extends MudObject {
 	 * 
 	 * @return  The carried items
 	 */
-	public Set<Item> getCarriedItems() {
-		return carriedItems;
+	public Item[] getCarriedItems() {
+		return carriedItems.toArray(new Item[0]);
 	}
 	
 	
-	/**
-	 * Returns a specific inventory item, or null if not found.
-	 * First the worn equipment is checked, then the carried items.
-	 * 
-	 * @param name  The item's name
-	 * 
-	 * @return  The item if found, otherwise null
-	 */
-	public Item getItem(String name) {
-		for (Item item : wornItems.values()) {
-			if (item.matches(name)) {
-				return item;
-			}
-		}
+	public Item getCarriedItem(String name) {
 		for (Item item : carriedItems) {
 			if (item.matches(name)) {
 				return item;
 			}
 		}
 		return null;
+	}
+	
+	
+	public WornItem getWornItem(BodyPart bodyPart) {
+		return wornItems.get(bodyPart);
+	}
+	
+	
+	public WornItem getWornItem(String name) {
+		for (Item item : wornItems.values()) {
+			if (item.matches(name)) {
+				return (WornItem) item;
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * Returns a specific inventory item, or null if not found.
+	 * First the wielded weapon is checked, then the worn items, then the
+	 * carried items.
+	 * 
+	 * @param name  The item's name
+	 * 
+	 * @return  The item if found, otherwise null
+	 */
+	public Item getItem(String name) {
+		Item item = null;
+		if (weapon != null && weapon.matches(name)) {
+			item = weapon;
+		} else {
+			item = getWornItem(name);
+			if (item == null) {
+				item = getCarriedItem(name);
+			}
+		}
+		return item;
 	}
 
 
@@ -142,6 +166,18 @@ public abstract class Creature extends MudObject {
 	 */
 	public void addCarriedItem(Item item) {
 		carriedItems.add(item);
+	}
+	
+	
+	/**
+	 * Returns true if a specific item is being carried.
+	 * 
+	 * @param item  The item
+	 * 
+	 * @return True if carried, otherwise false
+	 */
+	public boolean isCarrying(Item item) {
+		return carriedItems.contains(item);
 	}
 
 
@@ -156,24 +192,12 @@ public abstract class Creature extends MudObject {
 
 
 	/**
-	 * Returns true if a specific item is being carried.
-	 * 
-	 * @param item  The item
-	 * 
-	 * @return True if carried, otherwise false
-	 */
-	public boolean isCarried(Item item) {
-		return carriedItems.contains(item);
-	}
-	
-	
-	/**
 	 * Returns the worn items.
 	 * 
 	 * @return  The worn items
 	 */
-	public Collection<WornItem> getWornItems() {
-		return wornItems.values();
+	public Item[] getWornItems() {
+		return wornItems.values().toArray(new Item[0]);
 	}
 	
 	

@@ -1,8 +1,6 @@
 package ozmud.commands;
 
 
-import java.util.Collection;
-
 import ozmud.world.Item;
 import ozmud.world.Player;
 
@@ -23,17 +21,19 @@ public class DropCommand implements Command {
 	
 	/** Message when the inventory is empty. */
 	private static final String EMPTY =
-			"${GRAY}You aren't carrying anything.\n\r";
+			"${GRAY}You aren't carrying anything that can be dropped.\n\r";
 	
-	/** Message when the item cannot be found in the inventory. */
+	/** Message when the item cannot be found in the carried inventory. */
 	private static final String NOT_FOUND =
 			"${GRAY}You aren't carrying it.\n\r";
 	
 	/** Message when the item is wielded. */
-	private static final String WIELDING = "${GRAY}You are wielding it.\n\r";
+	private static final String WIELDING =
+			"${GRAY}You are wielding it.\n\r";
 	
 	/** Message when the item is worn. */
-	private static final String WEARING = "${GRAY}You are wearing it.\n\r";
+	private static final String WEARING =
+			"${GRAY}You are wearing it.\n\r";
 	
 	/** Message when an item is dropped. */
 	private static final String DROP = "${CYAN}${sender} drop${s} %s.\n\r";
@@ -67,8 +67,8 @@ public class DropCommand implements Command {
 		} else {
 			// Drop all items.
 			if (target.equals(ALL)) {
-				Collection<Item> items = player.getCarriedItems();
-				if (items.size() == 0) {
+				Item[] items = player.getCarriedItems();
+				if (items.length == 0) {
 					player.send(EMPTY);
 				} else {
 					for (Item item : items) {

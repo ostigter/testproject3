@@ -6,6 +6,7 @@ import java.util.List;
 
 import ozmud.world.Item;
 import ozmud.world.Player;
+import ozmud.world.Weapon;
 
 
 /**
@@ -51,16 +52,23 @@ public class InventoryCommand implements Command {
 			player.send(INVALID);
 		} else {
 			List<Item> inventory = new LinkedList<Item>();
-			for (Item item : player.getCarriedItems()) {
+			// Add wielded weapon.
+			Weapon weapon = player.getWeapon();
+			if (weapon != null) {
+				inventory.add(weapon);
+			}
+			// List worn items.
+			for (Item item : player.getWornItems()) {
 				inventory.add(item);
 			}
-			for (Item item : player.getWornItems()) {
+			// List carried items.
+			for (Item item : player.getCarriedItems()) {
 				inventory.add(item);
 			}
 			if (inventory.size() == 0) {
 				player.send(EMPTY);
 			} else {
-				player.send("${GRAY}You are carrying:\n\r");
+				player.send("${GRAY}You are carrying:\n\r${MAGENTA}");
 				for (Item item : inventory) {
 					String name = item.getFullName();
 					String message;
