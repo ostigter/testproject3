@@ -116,7 +116,7 @@ public abstract class MudObject implements Serializable {
 	 * @return True if a match, otherwise false
 	 */
 	public boolean matches(String name) {
-		if (name.equalsIgnoreCase(shortName)) {
+		if (name != null && name.equalsIgnoreCase(shortName)) {
 			return true;
 		} else {
 			if (aliasses != null) {

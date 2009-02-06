@@ -16,7 +16,7 @@ public class CommandInterpreter {
 	
 	
 	/** Message for an unknown command. */
-	private static final String UNKNOWN_COMMAND = "What?\n\r";
+	private static final String UNKNOWN = "${GRAY}What?\n\r";
 	
 	/** Commands mapped by their name. */
 	private final Map<String, Command> commands;
@@ -28,7 +28,7 @@ public class CommandInterpreter {
 	public CommandInterpreter() {
 		commands = new HashMap<String, Command>();
 		aliasses = new HashMap<String, Command>();
-		populateCommands();
+		init();
 	}
 	
 	
@@ -63,11 +63,10 @@ public class CommandInterpreter {
 				if (command == null) {
 					command = commands.get(name);
 				}
-				if (command != null) {
-					command.execute(player, argument);
+				if (command == null) {
+					player.send(UNKNOWN);
 				} else {
-					// Unknown command.
-					player.send(UNKNOWN_COMMAND);
+					command.execute(player, argument);
 				}
 			}
 		}
@@ -90,20 +89,22 @@ public class CommandInterpreter {
 
 
 	/**
-	 * Populates the list of known commands.
+	 * Initializes the list of commands.
 	 */
-	private void populateCommands() {
-		// Miscellaneous.
+	private void init() {
+		// General.
 		addCommand(new QuitCommand());
+		// Communication.
+		addCommand(new SayCommand());
 		// Navigation.
 		addCommand(new LookCommand());
 		addCommand(new DirectionalCommand("north",     "n"));
-		addCommand(new DirectionalCommand("northeast", "ne"));
 		addCommand(new DirectionalCommand("east",      "e"));
-		addCommand(new DirectionalCommand("southeast", "se"));
 		addCommand(new DirectionalCommand("south",     "s"));
-		addCommand(new DirectionalCommand("southwest", "sw"));
 		addCommand(new DirectionalCommand("west",      "w"));
+		addCommand(new DirectionalCommand("northeast", "ne"));
+		addCommand(new DirectionalCommand("southeast", "se"));
+		addCommand(new DirectionalCommand("southwest", "sw"));
 		addCommand(new DirectionalCommand("northwest", "nw"));
 		addCommand(new DirectionalCommand("up",        "u"));
 		addCommand(new DirectionalCommand("down",      "d"));
@@ -111,8 +112,11 @@ public class CommandInterpreter {
 		addCommand(new InventoryCommand());
 		addCommand(new GetCommand());
 		addCommand(new DropCommand());
-		// Communication.
-		addCommand(new SayCommand());
+		addCommand(new EquipmentCommand());
+		addCommand(new WieldCommand());
+		addCommand(new UnwieldCommand());
+		addCommand(new WearCommand());
+		addCommand(new RemoveCommand());
 	}
 	
 	

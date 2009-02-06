@@ -1,0 +1,79 @@
+OzMUD - Commands
+================
+
+------------------------------------------------------------------------------
+Command             Alias   Priority    Status
+------------------------------------------------------------------------------
+General
+    quit            -       High        Completed
+    who             -       High        -
+    stats           -       High        -
+    save            -       High        -
+    alias           -       Normal      -
+    time            -       Normal      -
+    uptime          -       Low         -
+------------------------------------------------------------------------------
+Communication
+    say             -       Low         Completed
+    tell            -       Low         -
+    shout           -       Low         -
+    tune            -       Low         -
+    gossip          -       Low         -
+------------------------------------------------------------------------------
+Exploration
+    look            l       High        Completed
+    north           n       High        Completed
+    east            e       High        Completed
+    south           s       High        Completed
+    west            w       High        Completed
+    northeast       ne      Normal      Completed
+    southeast       se      Normal      Completed
+    southwest       sw      Normal      Completed
+    northwest       nw      Normal      Completed
+    up              u       Normal      Completed
+    down            d       Normal      Completed
+    open            -       Normal      -
+    close           -       Normal      -
+    lock            -       Normal      -
+    unlock          -       Normal      -
+    search          -       Low         -
+    listen          -       Low         -
+------------------------------------------------------------------------------
+Equipment
+    inventory       i       High        Completed
+    get             g       High        Completed
+    drop            -       High        Completed
+    wield           -       High        Completed
+    unwield         -       High        Completed
+    wear            -       High        In progress
+    remove          -       High        -
+    equipment (eq)  -       High        -
+    give            -       Low         -
+------------------------------------------------------------------------------
+Combat
+    consider        con     High        -
+    kill            k       High        -
+    rest            -       Normal      -
+------------------------------------------------------------------------------
+Stats
+    experience      exp     High        -       
+    increase        inc     Normal      -
+    skills          -       Normal      -
+    train           -       Normal      -
+------------------------------------------------------------------------------
+Shops
+    list            -       Normal      -
+    buy             -       Normal      -
+    sell            -       Normal      -
+    dispose         -       Normal      -
+------------------------------------------------------------------------------
+Banking
+    money           -       Normal      -
+    deposit         -       Normal      -
+    withdraw        -       Normal      -
+------------------------------------------------------------------------------
+Partying
+    follow          -       Normal      -
+    loose           -       Normal      -
+    party           -       Low         -
+------------------------------------------------------------------------------

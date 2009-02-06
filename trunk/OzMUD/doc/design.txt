@@ -25,12 +25,6 @@ class Exit : MudObject {
     -roomId : int
 }
 
-enum Gender {
-    MALE
-    FEMALE
-    NEUTRAL
-}
-
 abstract class Creature : MudObject
     -race : Race
     -gender : Gender
@@ -42,9 +36,9 @@ abstract class Creature : MudObject
     -intelligence : int
     -wisdom : int
     -hitPoints : int
-    -items : Set<Item>
-    -wornItems : Map<BodyPart, WornItem>
-    -weapon : Weapon
+    -inventory : Set<Item>
+    -carriedItems : Set<Item>
+    -equipment : Map<EquipmentSlot, WornItem>
     -cashMoney : int
     -bankMoney : int
     -opponent : Creature
@@ -52,6 +46,12 @@ abstract class Creature : MudObject
     +getMaxHitPoints() : int
     +getEncumberance() : double
     +getMaxEncumberance() : double
+
+enum Gender {
+    MALE
+    FEMALE
+    NEUTRAL
+}
 
 class Race {
     - noun       # e.g. Elf
@@ -75,27 +75,21 @@ Races:
     Dwarf   (dwarven)
     Orc     (orcish)
 
-Lclass Body {
-    -bodyParts : Map<BodyPart, WornItem>
-    +wear(WornItem item)
-    +remove(WornItem item)
-    +remove(BodyPart bodyPart)
-    +getProtection() : int
-}
-
-enum BodyPart {
-    HEAD
-    NECK
-    BODY
-    ARMS
-    HANDS
-    RING_LEFT
-    RING_RIGHT
-    BELT
-    LEGS
-    FEET
-    SHIELD
-    WEAPON
+enum EquipmentSlot {
+    -name : String
+    -form : String
+    HEAD("head", "on")
+    NECK("neck", "around")
+    BODY("body", "on")
+    ARMS("arms", "on")
+    HANDS("hands", "on")
+    RING_RIGHT("right ring", "as")
+    RING_LEFT("left ring", "as")
+    BELT("waist", "around")
+    LEGS("legs", "on")
+    FEET("feet", "on")
+    SHIELD("shield", "as")
+    WEAPON("weapon", "as")
 }
 
 class NPC : Creature {
@@ -175,71 +169,3 @@ class Skill {
     - name
     - cost
 }
-
-Commands:
-    Miscellaneous
-        quit
-        who
-        time
-        uptime
-        save
-        stats
-        alias
-    Exploration
-        look
-        north
-        northeast
-        east
-        southeast
-        south
-        southwest
-        west
-        northwest
-        up
-        down
-        open
-        close
-        lock
-        unlock
-        search
-        listen
-        push
-        pull
-    Equipment
-        inventory
-        get
-        drop
-        give
-        wield
-        unwield
-        wear
-        remove
-    Combat
-        consider
-        kill
-        rest
-    Stats
-        exp
-    Improvement
-        increase
-        skills
-        train
-    Shops
-        list
-        buy
-        sell
-        dispose
-    Banking
-        money
-        deposit
-        withdraw
-    Partying
-        party
-        follow
-        loose
-    Communication
-        say
-        tell
-        shout
-        tune
-        gossip
