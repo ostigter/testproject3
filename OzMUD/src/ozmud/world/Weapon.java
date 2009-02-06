@@ -1,7 +1,7 @@
 package ozmud.world;
 
 
-public class Weapon extends Item {
+public class Weapon extends Equipment {
 
 
 	/** Serial version UID. */
@@ -12,13 +12,6 @@ public class Weapon extends Item {
 
 	/** The maximum damage dealt with this weapon. */
 	private int damage;
-	
-	/** The maximum number of hitpoints when in perfect condition. */
-	private int maximumHitpoints;
-
-	/** The current number of hitpoints left before breaking down. */
-	private int hitpoints;
-	
 	
 	/**
 	 * Default constructor.
@@ -65,26 +58,6 @@ public class Weapon extends Item {
 	 */
 	public void setDamage(int damage) {
 		this.damage = damage;
-	}
-	
-	
-	public int getMaximumHitpoints() {
-		return maximumHitpoints;
-	}
-
-
-	public void setMaximumHpoints(int maximumHitpoints) {
-		this.maximumHitpoints = maximumHitpoints;
-	}
-	
-	
-	public int getHitpoints() {
-		return hitpoints;
-	}
-	
-	
-	public void setHitpoints(int hitpoints) {
-		this.hitpoints = hitpoints;
 	}
 	
 	

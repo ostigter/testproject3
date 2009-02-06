@@ -3,7 +3,7 @@ package ozmud.commands;
 
 import ozmud.world.Item;
 import ozmud.world.Player;
-import ozmud.world.WornItem;
+import ozmud.world.Equipment;
 
 
 /**
@@ -69,19 +69,19 @@ public class RemoveCommand implements Command {
 					player.send(NONE);
 				} else {
 					for (Item item : items) {
-						remove(player, (WornItem) item);
+						remove(player, (Equipment) item);
 					}
 				}
 			} else {
 				// Remove a specific worn item.
-				WornItem item = player.getWornItem(target);
+				Equipment item = player.getWornItem(target);
 				if (item == null) {
 					player.send(NOT_FOUND);
 				} else {
 					if (!player.isWearing(item)) {
 						player.send(NOT_WORN);
 					} else {
-						remove(player, (WornItem) item);
+						remove(player, (Equipment) item);
 					}
 				}
 			}
@@ -89,8 +89,8 @@ public class RemoveCommand implements Command {
 	}
 	
 	
-	private void remove(Player player, WornItem item) {
-		player.removeWornItem(item.getBodyPart());
+	private void remove(Player player, Equipment item) {
+		player.removeEquipment(item.getEquipmentSlot());
 		player.addCarriedItem(item);
 		player.broadcast(String.format(REMOVE, item.getFullName()), null);
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 
+
 /**
  * Base class for all creatures.
  * 
@@ -31,10 +32,7 @@ public abstract class Creature extends MudObject {
 	private final Set<Item> carriedItems;
 	
 	/** Worn items mapped by body part. */
-	private final Map<BodyPart, WornItem> wornItems;
-	
-	/** The currently wielded weapon. */
-	private Weapon weapon; 
+	private final Map<EquipmentSlot, Equipment> equipment;
 	
 	
 	/**
@@ -42,7 +40,7 @@ public abstract class Creature extends MudObject {
 	 */
 	public Creature() {
 		carriedItems = new HashSet<Item>();
-		wornItems = new HashMap<BodyPart, WornItem>();
+		equipment = new HashMap<EquipmentSlot, Equipment>();
 	}
 	
 
@@ -121,15 +119,15 @@ public abstract class Creature extends MudObject {
 	}
 	
 	
-	public WornItem getWornItem(BodyPart bodyPart) {
-		return wornItems.get(bodyPart);
+	public Equipment getWornItem(EquipmentSlot slot) {
+		return equipment.get(slot);
 	}
 	
 	
-	public WornItem getWornItem(String name) {
-		for (Item item : wornItems.values()) {
+	public Equipment getWornItem(String name) {
+		for (Item item : equipment.values()) {
 			if (item.matches(name)) {
-				return (WornItem) item;
+				return (Equipment) item;
 			}
 		}
 		return null;
@@ -146,14 +144,9 @@ public abstract class Creature extends MudObject {
 	 * @return  The item if found, otherwise null
 	 */
 	public Item getItem(String name) {
-		Item item = null;
-		if (weapon != null && weapon.matches(name)) {
-			item = weapon;
-		} else {
-			item = getWornItem(name);
-			if (item == null) {
-				item = getCarriedItem(name);
-			}
+		Item item = getWornItem(name);
+		if (item == null) {
+			item = getCarriedItem(name);
 		}
 		return item;
 	}
@@ -189,6 +182,11 @@ public abstract class Creature extends MudObject {
 	public void removeCarriedItem(Item item) {
 		carriedItems.remove(item);
 	}
+	
+	
+	public Equipment getEquipment(EquipmentSlot slot) {
+		return equipment.get(slot);
+	}
 
 
 	/**
@@ -197,28 +195,28 @@ public abstract class Creature extends MudObject {
 	 * @return  The worn items
 	 */
 	public Item[] getWornItems() {
-		return wornItems.values().toArray(new Item[0]);
+		return equipment.values().toArray(new Item[0]);
 	}
 	
 	
 	/**
 	 * Wears an item.
 	 * 
-	 * @param bodyPart  The body part to wear in on
+	 * @param slot  The body part to wear in on
 	 * @param item      The item
 	 */
-	public void wearItem(WornItem item) {
-		wornItems.put(item.getBodyPart(), item);
+	public void wearItem(Equipment item) {
+		equipment.put(item.getEquipmentSlot(), item);
 	}
 
 
 	/**
 	 * Removes a worn item.
 	 * 
-	 * @param bodyPart  The body part the item is worn on
+	 * @param slot  The body part the item is worn on
 	 */
-	public void removeWornItem(BodyPart bodyPart) {
-		wornItems.remove(bodyPart);
+	public void removeEquipment(EquipmentSlot slot) {
+		equipment.remove(slot);
 	}
 	
 	
@@ -230,7 +228,7 @@ public abstract class Creature extends MudObject {
 	 * @return True if worn, otherwise false
 	 */
 	public boolean isWearing(Item item) {
-		return wornItems.containsValue(item);
+		return equipment.containsValue(item);
 	}
 
 
@@ -240,7 +238,7 @@ public abstract class Creature extends MudObject {
 	 * @return  The weapon
 	 */
 	public Weapon getWeapon() {
-		return weapon;
+		return (Weapon) equipment.get(EquipmentSlot.WEAPON);
 	}
 
 
@@ -250,7 +248,7 @@ public abstract class Creature extends MudObject {
 	 * @param weapon  The weapon
 	 */
 	public void setWeapon(Weapon weapon) {
-		this.weapon = weapon;
+		equipment.put(EquipmentSlot.WEAPON, weapon);
 	}
 	
 	
@@ -262,7 +260,12 @@ public abstract class Creature extends MudObject {
 	 * @return True if an item is the currently wielded weapon
 	 */
 	public boolean isWielding(Item item) {
-		return item.equals(weapon);
+		Weapon weapon = getWeapon();
+		if (weapon != null) {
+			return item.equals(weapon);
+		} else {
+			return false;
+		}
 	}
 
 
@@ -289,12 +292,8 @@ public abstract class Creature extends MudObject {
 		if (name.equals(ME) || matches(name)) {
 			return this;
 		}
-		// Check the wielded weapon.
-		if (weapon != null && weapon.matches(name)) {
-			return weapon;
-		}
-		// Sarch the worn items.
-		for (Item item : wornItems.values()) {
+		// Search equipment.
+		for (Item item : equipment.values()) {
 			if (item.matches(name)) {
 				return item;
 			}

@@ -25,6 +25,59 @@ class Exit : MudObject {
     -roomId : int
 }
 
+class Item : MudObject {
+    - weight : double
+    - value : int
+}
+
+class Equipment : Item {
+    -equipmentSlot : EquipmentSlot
+    -maximumHitPoints : int
+    -hitPoints : int
+}
+
+class Armour : Equipment {
+    -armourValue : int
+}
+
+class Weapon : Equipment {
+    -type : WeaponType
+    -isTwoHanded : boolean
+    -damage : int
+}
+
+enum WeaponType {
+    DAGGER
+    SWORD
+    AXE
+    BLUNT
+    SPEAR
+    -damageType : DamageType
+}
+
+enum DamageType {
+    PIERCING
+    SLASHING
+    CRUSHING
+}
+
+enum EquipmentSlot {
+    -name : String
+    -form : String
+    HEAD("head", "on")
+    NECK("neck", "around")
+    BODY("body", "on")
+    ARMS("arms", "on")
+    HANDS("hands", "on")
+    RING_RIGHT("right ring", "as")
+    RING_LEFT("left ring", "as")
+    BELT("waist", "around")
+    LEGS("legs", "on")
+    FEET("feet", "on")
+    SHIELD("shield", "as")
+    WEAPON("weapon", "as")
+}
+
 abstract class Creature : MudObject
     -race : Race
     -gender : Gender
@@ -75,23 +128,6 @@ Races:
     Dwarf   (dwarven)
     Orc     (orcish)
 
-enum EquipmentSlot {
-    -name : String
-    -form : String
-    HEAD("head", "on")
-    NECK("neck", "around")
-    BODY("body", "on")
-    ARMS("arms", "on")
-    HANDS("hands", "on")
-    RING_RIGHT("right ring", "as")
-    RING_LEFT("left ring", "as")
-    BELT("waist", "around")
-    LEGS("legs", "on")
-    FEET("feet", "on")
-    SHIELD("shield", "as")
-    WEAPON("weapon", "as")
-}
-
 class NPC : Creature {
     -isAggressive : boolean
     -doesFollow : boolean
@@ -130,39 +166,6 @@ enum ConnectionState {
     OFFLINE
     ONLINE
     LINKDEAD
-}
-
-class Item : MudObject {
-    - weight : double
-    - value : int
-}
-
-class Weapon : Item {
-    - type : WeaponType
-    - twoHanded : boolean
-    - damage : int
-    - endurance : int
-}
-
-enum WeaponType {
-    DAGGER
-    SWORD
-    AXE
-    BLUNT
-    SPEAR
-    - damageType : DamageType
-}
-
-enum DamageType {
-    PIERCING
-    SLASHING
-    CRUSHING
-}
-
-class Armour : Item
-    - type : ArmourType
-    - protection : int
-    - endurance : int
 }
 
 class Skill {

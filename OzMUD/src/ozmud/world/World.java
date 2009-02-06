@@ -107,20 +107,20 @@ public class World {
 		dagger.setValue(10);
 		room.addItem(dagger);
 		
-		WornItem leatherCuirass = new WornItem();
+		Armour leatherCuirass = new Armour();
 		leatherCuirass.setShortName("leather cuirass");
 		leatherCuirass.setFullName("A leather cuirass");
 		leatherCuirass.setDescription(
 				"The sturdy cuirass is made of high quality leather and "
 				+ "should offer decent protection from light attacks.");
 		leatherCuirass.setAliasses(new String[] {"cuirass", "armour"});
-		leatherCuirass.setBodyPart(BodyPart.BODY);
-		leatherCuirass.setProtection(10);
+		leatherCuirass.setEquipmentSlot(EquipmentSlot.BODY);
+		leatherCuirass.setArmourValue(10);
 		leatherCuirass.setWeight(5.0);
 		leatherCuirass.setValue(100);
 		room.addItem(leatherCuirass);
 		
-		WornItem woodenBuckler = new WornItem();
+		Armour woodenBuckler = new Armour();
 		woodenBuckler.setShortName("wooden buckler");
 		woodenBuckler.setFullName("A wooden buckler");
 		woodenBuckler.setDescription(
@@ -128,13 +128,13 @@ public class World {
 				+ "you doubt it will survive many direct hits.");
 		woodenBuckler.setAliasses(
 				new String[] {"buckler", "shield", "armour"});
-		woodenBuckler.setBodyPart(BodyPart.SHIELD);
-		woodenBuckler.setProtection(5);
+		woodenBuckler.setEquipmentSlot(EquipmentSlot.SHIELD);
+		woodenBuckler.setArmourValue(5);
 		woodenBuckler.setWeight(5.0);
 		woodenBuckler.setValue(50);
 		room.addItem(woodenBuckler);
 		
-		WornItem plateCuirass = new WornItem();
+		Armour plateCuirass = new Armour();
 		plateCuirass.setShortName("steel cuirass");
 		plateCuirass.setFullName("A steel cuirass");
 		plateCuirass.setDescription(
@@ -143,13 +143,13 @@ public class World {
 				+ "although it will greatly impede the wearer's flexibility "
 				+ "and speed.");
 		plateCuirass.setAliasses(new String[] {"cuirass", "armour"});
-		plateCuirass.setBodyPart(BodyPart.BODY);
-		plateCuirass.setProtection(50);
+		plateCuirass.setEquipmentSlot(EquipmentSlot.BODY);
+		plateCuirass.setArmourValue(50);
 		plateCuirass.setWeight(60.0);
 		plateCuirass.setValue(1000);
 		room.addItem(plateCuirass);
 		
-		WornItem steelTowerShield = new WornItem();
+		Armour steelTowerShield = new Armour();
 		steelTowerShield.setShortName("steel tower shield");
 		steelTowerShield.setFullName("A steel tower shield");
 		steelTowerShield.setDescription(
@@ -157,8 +157,8 @@ public class World {
 				+ "offer great protection and last many hits.");
 		steelTowerShield.setAliasses(
 				new String[] {"tower shield", "shield", "armour"});
-		steelTowerShield.setBodyPart(BodyPart.SHIELD);
-		steelTowerShield.setProtection(20);
+		steelTowerShield.setEquipmentSlot(EquipmentSlot.SHIELD);
+		steelTowerShield.setArmourValue(20);
 		steelTowerShield.setWeight(30.0);
 		steelTowerShield.setValue(500);
 		room.addItem(steelTowerShield);
