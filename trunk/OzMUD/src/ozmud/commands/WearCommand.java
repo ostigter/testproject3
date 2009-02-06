@@ -1,10 +1,10 @@
 package ozmud.commands;
 
 
-import ozmud.world.BodyPart;
+import ozmud.world.EquipmentSlot;
 import ozmud.world.Item;
 import ozmud.world.Player;
-import ozmud.world.WornItem;
+import ozmud.world.Equipment;
 
 
 /**
@@ -75,8 +75,8 @@ public class WearCommand implements Command {
 			int worn = 0;
 			Item[] items = player.getCarriedItems();
 			for (Item item : items) {
-				if (item instanceof WornItem) {
-					wear(player, (WornItem) item);
+				if (item instanceof Equipment) {
+					wear(player, (Equipment) item);
 					worn++;
 				}
 			}
@@ -89,20 +89,20 @@ public class WearCommand implements Command {
 				player.send(NOT_CARRIED);
 			} else if (player.isWearing(item)) {
 				player.send(WEARING);
-			} else if (!(item instanceof WornItem)) {
+			} else if (!(item instanceof Equipment)) {
 					player.send(NOT_WORN);
 			} else {
-				wear(player, (WornItem) item);
+				wear(player, (Equipment) item);
 			}
 		}
 	}
 	
 	
-	private void wear(Player player, WornItem item) {
-		BodyPart bodyPart = item.getBodyPart();
-		WornItem previousItem = player.getWornItem(bodyPart);
+	private void wear(Player player, Equipment item) {
+		EquipmentSlot slot = item.getEquipmentSlot();
+		Equipment previousItem = player.getWornItem(slot);
 		if (previousItem != null) {
-			player.removeWornItem(bodyPart);
+			player.removeEquipment(slot);
 			player.addCarriedItem(previousItem);
 			player.broadcast(String.format(
 					REMOVE, previousItem.getFullName()), null);

@@ -1,17 +1,14 @@
 package ozmud.commands;
 
 
-import java.util.LinkedList;
-import java.util.List;
-
-import ozmud.world.Item;
+import ozmud.world.Equipment;
+import ozmud.world.EquipmentSlot;
 import ozmud.world.Player;
-import ozmud.world.Weapon;
 
 
 /**
- * Command 'equipment' to list the player's equipment (wielded weapon and worn
- * items).
+ * Command 'equipment' to list the equipment the player is currently using.
+ * This includes worn clothing, armour and wielded weapons.
  * 
  * @author Oscar Stigter
  */
@@ -48,8 +45,18 @@ public class EquipmentCommand implements Command {
 		if (argument != null) {
 			player.send(INVALID);
 		} else {
-			player.send("${GRAY}You are using the following equipment:\n\r");
-			
+			player.send("${GRAY}You are using the following equipment:\n\r${MAGENTA}");
+			for (EquipmentSlot slot : EquipmentSlot.values()) {
+				Equipment eq = player.getEquipment(slot);
+				String eqName;
+				if (eq != null) {
+					eqName = "${MAGENTA}" + eq.getFullName();
+				} else {
+					eqName = "-";
+				}
+				player.send(String.format("  ${GRAY}%-15s%s\n\r",
+						slot.getName(), eqName));
+			}
 		}
 	}
 	

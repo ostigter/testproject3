@@ -10,7 +10,8 @@ import ozmud.world.Weapon;
 
 
 /**
- * Command 'inventory' to list the player's inventory.
+ * Command 'inventory' to list the items the player is carrying.
+ * It does not list equipment (worn items like clothing, armour or weapons).
  * 
  * @author Oscar Stigter
  */
@@ -52,15 +53,6 @@ public class InventoryCommand implements Command {
 			player.send(INVALID);
 		} else {
 			List<Item> inventory = new LinkedList<Item>();
-			// Add wielded weapon.
-			Weapon weapon = player.getWeapon();
-			if (weapon != null) {
-				inventory.add(weapon);
-			}
-			// List worn items.
-			for (Item item : player.getWornItems()) {
-				inventory.add(item);
-			}
 			// List carried items.
 			for (Item item : player.getCarriedItems()) {
 				inventory.add(item);
@@ -70,16 +62,7 @@ public class InventoryCommand implements Command {
 			} else {
 				player.send("${GRAY}You are carrying:\n\r${MAGENTA}");
 				for (Item item : inventory) {
-					String name = item.getFullName();
-					String message;
-					if (player.isWielding(item)) {
-						message = "  %s (wielded)\n\r";
-					} else if (player.isWearing(item)) {
-						message = "  %s (worn)\n\r"; 
-					} else {
-						message = "  %s\n\r"; 
-					}
-					player.send(String.format(message, name));
+					player.send(String.format("  %s\n\r", item.getFullName()));
 				}
 			}
 		}
