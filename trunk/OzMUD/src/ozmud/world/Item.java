@@ -2,7 +2,7 @@ package ozmud.world;
 
 
 /**
- * An item that can be picked up.
+ * An item that can be carried by a creature.
  * 
  * @author Oscar Stigter
  */

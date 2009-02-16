@@ -7,7 +7,7 @@ import ozmud.world.Room;
 
 
 /**
- * Command 'get' to get an item from the room.
+ * Command 'get' to pick up an item from the room and carry it.
  * 
  * @author Oscar Stigter
  */

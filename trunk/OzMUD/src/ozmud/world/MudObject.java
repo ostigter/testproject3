@@ -8,7 +8,6 @@ import java.io.Serializable;
  * Abstract base class of all MUD objects.
  * 
  * @author Oscar Stigter
- *
  */
 public abstract class MudObject implements Serializable {
 

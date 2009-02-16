@@ -22,22 +22,23 @@ public enum Gender {
 	/** Name. */
 	private final String name;
 
-	/** Pronoun. */
+	/** Pronoun form. */
 	private final String pronoun;
 	
-	/** Possessive. */
+	/** Possessive form. */
 	private final String possessive;
 	
-	/** Self reference. */
+	/** Self-reference form. */
 	private final String self;
 	
 	
 	/**
 	 * Constructor.
 	 * 
-	 * @param name        The name
-	 * @param pronoun     The pronoun
-	 * @param possessive  The possessive form
+	 * @param name        The name.
+	 * @param pronoun     The pronoun form.
+	 * @param possessive  The possessive form.
+	 * @param self        The self-reference form.
 	 */
 	Gender(String name, String pronoun, String possessive, String self) {
 		this.name = name;
@@ -50,7 +51,7 @@ public enum Gender {
 	/**
 	 * Returns the name.
 	 * 
-	 * @return The name
+	 * @return The name.
 	 */
 	public String getName() {
 		return name;
@@ -58,9 +59,9 @@ public enum Gender {
 	
 	
 	/**
-	 * Returns the pronoun.
+	 * Returns the pronoun form.
 	 * 
-	 * @return The pronoun
+	 * @return The pronoun form.
 	 */
 	public String getPronoun() {
 		return pronoun;
@@ -70,7 +71,7 @@ public enum Gender {
 	/**
 	 * Returns the possessive form.
 	 * 
-	 * @return The possessive form
+	 * @return The possessive form.
 	 */
 	public String getPossessive() {
 		return possessive;
@@ -79,9 +80,9 @@ public enum Gender {
 	
 	
 	/**
-	 * Returns the self reference.
+	 * Returns the self-reference form.
 	 * 
-	 * @return The self reference
+	 * @return The self-reference form.
 	 */
 	public String getSelf() {
 		return self;
@@ -92,7 +93,7 @@ public enum Gender {
 	/**
 	 * Returns the <code>String</code> representation of this object.
 	 * 
-	 * @return The <code>String</code> representation of this object
+	 * @return The <code>String</code> representation of this object.
 	 */
 	@Override
 	public String toString() {

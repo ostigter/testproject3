@@ -8,7 +8,7 @@ import ozmud.world.Player;
 
 
 /**
- * Command interpreter.
+ * Command interpreter that parses and executes a player's commands.
  * 
  * @author Oscar Stigter
  */

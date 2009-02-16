@@ -45,9 +45,9 @@ Equipment
     drop            -       High        Completed
     wield           -       High        Completed
     unwield         -       High        Completed
-    wear            -       High        In progress
-    remove          -       High        -
-    equipment (eq)  -       High        -
+    wear            -       High        Completed
+    remove          -       High        Completed
+    equipment       eq      High        Completed
     give            -       Low         -
 ------------------------------------------------------------------------------
 Combat

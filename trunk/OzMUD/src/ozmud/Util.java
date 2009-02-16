@@ -9,6 +9,16 @@ package ozmud;
 public abstract class Util {
 	
 
+	/**
+	 * Replaces all occurances of a specific piece of text in a string with
+	 * another piece of text.
+	 * 
+	 * @param source  the original text
+	 * @param search  the text to search for
+	 * @param replace the replacement text
+	 * 
+	 * @return  the resulting text after replacements
+	 */
 	public static String replace(String source, String search, String replace) {
 		if (source == null || source.length() == 0) {
 			return source;
@@ -39,6 +49,16 @@ public abstract class Util {
 	}
 	
 	
+	/**
+	 * Capitalizes a string.
+	 * 
+	 * In case of variables (e.g. "${GREEN}"), the first non-variable word is
+	 * capitalized.
+	 *  
+	 * @param s  The string to capitalize.
+	 * 
+	 * @return  The capitalized string.
+	 */
 	public static String capitalize(String s) {
 		if (s != null) {
 			final int length = s.length();

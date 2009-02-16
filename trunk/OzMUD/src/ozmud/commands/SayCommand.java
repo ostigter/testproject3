@@ -5,7 +5,7 @@ import ozmud.world.Player;
 
 
 /**
- * Command 'say' to say something to everyone in the same room.
+ * Command 'say' to say something aloud, audible to everyone in the same room.
  * 
  * @author Oscar Stigter
  */

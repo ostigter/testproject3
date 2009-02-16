@@ -11,7 +11,7 @@ import ozmud.world.Room;
 
 
 /**
- * Command 'look' to look around at the room or at a specific creature or item.
+ * Command 'look' to look around at the room or at a specific object.
  * 
  * @author Oscar Stigter
  */

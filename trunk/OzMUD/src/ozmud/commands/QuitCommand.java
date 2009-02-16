@@ -5,7 +5,7 @@ import ozmud.world.Player;
 
 
 /**
- * Command 'quit' to quit the MUD session.
+ * Command 'quit' to log out of the MUD.
  *  
  * @author Oscar Stigter
  */

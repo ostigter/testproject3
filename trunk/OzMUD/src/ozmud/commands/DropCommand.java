@@ -6,7 +6,7 @@ import ozmud.world.Player;
 
 
 /**
- * Command 'drop' to drop one or more carried items from the inventory.
+ * Command 'drop' to drop a carried item from the inventory.
  * 
  * @author Oscar Stigter
  */

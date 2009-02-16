@@ -1,6 +1,11 @@
 package ozmud.world;
 
 
+/**
+ * An item that can be wielded and used as a weapon.
+ *   
+ * @author Oscar Stigter
+ */
 public class Weapon extends Equipment {
 
 

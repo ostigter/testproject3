@@ -5,7 +5,7 @@ import ozmud.server.Server;
 
 
 /**
- * Main class starting the server.
+ * Main class that starts the server.
  * 
  * @author Oscar Stigter
  */
@@ -15,7 +15,7 @@ public class Main {
 	/**
 	 * Application's entry point.
 	 * 
-	 * @param  args  command line arguments
+	 * @param  args  Any commandline arguments.
 	 */
 	public static void main(String[] args) {
 		new Server().start();

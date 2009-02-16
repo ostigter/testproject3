@@ -1,6 +1,11 @@
 package ozmud.world;
 
 
+/**
+ * A piece of armour.
+ * 
+ * @author Oscar Stigter
+ */
 public class Armour extends Equipment {
 
 
