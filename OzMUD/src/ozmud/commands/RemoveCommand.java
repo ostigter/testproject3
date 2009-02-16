@@ -7,7 +7,7 @@ import ozmud.world.Equipment;
 
 
 /**
- * Command 'unwield' to remove a wielded weapon.
+ * Command 'remove' to remove a worn piece of equipment.
  * 
  * @author Oscar Stigter
  */

@@ -32,7 +32,7 @@ public class Player extends Creature implements ConnectionListener {
 	private CommandInterpreter commandInterpreter;
 
 	/** Connection state. */
-	private ConnectionState connectionState = ConnectionState.OFFLINE;
+	private PlayerState state = PlayerState.OFFLINE;
 	
 
 	/**
@@ -58,8 +58,8 @@ public class Player extends Creature implements ConnectionListener {
 	 * 
 	 * @return the connection state
 	 */
-	public ConnectionState getConnectionState() {
-		return connectionState;
+	public PlayerState getConnectionState() {
+		return state;
 	}
 
 	
@@ -70,7 +70,7 @@ public class Player extends Creature implements ConnectionListener {
 	 */
 	public void connect(Connection connection) {
 		this.connection = connection;
-		connectionState = ConnectionState.ONLINE;
+		state = PlayerState.ONLINE;
 	}
 
 
@@ -82,7 +82,7 @@ public class Player extends Creature implements ConnectionListener {
 			connection.close();
 			connection = null;
 		}
-		connectionState = ConnectionState.OFFLINE;
+		state = PlayerState.OFFLINE;
 		System.out.println(getShortName() + " has logged out");
 	}
 	
@@ -123,7 +123,7 @@ public class Player extends Creature implements ConnectionListener {
 	public void send(String message) {
 		if (connection != null &&
 				connection.isOpen() &&
-					connectionState == ConnectionState.ONLINE) {
+					state == PlayerState.ONLINE) {
 			try {
 				connection.send(message);
 			} catch (IOException e) {

@@ -6,7 +6,6 @@ import java.util.List;
 
 import ozmud.world.Item;
 import ozmud.world.Player;
-import ozmud.world.Weapon;
 
 
 /**

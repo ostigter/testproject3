@@ -107,19 +107,19 @@ enum Gender {
 }
 
 class Race {
-    - noun       # e.g. Elf
-    - adjective  # e.g. Elven
-    - minStrength
-    - maxStrength
-    - minDexterity
-    - maxDexterity
-    - minEndurance
-    - maxEndurance
-    - minIntelligence
-    - maxIntelligence
-    - minWisdom
-    - maxWisdom
-    - expirienceRate
+    -noun       # e.g. Elf
+    -adjective  # e.g. Elven
+    -minStrength
+    -maxStrength
+    -minDexterity
+    -maxDexterity
+    -minEndurance
+    -maxEndurance
+    -minIntelligence
+    -maxIntelligence
+    -minWisdom
+    -maxWisdom
+    -experienceRate
 }
 
 Races:
@@ -162,13 +162,18 @@ Levels/Titels:
   50  Lord/Lady
    1  Adventurer/Adventuress
 
-enum ConnectionState {
+enum PlayerState {
     OFFLINE
     ONLINE
+    IDLE
+    RESTING
+    KNOCKED_DOWN
+    STUNNED
+    DEAD
     LINKDEAD
 }
 
 class Skill {
-    - name
-    - cost
+    -name
+    -cost
 }

@@ -1,6 +1,11 @@
 package ozmud.world;
 
 
+/**
+ * An exit in a room, leading to another room.
+ * 
+ * @author Oscar Stigter
+ */
 public class Exit {
 	
 

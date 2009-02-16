@@ -8,7 +8,7 @@ import ozmud.world.Equipment;
 
 
 /**
- * Command 'wear' to wear a piece of clothing or armour.
+ * Command 'wear' to wear a piece of equipment.
  * 
  * @author Oscar Stigter
  */

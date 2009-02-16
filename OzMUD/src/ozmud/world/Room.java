@@ -7,6 +7,11 @@ import java.util.List;
 import ozmud.Util;
 
 
+/**
+ * A room in the world.
+ * 
+ * @author Oscar Stigter
+ */
 public class Room extends MudObject {
 	
 
@@ -139,6 +144,13 @@ public class Room extends MudObject {
 	}
 	
 	
+	/**
+	 * Broadcasts a formatted message to all creatures present in the room.
+	 * 
+	 * @param message  The message.
+	 * @param sender   The creature that sends the message.
+	 * @param target   The (optional) target creature.
+	 */
 	public void broadcast(
 			String message, Creature sender, Creature target) {
 		for (Creature creature : creatures) {
@@ -153,6 +165,14 @@ public class Room extends MudObject {
 	}
 	
 
+	/**
+	 * Broadcasts a formatted message to all creatures present in the room,
+	 * except for the sending creature itself.
+	 * 
+	 * @param message  The message.
+	 * @param sender   The creature that sends the message.
+	 * @param target   The (optional) target creature.
+	 */
 	public void broadcastOthers(
 			String message, Creature sender, Creature target) {
 		for (Creature creature : creatures) {
@@ -165,6 +185,23 @@ public class Room extends MudObject {
 	}
 	
 	
+	/**
+	 * Formats a message according to a specific viewer's perspective.
+	 * The following variables are replaced accordingly:
+	 * <ul>
+	 *   <li>${sender}</li>
+	 *   <li>${target}</li>
+	 *   <li>${s}</li>
+	 * </ul>
+	 * Finally, the message is capitalized.
+	 * 
+	 * @param message      The message.
+	 * @param sender       The creature that sends the message.
+	 * @param target       The (optional) target creature.
+	 * @param perspective  The viewer's perspective.
+	 * 
+	 * @return The formatted message.
+	 */
 	/* package */ String format(String message, Creature sender,
 			Creature target, Perspective perspective) {
 		String senderName = (sender != null) ? sender.getShortName() : null;
