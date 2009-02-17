@@ -226,6 +226,11 @@ public class World {
 		player.setDescription("A guest exploring the world.");
 		player.setPassword("guest");
 		player.setGender(Gender.MALE);
+		player.setStrength(30);
+		player.setDexterity(30);
+		player.setEndurance(30);
+//		player.setHitpoints(player.getMaximumHitpoints());
+		player.setHitpoints(5);
 		addPlayer(player);
 	}
 	

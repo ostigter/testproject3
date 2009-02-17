@@ -56,7 +56,8 @@ Combat
     rest            -       Normal      -
 ------------------------------------------------------------------------------
 Stats
-    experience      exp     High        -       
+    hp              -       High        -              
+    experience      exp     Normal      -       
     increase        inc     Normal      -
     skills          -       Normal      -
     train           -       Normal      -

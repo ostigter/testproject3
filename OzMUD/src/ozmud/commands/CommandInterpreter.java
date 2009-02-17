@@ -117,6 +117,7 @@ public class CommandInterpreter {
 		addCommand(new UnwieldCommand());
 		addCommand(new WearCommand());
 		addCommand(new RemoveCommand());
+		addCommand(new HpCommand());
 	}
 	
 	

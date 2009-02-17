@@ -88,7 +88,7 @@ abstract class Creature : MudObject
     -endurance : int
     -intelligence : int
     -wisdom : int
-    -hitPoints : int
+    -hitpoints : int
     -inventory : Set<Item>
     -carriedItems : Set<Item>
     -equipment : Map<EquipmentSlot, WornItem>
@@ -96,7 +96,7 @@ abstract class Creature : MudObject
     -bankMoney : int
     -opponent : Creature
     -enemies : Set<Creature>
-    +getMaxHitPoints() : int
+    +getMaximumHitpoints() : int
     +getEncumberance() : double
     +getMaxEncumberance() : double
 
