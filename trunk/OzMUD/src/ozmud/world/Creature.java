@@ -25,6 +25,18 @@ public abstract class Creature extends MudObject {
 	/** The creature's gender. */
 	private Gender gender = Gender.NEUTRAL;
 	
+	/** The creature's strength. */
+	private int strength;
+	
+	/** The creature's dexterity. */
+	private int dexterity;
+	
+	/** The creature's endurance. */
+	private int endurance;
+	
+	/** The creature's current hitpoints. */
+	private int hitpoints;
+	
 	/** The room this creature is currently in. */
 	private Room room;
 	
@@ -51,6 +63,51 @@ public abstract class Creature extends MudObject {
 
 	public void setGender(Gender gender) {
 		this.gender = gender;
+	}
+	
+	
+	public int getStrength() {
+		return strength;
+	}
+	
+	
+	public void setStrength(int strength) {
+		this.strength = strength;
+	}
+	
+	
+	public int getDexterity() {
+		return dexterity;
+	}
+	
+	
+	public void setDexterity(int dexterity) {
+		this.dexterity = dexterity;
+	}
+	
+	
+	public int getEndurance() {
+		return endurance;
+	}
+	
+	
+	public void setEndurance(int endurance) {
+		this.endurance = endurance;
+	}
+	
+	
+	public int getHitpoints() {
+		return hitpoints;
+	}
+	
+	
+	public void setHitpoints(int hitpoints) {
+		this.hitpoints = hitpoints;
+	}
+	
+	
+	public int getMaximumHitpoints() {
+		return 20 + endurance * 5; 
 	}
 	
 	
