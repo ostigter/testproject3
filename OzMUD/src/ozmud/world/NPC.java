@@ -30,5 +30,15 @@ public class NPC extends Creature {
 		// Empty implemention because an NPC has no connection.
 	}
 	
+	
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.world.Creature#die()
+	 */
+	@Override
+	public void die() {
+		//TODO: NPC dies.
+	}
+	
 
 }

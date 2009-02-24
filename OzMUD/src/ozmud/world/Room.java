@@ -192,6 +192,7 @@ public class Room extends MudObject {
 	 *   <li>${sender}</li>
 	 *   <li>${target}</li>
 	 *   <li>${s}</li>
+	 *   <li>${es}</li>
 	 * </ul>
 	 * Finally, the message is capitalized.
 	 * 
@@ -215,10 +216,12 @@ public class Room extends MudObject {
 					message = Util.replace(message, "${target}", targetName);
 				}
 				message = Util.replace(message, "${s}", "");
+				message = Util.replace(message, "${es}", "");
 				break;
 			case TARGET:
 				message = Util.replace(message, "${sender}", senderName);
 				message = Util.replace(message, "${s}", "s");
+				message = Util.replace(message, "${es}", "es");
 				message = Util.replace(message, "${target}", "you");
 				break;
 			case OTHERS:
@@ -230,6 +233,7 @@ public class Room extends MudObject {
 				}
 				message = Util.replace(message, "${sender}", senderName);
 				message = Util.replace(message, "${s}", "s");
+				message = Util.replace(message, "${es}", "es");
 				break;
 		}
 		
