@@ -113,11 +113,13 @@ public class CommandInterpreter {
 		addCommand(new GetCommand());
 		addCommand(new DropCommand());
 		addCommand(new EquipmentCommand());
-		addCommand(new WieldCommand());
-		addCommand(new UnwieldCommand());
 		addCommand(new WearCommand());
 		addCommand(new RemoveCommand());
+		addCommand(new WieldCommand());
+		addCommand(new UnwieldCommand());
+		// Combat.
 		addCommand(new HpCommand());
+		addCommand(new KillCommand());
 	}
 	
 	

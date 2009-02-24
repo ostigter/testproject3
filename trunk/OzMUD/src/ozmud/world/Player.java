@@ -19,8 +19,8 @@ public class Player extends Creature implements ConnectionListener {
 	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The prompt. */
-	private static final String PROMPT = "${GRAY}> ";
+//	/** The prompt. */
+//	private static final String PROMPT = "${GRAY}> ";
 	
 	/** The players's password. */
 	private String password;
@@ -109,12 +109,12 @@ public class Player extends Creature implements ConnectionListener {
 	}
 	
 	
-	/**
-	 * Sends the prompt.
-	 */
-	public void sendPrompt() {
-		send(PROMPT);
-	}
+//	/**
+//	 * Sends the prompt.
+//	 */
+//	public void sendPrompt() {
+//		send(PROMPT);
+//	}
 	
 	
 	/**
@@ -141,11 +141,9 @@ public class Player extends Creature implements ConnectionListener {
 	 * @param  message  The message
 	 */
 	public void handleCommand(String command) {
-		if (connection == null) {
-			throw new IllegalStateException("Connection closed");
+		if (connection != null) {
+			commandInterpreter.executeCommand(this, command);
 		}
-		
-		commandInterpreter.executeCommand(this, command);
 	}
 
 
@@ -155,7 +153,7 @@ public class Player extends Creature implements ConnectionListener {
 	 */
 	public void messageReceived(String message) {
 		handleCommand(message);
-		sendPrompt();
+//		sendPrompt();
 	}
 
 

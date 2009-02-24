@@ -5,17 +5,20 @@ import ozmud.world.Player;
 
 
 /**
- * Command 'say' to say something aloud, audible to everyone in the same room.
+ * Command 'say' to say something aloud, audible all creatures in the same
+ * room.
  * 
  * @author Oscar Stigter
  */
 public class SayCommand implements Command {
 	
 	
-	private static final String MESSAGE = "${sender} say${s}: %s\n\r";
-
-	private static final String INVALID = "Say what?\n\r";
+	/** Error message when no argument is specified. */
+	private static final String INVALID = "${GRAY}Say what?\n\r";
 	
+	/** Emote message of a successful action. */
+	private static final String MESSAGE = "${CYAN}${sender} say${s}: %s\n\r";
+
 	
 	/*
 	 * (non-Javadoc)
