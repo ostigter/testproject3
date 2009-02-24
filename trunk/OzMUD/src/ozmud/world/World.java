@@ -4,6 +4,7 @@ package ozmud.world;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import ozmud.commands.CommandInterpreter;
@@ -27,6 +28,9 @@ public class World implements TickListener {
 	/** The singleton instance. */
 	private static final World instance = new World(); 
 	
+	/** Randomizer. */
+	private final Random random;
+
 	/** The command interpreter. */
 	private final CommandInterpreter commandInterpreter;
 	
@@ -47,6 +51,7 @@ public class World implements TickListener {
 	 * Default constructor.
 	 */
 	private World() {
+		random = new Random();
 		commandInterpreter = new CommandInterpreter();
 		rooms = new HashMap<Integer, Room>();
 		creatures = new HashSet<Creature>();
@@ -88,6 +93,18 @@ public class World implements TickListener {
 	
 	public Room getRoom(int id) {
 		return rooms.get(id);
+	}
+	
+	
+	/**
+	 * Returns a random integer between 1 and the specified maximum value.
+	 * 
+	 * @param max The maximum value.
+	 * 
+	 * @return The random integer.
+	 */
+	public int getRandomNumber(int maxValue) {
+		return random.nextInt(maxValue) + 1;
 	}
 
 
@@ -143,9 +160,13 @@ public class World implements TickListener {
 				+ "carefully watches the croud, keeping the peace. She sure "
 				+ "looks like she could handle herself in a fight.");
 		guard.setGender(Gender.FEMALE);
-		guard.setRoom(room);
-		guard.setAliasses(new String[] {"man"});
+		guard.setStrength(50);
+		guard.setDexterity(50);
+		guard.setEndurance(50);
+		guard.setHitpoints(guard.getMaximumHitpoints());
+		guard.setAliasses(new String[] {"woman"});
 		guard.setAliasses(new String[] {"human"});
+		guard.setRoom(room);
 		creatures.add(guard);
 		room.addCreature(guard);
 
@@ -203,6 +224,21 @@ public class World implements TickListener {
 		room.addExit(new Exit("south", 3));
 		room.addExit(new Exit("west",  0));
 		addRoom(room);
+
+		NPC dog = new NPC();
+		dog.setShortName("Dog");
+		dog.setFullName("A hungry street dog");
+		dog.setDescription("The ugly, scrawny, flee-infested dog is looking "
+				+ "for food, begging from anyone passing by.");
+		dog.setGender(Gender.MALE);
+		dog.setStrength(10);
+		dog.setDexterity(50);
+		dog.setEndurance(10);
+		dog.setHitpoints(dog.getMaximumHitpoints());
+		dog.setAliasses(new String[] {"animal"});
+		dog.setRoom(room);
+		creatures.add(dog);
+		room.addCreature(dog);
 
 		Armour plateCuirass = new Armour();
 		plateCuirass.setShortName("steel cuirass");

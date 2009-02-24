@@ -135,6 +135,15 @@ public class Player extends Creature implements ConnectionListener {
 	}
 	
 	
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.world.Creature#die()
+	 */
+	public void die() {
+		//TODO: Player died.
+	}
+	
+	
 	/**
 	 * Processes an incoming command.
 	 * 

@@ -21,7 +21,7 @@ public abstract class Creature extends MudObject {
 	
 	/** Reference to self. */
 	private static final String ME = "me";
-
+	
 	/** The creature's gender. */
 	private Gender gender = Gender.NEUTRAL;
 	
@@ -422,9 +422,45 @@ public abstract class Creature extends MudObject {
 	
 	public void doCombat() {
 		if (opponent != null) {
-			broadcast("${RED}${sender} fight${s} ${target}!\n\r", opponent);
+			int dice = World.getInstance().getRandomNumber(
+					dexterity + opponent.getDexterity());
+			boolean isHit = (dice <= dexterity);
+			if (isHit) {
+				broadcast("${RED}${sender} hit${s} ${target}.\n\r", opponent);
+				Weapon weapon = getWeapon();
+				if (weapon == null) {
+					weapon = new Weapon();
+					weapon.setWeight(0.0);
+					weapon.setDamage(5);
+				}
+				int damage = weapon.getDamage();
+				opponent.damage(damage);
+			} else {
+				broadcast("${RED}${sender} miss${es} ${target}.\n\r", opponent);
+			}
 		}
 	}
+	
+	
+	public void damage(int damage) {
+		hitpoints -= damage;
+		if (hitpoints <= 0) {
+			hitpoints = 0;
+			if (opponent != null) {
+				opponent.setOpponent(null);
+				opponent = null;
+			}
+			send("${RED}You collapse to the ground and everything goes black...\n\r");
+			broadcastOthers("${RED}${sender}'s lifeless body collapses to the ground.\n\r", null);
+			die();
+		}
+	}
+	
+	
+	/**
+	 * Dies.
+	 */
+	public abstract void die();
 	
 	
 	/**
