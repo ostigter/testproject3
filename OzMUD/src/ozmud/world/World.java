@@ -2,9 +2,13 @@ package ozmud.world;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import ozmud.commands.CommandInterpreter;
+import ozmud.ticker.TickListener;
+import ozmud.ticker.TickManager;
 
 
 /**
@@ -12,18 +16,29 @@ import ozmud.commands.CommandInterpreter;
  * 
  * @author Oscar Stigter
  */
-public class World {
-
-
+public class World implements TickListener {
+	
+	/** Heal tick. */
+	private static final String HEAL_TICK = "HEAL";
+	
+	/** Combat tick. */
+	private static final String COMBAT_TICK = "COMBAT";
+	
 	/** The singleton instance. */
 	private static final World instance = new World(); 
 	
 	/** The command interpreter. */
 	private final CommandInterpreter commandInterpreter;
 	
+	/** Tick manager. */
+	private final TickManager tickManager;
+
 	/** The rooms mapped by their ID. */
 	private final Map<Integer, Room> rooms;
 	
+	/** All creatures. */
+	private final Set<Creature> creatures;
+
 	/** The player characters mapped by their username (short name). */
 	private final Map<String, Player> players;
 
@@ -34,7 +49,9 @@ public class World {
 	private World() {
 		commandInterpreter = new CommandInterpreter();
 		rooms = new HashMap<Integer, Room>();
+		creatures = new HashSet<Creature>();
 		players = new HashMap<String, Player>();
+		tickManager = new TickManager();
 	}
 	
 	
@@ -46,6 +63,11 @@ public class World {
 	public CommandInterpreter getCommandInterpreter() {
 		return commandInterpreter;
 	}
+	
+	
+	public TickManager getTickManager() {
+		return tickManager;
+	}
 
 
 	public Player getPlayer(String name) {
@@ -54,6 +76,7 @@ public class World {
 
 
 	public void addPlayer(Player player) {
+		creatures.add(player);
 		players.put(player.getShortName(), player);
 	}
 	
@@ -65,6 +88,37 @@ public class World {
 	
 	public Room getRoom(int id) {
 		return rooms.get(id);
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see ozmud.ticker.TickListener#tick(java.lang.String)
+	 */
+	public void tick(String name) {
+		if (name.equals(HEAL_TICK)) {
+			for (Creature creature : creatures) {
+				if (creature.getOpponent() == null) {
+					int hp = creature.getHitpoints();
+					int maxHp = creature.getMaximumHitpoints(); 
+					if (hp < maxHp) {
+						// Heal up to 10% of maximum hitpoints.
+						hp = (int) Math.round(hp + (0.10 * maxHp));
+						if (hp > maxHp) {
+							hp = maxHp;
+						}
+						creature.setHitpoints(hp);
+						if (creature instanceof Player) {
+							((Player) creature).handleCommand("hp");
+						}
+					}
+				}
+			}
+		} else if (name.equals(COMBAT_TICK)) {
+			for (Creature creature : creatures) {
+				creature.doCombat();
+			}
+		}
 	}
 
 
@@ -92,6 +146,7 @@ public class World {
 		guard.setRoom(room);
 		guard.setAliasses(new String[] {"man"});
 		guard.setAliasses(new String[] {"human"});
+		creatures.add(guard);
 		room.addCreature(guard);
 
 		Weapon dagger = new Weapon();
@@ -134,6 +189,21 @@ public class World {
 		woodenBuckler.setValue(50);
 		room.addItem(woodenBuckler);
 		
+		room = new Room();
+		room.setId(1);
+		room.setShortName("East Road");
+		room.setDescription(
+				"You are on a wide east-west road leading through town. "
+				+ "Many shops can be found here, like a general store to the "
+				+ "north and the town's bank to the south. To the west you "
+				+ "hear the sounds from many people on the town's plaza. to "
+				+ "the east you see the town's east gate.");
+		room.addExit(new Exit("north", 2));
+		room.addExit(new Exit("east",  4));
+		room.addExit(new Exit("south", 3));
+		room.addExit(new Exit("west",  0));
+		addRoom(room);
+
 		Armour plateCuirass = new Armour();
 		plateCuirass.setShortName("steel cuirass");
 		plateCuirass.setFullName("A steel cuirass");
@@ -163,21 +233,6 @@ public class World {
 		steelTowerShield.setValue(500);
 		room.addItem(steelTowerShield);
 		
-		room = new Room();
-		room.setId(1);
-		room.setShortName("East Road");
-		room.setDescription(
-				"You are on a wide east-west road leading through town. "
-				+ "Many shops can be found here, like a general store to the "
-				+ "north and the town's bank to the south. To the west you "
-				+ "hear the sounds from many people on the town's plaza. to "
-				+ "the east you see the town's east gate.");
-		room.addExit(new Exit("north", 2));
-		room.addExit(new Exit("east",  4));
-		room.addExit(new Exit("south", 3));
-		room.addExit(new Exit("west",  0));
-		addRoom(room);
-
 		room = new Room();
 		room.setId(2);
 		room.setShortName("General store");
@@ -229,9 +284,14 @@ public class World {
 		player.setStrength(30);
 		player.setDexterity(30);
 		player.setEndurance(30);
-//		player.setHitpoints(player.getMaximumHitpoints());
-		player.setHitpoints(5);
+		player.setHitpoints(50);
 		addPlayer(player);
+		
+		// Generic tickers.
+		tickManager.addTicker(HEAL_TICK, 30);
+		tickManager.addTicker(COMBAT_TICK, 2);
+		tickManager.addTickListener(this, HEAL_TICK);
+		tickManager.addTickListener(this, COMBAT_TICK);
 	}
 	
 	

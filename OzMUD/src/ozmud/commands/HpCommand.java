@@ -12,11 +12,13 @@ import ozmud.world.Player;
 public class HpCommand implements Command {
 	
 	
+	/** Error message when specified an argument. */
+	private static final String INVALID = "What?\n\r";
+	
+	/** The message to display. */
 	private static final String MESSAGE =
 			"${GRAY}[HP: %s%d ${GRAY}/ ${GREEN}%d${GRAY}]\n\r";
 
-	private static final String INVALID = "What?\n\r";
-	
 	
 	/*
 	 * (non-Javadoc)

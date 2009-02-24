@@ -14,9 +14,9 @@ import ozmud.world.Room;
 public class DirectionalCommand implements Command {
 	
 	
-	private static final String ARGUMENT = "Go where?\n\r";
+	private static final String ARGUMENT = "${GRAY}Go where?\n\r";
 
-	private static final String INVALID = "You can't go there.\n\r";
+	private static final String INVALID = "${GRAY}You can't go there.\n\r";
 
 	private final String name;
 	

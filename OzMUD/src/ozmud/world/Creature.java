@@ -46,6 +46,8 @@ public abstract class Creature extends MudObject {
 	/** Worn items mapped by body part. */
 	private final Map<EquipmentSlot, Equipment> equipment;
 	
+	private Creature opponent;
+	
 	
 	/**
 	 * Default constructor.
@@ -107,7 +109,7 @@ public abstract class Creature extends MudObject {
 	
 	
 	public int getMaximumHitpoints() {
-		return 20 + endurance * 5; 
+		return endurance * 5; 
 	}
 	
 	
@@ -137,6 +139,13 @@ public abstract class Creature extends MudObject {
 	
 
 	public void moveTo(Room newRoom, String direction) {
+		// If fighting, flee.
+		if (opponent != null) {
+			opponent.setOpponent(null);
+			opponent = null;
+		}
+		
+		// Leave current room.
 		if (room != null) {
 			if (direction != null) {
 				room.broadcast(String.format(
@@ -147,6 +156,8 @@ public abstract class Creature extends MudObject {
 			}
 			room.removeCreature(this);
 		}
+
+		// Go to next room.
 		room = newRoom;
 		if (room != null) {
 			room.addCreature(this);
@@ -324,6 +335,16 @@ public abstract class Creature extends MudObject {
 			return false;
 		}
 	}
+	
+	
+	public Creature getOpponent() {
+		return opponent;
+	}
+	
+	
+	public void setOpponent(Creature opponent) {
+		this.opponent = opponent;
+	}
 
 
 	/**
@@ -395,6 +416,13 @@ public abstract class Creature extends MudObject {
 	public void broadcastOthers(String message, Creature target) {
 		if (room != null) {
 			room.broadcastOthers(message, this, target);
+		}
+	}
+	
+	
+	public void doCombat() {
+		if (opponent != null) {
+			broadcast("${RED}${sender} fight${s} ${target}!\n\r", opponent);
 		}
 	}
 	
