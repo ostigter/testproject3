@@ -52,12 +52,12 @@ Equipment
 ------------------------------------------------------------------------------
 Combat
     consider        con     High        -
-    kill            k       High        -
+    kill            k       High        Completed
     rest            -       Normal      -
 ------------------------------------------------------------------------------
 Stats
-    hp              -       High        -              
-    experience      exp     Normal      -       
+    hp              -       High        -
+    experience      exp     Normal      -
     increase        inc     Normal      -
     skills          -       Normal      -
     train           -       Normal      -

@@ -2,6 +2,9 @@ OzMUD - Design
 ==============
 
 
+Classes
+-------
+
 class World {
     -rooms : Map<Integer, Room>
     -players : Map<String, Player>
@@ -177,3 +180,140 @@ class Skill {
     -name
     -cost
 }
+
+
+Combat calculations
+-------------------
+
+change_to_hit = {Skill, Dexterity, Weight}
+
+Damage = {Weapon, Skill, Strength}
+
+Player (A):
+  str:      20
+  dex:      20
+  Sword:     0
+  weapon:   50 (shortsword)
+  Weight:   5.0
+
+Rabbit (B):
+  str:        5
+  dex:       30
+  Unarmed:  100
+  weapon:     5 (teeth)
+  Weight:   0.1
+
+Player attacks Rabbit.
+
+change_to_hit = DEXa / (DEXa + DEXb)
+              = 20 / (20 + 30) = 20 / 50 = 40 %
+
+       damage = (((Skill + Strength) / 2) / 100) * Weapon
+              = (((0 + 20) / 2) / 100) * 50 = (10 / 100) * 50 = 5
+
+Player (A):
+  str:      100
+  dex:      100
+  Sword:      0
+  weapon:    50 (shortsword)
+
+change_to_hit = DEXa / (DEXa + DEXb)
+              = 100 / (100 + 30) = 100 / 130 = 77 %
+
+       damage = (((Skill + Strength) / 2) / 100) * Weapon
+              = (((0 + 100) / 2) / 100) * 50 = (50 / 100) * 50 = 25
+
+Player (A):
+  str:      150
+  dex:      100
+  Sword:    100
+  weapon:    50 (shortsword)
+
+change_to_hit = DEXa / (DEXa + DEXb)
+              = 100 / (100 + 30) = 100 / 130 = 77 %
+
+       damage = (((Skill + Strength) / 2) / 100) * Weapon
+              = (((100 + 150) / 2) / 100) * 50 = (125 / 100) * 50 = 62
+
+Player (A):
+  str:      200
+  dex:      200
+  Sword:    100
+  weapon:    50 (shortsword)
+
+change_to_hit = DEXa / (DEXa + DEXb)
+              = 200 / (200 + 30) = 200 / 230 = 87 %
+
+       damage = (((Skill + Strength) / 2) / 100) * Weapon
+              = (((100 + 200) / 2) / 100) * 50 = (150 / 100) * 50 = 75
+
+
+Weapons
+-------
+
+Piercing
+  Dagger
+  Spear
+Slashing
+  Sword
+    Shortsword
+    Rapier
+    Sable
+    Longsword
+    Scimitar
+    Katana
+    Broadsword
+    Bastardsword (2h)
+    Dai-Katana (2h)
+  Axe
+    Hand Axe
+    War Axe
+    Battle Axe
+Crushing
+  Mace
+    Wooden stick
+    Bone
+    Club
+    Mace
+  Hammer
+    Warhammer
+
+
+    Iron dagger
+      damage: 5
+      weight: 1.0
+    Steel dagger
+      damage: 10
+      weight: 1.0
+    Silver dagger
+      damage: 15
+      weight: 0.5
+    Elven dagger
+      damage: 20
+      weight: 0.5
+    Dwarven dagger
+      damage: 25
+      weight: 2.0
+    Orcish dagger
+      damage: 30
+      weight: 1.0
+
+
+    Iron shortsword
+      damage: 10
+      weight: 5.0
+    Steel shortsword
+      damage: 15
+      weight: 5.0
+    Silver shortsword
+      damage: 20
+      weight: 2.5
+    Elven shortsword
+      damage: 25
+      weight: 2.5
+    Dwarven shortsword
+      damage: 30
+      weight: 10.0
+    Orcish shortsword
+      damage: 35
+      weight: 15.0
