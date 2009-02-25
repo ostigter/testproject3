@@ -7,33 +7,33 @@ package ozmud.world;
  * @author Oscar Stigter
  */
 public class Exit {
-	
+    
 
-	private String name;
-	
-	private int roomId;
-	
-	
-	public Exit(String name, int roomId) {
-		this.name = name;
-		this.roomId = roomId;
-	}
-	
-	
-	public String getName() {
-		return name;
-	}
-	
-	
-	public int getRoomId() {
-		return roomId;
-	}
+    private String name;
+    
+    private int roomId;
+    
+    
+    public Exit(String name, int roomId) {
+        this.name = name;
+        this.roomId = roomId;
+    }
+    
+    
+    public String getName() {
+        return name;
+    }
+    
+    
+    public int getRoomId() {
+        return roomId;
+    }
 
 
-	@Override
-	public String toString() {
-		return name;
-	}
-	
-	
+    @Override
+    public String toString() {
+        return name;
+    }
+    
+    
 }

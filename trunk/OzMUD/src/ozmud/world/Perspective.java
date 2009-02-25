@@ -7,16 +7,16 @@ package ozmud.world;
  * @author Oscar Stigter
  */
 public enum Perspective {
-	
+    
 
-	/** Sender's perspective (first-person, e.g. "Frodo", "you"). */
-	SELF,
-	
-	/** Target's perspective (second-person, e.g. "Frodo", "he", "she", "it"). */
-	TARGET,
-	
-	/** Bystanders (third-person, e.g. "Frodo"). */
-	OTHERS,
+    /** Sender's perspective (first-person, e.g. "Frodo", "you"). */
+    SELF,
+    
+    /** Target's perspective (second-person, e.g. "Frodo", "he", "she", "it"). */
+    TARGET,
+    
+    /** Bystanders (third-person, e.g. "Frodo"). */
+    OTHERS,
 
 
 }
