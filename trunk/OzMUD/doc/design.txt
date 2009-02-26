@@ -125,12 +125,6 @@ class Race {
     -experienceRate
 }
 
-Races:
-    Human   (human)
-    Elf     (elven)
-    Dwarf   (dwarven)
-    Orc     (orcish)
-
 class NPC : Creature {
     -isAggressive : boolean
     -doesFollow : boolean
@@ -180,6 +174,75 @@ class Skill {
     -name
     -cost
 }
+
+
+Races
+-----
+
+Human   (human)
+    Strength        30 - 100
+    Dexterity       30 - 100
+    Endurance       30 - 100
+    Intelligence    30 - 100
+    Wisdom          30 - 100
+    Exp.rate        100 %
+
+High Elf (elven)
+    Strength        20 - 75  (-1)
+    Dexterity       40 - 125 (+1)
+    Endurance       20 - 75  (-1)
+    Intelligence    50 - 150 (+2)
+    Wisdom          60 - 175 (+3) (+4)
+    Exp.rate        40 %
+
+Wood Elf (elven)
+    Strength        20 - 75  (-1)
+    Dexterity       50 - 150 (+2)
+    Endurance       30 - 100
+    Intelligence    40 - 125 (+1)
+    Wisdom          40 - 125 (+1) (+3)
+    Exp.rate        60 %    
+
+Dwarf   (dwarven)
+    Strength        40 - 125 (+1)
+    Dexterity       30 - 75  (-1)
+    Endurance       40 - 125 (+1)
+    Intelligence    20 - 75  (-1)
+    Wisdom          40 - 125 (+1)
+    Exp.rate        70 %
+    
+Orc     (orcish)
+    Strength        50 - 150 (+2)
+    Dexterity       30 - 100
+    Endurance       50 - 150 (+2)
+    Intelligence    10 - 50  (-2)
+    Wisdom          10 - 50  (-2)
+    Exp.rate        60 %     
+    
+Halfling (?)
+    Strength        10 - 50
+    Dexterity       50 - 150
+    Endurance       10 - 50
+    Intelligence    30 - 100
+    Wisdom          30 - 100
+    Exp.rate        75 %
+
+Giant (?)
+    Strength        60 - 175
+    Dexterity       20 - 75
+    Endurance       50 - 150
+    Intelligence    10 - 50
+    Wisdom          10 - 50
+    Exp.rate        25 %
+
+Troll (trollish)
+    Strength        70 - 200
+    Dexterity       10 - 50
+    Endurance       70 - 200
+    Intelligence    5 - 30
+    Wisdom          5 - 30
+    Exp.rate        25 %
+
 
 
 Combat calculations
