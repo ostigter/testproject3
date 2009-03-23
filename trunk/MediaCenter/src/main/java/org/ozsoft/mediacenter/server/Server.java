@@ -57,6 +57,9 @@ public class Server {
 		LOG.info("Started");
 	}
 	
+	/**
+	 * Refreshes the media library.
+	 */
 	public void refresh() {
     	LOG.debug("Operation 'refresh' called");
 		library.refresh();

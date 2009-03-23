@@ -44,9 +44,11 @@ public class Episode implements Serializable, Comparable<Episode> {
 	
 	public String getName() {
 		if (title == null || title.length() == 0) {
-			return String.format("%s%02de%02d", seasonNr, episodeNr);
+			return String.format("%s - s%02de%02d",
+					showName, seasonNr, episodeNr);
 		} else {
-			return String.format("s%02de%02d - %s", seasonNr, episodeNr, title);
+			return String.format("%s - s%02de%02d - %s",
+					showName, seasonNr, episodeNr, title);
 		}
 	}
 	
@@ -65,11 +67,9 @@ public class Episode implements Serializable, Comparable<Episode> {
 	@Override
 	public String toString() {
 		if (title == null || title.length() == 0) {
-			return String.format("%s - s%02de%02d",
-					showName, seasonNr, episodeNr);
+			return String.format("s%02de%02d", seasonNr, episodeNr);
 		} else {
-			return String.format("%s - s%02de%02d - %s",
-					showName, seasonNr, episodeNr, title);
+			return String.format("s%02de%02d - %s", seasonNr, episodeNr, title);
 		}
 	}
 

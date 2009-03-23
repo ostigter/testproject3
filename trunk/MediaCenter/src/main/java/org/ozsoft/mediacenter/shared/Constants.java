@@ -1,9 +1,12 @@
 package org.ozsoft.mediacenter.shared;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
 public interface Constants {
+	
+	String TITLE = "Media Center";
 
     /** INI file. */
     String INI_FILE = "MediaCenter.ini";
@@ -25,10 +28,13 @@ public interface Constants {
 
 	/** Font size. */
     int FONT_SIZE = 30;
-	
+    
 	/** Font. */
     Font FONT = new Font(Font.SANS_SERIF, Font.PLAIN, FONT_SIZE);
     
+    /** Button size. */
+    Dimension BUTTON_SIZE = new Dimension(200, 50);
+	
     /** Background color. */
     Color BACKGROUND = new Color(0, 0, 64);
     
