@@ -10,6 +10,11 @@ import org.apache.log4j.Logger;
 import org.ozsoft.mediacenter.domain.Episode;
 import org.ozsoft.mediacenter.domain.Show;
 
+/**
+ * The media library.
+ * 
+ * @author Oscar Stigter
+ */
 public class Library {
 
     /** The logger. */
@@ -19,7 +24,7 @@ public class Library {
 	private static final Pattern pattern1 =
 			Pattern.compile("s(\\d+)e(\\d+)");
 
-	/** Pattern 2, e.g. "greys anatomy 3x08 new kid in town". */
+	/** Pattern 2, e.g. "greys anatomy 13x08 new kid in town". */
 	private static final Pattern pattern2 =
 			Pattern.compile("(\\d+)x(\\d+)");
 	
@@ -123,6 +128,7 @@ public class Library {
 				try {
 					seasonNr = Integer.parseInt(m.group(1));
 					episodeNr = Integer.parseInt(m.group(2));
+					title = fileName.substring(m.end()).trim();
 				} catch (NumberFormatException e) {
 					// Impossible (guaranteed by regex).
 				}
@@ -147,11 +153,13 @@ public class Library {
 							// Impossible (guaranteed by regex).
 						}
 					}
+					title = fileName.substring(m.end()).trim();
 				}
 			}
 		}
 		
 		if (showName != null && seasonNr != -1 && episodeNr != -1) {
+			showName = getCleanName(showName);
 			Episode episode = new Episode(
 					file, showName, seasonNr, episodeNr, title);
 			Show show = shows.get(showName);
@@ -165,7 +173,7 @@ public class Library {
 		}
 	}
 	
-	private String getCleanFileName(File file) {
+	private static String getCleanFileName(File file) {
 		String name = file.getName().toLowerCase();
 		name = name.replaceAll("\\.", " ");
 		name = name.replaceAll("_", " ");
@@ -174,11 +182,21 @@ public class Library {
 		name = name.replaceAll(" hdtv ", " ");
 		name = name.replaceAll(" hdtv-.*\\w", " ");
 		name = name.replaceAll(" dvdrip ", " ");
+		name = name.replaceAll(" repack ", " ");
 		name = name.replaceAll(" proper ", " ");
 		name = name.replaceAll(" ac3 ", " ");
 		name = name.replaceAll(" ws ", " ");
 		name = name.replaceAll("ac3", "");
 		name = name.replaceAll("xvid-.*", " ");
+		return name;
+	}
+	
+	private static String getCleanName(String name) {
+		if (name.startsWith("the ")) {
+			name = name.substring(4) + ", the";
+		} else if (name.startsWith("a ")) {
+			name = name.substring(2) + ", a";
+		}
 		return name;
 	}
 	
