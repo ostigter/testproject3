@@ -279,10 +279,16 @@ public class Client {
 		int index = episodeList.getSelectedIndex();
 		Episode episode = (Episode) episodeListModel.get(index);
 		File file = episode.getFile();
-		LOG.debug(String.format("Playing video file '%s'", file));
+		String host = config.getServerHost();
+		if (host.equals("localhost")) {
+		    host = "127.0.0.1";
+		}
+//		String filePath = String.format("//%s/%s", host, episode.getFile().getPath()); 
+        String filePath = episode.getFile().getPath(); 
+		LOG.debug(String.format("Playing video file '%s'", filePath));
 		String playerPath = config.getVideoPlayerPath();
 		ProcessBuilder pb =
-				new ProcessBuilder(playerPath, "/fullscreen", file.getPath());
+				new ProcessBuilder(playerPath, "/fullscreen", filePath);
 		Process process = null;
 		try {
 			process = pb.start();
