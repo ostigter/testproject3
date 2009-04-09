@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <!-- Definition of the BpmService web service. -->
+    <Service name="bpmService" portName="BpmServicePort" url="http://localhost:8080/bpm/bpm" />
+
+    <!-- Polls for StorageRequest files. -->
+    <FileIn path="/data/eprov/osod/storage/request/in" interval="1">
+
+        <!-- Extract process ID. -->
+        <Variable name="processId"
+                value="/sr:StorageRequest/sr:ProcessId/text()"
+                xmlns:sr="http://www.example.com/StorageRequest" />
+
+        <!-- Archive the StorageRequest. -->
+        <FileOut path="/data/eprov/osod/storage/request/hist"
+                fileName="concat('storage-request-', $processId, '.xml')" />
+
+        <!-- Transform the StorageRequest to a StorageResult. -->
+        <Transform stylesheet="storage-request.xsl" />
+
+        <!-- Archive the StorageResponse. -->
+        <FileOut path="/data/eprov/usd/create/hist"
+                expression="concat('storage-result-', $processId, '.xml')" />
+
+        <!-- Transform the StorageResult to a BpmCall/ProcessAdvance SOAP message. -->
+        <Transform stylesheet="storage-result.xsl" />
+
+        <!-- Call the BPM service. -->
+        <CallService name="bpmService" action="Call" />
+    </FileIn>
+
+</Configuration>

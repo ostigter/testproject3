@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+	<namespaces>
+		<namespace prefix="req" uri="http://www.example.com/request" />
+		<namespace prefix="res" uri="http://www.example.com/response" />
+	</namespaces>
+	
+	<file-in dir="/data/test/request/in" interval="1000" age="500">
+		<log />
+		<xslt stylesheet="request.xsl" />
+		<log />
+		<http-out url="http://localhost:8080/bpm/bpm" method="POST" username="www" password="test" />
+		<soap-out url="http://localhost:8080/bpm/bpm" action="Call" username="www" password="test" />
+		<file-out dir="/data/test/request/hist" name="concat('response-', //res:TicketNr/text(), '.xml')" />
+	</file-in>
+
+</config>
