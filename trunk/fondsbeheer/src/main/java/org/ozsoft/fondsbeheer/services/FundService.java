@@ -6,28 +6,41 @@ import org.ozsoft.fondsbeheer.entities.Category;
 import org.ozsoft.fondsbeheer.entities.Closing;
 import org.ozsoft.fondsbeheer.entities.Fund;
 
+/**
+ * Interface of the Fund service.
+ * 
+ * @author Oscar Stigter
+ */
 public interface FundService {
     
-    List<Category> findCategories();
+    // Categories
     
-    Category findCategory(String id);
+    List<Category> findCategories() throws DatabaseException;
     
-    void storeCategory(Category category);
+    Category findCategory(String categoryId) throws DatabaseException;
     
-    void deleteCategory(String id);
+    void storeCategory(Category category) throws DatabaseException;
     
-    List<Fund> findFunds();
+    boolean deleteCategory(String categoryId) throws DatabaseException;
     
-    List<Fund> findFundsByCategory(String categoryId);
+    // Funds
     
-    Fund findFund(String id);
+    List<Fund> findFunds() throws DatabaseException;
     
-    void storeFund(Fund fund);
+    List<Fund> findFunds(String categoryId) throws DatabaseException;
     
-    List<Closing> findClosings();
+    Fund findFund(String fundId) throws DatabaseException;
     
-    List<Closing> findClosingsByFund(String fundId);
+    void storeFund(Fund fund) throws DatabaseException;
     
-    void storeClosing(Closing closing);
+    boolean deleteFund(String fundId) throws DatabaseException;
+    
+    // Closings
+    
+    List<Closing> findClosings() throws DatabaseException;
+    
+    List<Closing> findClosings(String fundId) throws DatabaseException;
+    
+    void storeClosing(Closing closing) throws DatabaseException;
 
 }
