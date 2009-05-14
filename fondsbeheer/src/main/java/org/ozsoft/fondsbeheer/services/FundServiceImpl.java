@@ -9,14 +9,18 @@ import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import org.apache.log4j.Logger;
-import org.ozsoft.fondsbeheer.Main;
 import org.ozsoft.fondsbeheer.entities.Category;
 import org.ozsoft.fondsbeheer.entities.Closing;
 import org.ozsoft.fondsbeheer.entities.Fund;
 
+/**
+ * Implementation of the Fund service using pure JPA.
+ * 
+ * @author Oscar Stigter
+ */
 public class FundServiceImpl implements FundService {
     
-    private static final Logger LOG = Logger.getLogger(Main.class);
+    private static final Logger LOG = Logger.getLogger(FundServiceImpl.class);
 
     private static final String PERSISTENCE_UNIT = "fondsbeheer";
     
@@ -33,83 +37,130 @@ public class FundServiceImpl implements FundService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Category> findCategories() {
-        return em.createNamedQuery("findCategories").getResultList();
+    public List<Category> findCategories() throws DatabaseException {
+        try {
+            return em.createNamedQuery("findCategories").getResultList();
+        } catch (PersistenceException e) {
+            throw new DatabaseException("Could not retrieve categories", e);
+        }
     }
     
-    public Category findCategory(String id) {
-        return em.find(Category.class, id);
+    public Category findCategory(String categoryId) throws DatabaseException {
+        try {
+            return em.find(Category.class, categoryId);
+        } catch (PersistenceException e) {
+            throw new DatabaseException("Could not retrieve categories", e);
+        }
     }
     
-    public void storeCategory(Category category) {
+    public void storeCategory(Category category) throws DatabaseException {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
             em.persist(category);
             tx.commit();
         } catch (PersistenceException e) {
-            LOG.error("Error storing category", e);
-            tx.rollback();
+            String msg = "Error storing category"; 
+            LOG.error(msg, e);
+            try {
+                tx.rollback();
+            } catch (PersistenceException e2) {
+                String msg2 = "Could not rollback transaction";
+                LOG.error(msg2, e2);
+            }
+            throw new DatabaseException(msg, e);
         }
     }
 
-    public void deleteCategory(Category category) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-        try {
-            em.remove(category);
-            tx.commit();
-        } catch (PersistenceException e) {
-            LOG.error("Error deleting category", e);
+    public boolean deleteCategory(String categoryId) throws DatabaseException {
+        boolean deleted = false;
+        Category category = findCategory(categoryId);
+        if (category != null) {
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
             try {
-                tx.rollback();
-            } catch (Exception e2) {
-                LOG.error("Could not rollback transaction", e2);
+                em.remove(category);
+                tx.commit();
+                deleted = true;
+            } catch (PersistenceException e) {
+                LOG.error("Could not deleting category", e);
+                try {
+                    tx.rollback();
+                } catch (PersistenceException e2) {
+                    LOG.error("Could not rollback transaction", e2);
+                }
             }
         }
+        return deleted;
     }
 
     @SuppressWarnings("unchecked")
-    public List<Fund> findFunds() {
+    public List<Fund> findFunds() throws DatabaseException {
         return em.createNamedQuery("findFunds").getResultList();
     }
 
     @SuppressWarnings("unchecked")
-    public List<Fund> findFundsByCategory(String categoryId) {
+    public List<Fund> findFunds(String categoryId) throws DatabaseException {
         Query query = em.createNamedQuery("findFundsByCategory");
         query.setParameter("categoryId", categoryId);
         return query.getResultList();
     }
     
-    public Fund findFund(String id) {
-        return em.find(Fund.class, id);
+    public Fund findFund(String fundId) throws DatabaseException {
+        return em.find(Fund.class, fundId);
     }
     
-    public void storeFund(Fund fund) {
+    public void storeFund(Fund fund) throws DatabaseException {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
             em.persist(fund);
             tx.commit();
         } catch (PersistenceException e) {
-            LOG.error("Error storing fund", e);
-            tx.rollback();
+            LOG.error("Could not store fund", e);
+            try {
+                tx.rollback();
+            } catch (PersistenceException e2) {
+                LOG.error("Could not rollback transaction", e2);
+            }
         }
     }
 
+    public boolean deleteFund(String fundId) throws DatabaseException {
+        boolean deleted = false;
+        Fund fund = findFund(fundId);
+        if (fund != null) {
+            EntityTransaction tx = em.getTransaction();
+            tx.begin();
+            try {
+                em.remove(fund);
+                tx.commit();
+                deleted = true;
+            } catch (PersistenceException e) {
+                LOG.error("Could not deleting fund", e);
+                try {
+                    tx.rollback();
+                } catch (PersistenceException e2) {
+                    LOG.error("Could not rollback transaction", e2);
+                }
+            }
+        }
+        return deleted;
+    }
+
     @SuppressWarnings("unchecked")
-    public List<Closing> findClosings() {
+    public List<Closing> findClosings() throws DatabaseException {
         return em.createNamedQuery("findClosings").getResultList();
     }
 
     @SuppressWarnings("unchecked")
-    public List<Closing> findClosingsByFund(String fundId) {
+    public List<Closing> findClosings(String fundId) throws DatabaseException {
         Query query = em.createNamedQuery("findClosingsByFund");
         query.setParameter("fundId", fundId);
         return query.getResultList();
     }
 
-    public void storeClosing(Closing closing) {
+    public void storeClosing(Closing closing) throws DatabaseException {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
@@ -119,23 +170,7 @@ public class FundServiceImpl implements FundService {
             LOG.error("Error storing closing", e);
             try {
                 tx.rollback();
-            } catch (Exception e2) {
-                LOG.error("Could not rollback transaction", e2);
-            }
-        }
-    }
-
-    public void deleteCategory(String id) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-        try {
-            em.remove(id);
-            tx.commit();
-        } catch (PersistenceException e) {
-            LOG.error("Error deleting closing", e);
-            try {
-                tx.rollback();
-            } catch (Exception e2) {
+            } catch (PersistenceException e2) {
                 LOG.error("Could not rollback transaction", e2);
             }
         }
