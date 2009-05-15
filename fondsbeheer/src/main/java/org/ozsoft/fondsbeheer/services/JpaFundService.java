@@ -14,7 +14,7 @@ import org.ozsoft.fondsbeheer.entities.Closing;
 import org.ozsoft.fondsbeheer.entities.Fund;
 
 /**
- * Implementation of the Fund service using pure JPA.
+ * Implementation of the Fund service using JPA.
  * 
  * @author Oscar Stigter
  */
@@ -34,6 +34,14 @@ public class JpaFundService implements FundService {
             LOG.fatal(msg, e);
             throw new RuntimeException(msg, e);
         }
+    }
+
+    public void close() throws DatabaseException {
+        //TODO
+    }
+
+    public void connect() throws DatabaseException {
+        //TODO
     }
 
     @SuppressWarnings("unchecked")
@@ -72,28 +80,6 @@ public class JpaFundService implements FundService {
         }
     }
 
-//    public boolean deleteCategory(String categoryId) throws DatabaseException {
-//        boolean deleted = false;
-//        Category category = findCategory(categoryId);
-//        if (category != null) {
-//            EntityTransaction tx = em.getTransaction();
-//            tx.begin();
-//            try {
-//                em.remove(category);
-//                tx.commit();
-//                deleted = true;
-//            } catch (PersistenceException e) {
-//                LOG.error("Could not deleting category", e);
-//                try {
-//                    tx.rollback();
-//                } catch (PersistenceException e2) {
-//                    LOG.error("Could not rollback transaction", e2);
-//                }
-//            }
-//        }
-//        return deleted;
-//    }
-
     @SuppressWarnings("unchecked")
     public List<Fund> findFunds() throws DatabaseException {
         return em.createNamedQuery("findFunds").getResultList();
@@ -125,28 +111,6 @@ public class JpaFundService implements FundService {
             }
         }
     }
-
-//    public boolean deleteFund(String fundId) throws DatabaseException {
-//        boolean deleted = false;
-//        Fund fund = findFund(fundId);
-//        if (fund != null) {
-//            EntityTransaction tx = em.getTransaction();
-//            tx.begin();
-//            try {
-//                em.remove(fund);
-//                tx.commit();
-//                deleted = true;
-//            } catch (PersistenceException e) {
-//                LOG.error("Could not deleting fund", e);
-//                try {
-//                    tx.rollback();
-//                } catch (PersistenceException e2) {
-//                    LOG.error("Could not rollback transaction", e2);
-//                }
-//            }
-//        }
-//        return deleted;
-//    }
 
     @SuppressWarnings("unchecked")
     public List<Closing> findClosings(String fundId) throws DatabaseException {
