@@ -16,10 +16,11 @@ CREATE TABLE Fund (
 CREATE TABLE Closing (
     id          INT(10) PRIMARY KEY AUTO_INCREMENT,
     fundId      VARCHAR(20) NOT NULL REFERENCES Fund(id),
-    date        DATE NOT NULL UNIQUE KEY,
+    date        DATE NOT NULL,
     price       DOUBLE
 );
 
+/*
 INSERT INTO Category VALUES ('aex', 'AEX hoofdfondsen');
 INSERT INTO Category VALUES ('midcap', 'MidCap fondsen');
 INSERT INTO Category VALUES ('lokaal', 'Lokale fondsen');
@@ -31,3 +32,4 @@ INSERT INTO Fund VALUES ('ict', 'ICT Automatisering', 'lokaal');
 INSERT INTO Closing VALUES (NULL, 'ahold', '2009-01-30', 12.25);
 INSERT INTO Closing VALUES (NULL, 'ahold', '2009-01-31', 13.50);
 INSERT INTO Closing VALUES (NULL, 'ahold', '2009-02-01', 13.75);
+*/
