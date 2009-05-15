@@ -1,5 +1,6 @@
 package org.ozsoft.fondsbeheer.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
@@ -15,8 +16,10 @@ public class Fund {
     @Id
     private String id;
     
+    @Column(nullable = false)
     private String name;
     
+    @Column(nullable = false)
     private String categoryId;
 
     public String getId() {
@@ -41,6 +44,11 @@ public class Fund {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+    
+    @Override
+    public String toString() {
+        return name; 
     }
     
 }

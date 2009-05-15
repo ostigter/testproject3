@@ -21,7 +21,7 @@ public interface FundService {
     
     void storeCategory(Category category) throws DatabaseException;
     
-    boolean deleteCategory(String categoryId) throws DatabaseException;
+//    boolean deleteCategory(String categoryId) throws DatabaseException;
     
     // Funds
     
@@ -33,11 +33,9 @@ public interface FundService {
     
     void storeFund(Fund fund) throws DatabaseException;
     
-    boolean deleteFund(String fundId) throws DatabaseException;
+//    boolean deleteFund(String fundId) throws DatabaseException;
     
     // Closings
-    
-    List<Closing> findClosings() throws DatabaseException;
     
     List<Closing> findClosings(String fundId) throws DatabaseException;
     
