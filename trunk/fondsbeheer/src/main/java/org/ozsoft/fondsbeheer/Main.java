@@ -1,6 +1,12 @@
 package org.ozsoft.fondsbeheer;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.ozsoft.fondsbeheer.entities.Category;
+import org.ozsoft.fondsbeheer.services.DatabaseException;
+import org.ozsoft.fondsbeheer.services.FundService;
+import org.ozsoft.fondsbeheer.services.JdbcFundService;
 
 public class Main {
     
@@ -11,9 +17,15 @@ public class Main {
     public static void main(String[] args) throws Exception {
         LOG.info("Started");
         
-//        FundService fundService = new JpaFundService();
-//        
-//        try {
+        try {
+            FundService fundService = new JdbcFundService();
+            fundService.connect();
+            List<Category> categories = fundService.findCategories();
+            for (Category c : categories) {
+                LOG.info("Category: " + c);
+            }
+            fundService.close();
+            
 //            Category category = new Category();
 //            category.setId("c1");
 //            category.setName("Category_1");
@@ -71,10 +83,10 @@ public class Main {
 //            closing.setDate(DATE_FORMAT.parse("20090201"));
 //            closing.setPrice(10.50);
 //            fundService.storeClosing(closing);
-//            
-//        } catch (DatabaseException e) {
-//            LOG.error("Database error", e);
-//        }
+            
+        } catch (DatabaseException e) {
+            LOG.error("Database error", e);
+        }
         
         LOG.info("Finished");
     }
