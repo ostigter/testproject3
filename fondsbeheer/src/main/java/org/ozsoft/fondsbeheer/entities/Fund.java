@@ -8,8 +8,8 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "findFunds", query = "SELECT f FROM Fund f"),
-    @NamedQuery(name = "findFundsByCategory", query = "SELECT f FROM Fund f WHERE f.categoryId = :categoryId")
+    @NamedQuery(name = "getFunds", query = "SELECT f FROM Fund f"),
+    @NamedQuery(name = "getFundsByCategory", query = "SELECT f FROM Fund f WHERE f.categoryId = :categoryId")
 })
 public class Fund {
     
