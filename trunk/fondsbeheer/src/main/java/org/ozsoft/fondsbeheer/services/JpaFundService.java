@@ -45,15 +45,15 @@ public class JpaFundService implements FundService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Category> findCategories() throws DatabaseException {
+    public List<Category> getCategories() throws DatabaseException {
         try {
-            return em.createNamedQuery("findCategories").getResultList();
+            return em.createNamedQuery("getCategories").getResultList();
         } catch (PersistenceException e) {
             throw new DatabaseException("Could not retrieve categories", e);
         }
     }
     
-    public Category findCategory(String categoryId) throws DatabaseException {
+    public Category getCategory(String categoryId) throws DatabaseException {
         try {
             return em.find(Category.class, categoryId);
         } catch (PersistenceException e) {
@@ -81,18 +81,18 @@ public class JpaFundService implements FundService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Fund> findFunds() throws DatabaseException {
-        return em.createNamedQuery("findFunds").getResultList();
+    public List<Fund> getFunds() throws DatabaseException {
+        return em.createNamedQuery("getFunds").getResultList();
     }
 
     @SuppressWarnings("unchecked")
-    public List<Fund> findFunds(String categoryId) throws DatabaseException {
-        Query query = em.createNamedQuery("findFundsByCategory");
+    public List<Fund> getFunds(String categoryId) throws DatabaseException {
+        Query query = em.createNamedQuery("getFundsByCategory");
         query.setParameter("categoryId", categoryId);
         return query.getResultList();
     }
     
-    public Fund findFund(String fundId) throws DatabaseException {
+    public Fund getFund(String fundId) throws DatabaseException {
         return em.find(Fund.class, fundId);
     }
     
@@ -113,8 +113,8 @@ public class JpaFundService implements FundService {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Closing> findClosings(String fundId) throws DatabaseException {
-        Query query = em.createNamedQuery("findClosings");
+    public List<Closing> getClosings(String fundId) throws DatabaseException {
+        Query query = em.createNamedQuery("getClosings");
         query.setParameter("fundId", fundId);
         return query.getResultList();
     }

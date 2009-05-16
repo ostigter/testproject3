@@ -17,21 +17,21 @@ public interface FundService {
     
     void close() throws DatabaseException;
     
-    List<Category> findCategories() throws DatabaseException;
+    List<Category> getCategories() throws DatabaseException;
     
-    Category findCategory(String categoryId) throws DatabaseException;
+    Category getCategory(String categoryId) throws DatabaseException;
     
     void storeCategory(Category category) throws DatabaseException;
     
-    List<Fund> findFunds() throws DatabaseException;
+    List<Fund> getFunds() throws DatabaseException;
     
-    List<Fund> findFunds(String categoryId) throws DatabaseException;
+    List<Fund> getFunds(String categoryId) throws DatabaseException;
     
-    Fund findFund(String fundId) throws DatabaseException;
+    Fund getFund(String fundId) throws DatabaseException;
     
     void storeFund(Fund fund) throws DatabaseException;
     
-    List<Closing> findClosings(String fundId) throws DatabaseException;
+    List<Closing> getClosings(String fundId) throws DatabaseException;
     
     void storeClosing(Closing closing) throws DatabaseException;
 
