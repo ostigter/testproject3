@@ -11,7 +11,7 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "findClosings", query = "SELECT c FROM Closing c WHERE c.fundId = :fundId")
+    @NamedQuery(name = "getClosings", query = "SELECT c FROM Closing c WHERE c.fundId = :fundId")
 })
 public class Closing {
     

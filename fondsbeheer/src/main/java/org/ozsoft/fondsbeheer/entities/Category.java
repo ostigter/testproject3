@@ -8,7 +8,7 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "findCategories", query = "SELECT c FROM Category c") })
+    @NamedQuery(name = "getCategories", query = "SELECT c FROM Category c") })
 public class Category {
     
     @Id
