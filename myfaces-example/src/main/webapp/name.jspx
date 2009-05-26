@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jsp:root  version="2.0" 
+        xmlns:jsp="http://java.sun.com/JSP/Page"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html">
+    <jsp:directive.page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" />
+    <jsp:text>
+        <![CDATA[ <?xml version="1.0" encoding="UTF-8"?> ]]>
+    </jsp:text>
+    <jsp:text>
+        <![CDATA[ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> ]]>
+    </jsp:text>
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+		    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		    <link href="style.css" rel="stylesheet" type="text/css" />
+		    <title>MyFaces example</title>
+        </head>
+        <body>
+            <f:view>
+                <h2><h:outputText value="#{msgs.header}" styleClass="pageHeader" /></h2>
+                <h:form>
+                <p>
+			        <h:commandLink value="English" action="#{localeChanger.englishAction}" immediate="true" /> |
+			        <h:commandLink value="Deutsch" action="#{localeChanger.germanAction}" immediate="true" /> |
+			        <h:commandLink value="Nederlands" action="#{localeChanger.dutchAction}" immediate="true" /> |
+                </p>
+		        <p>
+                    <h:messages layout="table" styleClass="messages" />
+                </p>
+                <p>
+                    <h:outputText value="#{msgs.namePrompt}" styleClass="label" />:
+                    <h:inputText value="#{user.name}" styleClass="textField" required="true" />
+		        </p>
+		        <p>
+		            <h:commandButton id="submit" value="#{msgs.submitButton}" action="success" styleClass="button" />
+		        </p>
+            </h:form>
+            </f:view>
+		</body>
+    </html>
+</jsp:root>

@@ -5,4 +5,54 @@
 
 <faces-config>
 
+  <!-- Navigation rules -->
+
+  <navigation-rule>
+    <from-view-id>/name.jspx</from-view-id>
+    <navigation-case>
+        <from-outcome>success</from-outcome>
+        <to-view-id>/greeting.jspx</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/greeting.jspx</from-view-id>
+    <navigation-case>
+        <from-outcome>success</from-outcome>
+        <to-view-id>/name.jspx</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+
+  <!-- Managed beans -->
+  
+  <managed-bean>
+    <managed-bean-name>user</managed-bean-name>
+    <managed-bean-class>org.ozsoft.example.myfaces.UserBean</managed-bean-class>
+    <managed-bean-scope>request</managed-bean-scope>
+    <managed-property>
+        <property-name>name</property-name>
+        <property-class>java.lang.String</property-class>
+        <value></value>
+    </managed-property>
+  </managed-bean>
+  
+  <managed-bean>
+    <managed-bean-name>localeChanger</managed-bean-name>
+    <managed-bean-class>org.ozsoft.example.myfaces.LocaleChanger</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+  </managed-bean>
+
+  <!-- Internationalization -->
+
+  <application>
+    <resource-bundle>
+      <base-name>bundle.messages</base-name>
+      <var>msgs</var>
+    </resource-bundle>
+    <locale-config>
+      <default-locale>en</default-locale>
+    </locale-config>
+  </application>
+
 </faces-config>

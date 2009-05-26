@@ -15,7 +15,7 @@
 			<title>MyFaces Example</title>
 		</head>
 		<body>
-		  <jsp:forward page="/faces/login.jspx" />
+		  <jsp:forward page="/faces/name.jspx" />
 		</body>
 	</html>
 </jsp:root>

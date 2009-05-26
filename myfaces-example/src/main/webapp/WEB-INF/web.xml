@@ -6,10 +6,6 @@
 
     <display-name>myfaces-example</display-name>
 
-    <listener>
-        <listener-class>org.apache.myfaces.webapp.StartupServletContextListener</listener-class>
-    </listener>
-
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -198,7 +194,7 @@
     </filter-mapping>
 
     <welcome-file-list>
-        <welcome-file>index.jspx</welcome-file>
+        <welcome-file>/index.jspx</welcome-file>
     </welcome-file-list>
 
 </web-app>
