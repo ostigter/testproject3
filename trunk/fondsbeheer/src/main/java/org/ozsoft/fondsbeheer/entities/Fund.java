@@ -1,6 +1,5 @@
 package org.ozsoft.fondsbeheer.entities;
 
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -84,11 +83,12 @@ public class Fund {
     public static Fund deserialize(DataInputStream dis) throws IOException {
     	String id = dis.readUTF();
     	String name = dis.readUTF();
+    	Fund fund = new Fund(id, name);
     	int noOfValues = dis.readInt();
     	for (int i = 0; i < noOfValues; i++) {
-    		
+    		fund.addValue(FundValue.deserialize(dis));
     	}
-        return new SmallDate(day, month, year);
+        return fund;
     }
     
 }

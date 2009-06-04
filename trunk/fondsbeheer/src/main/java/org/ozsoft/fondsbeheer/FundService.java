@@ -1,5 +1,7 @@
 package org.ozsoft.fondsbeheer;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,14 +14,15 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 import org.ozsoft.fondsbeheer.entities.Category;
-import org.ozsoft.fondsbeheer.entities.FundValue;
 import org.ozsoft.fondsbeheer.entities.Fund;
+import org.ozsoft.fondsbeheer.entities.FundValue;
 import org.ozsoft.fondsbeheer.entities.SmallDate;
 import org.ozsoft.fondsbeheer.filestore.FileStore;
 import org.ozsoft.fondsbeheer.filestore.FileStoreException;
 
 /**
- * Manager for the categories and funds.
+ * Fund service.
+ * Handles retrieving, updating and storing funds and categories.
  * 
  * @author Oscar Stigter
  */
@@ -98,6 +101,52 @@ public class FundService {
         return noOfFunds;
     }
 
+    public Fund getFund(String id) {
+    	if (id == null || id.length() == 0) {
+    		throw new IllegalArgumentException("Null or empty id");
+    	}
+    	if (LOG.isDebugEnabled()) {
+    		LOG.debug(String.format("Retrieving fund with ID '%s'", id));
+    	}
+    	Fund fund = null;
+    	try {
+    		byte[] data = fileStore.retrieve(id);
+    		if (data != null) {
+	    		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
+	    		fund = Fund.deserialize(dis);
+	    		dis.close();
+    		} else {
+    			LOG.warn(String.format("Could not find fund with ID '%s'"));
+    		}
+    	} catch (FileStoreException e) {
+    		LOG.error(String.format("Could not retrieve fund with ID '%s'", e));
+    	} catch (IOException e) {
+    		LOG.error(String.format("Could not deserialize fund with ID '%s'", e));
+    	}
+    	return fund;
+    }
+    
+    public void storeFund(Fund fund) {
+    	if (fund == null) {
+    		throw new IllegalArgumentException("Null fund");
+    	}
+    	if (LOG.isDebugEnabled()) {
+    		LOG.debug(String.format("Storing fund '%s'", fund.getName()));
+    	}
+    	try {
+    		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    		DataOutputStream dos = new DataOutputStream(baos);
+    		fund.serialize(dos);
+    		byte[] data = baos.toByteArray();
+    		dos.close();
+    		fileStore.store(fund.getId(), data);
+    	} catch (FileStoreException e) {
+    		LOG.error(String.format("Could not retrieve fund with ID '%s'", e));
+    	} catch (IOException e) {
+    		LOG.error(String.format("Could not deserialize fund with ID '%s'", e));
+    	}
+    }
+
     public void updateCategories() {
         LOG.info("Updating categories");
         
@@ -116,18 +165,6 @@ public class FundService {
         LOG.info("Categories updated");
     }
 
-    public int getNoOfNewCategories() {
-        return noOfNewCategories;
-    }
-
-    public int getNoOfNewFunds() {
-        return noOfNewFunds;
-    }
-
-    public void resetUpdateCounter() {
-        noOfUpdatedFunds = 0;
-    }
-
     public void updateAll() {
     	LOG.info("Updating all funds");
         for (Category cat : categories.values()) {
@@ -138,69 +175,74 @@ public class FundService {
     public void updateFundsInCategory(Category cat) {
         LOG.info(String.format("Updating category '%s'", cat.getName()));
         for (Fund fund : cat.getFunds()) {
-            updateFund(fund);
+            updateFund(fund.getId());
         }
     }
 
-    public void updateFund(Fund fund) {
-        LOG.info(String.format("Updating fund '%s'", fund.getName()));
-        
-        // Create fund with stored data.
-        byte[] bytes = null;
-        try {
-            bytes = fileStore.retrieve(fund.getId());
-            fund = new Fund(bytes);
-        } catch (FileStoreException e) {
-            LOG.info("Fund added: " + fund.getName());
-        }
-
-        // Update fund using online service.
-        boolean updated = false;
-        String url = String.format("http://www.behr.nl/Beurs/Fondsh/%s.html", fund.getId());
-        String[] lines = pageReader.read(url);
-        for (String line : lines) {
-            Matcher m = CLOSING_PATTERN.matcher(line);
-            if (m.matches()) {
-                String dateString = m.group(1);
-                SmallDate date = null;
-                try {
-                    date = SmallDate.parseDate(dateString);
-                } catch (Exception ex) {
-                    LOG.error(String.format(
-                    		"Could not parse date '%s' for fund '%s'",
-                    		dateString, fund.getName()));
-                }
-                String valueString = m.group(2);
-                valueString = valueString.replaceFirst(",", ".").replaceAll("X", "").replaceAll("\\*", "");
-                float value = -1.0f;
-                try {
-                    value = Float.parseFloat(valueString);
-                } catch (Exception ex) {
-                    LOG.error(String.format(
-                            "Could not parse closing value '%s' for fund '%s' on %s",
-                            valueString, fund.getId(), date));
-                }
-                if (date != null && value != -1.0f && fund.addValue(new FundValue(date, value))) {
-                    if (!updated) {
-                        updated = true;
-                        noOfUpdatedFunds++;
-                    }
-                }
-            }
-        }
-        if (updated) {
-            try {
-                fileStore.store(fund.getId(), fund.getBytes());
-            } catch (FileStoreException e) {
-                LOG.error(String.format("Could not store fund '%s'", fund.getName()));
-            }
+    public void updateFund(String fundId) {
+    	if (fundId == null || fundId.length() == 0) {
+    		throw new IllegalArgumentException("Null or empty fundId");
+    	}
+        Fund fund = getFund(fundId);
+        if (fund == null) {
+        	LOG.warn(String.format("Fund with ID '%s' not found", fundId));
+        } else {
+	        LOG.info(String.format("Updating fund '%s'", fund));
+	        boolean updated = false;
+	        String uri = String.format("http://www.behr.nl/Beurs/Fondsh/%s.html", fundId);
+	        String[] lines = pageReader.read(uri);
+	        for (String line : lines) {
+	            Matcher m = CLOSING_PATTERN.matcher(line);
+	            if (m.matches()) {
+	                String dateString = m.group(1);
+	                SmallDate date = null;
+	                try {
+	                    date = SmallDate.parseDate(dateString);
+	                } catch (Exception ex) {
+	                    LOG.error(String.format(
+	                    		"Could not parse date '%s' for fund '%s'",
+	                    		dateString, fund));
+	                }
+	                String valueString = m.group(2);
+	                valueString = valueString.replaceFirst(",", ".").replaceAll("X", "").replaceAll("\\*", "");
+	                float value = -1.0f;
+	                try {
+	                    value = Float.parseFloat(valueString);
+	                } catch (Exception ex) {
+	                    LOG.error(String.format(
+	                            "Could not parse closing value '%s' for fund '%s' on %s",
+	                            valueString, fund.getId(), date));
+	                }
+	                if (date != null && value != -1.0f && fund.addValue(new FundValue(date, value))) {
+	                    if (!updated) {
+	                        updated = true;
+	                        noOfUpdatedFunds++;
+	                    }
+	                }
+	            }
+	        }
+	        if (updated) {
+	        	storeFund(fund);
+	        }
         }
     }
     
+    public int getNoOfNewCategories() {
+        return noOfNewCategories;
+    }
+
+    public int getNoOfNewFunds() {
+        return noOfNewFunds;
+    }
+
     public int getNoOfUpdatedFunds() {
         return noOfUpdatedFunds;
     }
     
+    public void resetUpdateCounter() {
+        noOfUpdatedFunds = 0;
+    }
+
     public void checkIntegrity() {
         int errors = 0;
         int warnings = 0;
@@ -210,7 +252,7 @@ public class FundService {
             try {
                 fileStore.retrieve(fileId);
             } catch (FileStoreException e) {
-                LOG.error(String.format("Could not retrieve file '%s'", fileId), e);
+                LOG.error(String.format("Could not retrieve fund with ID '%s'", fileId), e);
                 errors++;
             }
         }
@@ -244,8 +286,7 @@ public class FundService {
                 if (!fileStore.contains(id)) {
                     cat.removeFund(id);
                     purged = true;
-                    LOG.info("Removed dead fund '" + cat.getName()
-                            + " / " + fund.getName() + "' ('" + id + "').");
+                    LOG.info(String.format("Removed dead fund '%s/%s' with ID '%s'", cat, fund, id));
                 }
             }
         }
@@ -259,7 +300,9 @@ public class FundService {
     }
 
     private void readCategoryFile() {
-//        LOG.info("FundService: Reading category file");
+    	if (LOG.isDebugEnabled()) {
+    		LOG.debug("Reading category file");
+    	}
         categories.clear();
         if (CATEGORY_FILE.exists() && CATEGORY_FILE.canRead()) {
             try {
@@ -286,10 +329,11 @@ public class FundService {
     }
     
     private void writeCategoryFile() {
-//        LOG.info("FundService: Writing category file");
+    	if (LOG.isDebugEnabled()) {
+    		LOG.debug("Writing category file");
+    	}
         try {
-            DataOutputStream dos =
-                    new DataOutputStream(new FileOutputStream(CATEGORY_FILE));
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(CATEGORY_FILE));
             dos.writeInt(categories.size());
             for (Category cat : categories.values()) {
                 dos.writeUTF(cat.getId());
@@ -357,7 +401,7 @@ public class FundService {
             }
         }
     }
-
+    
     private static String getXmlText(String s) {
         StringBuilder sb = new StringBuilder();
         boolean inElement = false;
