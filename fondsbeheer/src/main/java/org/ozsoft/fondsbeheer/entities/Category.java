@@ -1,5 +1,6 @@
 package org.ozsoft.fondsbeheer.entities;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,10 +11,6 @@ import java.util.TreeMap;
  */
 public class Category {
     
-    private static final long serialVersionUID = 1L;
-    
-    private static final Fund[] EMPTY_ARRAY = new Fund[0];
-
     private final String id;
     
     private final String name;
@@ -42,8 +39,8 @@ public class Category {
         return funds.size();
     }
 
-    public Fund[] getFunds() {
-        return funds.values().toArray(EMPTY_ARRAY);
+    public Collection<Fund> getFunds() {
+        return funds.values();
     }
     
     public Fund getFund(String id) {

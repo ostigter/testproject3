@@ -1,4 +1,4 @@
-package org.ozsoft.fondsbeheer;
+package org.ozsoft.fondsbeheer.test;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
