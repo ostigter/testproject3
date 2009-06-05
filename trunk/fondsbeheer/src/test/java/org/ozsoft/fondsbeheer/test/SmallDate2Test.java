@@ -1,7 +1,8 @@
-package org.ozsoft.fondsbeheer;
+package org.ozsoft.fondsbeheer.test;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -12,6 +13,8 @@ import org.junit.Test;
 import org.ozsoft.fondsbeheer.entities.SmallDate2;
 
 public class SmallDate2Test {
+	
+	private static final String DATA_DIR = "target";
     
     @Test
     public void testBasics() throws Exception {
@@ -108,15 +111,17 @@ public class SmallDate2Test {
         SmallDate2 date2 = new SmallDate2(27,  5, 1983);
         SmallDate2 date3 = new SmallDate2( 2,  3, 2143);
         
+        File file = new File(DATA_DIR, "file.bin");
+        
         // Serialize to binary file.
-        DataOutputStream dos = new DataOutputStream(new FileOutputStream("file.bin"));
+        DataOutputStream dos = new DataOutputStream(new FileOutputStream(file));
         date1.serialize(dos);
         date2.serialize(dos);
         date3.serialize(dos);
         dos.close();
         
         // Deserialize from binary file.
-        DataInputStream dis = new DataInputStream(new FileInputStream("file.bin"));
+        DataInputStream dis = new DataInputStream(new FileInputStream(file));
         date1.deserialize(dis);
         Assert.assertEquals("1970-01-01", date1.toIsoString());
         date2.deserialize(dis);

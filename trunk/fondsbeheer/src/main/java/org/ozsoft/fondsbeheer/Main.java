@@ -7,7 +7,7 @@ public class Main {
     }
     
     private void run() {
-        FundService fundService = new FundService();
+        FundService fundService = new FundServiceImpl();
         fundService.start();
         System.out.println("Number of categories:     " + fundService.getNoOfCategories());
         System.out.println("Number of quotes:         " + fundService.getNoOfFunds());
@@ -30,7 +30,7 @@ public class Main {
         
 //        fundService.printDiskUsage();
         
-        fundService.shutdown();
+        fundService.stop();
         
 //        FileStore fileStore = new FileStore();
 //        try {
