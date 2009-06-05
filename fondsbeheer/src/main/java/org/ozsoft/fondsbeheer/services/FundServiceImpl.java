@@ -144,6 +144,13 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#addCategory(org.ozsoft.fondsbeheer.entities.Category)
+     */
+    public void addCategory(Category category) {
+	}
+
+    /*
+     * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#getNoOfCategories()
      */
     public int getNoOfCategories() {
