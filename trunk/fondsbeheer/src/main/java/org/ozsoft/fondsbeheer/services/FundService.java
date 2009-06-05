@@ -66,6 +66,13 @@ public interface FundService {
 	 * @return The category if found, otherwise false.
 	 */
 	Category getCategory(String categoryId);
+	
+	/**
+	 * Adds a new category.
+	 * 
+	 * @param category The category.
+	 */
+	void addCategory(Category category);
 
 	/**
 	 * Returns the total number of funds.
