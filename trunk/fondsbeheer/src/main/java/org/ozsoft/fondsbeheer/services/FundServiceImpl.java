@@ -1,4 +1,4 @@
-package org.ozsoft.fondsbeheer;
+package org.ozsoft.fondsbeheer.services;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
