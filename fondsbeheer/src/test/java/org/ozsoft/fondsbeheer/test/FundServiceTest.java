@@ -1,12 +1,12 @@
 package org.ozsoft.fondsbeheer.test;
 
 import org.junit.Test;
-import org.ozsoft.fondsbeheer.FundService;
-import org.ozsoft.fondsbeheer.FundServiceImpl;
 import org.ozsoft.fondsbeheer.entities.Category;
 import org.ozsoft.fondsbeheer.entities.Fund;
 import org.ozsoft.fondsbeheer.entities.FundValue;
 import org.ozsoft.fondsbeheer.entities.SmallDate;
+import org.ozsoft.fondsbeheer.services.FundService;
+import org.ozsoft.fondsbeheer.services.FundServiceImpl;
 
 /**
  * Test suite for the Fund service.

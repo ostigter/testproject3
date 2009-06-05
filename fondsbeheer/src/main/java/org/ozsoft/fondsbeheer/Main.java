@@ -1,5 +1,8 @@
 package org.ozsoft.fondsbeheer;
 
+import org.ozsoft.fondsbeheer.services.FundService;
+import org.ozsoft.fondsbeheer.services.FundServiceImpl;
+
 public class Main {
 
     public static void main(String[] args) {
