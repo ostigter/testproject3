@@ -89,7 +89,7 @@ public interface FundService {
 	 * 
 	 * @return The fund if found, otherwise null.
 	 */
-	Fund getFund(String fundId);
+	void retrieveFund(Fund fund);
 	
 	/**
 	 * Stores a fund.
@@ -122,11 +122,11 @@ public interface FundService {
 	void updateFundsInCategory(Category category);
 	
 	/**
-	 * Updates a specific fund.
+	 * Updates a fund.
 	 * 
-	 * @param fundId
-	 *            The fund's ID.
+	 * @param fund
+	 *            The fund.
 	 */
-	void updateFund(String fundId);
+	void updateFund(Fund fund);
 	
 }

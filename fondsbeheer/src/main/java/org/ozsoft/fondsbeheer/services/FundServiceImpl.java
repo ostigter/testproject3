@@ -31,10 +31,11 @@ public class FundServiceImpl implements FundService {
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(FundServiceImpl.class);
 	
+	/** Default data directory. */ 
 	private static final String DEFAULT_DATA_DIR = "./data";
 	
     /** The file with the categories. */
-	private static final File CATEGORY_FILE = new File("data/categories.dat");
+	private static final String CATEGORY_FILE = "categories.dat";
     
     /** Regular expression for a fund closing from the internet. */
 	private static final Pattern CLOSING_PATTERN = Pattern.compile("^(\\d{6}):(.*)$");
@@ -50,6 +51,9 @@ public class FundServiceImpl implements FundService {
     
 	/** The data directory. */
 	private File dataDir;
+	
+	/** The category file. */
+	private File categoryFile;
 	
 	/** The number of new categories during the last update. */
 	private int noOfNewCategories;
@@ -88,6 +92,7 @@ public class FundServiceImpl implements FundService {
 	 */
     public void setDataDirectory(String path) {
     	dataDir = new File(path);
+    	categoryFile = new File(dataDir, CATEGORY_FILE);
 	}
 
     /*
@@ -128,6 +133,14 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.FundService#getNoOfCategories()
+     */
+    public int getNoOfCategories() {
+        return categories.size();
+    }
+
+    /*
+     * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#getCategories()
      */
     public Collection<Category> getCategories() {
@@ -147,15 +160,18 @@ public class FundServiceImpl implements FundService {
      * @see org.ozsoft.fondsbeheer.services.FundService#addCategory(org.ozsoft.fondsbeheer.entities.Category)
      */
     public void addCategory(Category category) {
+    	if (category == null) {
+    		throw new IllegalArgumentException("Null category");
+    	}
+    	String id = category.getId();
+    	if (!categories.containsKey(id)) {
+    		categories.put(id, category);
+    		LOG.info(String.format("Added new category '%s'", category));
+            writeCategoryFile();
+    	} else {
+    		LOG.warn(String.format("Category '%s' already exists", category));
+    	}
 	}
-
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.fondsbeheer.FundService#getNoOfCategories()
-     */
-    public int getNoOfCategories() {
-        return categories.size();
-    }
 
     /*
      * (non-Javadoc)
@@ -169,33 +185,28 @@ public class FundServiceImpl implements FundService {
         return noOfFunds;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.fondsbeheer.FundService#getFund(java.lang.String)
-     */
-    public Fund getFund(String fundId) {
-    	if (fundId == null || fundId.length() == 0) {
-    		throw new IllegalArgumentException("Null or empty fundId");
+    public void retrieveFund(Fund fund) {
+    	if (fund == null) {
+    		throw new IllegalArgumentException("Null fund");
     	}
     	if (LOG.isDebugEnabled()) {
-    		LOG.debug(String.format("Retrieving fund with ID '%s'", fundId));
+    		LOG.debug(String.format("Retrieving fund '%s'", fund));
     	}
-    	Fund fund = null;
+		String id = fund.getId();
     	try {
-    		byte[] data = fileStore.retrieve(fundId);
+    		byte[] data = fileStore.retrieve(id);
     		if (data != null) {
 	    		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
-	    		fund = Fund.deserialize(dis);
+	    		fund.deserialize(dis);
 	    		dis.close();
     		} else {
-    			LOG.warn(String.format("Could not find fund with ID '%s'", fundId));
+    			LOG.warn(String.format("Could not find fund with ID '%s'", id));
     		}
     	} catch (FileStoreException e) {
-    		LOG.error(String.format("Could not retrieve fund with ID '%s'", fundId), e);
+    		LOG.error(String.format("Could not retrieve fund '%s'", fund), e);
     	} catch (IOException e) {
-    		LOG.error(String.format("Could not deserialize fund with ID '%s'", fundId), e);
+    		LOG.error(String.format("Could not deserialize fund '%s'", fund), e);
     	}
-    	return fund;
     }
     
     /*
@@ -256,24 +267,29 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#updateFundsInCategory(org.ozsoft.fondsbeheer.entities.Category)
      */
-    public void updateFundsInCategory(Category cat) {
-        LOG.info(String.format("Updating category '%s'", cat.getName()));
-        for (Fund fund : cat.getFunds()) {
-            updateFund(fund.getId());
+    public void updateFundsInCategory(Category category) {
+        LOG.info(String.format("Updating category '%s'", category));
+        for (Fund fund : category.getFunds()) {
+            updateFund(fund);
         }
     }
 
-    public void updateFund(String fundId) {
-    	if (fundId == null || fundId.length() == 0) {
-    		throw new IllegalArgumentException("Null or empty fundId");
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#updateFund(org.ozsoft.fondsbeheer.entities.Fund)
+     */
+    public void updateFund(Fund fund) {
+    	if (fund == null) {
+    		throw new IllegalArgumentException("Null fund");
     	}
-        Fund fund = getFund(fundId);
+        String id = fund.getId();
+        retrieveFund(fund);
         if (fund == null) {
-        	LOG.warn(String.format("Fund with ID '%s' not found", fundId));
+        	LOG.warn(String.format("Fund with ID '%s' not found", id));
         } else {
 	        LOG.info(String.format("Updating fund '%s'", fund));
 	        boolean updated = false;
-	        String uri = String.format("http://www.behr.nl/Beurs/Fondsh/%s.html", fundId);
+	        String uri = String.format("http://www.behr.nl/Beurs/Fondsh/%s.html", id);
 	        String[] lines = pageReader.read(uri);
 	        for (String line : lines) {
 	            Matcher m = CLOSING_PATTERN.matcher(line);
@@ -388,10 +404,9 @@ public class FundServiceImpl implements FundService {
     		LOG.debug("Reading category file");
     	}
         categories.clear();
-        if (CATEGORY_FILE.exists() && CATEGORY_FILE.canRead()) {
+        if (categoryFile.exists() && categoryFile.canRead()) {
             try {
-                DataInputStream dis =
-                        new DataInputStream(new FileInputStream(CATEGORY_FILE));
+                DataInputStream dis = new DataInputStream(new FileInputStream(categoryFile));
                 int noOfCategories = dis.readInt();
                 for (int i = 0; i < noOfCategories; i++) {
                     String catId = dis.readUTF();
@@ -417,7 +432,7 @@ public class FundServiceImpl implements FundService {
     		LOG.debug("Writing category file");
     	}
         try {
-            DataOutputStream dos = new DataOutputStream(new FileOutputStream(CATEGORY_FILE));
+            DataOutputStream dos = new DataOutputStream(new FileOutputStream(categoryFile));
             dos.writeInt(categories.size());
             for (Category cat : categories.values()) {
                 dos.writeUTF(cat.getId());

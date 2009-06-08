@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.ozsoft.fondsbeheer.entities.SmallDate;
 
 public class SmallDateTest {
-    
+	
 	private static final String DATA_DIR = "target";
     
     @Test
@@ -62,6 +62,47 @@ public class SmallDateTest {
         Assert.assertEquals(date2, SmallDate.parseIsoDate("1970-01-31"));
         Assert.assertEquals("1970-02-01", date3.toIsoString());
         Assert.assertEquals(date3, SmallDate.parseIsoDate("1970-02-01"));
+    }
+    
+    @Test
+    public void testFormatting() {
+    	String s = null;
+    	SmallDate date = null;
+    	
+        // Earliest date.
+    	s = "1970-01-01";
+        date = SmallDate.parseIsoDate(s);
+        Assert.assertEquals(1, date.getDay());
+        Assert.assertEquals(1, date.getMonth());
+        Assert.assertEquals(1970, date.getYear());
+        Assert.assertEquals(s, date.toIsoString());
+        
+        // Latest date.
+        s = "2143-03-02";
+        date = SmallDate.parseIsoDate(s);
+        Assert.assertEquals(2, date.getDay());
+        Assert.assertEquals(3, date.getMonth());
+        Assert.assertEquals(2143, date.getYear());
+        Assert.assertEquals(s, date.toIsoString());
+        
+        // Too early.
+        try {
+	        s = "1969-05-27";
+	        date = SmallDate.parseIsoDate(s);
+	        Assert.assertEquals(s, date.toIsoString());
+        } catch (IllegalArgumentException e) {
+        	// OK
+        }
+
+        // Too late.
+        try {
+	        s = "1969-12-31";
+	        date = SmallDate.parseIsoDate(s);
+	        Assert.assertEquals(s, date.toIsoString());
+        } catch (IllegalArgumentException e) {
+        	// OK
+        }
+        
     }
     
     @Test

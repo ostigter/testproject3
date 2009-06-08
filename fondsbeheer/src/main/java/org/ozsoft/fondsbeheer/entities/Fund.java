@@ -72,23 +72,18 @@ public class Fund {
     }
     
     public void serialize(DataOutputStream dos) throws IOException {
-    	dos.writeUTF(id);
-    	dos.writeUTF(name);
     	dos.writeInt(values.size());
     	for (FundValue value : values.values()) {
     		value.serialize(dos);
     	}
     }
     
-    public static Fund deserialize(DataInputStream dis) throws IOException {
-    	String id = dis.readUTF();
-    	String name = dis.readUTF();
-    	Fund fund = new Fund(id, name);
+    public void deserialize(DataInputStream dis) throws IOException {
+    	values.clear();
     	int noOfValues = dis.readInt();
     	for (int i = 0; i < noOfValues; i++) {
-    		fund.addValue(FundValue.deserialize(dis));
+    		addValue(FundValue.deserialize(dis));
     	}
-        return fund;
     }
     
 }
