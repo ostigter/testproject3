@@ -7,6 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         new Main().run();
+//    	new MainForm();
     }
     
     private void run() {
@@ -17,8 +18,8 @@ public class Main {
         
 //        fundService.updateCategories();
 //        System.out.println("Number of new categories: " + fundService.getNoOfNewCategories());
-//        System.out.println("Number of new quotes:     " + fundService.getNoOfNewQuotes());
-//        System.out.println("Number of updated quotes: " + fundService.getNoOfUpdatedQuotes());
+//        System.out.println("Number of new quotes:     " + fundService.getNoOfNewFunds());
+//        System.out.println("Number of updated quotes: " + fundService.getNoOfUpdatedFunds());
         
 //        fundService.resetUpdateCounter();
 //        fundService.updateAll();
@@ -26,12 +27,12 @@ public class Main {
 //        Category cat = fundService.getCategory("BELEGGINGSFUNDS");
 //        Category cat = fundService.getCategory("INDEXEN");
 //        Category cat = fundService.getCategory("USA");
-//        fundService.updateQuotesInCategory(cat);
-//        System.out.println("Number of updated quotes: " + fundService.getNoOfUpdatedQuotes());
+//        fundService.updateFundsInCategory(cat);
+//        System.out.println("Number of updated quotes: " + fundService.getNoOfUpdatedFunds());
         
 //        fundService.checkIntegrity();
         
-//        fundService.printDiskUsage();
+        fundService.printDiskUsage();
         
         fundService.stop();
         

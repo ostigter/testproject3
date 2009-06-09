@@ -129,4 +129,14 @@ public interface FundService {
 	 */
 	void updateFund(Fund fund);
 	
+	int getNoOfNewCategories();
+	
+	int getNoOfNewFunds();
+	
+	int getNoOfUpdatedFunds();
+	
+	void resetUpdateCounter();
+	
+	void printDiskUsage();
+	
 }
