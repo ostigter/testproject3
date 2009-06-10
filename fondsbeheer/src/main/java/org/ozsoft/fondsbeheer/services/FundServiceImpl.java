@@ -28,7 +28,7 @@ import org.ozsoft.fondsbeheer.filestore.FileStoreException;
  */
 public class FundServiceImpl implements FundService {
 	
-	/** Logger. */
+	/** The logger. */
 	private static final Logger LOG = Logger.getLogger(FundServiceImpl.class);
 	
 	/** Default data directory. */ 
@@ -283,47 +283,45 @@ public class FundServiceImpl implements FundService {
     		throw new IllegalArgumentException("Null fund");
     	}
         String id = fund.getId();
-        retrieveFund(fund);
-        if (fund == null) {
-        	LOG.warn(String.format("Fund with ID '%s' not found", id));
-        } else {
-	        LOG.info(String.format("Updating fund '%s'", fund));
-	        boolean updated = false;
-	        String uri = String.format("http://www.behr.nl/Beurs/Fondsh/%s.html", id);
-	        String[] lines = pageReader.read(uri);
-	        for (String line : lines) {
-	            Matcher m = CLOSING_PATTERN.matcher(line);
-	            if (m.matches()) {
-	                String dateString = m.group(1);
-	                SmallDate date = null;
-	                try {
-	                    date = SmallDate.parseDate(dateString);
-	                } catch (Exception ex) {
-	                    LOG.error(String.format(
-	                    		"Could not parse date '%s' for fund '%s'",
-	                    		dateString, fund));
-	                }
-	                String valueString = m.group(2);
-	                valueString = valueString.replaceFirst(",", ".").replaceAll("X", "").replaceAll("\\*", "");
-	                float value = -1.0f;
-	                try {
-	                    value = Float.parseFloat(valueString);
-	                } catch (Exception ex) {
-	                    LOG.error(String.format(
-	                            "Could not parse closing value '%s' for fund '%s' on %s",
-	                            valueString, fund.getId(), date));
-	                }
-	                if (date != null && value != -1.0f && fund.addValue(new FundValue(date, value))) {
-	                    if (!updated) {
-	                        updated = true;
-	                        noOfUpdatedFunds++;
-	                    }
-	                }
-	            }
-	        }
-	        if (updated) {
-	        	storeFund(fund);
-	        }
+        if (fileStore.contains(id)) {
+        	retrieveFund(fund);
+        }
+        LOG.info(String.format("Updating fund '%s'", fund));
+        boolean updated = false;
+        String uri = String.format("http://www.behr.nl/Beurs/Fondsh/%s.html", id);
+        String[] lines = pageReader.read(uri);
+        for (String line : lines) {
+            Matcher m = CLOSING_PATTERN.matcher(line);
+            if (m.matches()) {
+                String dateString = m.group(1);
+                SmallDate date = null;
+                try {
+                    date = SmallDate.parseDate(dateString);
+                } catch (Exception ex) {
+                    LOG.error(String.format(
+                    		"Could not parse date '%s' for fund '%s'",
+                    		dateString, fund));
+                }
+                String valueString = m.group(2);
+                valueString = valueString.replaceFirst(",", ".").replaceAll("X", "").replaceAll("\\*", "");
+                float value = -1.0f;
+                try {
+                    value = Float.parseFloat(valueString);
+                } catch (Exception ex) {
+                    LOG.error(String.format(
+                            "Could not parse closing value '%s' for fund '%s' on %s",
+                            valueString, fund.getId(), date));
+                }
+                if (date != null && value != -1.0f && fund.addValue(new FundValue(date, value))) {
+                    if (!updated) {
+                        updated = true;
+                        noOfUpdatedFunds++;
+                    }
+                }
+            }
+        }
+        if (updated) {
+        	storeFund(fund);
         }
     }
     

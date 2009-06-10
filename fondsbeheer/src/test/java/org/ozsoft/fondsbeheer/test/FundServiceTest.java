@@ -1,5 +1,7 @@
 package org.ozsoft.fondsbeheer.test;
 
+import java.util.Collection;
+
 import junit.framework.Assert;
 
 import org.junit.AfterClass;
@@ -50,9 +52,7 @@ public class FundServiceTest {
 		Fund fund = new Fund("f1", "Fund 1");
 		fund.addValue(new FundValue(new SmallDate(1, 1, 2009), 10.00f));
 		fund.addValue(new FundValue(new SmallDate(2, 1, 2009), 10.25f));
-		fund.addValue(new FundValue(new SmallDate(3, 1, 2009), 10.75f));
-		fund.addValue(new FundValue(new SmallDate(4, 1, 2009), 11.50f));
-		fund.addValue(new FundValue(new SmallDate(5, 1, 2009), 12.25f));
+		fund.addValue(new FundValue(new SmallDate(3, 1, 2009), 10.50f));
 		category.addFund(fund);
 		fundService.addCategory(category);
 		fundService.storeFund(fund);
@@ -70,7 +70,14 @@ public class FundServiceTest {
 		Assert.assertNotNull(fund);
 		Assert.assertEquals("Fund 1", fund.getName());
 		fundService.retrieveFund(fund);
-		Assert.assertEquals(5, fund.getNoOfValues());
+		Assert.assertEquals(3, fund.getNoOfValues());
+		FundValue[] values = fund.getValues().toArray(new FundValue[0]);
+		Assert.assertEquals("01-Jan-2009", values[0].getDate().toString());
+		Assert.assertEquals(10.00f, values[0].getPrice());
+		Assert.assertEquals("02-Jan-2009", values[1].getDate().toString());
+		Assert.assertEquals(10.25f, values[1].getPrice());
+		Assert.assertEquals("03-Jan-2009", values[2].getDate().toString());
+		Assert.assertEquals(10.50f, values[2].getPrice());
 
 		fundService.stop();
 	}
