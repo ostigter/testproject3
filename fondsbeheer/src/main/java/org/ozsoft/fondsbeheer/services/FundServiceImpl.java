@@ -107,13 +107,13 @@ public class FundServiceImpl implements FundService {
         	}
         	fileStore.setDataDir(dataDir.getPath());
             fileStore.start();
+            readCategoryFile();
+            LOG.info("Started");
         } catch (FileStoreException e) {
         	String msg = "Error starting file store";
         	LOG.error(msg, e);
             throw new RuntimeException(msg, e);
         }
-        readCategoryFile();
-        LOG.debug("Started");
     }
     
     /*
@@ -124,7 +124,7 @@ public class FundServiceImpl implements FundService {
         LOG.debug("Stopping");
         try {
             fileStore.shutdown();
-            LOG.debug("Stopped");
+            LOG.info("Stopped");
         } catch (FileStoreException e) {
         	String msg = "Error shutting down file store";
         	LOG.error(msg, e);
