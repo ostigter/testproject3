@@ -22,7 +22,7 @@ public class FundValue {
         return date;
     }
     
-    public double getPrice() {
+    public float getPrice() {
         return price;
     }
     
