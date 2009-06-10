@@ -5,32 +5,63 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+/**
+ * The monetary value of a fund for a specific date.
+ * 
+ * @author Oscar Stigter
+ */
 public class FundValue {
     
-    private static final long serialVersionUID = 1L;
-
-    private SmallDate date;
+	/** The date. */
+	private SmallDate date;
     
-    private float price;
+	/** The value. */
+	private float value;
     
-    public FundValue(SmallDate date, float price) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param date
+	 *            The date.
+	 * @param value
+	 *            The value.
+	 */
+	public FundValue(SmallDate date, float value) {
         this.date = date;
-        this.price = price;
+        this.value = value;
     }
     
-    public SmallDate getDate() {
+	/**
+	 * Returns the date.
+	 * 
+	 * @return The date.
+	 */
+	public SmallDate getDate() {
         return date;
     }
     
-    public float getPrice() {
-        return price;
+    /**
+     * Returns the value.
+     * 
+     * @return The value.
+     */
+	public float getValue() {
+        return value;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
     	return date.hashCode();
     }
     
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof FundValue) {
@@ -40,20 +71,44 @@ public class FundValue {
         }
     }
     
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        return String.format(Locale.US, "{%s, %.2f}", date, price); 
+        return String.format(Locale.US, "{%s, %.2f}", date, value); 
     }
     
+    /**
+	 * Serialize this fund value to an output stream.
+	 * 
+	 * @param dos
+	 *            The output stream.
+	 * 
+	 * @throws IOException
+	 *             If an I/O error occurs.
+	 */
     public void serialize(DataOutputStream dos) throws IOException {
     	date.serialize(dos);
-    	dos.writeFloat(price);
+    	dos.writeFloat(value);
     }
     
+    /**
+	 * Deserializes a fund from an input stream.
+	 * 
+	 * @param dis
+	 *            The input stream.
+	 * 
+	 * @return The fund.
+	 * 
+	 * @throws IOException
+	 *             If an I/O error occurs.
+	 */
     public static FundValue deserialize(DataInputStream dis) throws IOException {
     	SmallDate date = SmallDate.deserialize(dis);
-    	float price = dis.readFloat();
-    	return new FundValue(date, price);
+    	float value = dis.readFloat();
+    	return new FundValue(date, value);
     }
     
 }
