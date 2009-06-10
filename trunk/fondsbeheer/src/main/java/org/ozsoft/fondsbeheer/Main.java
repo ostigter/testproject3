@@ -1,8 +1,6 @@
 package org.ozsoft.fondsbeheer;
 
 import org.apache.log4j.Logger;
-import org.ozsoft.fondsbeheer.entities.Category;
-import org.ozsoft.fondsbeheer.entities.Fund;
 import org.ozsoft.fondsbeheer.services.FundService;
 import org.ozsoft.fondsbeheer.services.FundServiceImpl;
 
@@ -27,16 +25,20 @@ public class Main {
 //        LOG.info("Number of new quotes:     " + fundService.getNoOfNewFunds());
 //        LOG.info("Number of updated quotes: " + fundService.getNoOfUpdatedFunds());
         
-        fundService.resetUpdateCounter();
+//        fundService.resetUpdateCounter();
 //        fundService.updateAll();
 //        Category category = fundService.getCategory("INDEXEN");
-        Category category = fundService.getCategory("HOOFDFONDSEN");
+//        Category category = fundService.getCategory("HOOFDFONDSEN");
 //        Category category = fundService.getCategory("BELEGGINGSFUNDS");
 //        Category category = fundService.getCategory("USA");
-//      fundService.updateFundsInCategory(category);
-        Fund fund = category.getFund("aalberts");
-        fundService.updateFund(fund);
-        LOG.info("Number of updated quotes: " + fundService.getNoOfUpdatedFunds());
+//        fundService.updateFundsInCategory(category);
+//        Fund fund = category.getFund("aalberts");
+//        fundService.updateFund(fund);
+//        for (FundValue value : fund.getValues()) {
+//        	LOG.debug("Value: " + value);
+//        }
+//        LOG.info("Number of values: " + fund.getNoOfValues());
+//        LOG.info("Number of updated quotes: " + fundService.getNoOfUpdatedFunds());
         
 //        fundService.checkIntegrity();
         
