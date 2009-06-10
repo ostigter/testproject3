@@ -1,7 +1,5 @@
 package org.ozsoft.fondsbeheer.test;
 
-import java.util.Collection;
-
 import junit.framework.Assert;
 
 import org.junit.AfterClass;
