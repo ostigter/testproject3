@@ -285,9 +285,11 @@ public class FileStore {
         // Delete (overwrite) any previous file entry with the same ID.
         entries.remove(id);
         
+        // Find position to insert entry.
+        int offset = findFreePosition(content.length);
+        
         // Create a new file entry.
         FileEntry entry = create(id);
-        int offset = findFreePosition(content.length);
         entry.setOffset(offset);
         entry.setLength(content.length);
         

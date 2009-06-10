@@ -10,11 +10,11 @@ public class Main {
 	private static final Logger LOG = Logger.getLogger(Main.class);
 	
     public static void main(String[] args) {
-        new Main().run();
 //    	new MainForm();
+        run();
     }
     
-    private void run() {
+    private static void run() {
         FundService fundService = new FundServiceImpl();
         fundService.start();
         LOG.info("Number of categories:     " + fundService.getNoOfCategories());
