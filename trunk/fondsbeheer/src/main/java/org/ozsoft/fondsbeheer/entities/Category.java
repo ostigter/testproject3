@@ -4,8 +4,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
-
 /**
  * A fund category.
  * 
@@ -13,8 +11,8 @@ import org.apache.log4j.Logger;
  */
 public class Category {
     
-	/** The logger. */
-	private static final Logger LOG = Logger.getLogger(Category.class);
+//	/** The logger. */
+//	private static final Logger LOG = Logger.getLogger(Category.class);
 	
 	/** The ID. */
 	private final String id;
@@ -69,7 +67,6 @@ public class Category {
 		if (!funds.containsKey(id)) {
 			funds.put(fund.getId(), fund);
 			added = true;
-			LOG.info(String.format("Added fund '%s' to category '%s'", fund, this));
 		}
 		return added;
     }

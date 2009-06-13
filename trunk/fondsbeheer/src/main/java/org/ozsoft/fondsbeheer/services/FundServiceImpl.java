@@ -71,9 +71,9 @@ public class FundServiceImpl implements FundService {
         categories = new TreeMap<String, Category>();
         fileStore = new FileStore();
         pageReader = new HttpPageReader();
-//        pageReader.setUseProxy(true);
-//        pageReader.setProxyHost("");
-//        pageReader.setProxyPort(8080);
+        pageReader.setUseProxy(true);
+        pageReader.setProxyHost("www-proxy.nl.int.atosorigin.com");
+        pageReader.setProxyPort(8080);
 //        pageReader.setProxyUsername("");
 //        pageReader.setProxyPassword("");
     }
