@@ -10,7 +10,7 @@
 	</appender>
 
 	<logger name="org.ozsoft.fondsbeheer">
-		<level value="debug" />
+		<level value="info" />
 	</logger>
 
 	<logger name="org.ozsoft.fondsbeheer.filestore">

@@ -1,6 +1,7 @@
 package org.ozsoft.fondsbeheer;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.fondsbeheer.gui.MainForm;
 import org.ozsoft.fondsbeheer.services.FundService;
 import org.ozsoft.fondsbeheer.services.FundServiceImpl;
 
@@ -10,8 +11,8 @@ public class Main {
 	private static final Logger LOG = Logger.getLogger(Main.class);
 	
     public static void main(String[] args) {
-//    	new MainForm();
-        run();
+    	new MainForm();
+//        run();
     }
     
     private static void run() {
@@ -32,13 +33,15 @@ public class Main {
 //        Category category = fundService.getCategory("BELEGGINGSFUNDS");
 //        Category category = fundService.getCategory("USA");
 //        fundService.updateFundsInCategory(category);
+//        LOG.info("Number of updated quotes: " + fundService.getNoOfUpdatedFunds());
+
 //        Fund fund = category.getFund("aalberts");
+//        fundService.retrieveFund(fund);
 //        fundService.updateFund(fund);
 //        for (FundValue value : fund.getValues()) {
-//        	LOG.debug("Value: " + value);
+//        	LOG.info("Value: " + value);
 //        }
 //        LOG.info("Number of values: " + fund.getNoOfValues());
-//        LOG.info("Number of updated quotes: " + fundService.getNoOfUpdatedFunds());
         
 //        fundService.checkIntegrity();
         
