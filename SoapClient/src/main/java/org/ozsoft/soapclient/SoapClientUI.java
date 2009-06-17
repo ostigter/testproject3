@@ -26,13 +26,29 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
+
+/**
+ * Simple SOAP client with a Swing UI.
+ *  
+ * @author Oscar Stigter
+ */
 public class SoapClientUI {
 	
-	private static final File HISTORY_FILE = new File("history.dat");
+	private static final Logger LOG = Logger.getLogger(SoapClientUI.class);
+	
+	private static final File HISTORY_FILE = new File("SoapClientUI.hst");
 	
 	private static final int MAX_HISTORY_ENTRIES = 5;
+	
+	private static final int APP_WIDTH = 900;  
+	
+	private static final int APP_HEIGHT = 700;  
 	
 	private static final Font CODE_FONT = new Font("Monospaced", Font.PLAIN, 14);
 	
@@ -43,6 +59,8 @@ public class SoapClientUI {
 	private DefaultComboBoxModel requests;
 	
 	private JTextArea requestText;
+	
+	private JButton sendButton;
 
 	private JTextArea responseText;
 
@@ -53,15 +71,16 @@ public class SoapClientUI {
 	public SoapClientUI() {
 		createUI();
 		loadHistory();
+		LOG.debug("Started");
 	}
 
 	private void createUI() {
-		frame = new JFrame("SOAP Message Sender");
+		frame = new JFrame("SOAP Client UI");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				saveHistory();
+				close();
 			}
 		});
 		frame.setLayout(new GridBagLayout());
@@ -163,7 +182,7 @@ public class SoapClientUI {
 		gbc.insets = new Insets(5, 5, 5, 5);
 		requestPanel.add(scrollPane, gbc);
 
-		JButton sendButton = new JButton("Send");
+		sendButton = new JButton("Send");
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				sendMessage();
@@ -208,7 +227,7 @@ public class SoapClientUI {
 		gbc.insets = new Insets(5, 5, 5, 5);
 		responsePanel.add(scrollPane, gbc);
 
-		frame.setSize(600, 600);
+		frame.setSize(APP_WIDTH, APP_HEIGHT);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
@@ -233,7 +252,7 @@ public class SoapClientUI {
 				}
 				dis.close();
 			} catch (IOException e) {
-				System.err.println("ERROR: Could not read history file: " + e);
+				LOG.error("Could not read history file: " + e);
 			}
 		}
 	}
@@ -257,7 +276,7 @@ public class SoapClientUI {
 			}
 			dos.close();
 		} catch (IOException e) {
-			System.err.println("ERROR: Could not write history file: " + e);
+			LOG.error("ERROR: Could not write history file: " + e);
 		}
 	}
 	
@@ -267,24 +286,6 @@ public class SoapClientUI {
             String path = fileChooser.getSelectedFile().getAbsolutePath();
             setRequestFile(path);
 		}
-	}
-	
-	private String getTextFromFile(String path) {
-		String text = null;
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(path));
-			StringBuilder sb = new StringBuilder();
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-				sb.append('\n');
-			}
-			br.close();
-			text = sb.toString();
-		} catch (IOException e) {
-			System.err.println("ERROR: Could not read file: " + path);
-		}
-		return text;
 	}
 	
 	private void setRequestFile(String path) {
@@ -302,18 +303,82 @@ public class SoapClientUI {
 	}
 	
 	private void sendMessage() {
-		String endpoint = (String) endpoints.getSelectedItem();
-		if (endpoint == null || endpoint.length() == 0) {
-			JOptionPane.showMessageDialog(frame, "Please enter a web service endpoint URL.");
-		} else {
-			// Add endpoint URL to history.
-			endpoints.removeElement(endpoint);
-			endpoints.insertElementAt(endpoint, 0);
-			if (endpoints.getSize() > MAX_HISTORY_ENTRIES) {
-				endpoints.removeElementAt(MAX_HISTORY_ENTRIES);
+		sendButton.setEnabled(false);
+		responseText.setText("");
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				String endpoint = (String) endpoints.getSelectedItem();
+				if (endpoint == null || endpoint.length() == 0) {
+					JOptionPane.showMessageDialog(frame, "Please enter a web service endpoint URL.");
+				} else {
+					// Add endpoint URL to history.
+					endpoints.removeElement(endpoint);
+					endpoints.insertElementAt(endpoint, 0);
+					if (endpoints.getSize() > MAX_HISTORY_ENTRIES) {
+						endpoints.removeElementAt(MAX_HISTORY_ENTRIES);
+					}
+					endpoints.setSelectedItem(endpoint);
+					String requestPath = (String) requests.getSelectedItem();
+					try {
+						SoapClient soapClient = new SoapClient(endpoint);
+						Source request = getRequestFromFile(requestPath);
+						LOG.debug(String.format("Sent request to endpoint '%s'", endpoint));
+						String response = soapClient.call(request);
+						LOG.debug("Response:\n" + response);
+						responseText.setText(response);
+					} catch (SoapException e) {
+						responseText.setText(e.getCause().getMessage());
+					}
+				}
+				sendButton.setEnabled(true);
 			}
-			endpoints.setSelectedItem(endpoint);
-		}
+		});
 	}
 	
+	private void close() {
+		LOG.debug("Closed");
+		saveHistory();
+	}
+	
+	private static String getTextFromFile(String path) {
+		String text = null;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+				sb.append('\n');
+			}
+			br.close();
+			text = sb.toString();
+		} catch (IOException e) {
+			LOG.error("Could not read request from file: " + path);
+		}
+		return text;
+	}
+	
+	/**
+	 * Returns the request payload from a file.
+	 * 
+	 * @param filename The filename.
+	 * 
+	 * @return The request payload.
+	 * 
+	 * @throws SoapException If the file does not exist or could not be read. 
+	 */
+	private static Source getRequestFromFile(String filename) throws SoapException {
+		Source request = null;
+		try {
+			File file = new File(filename);
+			if (!file.isFile()) {
+				throw new SoapException("Request file not found: " + filename);
+			}
+			request = new StreamSource(new FileReader(file));
+		} catch (IOException e) {
+			throw new SoapException("Error reading request file: " + filename, e);
+		}
+		return request;
+	}
+
 }

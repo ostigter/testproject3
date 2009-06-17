@@ -106,7 +106,6 @@ public class SoapClient {
 		dispatch.getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, password);
 	}
 	
-
 	/**
 	 * Calls the web service.
 	 * 
@@ -124,19 +123,17 @@ public class SoapClient {
 		try {
     		Source responseSource = dispatch.invoke(payload);
     		if (responseSource != null) {
-	    		try {
-		    		StringWriter sw = new StringWriter();
-		            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-		            transformer.setOutputProperty("indent", "yes");
-		            transformer.transform(responseSource, new StreamResult(sw));
-		            response = sw.toString();
-		            sw.close();
-	    		} catch (Exception e) {
-	    			LOG.error("Could not transform response message", e);
-	    		}
+	    		StringWriter sw = new StringWriter();
+	            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+	            transformer.setOutputProperty("indent", "yes");
+	            transformer.transform(responseSource, new StreamResult(sw));
+	            response = sw.toString();
+	            sw.close();
     		}
 		} catch (Exception e) {
-			LOG.error("Could not invoke web service", e);
+			String msg = "Could not invoke web servce";
+			LOG.error(msg, e);
+			throw new SoapException(msg, e);
 		}
 		return response;
 	}
