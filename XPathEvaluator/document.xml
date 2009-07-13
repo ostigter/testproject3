@@ -1,0 +1,5 @@
+<ft1:Bericht xmlns:ft1="http://www.example.org/formaattype-1">
+    <Id>bericht-1</Id>
+    <BronApplicatie>applicatie-1</BronApplicatie>
+    <Status>Origineel</Status>
+</ft1:Bericht>
