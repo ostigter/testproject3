@@ -60,6 +60,7 @@ public class Episode implements Serializable, Comparable<Episode> {
 		isSeen = true;
 	}
 
+	@Override
 	public int compareTo(Episode episode) {
 		return this.toString().compareTo(episode.toString());
 	}

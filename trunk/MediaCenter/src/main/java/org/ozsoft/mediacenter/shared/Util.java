@@ -1,13 +1,11 @@
 package org.ozsoft.mediacenter.shared;
 
-
 /**
  * Generic utility class.
  *  
  * @author Oscar Stigter
  */
 public abstract class Util {
-	
 
 	/**
 	 * Replaces all occurances of a specific piece of text in a string with
@@ -48,7 +46,6 @@ public abstract class Util {
 	    return result.toString();
 	}
 	
-	
 	/**
 	 * Capitalizes a string.
 	 * 
@@ -77,6 +74,5 @@ public abstract class Util {
 		}
 		return s;
 	}
-
 
 }

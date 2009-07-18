@@ -48,7 +48,7 @@ public class Library {
 	}
 	
 	public void refresh() {
-		LOG.debug("Refresh started");
+		LOG.info("Refreshing");
 		long time = System.currentTimeMillis();
         for (String path : config.getShowRoots()) {
             scanDirectory(path);
@@ -169,7 +169,7 @@ public class Library {
 			}
 			show.addEpisode(episode);
 		} else {
-			System.err.format("WARN: Could not parse file name: '%s'\n", file.getName());
+			LOG.warn(String.format("Could not parse file name: '%s'", file.getName()));
 		}
 	}
 	

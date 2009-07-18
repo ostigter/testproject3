@@ -76,7 +76,6 @@ public class Configuration {
                     if (key.equals("server.port")) {
                     	try {
                     		serverPort = Integer.parseInt(value);
-                    		LOG.info(String.format(""));
                     	} catch (NumberFormatException e) {
                     		String msg = String.format(
                     				"Error in configuration file: Could not parse server port: '%s'",
@@ -101,8 +100,7 @@ public class Configuration {
             }
             reader.close();
         } catch (IOException e) {
-            System.err.println(
-                    "ERROR: Could not read configuration file: " + e);
+            LOG.error("Could not read configuration file", e);
         }
     }
     
