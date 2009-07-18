@@ -7,7 +7,7 @@ import org.ozsoft.mediacenter.domain.Show;
 import org.ozsoft.mediacenter.shared.Constants;
 
 /**
- * The MediaCenter server.
+ * The media server.
  * 
  * @author Oscar Stigter
  */
@@ -38,7 +38,7 @@ public class Server {
 	 * Constructor.
 	 */
 	public Server() {
-		LOG.debug("Starting");
+		LOG.info("Starting");
 		
 		config = new Configuration();
 		library = new Library(config);

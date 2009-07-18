@@ -28,7 +28,7 @@ import org.ozsoft.mediacenter.domain.Show;
 import org.ozsoft.mediacenter.shared.Constants;
 
 /**
- * The client application with a Swing UI.
+ * The media client with a Swing UI.
  * 
  * @author Oscar Stigter
  */
@@ -73,6 +73,7 @@ public class Client {
     	createUI();
     	LOG.info("Started");
     	connect();
+    	refresh();
     }
     
     private void createUI() {

@@ -54,9 +54,8 @@ public class Library {
             scanDirectory(path);
         }
 		long duration = System.currentTimeMillis() - time;
-		LOG.debug(String.format("Refresh finished in %d ms", duration));
-		LOG.info(String.format("Found %d TV shows and %d epsiodes",
-				getShowCount(), getEpisodeCount()));
+		LOG.info(String.format("Refresh finished in %d ms; found %d TV shows and %d epsiodes",
+				duration, getShowCount(), getEpisodeCount()));
 	}
 	
 	public int getShowCount() {
