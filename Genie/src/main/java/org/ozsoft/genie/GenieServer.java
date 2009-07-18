@@ -74,7 +74,7 @@ public class GenieServer implements Runnable {
 			throw new GenieException(msg);
 		}
 		services.put(name, handler);
-		LOG.info(String.format("Bound service '%s'", name));
+		LOG.debug(String.format("Bound service '%s'", name));
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class GenieServer implements Runnable {
 			throw new GenieException(msg);
 		}
 		services.remove(name);
-		LOG.info(String.format("Unbound service '%s'", name));
+		LOG.debug(String.format("Unbound service '%s'", name));
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class GenieServer implements Runnable {
 	 */
 	public void run() {
 		isRunning = true;
-		LOG.info(String.format("Started, listening on port %d", port));
+		LOG.debug(String.format("Started, listening on port %d", port));
 		while (isRunning) {
 			try {
 				// Handle incoming service requests.
@@ -150,7 +150,7 @@ public class GenieServer implements Runnable {
 				System.err.format("Error handling request: %s", e.getMessage());
 			}
 		}
-		LOG.info("Stopped");
+		LOG.debug("Stopped");
 	}
 
 }
