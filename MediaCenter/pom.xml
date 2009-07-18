@@ -8,14 +8,29 @@
     <artifactId>MediaCenter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <name>MediaCenter</name>
+    <description>Client/server based media center application supporting TV shows, movies, music and pictures.</description>
+    
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@gmail.com</email>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
     <build>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <compilerVersion>5</compilerVersion>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerVersion>6</compilerVersion>
                 </configuration>
             </plugin>
         </plugins>
@@ -23,14 +38,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.ozsoft</groupId>
-            <artifactId>genie</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ozsoft</groupId>
+            <artifactId>genie</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

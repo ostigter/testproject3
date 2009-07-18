@@ -10,7 +10,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -29,7 +28,7 @@ import org.ozsoft.mediacenter.domain.Show;
 import org.ozsoft.mediacenter.shared.Constants;
 
 /**
- * The client.
+ * The client application with a Swing UI.
  * 
  * @author Oscar Stigter
  */
@@ -74,7 +73,6 @@ public class Client {
     	createUI();
     	LOG.info("Started");
     	connect();
-    	refresh();
     }
     
     private void createUI() {
@@ -278,7 +276,6 @@ public class Client {
 	private void playEpisode() {
 		int index = episodeList.getSelectedIndex();
 		Episode episode = (Episode) episodeListModel.get(index);
-		File file = episode.getFile();
 		String host = config.getServerHost();
 		if (host.equals("localhost")) {
 		    host = "127.0.0.1";
@@ -333,6 +330,5 @@ public class Client {
 	private void close() {
 		System.exit(0);
 	}
-	
 
 }
