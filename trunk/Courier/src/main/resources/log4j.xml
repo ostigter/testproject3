@@ -10,11 +10,11 @@
 
     <!-- Courier -->
     <logger name="org.ozsoft.courier">
-        <level value="debug" />
+        <level value="DEBUG" />
     </logger>
 
     <root>
-        <priority value="info" />
+        <priority value="INFO" />
         <appender-ref ref="console" />
     </root>
 

@@ -1,4 +1,4 @@
-package org.ozsoft.courier;
+package org.ozsoft.courier.action;
 
 import java.io.File;
 
@@ -11,6 +11,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.courier.Context;
+import org.ozsoft.courier.CourierException;
 
 /**
  * Action that performs an XSLT transformation.
@@ -23,8 +25,7 @@ public class XsltAction implements Action {
     private static final Logger LOG = Logger.getLogger(XsltAction.class);
     
 	/** The transformation factory. */
-	private static final TransformerFactory TRANSFORMER_FACTORY =
-	        TransformerFactory.newInstance();
+	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
 	
 	/** The XSLT stylesheet. */
 	private final File xsltFile;
@@ -47,8 +48,7 @@ public class XsltAction implements Action {
 	 * @see org.ozsoft.courier.Action#execute(org.ozsoft.courier.Context)
 	 */
 	public void execute(Context context) throws CourierException {
-	    LOG.debug(String.format(
-	            "Transforming message using stylesheet '%s'", xsltFile));
+	    LOG.debug(String.format("Transforming message using stylesheet '%s'", xsltFile));
 		Source xslt = new StreamSource(xsltFile);
 		try {
 			Transformer transformer = TRANSFORMER_FACTORY.newTransformer(xslt);

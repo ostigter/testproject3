@@ -1,13 +1,17 @@
-package org.ozsoft.courier;
+package org.ozsoft.courier.handler;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.courier.Context;
+import org.ozsoft.courier.CourierException;
+import org.ozsoft.courier.NamespaceResolver;
+import org.ozsoft.courier.action.Action;
 import org.w3c.dom.Node;
 
 /**
- * Base class of all handlers.
+ * Base class of a handler.
  * 
  * @author Oscar Stigter
  */
@@ -15,6 +19,9 @@ public abstract class Handler implements Runnable {
     
     /** The log. */
     private static final Logger LOG = Logger.getLogger(Handler.class);
+    
+    /** The namespace resolver. */
+    private final NamespaceResolver namespaceResolver;
     
     /** The actions. */
     private final List<Action> actions;
@@ -28,10 +35,11 @@ public abstract class Handler implements Runnable {
     /**
      * Constructor.
      */
-    public Handler() {
+    public Handler(NamespaceResolver namespaceResolver) {
+    	this.namespaceResolver = namespaceResolver;
         actions = new LinkedList<Action>();
     }
-
+    
     /**
      * Adds an action.
      * 
@@ -90,7 +98,7 @@ public abstract class Handler implements Runnable {
      *            The message.
      */
     protected void handleMessage(Node message) {
-        Context context = new Context();
+        Context context = new Context(namespaceResolver);
         context.setMessage(message);
         try {
             for (Action action : getActions()) {
