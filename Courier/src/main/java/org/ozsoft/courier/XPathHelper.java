@@ -1,6 +1,5 @@
 package org.ozsoft.courier;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathException;
 import javax.xml.xpath.XPathFactory;
@@ -28,14 +27,15 @@ public class XPathHelper {
 	 *            The XML node.
 	 * @param expression
 	 *            The XPath expression.
-	 * @param nc
-	 *            The namespace context.
+	 * @param context
+	 *            The message context.
 	 * 
 	 * @return The result of the XPath expression.
 	 */
-	public static String evaluate(Node node, String expression, NamespaceContext nc) {
+	public static String evaluate(Node node, String expression, Context context) {
         XPath xpath = XPATH_FACTORY.newXPath();
-        xpath.setNamespaceContext(nc);
+        xpath.setNamespaceContext(context.getNamespaceResolver());
+        xpath.setXPathVariableResolver(context);
         String result = null;
         try {
             result = xpath.evaluate(expression, node);

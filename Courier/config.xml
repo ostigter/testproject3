@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config>
+<config xmlns="http://www.ozsoft.org/courier">
 
 	<namespaces>
 		<namespace prefix="req" uri="http://www.example.com/request" />
 		<namespace prefix="res" uri="http://www.example.com/response" />
 	</namespaces>
 	
-	<file-in dir="/data/test/request/in" interval="1000" age="500">
-		<log />
-		<xslt stylesheet="request.xsl" />
-		<log />
-		<http-out url="http://localhost:8080/bpm/bpm" method="POST" username="www" password="test" />
-		<soap-out url="http://localhost:8080/bpm/bpm" action="Call" username="www" password="test" />
-		<file-out dir="/data/test/request/hist" name="concat('response-', //res:TicketNr/text(), '.xml')" />
-	</file-in>
-
+	<handlers>
+		<file-in dir="/data/test/request/in" interval="1000" age="500">
+			<log level="DEBUG" />
+			<variable name="ticketNr" expression="//req:Request/TicketNr/text()" />
+			<xslt stylesheet="request.xsl" />
+			<file-out dir="/data/test/request/hist" file="concat('response-', $ticketId, '.xml')" />
+			<http-out url="http://localhost:8080/servlet" method="POST" username="www" password="test" />
+			<soap-out url="http://localhost:8080/service" version="1.1" action="Call" username="www" password="test" />
+		</file-in>
+	</handlers>
+	
 </config>

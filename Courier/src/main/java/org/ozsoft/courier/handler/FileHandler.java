@@ -1,4 +1,4 @@
-package org.ozsoft.courier;
+package org.ozsoft.courier.handler;
 
 import java.io.File;
 import java.util.HashSet;
@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.courier.NamespaceResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
@@ -41,8 +42,11 @@ public class FileHandler extends Handler implements Runnable {
 	 * @param interval
 	 *            The polling interval in miliseconds.
 	 */
-    public FileHandler(String path, long interval) {
+    public FileHandler(String path, long interval, NamespaceResolver namespaceResolver) {
+    	super(namespaceResolver);
         this.interval = interval;
+        
+        LOG.debug(String.format("Configuring file-in handler with path '%s'", path));
         
         dir = new File(path);
         if (!dir.isDirectory()) {
@@ -65,7 +69,6 @@ public class FileHandler extends Handler implements Runnable {
      * @see java.lang.Runnable#run()
      */
     public void run() {
-        LOG.debug("Started");
         while (isRunning()) {
             try {
                 pollForFiles();
@@ -74,7 +77,6 @@ public class FileHandler extends Handler implements Runnable {
                 // Ignore.
             }
         }
-        LOG.debug("Stopped");
     }
     
     /**

@@ -4,8 +4,9 @@
 
     <groupId>org.ozsoft</groupId>
     <artifactId>courier</artifactId>
-    <name>Courier</name>
     <version>0.0.1-SNAPSHOT</version>
+
+    <name>Courier</name>
     <description>A lightweight message router</description>
 
     <build>
@@ -27,6 +28,12 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>1.2.14</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
     </dependencies>
 

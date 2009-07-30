@@ -1,4 +1,7 @@
-package org.ozsoft.courier;
+package org.ozsoft.courier.action;
+
+import org.ozsoft.courier.Context;
+import org.ozsoft.courier.CourierException;
 
 /**
  * Interface for an action.

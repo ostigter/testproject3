@@ -1,4 +1,4 @@
-package org.ozsoft.courier;
+package org.ozsoft.courier.action;
 
 import java.io.File;
 
@@ -9,10 +9,13 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.courier.Context;
+import org.ozsoft.courier.CourierException;
+import org.ozsoft.courier.XPathHelper;
 import org.w3c.dom.Node;
 
 /**
- * Action that writes the current message to file.
+ * Action that writes the current message to a file.
  * 
  * @author Oscar Stigter
  */
@@ -27,9 +30,6 @@ public class FileOutAction implements Action {
 	/** The XPath expression to generate the filename. */
     private final String fileNameExpr;
 
-    /** The namespace context. */
-    private final DefaultNamespaceContext nc;
-    
     /**
 	 * Constructor.
 	 * 
@@ -40,7 +40,7 @@ public class FileOutAction implements Action {
 	 */
     public FileOutAction(String path, String fileNameExpr) throws CourierException {
         this.fileNameExpr = fileNameExpr;
-
+        LOG.debug(String.format("Configuring file-out action with path '%s'", path));
         dir = new File(path);
         if (!dir.isDirectory()) {
             throw new CourierException("Directory not found: " + path);
@@ -48,21 +48,6 @@ public class FileOutAction implements Action {
         if (!dir.canWrite()) {
             throw new CourierException("Directory not writable: " + path);
         }
-        
-        nc = new DefaultNamespaceContext();
-    }
-    
-    /**
-	 * Adds a namespace.
-	 * 
-	 * @param prefix
-	 *            The namespace prefix.
-	 * @param uri
-	 *            The namespace URI.
-	 */
-    public void addNamespace(String prefix, String uri) {
-        nc.addNamespace(prefix, uri);
-        LOG.debug(String.format("Namespace added with prefix '%s' and URI '%s'", prefix, uri));
     }
     
     /*
@@ -71,7 +56,7 @@ public class FileOutAction implements Action {
      */
     public void execute(Context context) {
         Node message = context.getMessage();
-        String fileName = XPathHelper.evaluate(message, fileNameExpr, nc);
+        String fileName = XPathHelper.evaluate(message, fileNameExpr, context);
         if (fileName != null) {
             File file = new File(dir, fileName);
             LOG.debug(String.format("Writing message to file '%s'", file));
@@ -85,6 +70,15 @@ public class FileOutAction implements Action {
                 LOG.error("Error writing message to file", e);
             }
         }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+    	return String.format("FileOutAction(%s)", dir);
     }
     
 }
