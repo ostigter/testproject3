@@ -139,4 +139,8 @@ public interface FundService {
 	
 	void printDiskUsage();
 	
+	void checkIntegrity();
+	
+	void purgeDeadFunds();
+	
 }

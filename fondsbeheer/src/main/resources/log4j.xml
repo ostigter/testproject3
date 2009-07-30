@@ -14,7 +14,7 @@
 	</logger>
 
 	<logger name="org.ozsoft.fondsbeheer.filestore">
-		<level value="info" />
+		<level value="INFO" />
 	</logger>
 
 	<root>
