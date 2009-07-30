@@ -71,9 +71,9 @@ public class FundServiceImpl implements FundService {
         categories = new TreeMap<String, Category>();
         fileStore = new FileStore();
         pageReader = new HttpPageReader();
-        pageReader.setUseProxy(true);
-        pageReader.setProxyHost("www-proxy.nl.int.atosorigin.com");
-        pageReader.setProxyPort(8080);
+//        pageReader.setUseProxy(true);
+//        pageReader.setProxyHost("www-proxy.nl.int.atosorigin.com");
+//        pageReader.setProxyPort(8080);
 //        pageReader.setProxyUsername("");
 //        pageReader.setProxyPassword("");
     }
@@ -82,6 +82,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#getDataDirectory()
      */
+    @Override
     public String getDataDirectory() {
 		return dataDir.getAbsolutePath();
 	}
@@ -90,6 +91,7 @@ public class FundServiceImpl implements FundService {
 	 * (non-Javadoc)
 	 * @see org.ozsoft.fondsbeheer.FundService#setDataDirectory(java.lang.String)
 	 */
+    @Override
     public void setDataDirectory(String path) {
     	dataDir = new File(path);
     	categoryFile = new File(dataDir, CATEGORY_FILE);
@@ -99,6 +101,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#start()
      */
+    @Override
     public void start() {
         LOG.debug("Starting");
         try {
@@ -120,6 +123,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#stop()
      */
+    @Override
     public void stop() {
         LOG.debug("Stopping");
         try {
@@ -135,6 +139,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#getNoOfCategories()
      */
+    @Override
     public int getNoOfCategories() {
         return categories.size();
     }
@@ -143,6 +148,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#getCategories()
      */
+    @Override
     public Collection<Category> getCategories() {
         return categories.values();
     }
@@ -151,6 +157,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#getCategory(java.lang.String)
      */
+    @Override
     public Category getCategory(String categoryId) {
         return categories.get(categoryId);
     }
@@ -159,6 +166,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.services.FundService#addCategory(org.ozsoft.fondsbeheer.entities.Category)
      */
+    @Override
     public void addCategory(Category category) {
     	if (category == null) {
     		throw new IllegalArgumentException("Null category");
@@ -177,6 +185,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#getNoOfFunds()
      */
+    @Override
     public int getNoOfFunds() {
         int noOfFunds = 0;
         for (Category category : categories.values()) {
@@ -185,6 +194,11 @@ public class FundServiceImpl implements FundService {
         return noOfFunds;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#retrieveFund(org.ozsoft.fondsbeheer.entities.Fund)
+     */
+    @Override
     public void retrieveFund(Fund fund) {
     	if (fund == null) {
     		throw new IllegalArgumentException("Null fund");
@@ -213,6 +227,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#storeFund(org.ozsoft.fondsbeheer.entities.Fund)
      */
+    @Override
     public void storeFund(Fund fund) {
     	if (fund == null) {
     		throw new IllegalArgumentException("Null fund");
@@ -234,6 +249,11 @@ public class FundServiceImpl implements FundService {
     	}
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#updateCategories()
+     */
+    @Override
     public void updateCategories() {
         LOG.info("Updating categories");
         
@@ -256,6 +276,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#updateAll()
      */
+    @Override
     public void updateAll() {
     	LOG.info("Updating all funds");
         for (Category cat : categories.values()) {
@@ -267,6 +288,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.FundService#updateFundsInCategory(org.ozsoft.fondsbeheer.entities.Category)
      */
+    @Override
     public void updateFundsInCategory(Category category) {
         LOG.info(String.format("Updating category '%s'", category));
         for (Fund fund : category.getFunds()) {
@@ -278,6 +300,7 @@ public class FundServiceImpl implements FundService {
      * (non-Javadoc)
      * @see org.ozsoft.fondsbeheer.services.FundService#updateFund(org.ozsoft.fondsbeheer.entities.Fund)
      */
+    @Override
     public void updateFund(Fund fund) {
     	if (fund == null) {
     		throw new IllegalArgumentException("Null fund");
@@ -325,22 +348,56 @@ public class FundServiceImpl implements FundService {
         }
     }
     
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#getNoOfNewCategories()
+     */
+    @Override
     public int getNoOfNewCategories() {
         return noOfNewCategories;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#getNoOfNewFunds()
+     */
+    @Override
     public int getNoOfNewFunds() {
         return noOfNewFunds;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#getNoOfUpdatedFunds()
+     */
+    @Override
     public int getNoOfUpdatedFunds() {
         return noOfUpdatedFunds;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#resetUpdateCounter()
+     */
+    @Override
     public void resetUpdateCounter() {
         noOfUpdatedFunds = 0;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#printDiskUsage()
+     */
+    @Override
+    public void printDiskUsage() {
+    	fileStore.printSizeInfo();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#checkIntegrity()
+     */
+    @Override
     public void checkIntegrity() {
         int errors = 0;
         int warnings = 0;
@@ -375,6 +432,11 @@ public class FundServiceImpl implements FundService {
         }
     }
     
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.fondsbeheer.services.FundService#purgeDeadFunds()
+     */
+    @Override
     public void purgeDeadFunds() {
         LOG.info("Purging dead funds...");
         boolean purged = false;
@@ -393,10 +455,6 @@ public class FundServiceImpl implements FundService {
         }
     }
     
-    public void printDiskUsage() {
-    	fileStore.printSizeInfo();
-    }
-
     private void readCategoryFile() {
     	if (LOG.isDebugEnabled()) {
     		LOG.debug("Reading category file");

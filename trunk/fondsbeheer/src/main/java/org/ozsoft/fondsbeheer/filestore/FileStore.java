@@ -229,40 +229,6 @@ public class FileStore {
     }
     
     /**
-     * Creates a new file.
-     * 
-     * If a file with the specified ID already exists, 
-     * 
-     * @param   id  the file ID
-     * 
-     * @return  the new file
-     * 
-     * @throws  IllegalStateException
-     *              if the database is not running
-     * @throws  FileStoreException
-     *              if a file with the specified ID already exists
-     */
-    public FileEntry create(String id) throws FileStoreException {
-        checkIsRunning();
-        
-        if (contains(id)) {
-            throw new FileStoreException(
-            		String.format("Could not create file; ID '%s' not unique", id));
-        }
-            
-        FileEntry entry = new FileEntry(id);
-        entry.setOffset(0);
-        entry.setLength(0);
-        entries.put(id, entry);
-        
-        if (logger.isDebugEnabled()) {
-        	logger.debug(String.format("Created file with ID '%s'", id));
-        }
-        
-        return entry;
-    }
-    
-    /**
      * Stores a file.
      * 
      * @param id
@@ -289,9 +255,10 @@ public class FileStore {
         int offset = findFreePosition(content.length);
         
         // Create a new file entry.
-        FileEntry entry = create(id);
+        FileEntry entry = new FileEntry(id);
         entry.setOffset(offset);
         entry.setLength(content.length);
+        entries.put(id, entry);
         
         // Write the file content.
         try {

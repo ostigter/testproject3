@@ -7,15 +7,8 @@ import java.io.File;
  * 
  * @author Oscar Stigter
  */
-public class Util {
+public abstract class Util {
 	
-	/**
-	 * Private constructor to deny instantiation.
-	 */
-	private Util() {
-		// Empty implementation.
-	}
-
 	/**
 	 * Deletes a file or directory recursively.
 	 * 
