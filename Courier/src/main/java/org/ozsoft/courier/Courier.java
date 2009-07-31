@@ -8,6 +8,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.ozsoft.courier.action.FileOutAction;
 import org.ozsoft.courier.action.LogAction;
+import org.ozsoft.courier.action.VariableAction;
 import org.ozsoft.courier.action.XsltAction;
 import org.ozsoft.courier.handler.FileHandler;
 import org.ozsoft.courier.handler.Handler;
@@ -94,8 +95,8 @@ public class Courier {
 	            // Add a Log action.
 	            handler.addAction(new LogAction(Level.INFO));
 	            
-//	            // Set a variable, extracting the value from the message.
-//	            handler.addAction(new VariableAction("ticketNr", "//req:TicketNr/text()"));
+	            // Set a variable, extracting the value from the message.
+	            handler.addAction(new VariableAction("ticketNr", "//req:TicketNr/text()"));
 	            
 	            // Add a XSLT transformation action. 
 	            handler.addAction(new XsltAction("resources/request.xsl"));
