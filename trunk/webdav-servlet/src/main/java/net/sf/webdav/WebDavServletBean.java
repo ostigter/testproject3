@@ -1,10 +1,12 @@
 package net.sf.webdav;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,13 +31,15 @@ import org.apache.log4j.Logger;
 
 public class WebDavServletBean extends HttpServlet {
 
-    private static final Logger log =
+	private static final long serialVersionUID = 1L;
+
+	private static final Logger log =
         Logger.getLogger(WebDavServletBean.class);
 
     private static final boolean readOnly = false;
     private ResourceLocks resLocks;
     private WebdavStore store;
-    private HashMap methodMap = new HashMap();
+    private Map<String, MethodExecutor> methodMap = new HashMap<String, MethodExecutor>();
 
     public WebDavServletBean() {
         this.resLocks = new ResourceLocks();
@@ -98,11 +102,9 @@ public class WebDavServletBean extends HttpServlet {
             resp.setStatus(WebdavStatus.SC_OK);
 
             try {
-                MethodExecutor methodExecutor = (MethodExecutor) methodMap
-                .get(methodName);
+                MethodExecutor methodExecutor = (MethodExecutor) methodMap.get(methodName);
                 if (methodExecutor == null) {
-                    methodExecutor = (MethodExecutor) methodMap
-                    .get("*NO*IMPL*");
+                    methodExecutor = (MethodExecutor) methodMap.get("*NO*IMPL*");
                 }
                 methodExecutor.execute(req, resp);
 
@@ -134,27 +136,38 @@ public class WebDavServletBean extends HttpServlet {
 
     }
 
-    private void debugRequest(String methodName, HttpServletRequest req) {
-        log.debug("-----------");
-        log.debug("WebdavServlet\n request: methodName = " + methodName);
-        log.debug("time: " + System.currentTimeMillis());
-        log.debug("path: " + req.getRequestURI());
-        log.debug("-----------");
+    @SuppressWarnings("unchecked")
+	private void debugRequest(String methodName, HttpServletRequest req) {
+        log.debug(String.format("Request: %s %s", methodName, req.getRequestURI()));
         Enumeration e = req.getHeaderNames();
         while (e.hasMoreElements()) {
             String s = (String) e.nextElement();
-            log.debug("header: " + s + " " + req.getHeader(s));
+            log.debug(String.format("%s: %s", s, req.getHeader(s)));
         }
         e = req.getAttributeNames();
         while (e.hasMoreElements()) {
             String s = (String) e.nextElement();
-            log.debug("attribute: " + s + " " + req.getAttribute(s));
+            log.debug("Attribute: " + s + " " + req.getAttribute(s));
         }
         e = req.getParameterNames();
         while (e.hasMoreElements()) {
             String s = (String) e.nextElement();
-            log.debug("parameter: " + s + " " + req.getParameter(s));
+            log.debug("Parameter: " + s + " " + req.getParameter(s));
         }
+//        try {
+//			BufferedReader reader = req.getReader();
+//			StringBuilder sb = new StringBuilder();
+//			String line = null;
+//			while ((line = reader.readLine()) != null) {
+//				sb.append(line).append('\n');
+//			}
+//			String requestBody = sb.toString();
+//			if (requestBody.length() != 0) {
+//				log.debug("Request body:\n" + requestBody);
+//			}
+//        } catch (Exception ex) {
+//        	log.error(ex);
+//        }
     }
 
 }

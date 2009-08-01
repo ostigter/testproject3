@@ -27,60 +27,59 @@ import java.io.Writer;
 
 public abstract class ReportingMethod extends AbstractMethod {
 
-    /**
-     * Send a multistatus element containing a complete error report to the
-     * client.
-     * 
-     * @param req
-     *                Servlet request
-     * @param resp
-     *                Servlet response
-     * @param errorList
-     *                List of error to be displayed
-     */
-    protected void sendReport(HttpServletRequest req, HttpServletResponse resp,
-	    Hashtable errorList) throws IOException {
+	/**
+	 * Send a multistatus element containing a complete error report to the
+	 * client.
+	 * 
+	 * @param req
+	 *            Servlet request
+	 * @param resp
+	 *            Servlet response
+	 * @param errorList
+	 *            List of error to be displayed
+	 */
+	protected void sendReport(HttpServletRequest req, HttpServletResponse resp, Hashtable errorList)
+			throws IOException {
 
-	resp.setStatus(WebdavStatus.SC_MULTI_STATUS);
+		resp.setStatus(WebdavStatus.SC_MULTI_STATUS);
 
-	String absoluteUri = req.getRequestURI();
-	String relativePath = getRelativePath(req);
+		String absoluteUri = req.getRequestURI();
+		String relativePath = getRelativePath(req);
 
-	XMLWriter generatedXML = new XMLWriter();
-	generatedXML.writeXMLHeader();
+		XMLWriter generatedXML = new XMLWriter();
+		generatedXML.writeXMLHeader();
 
-	generatedXML.writeElement(null, "multistatus xmlns=\"DAV:\"",
-		XMLWriter.OPENING);
+		generatedXML.writeElement(null, "multistatus xmlns=\"DAV:\"",
+				XMLWriter.OPENING);
 
-	Enumeration pathList = errorList.keys();
-	while (pathList.hasMoreElements()) {
+		Enumeration pathList = errorList.keys();
+		while (pathList.hasMoreElements()) {
 
-	    String errorPath = (String) pathList.nextElement();
-	    int errorCode = ((Integer) errorList.get(errorPath)).intValue();
+			String errorPath = (String) pathList.nextElement();
+			int errorCode = ((Integer) errorList.get(errorPath)).intValue();
 
-	    generatedXML.writeElement(null, "response", XMLWriter.OPENING);
+			generatedXML.writeElement(null, "response", XMLWriter.OPENING);
 
-	    generatedXML.writeElement(null, "href", XMLWriter.OPENING);
-	    String toAppend = errorPath.substring(relativePath.length());
-	    if (!toAppend.startsWith("/"))
-		toAppend = "/" + toAppend;
-	    generatedXML.writeText(absoluteUri + toAppend);
-	    generatedXML.writeElement(null, "href", XMLWriter.CLOSING);
-	    generatedXML.writeElement(null, "status", XMLWriter.OPENING);
-	    generatedXML.writeText("HTTP/1.1 " + errorCode + " "
-		    + WebdavStatus.getStatusText(errorCode));
-	    generatedXML.writeElement(null, "status", XMLWriter.CLOSING);
+			generatedXML.writeElement(null, "href", XMLWriter.OPENING);
+			String toAppend = errorPath.substring(relativePath.length());
+			if (!toAppend.startsWith("/"))
+				toAppend = "/" + toAppend;
+			generatedXML.writeText(absoluteUri + toAppend);
+			generatedXML.writeElement(null, "href", XMLWriter.CLOSING);
+			generatedXML.writeElement(null, "status", XMLWriter.OPENING);
+			generatedXML.writeText("HTTP/1.1 " + errorCode + " "
+					+ WebdavStatus.getStatusText(errorCode));
+			generatedXML.writeElement(null, "status", XMLWriter.CLOSING);
 
-	    generatedXML.writeElement(null, "response", XMLWriter.CLOSING);
+			generatedXML.writeElement(null, "response", XMLWriter.CLOSING);
 
+		}
+
+		generatedXML.writeElement(null, "multistatus", XMLWriter.CLOSING);
+
+		Writer writer = resp.getWriter();
+		writer.write(generatedXML.toString());
+		writer.close();
 	}
-
-	generatedXML.writeElement(null, "multistatus", XMLWriter.CLOSING);
-
-	Writer writer = resp.getWriter();
-	writer.write(generatedXML.toString());
-	writer.close();
-
-    }
 
 }

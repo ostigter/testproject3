@@ -27,24 +27,21 @@ import org.apache.log4j.Logger;
 
 public class DoLock extends DeterminableMethod {
 
-    private static Logger log =
-        Logger.getLogger("net.sf.webdav.methods");
+	private static Logger log = Logger.getLogger("net.sf.webdav.methods");
 
-    private WebdavStore store;
-    private ResourceLocks resourceLocks;
-    private boolean readOnly;
+	private WebdavStore store;
+	private ResourceLocks resourceLocks;
+	private boolean readOnly;
 
-    public DoLock(WebdavStore store, ResourceLocks resourceLocks,
-	    boolean readOnly) {
-	this.store = store;
-	this.resourceLocks = resourceLocks;
-	this.readOnly = readOnly;
-    }
+	public DoLock(WebdavStore store, ResourceLocks resourceLocks,
+			boolean readOnly) {
+		this.store = store;
+		this.resourceLocks = resourceLocks;
+		this.readOnly = readOnly;
+	}
 
-    public void execute(HttpServletRequest req, HttpServletResponse resp)
-	    throws IOException {
-	log.debug("-- " + this.getClass().getName());
-
-	// Now MacOSX is happy
-    }
+	public void execute(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		// Now MacOSX is happy
+	}
 }
