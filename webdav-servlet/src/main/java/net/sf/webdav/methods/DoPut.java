@@ -30,70 +30,69 @@ import org.apache.log4j.Logger;
 
 public class DoPut extends AbstractMethod {
 
-    private static Logger log =
-        Logger.getLogger("net.sf.webdav.methods");
+	private static Logger log = Logger.getLogger("net.sf.webdav.methods");
 
-    private WebdavStore store;
-    private ResourceLocks resLocks;
-    private boolean readOnly;
-    private boolean lazyFolderCreationOnPut;
+	private WebdavStore store;
+	private ResourceLocks resLocks;
+	private boolean readOnly;
+	private boolean lazyFolderCreationOnPut;
 
-    public DoPut(WebdavStore store, ResourceLocks resLocks, boolean readOnly,
-	    boolean lazyFolderCreationOnPut) {
-	this.store = store;
-	this.resLocks = resLocks;
-	this.readOnly = readOnly;
-	this.lazyFolderCreationOnPut = lazyFolderCreationOnPut;
-    }
-
-    public void execute(HttpServletRequest req, HttpServletResponse resp)
-	    throws IOException {
-	log.debug("-- " + this.getClass().getName());
-
-	if (!readOnly) {
-	    String path = getRelativePath(req);
-	    String parentPath = getParentPath(path);
-	    String lockOwner = "doPut" + System.currentTimeMillis()
-		    + req.toString();
-	    if (resLocks.lock(path, lockOwner, true, -1)) {
-		try {
-		    if (parentPath != null && !store.isFolder(parentPath)
-			    && lazyFolderCreationOnPut) {
-			store.createFolder(parentPath);
-		    }
-		    if (!store.isFolder(path)) {
-			if (!store.objectExists(path)) {
-			    store.createResource(path);
-			    resp.setStatus(HttpServletResponse.SC_CREATED);
-			} else {
-			    String userAgent = req.getHeader("User-Agent");
-			    if ( -1 !=userAgent.indexOf("WebDAVFS/1.5")) {
-				log.debug("DoPut.execute() : do workaround for user agent '"
-						+ userAgent + "'");
-				resp.setStatus(HttpServletResponse.SC_CREATED);
-			    } else {
-				resp
-					.setStatus(HttpServletResponse.SC_NO_CONTENT);
-			    }
-			}
-			store.setResourceContent(path, req.getInputStream(),
-				null, null);
-			resp.setContentLength((int) store
-				.getResourceLength(path));
-		    }
-		} catch (AccessDeniedException e) {
-		    resp.sendError(WebdavStatus.SC_FORBIDDEN);
-		} catch (WebdavException e) {
-		    resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-		} finally {
-		    resLocks.unlock(path, lockOwner);
-		}
-	    } else {
-		resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-	    }
-	} else {
-	    resp.sendError(WebdavStatus.SC_FORBIDDEN);
+	public DoPut(WebdavStore store, ResourceLocks resLocks, boolean readOnly,
+			boolean lazyFolderCreationOnPut) {
+		this.store = store;
+		this.resLocks = resLocks;
+		this.readOnly = readOnly;
+		this.lazyFolderCreationOnPut = lazyFolderCreationOnPut;
 	}
 
-    }
+	public void execute(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		if (!readOnly) {
+			String path = getRelativePath(req);
+			String parentPath = getParentPath(path);
+			String lockOwner = "doPut" + System.currentTimeMillis()
+					+ req.toString();
+			if (resLocks.lock(path, lockOwner, true, -1)) {
+				try {
+					if (parentPath != null && !store.isFolder(parentPath)
+							&& lazyFolderCreationOnPut) {
+						store.createFolder(parentPath);
+					}
+					if (!store.isFolder(path)) {
+						if (!store.objectExists(path)) {
+							store.createResource(path);
+							resp.setStatus(HttpServletResponse.SC_CREATED);
+						} else {
+							String userAgent = req.getHeader("User-Agent");
+							if (-1 != userAgent.indexOf("WebDAVFS/1.5")) {
+								log
+										.debug("DoPut.execute() : do workaround for user agent '"
+												+ userAgent + "'");
+								resp.setStatus(HttpServletResponse.SC_CREATED);
+							} else {
+								resp
+										.setStatus(HttpServletResponse.SC_NO_CONTENT);
+							}
+						}
+						store.setResourceContent(path, req.getInputStream(),
+								null, null);
+						resp.setContentLength((int) store
+								.getResourceLength(path));
+					}
+				} catch (AccessDeniedException e) {
+					resp.sendError(WebdavStatus.SC_FORBIDDEN);
+				} catch (WebdavException e) {
+					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+				} finally {
+					resLocks.unlock(path, lockOwner);
+				}
+			} else {
+				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			resp.sendError(WebdavStatus.SC_FORBIDDEN);
+		}
+
+	}
+
 }

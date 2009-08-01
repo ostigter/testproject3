@@ -22,57 +22,57 @@ import javax.servlet.http.HttpServletRequest;
 
 public abstract class AbstractMethod implements MethodExecutor {
 
-    /**
-     * size of the io-buffer
-     */
-    protected static int BUF_SIZE = 50000;
+	/**
+	 * size of the io-buffer
+	 */
+	protected static int BUF_SIZE = 50000;
 
-    /**
-     * Return the relative path associated with this servlet.
-     * 
-     * @param request
-     *                The servlet request we are processing
-     */
-    protected String getRelativePath(HttpServletRequest request) {
+	/**
+	 * Return the relative path associated with this servlet.
+	 * 
+	 * @param request
+	 *            The servlet request we are processing
+	 */
+	protected String getRelativePath(HttpServletRequest request) {
 
-	// Are we being processed by a RequestDispatcher.include()?
-	if (request.getAttribute("javax.servlet.include.request_uri") != null) {
-	    String result = (String) request
-		    .getAttribute("javax.servlet.include.path_info");
-	    // if (result == null)
-	    // result = (String) request
-	    // .getAttribute("javax.servlet.include.servlet_path");
-	    if ((result == null) || (result.equals("")))
-		result = "/";
-	    return (result);
+		// Are we being processed by a RequestDispatcher.include()?
+		if (request.getAttribute("javax.servlet.include.request_uri") != null) {
+			String result = (String) request
+					.getAttribute("javax.servlet.include.path_info");
+			// if (result == null)
+			// result = (String) request
+			// .getAttribute("javax.servlet.include.servlet_path");
+			if ((result == null) || (result.equals("")))
+				result = "/";
+			return (result);
+		}
+
+		// No, extract the desired path directly from the request
+		String result = request.getPathInfo();
+		// if (result == null) {
+		// result = request.getServletPath();
+		// }
+		if ((result == null) || (result.equals(""))) {
+			result = "/";
+		}
+		return (result);
+
 	}
 
-	// No, extract the desired path directly from the request
-	String result = request.getPathInfo();
-	// if (result == null) {
-	// result = request.getServletPath();
-	// }
-	if ((result == null) || (result.equals(""))) {
-	    result = "/";
+	/**
+	 * creates the parent path from the given path by removing the last '/' and
+	 * everything after that
+	 * 
+	 * @param path
+	 *            the path
+	 * @return parent path
+	 */
+	public String getParentPath(String path) {
+		int slash = path.lastIndexOf('/');
+		if (slash != -1) {
+			return path.substring(0, slash);
+		}
+		return null;
 	}
-	return (result);
-
-    }
-
-    /**
-     * creates the parent path from the given path by removing the last '/' and
-     * everything after that
-     * 
-     * @param path
-     *                the path
-     * @return parent path
-     */
-    public String getParentPath(String path) {
-	int slash = path.lastIndexOf('/');
-	if (slash != -1) {
-	    return path.substring(0, slash);
-	}
-	return null;
-    }
 
 }

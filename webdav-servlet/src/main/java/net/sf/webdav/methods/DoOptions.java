@@ -30,42 +30,38 @@ import org.apache.log4j.Logger;
 
 public class DoOptions extends DeterminableMethod {
 
-    private static Logger log =
-        Logger.getLogger("net.sf.webdav.methods");
+	private static Logger log = Logger.getLogger("net.sf.webdav.methods");
 
-    private WebdavStore store;
-    private ResourceLocks resLocks;
+	private WebdavStore store;
+	private ResourceLocks resLocks;
 
-    public DoOptions(WebdavStore store, ResourceLocks resLocks) {
-	this.store = store;
-	this.resLocks = resLocks;
-    }
-
-    public void execute(HttpServletRequest req, HttpServletResponse resp)
-	    throws IOException {
-
-	log.debug("-- " + this.getClass().getName());
-
-	String lockOwner = "doOptions" + System.currentTimeMillis()
-		+ req.toString();
-	String path = getRelativePath(req);
-	if (resLocks.lock(path, lockOwner, false, 0)) {
-	    try {
-		resp.addHeader("DAV", "1, 2");
-
-		String methodsAllowed = determineMethodsAllowed(store
-			.objectExists(path), store.isFolder(path));
-		resp.addHeader("Allow", methodsAllowed);
-		resp.addHeader("MS-Author-Via", "DAV");
-	    } catch (AccessDeniedException e) {
-		resp.sendError(WebdavStatus.SC_FORBIDDEN);
-	    } catch (WebdavException e) {
-		resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-	    } finally {
-		resLocks.unlock(path, lockOwner);
-	    }
-	} else {
-	    resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+	public DoOptions(WebdavStore store, ResourceLocks resLocks) {
+		this.store = store;
+		this.resLocks = resLocks;
 	}
-    }
+
+	public void execute(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		String lockOwner = "doOptions" + System.currentTimeMillis() + req.toString();
+		String path = getRelativePath(req);
+		if (resLocks.lock(path, lockOwner, false, 0)) {
+			try {
+				resp.addHeader("DAV", "1, 2");
+
+				String methodsAllowed = determineMethodsAllowed(store
+						.objectExists(path), store.isFolder(path));
+				resp.addHeader("Allow", methodsAllowed);
+				resp.addHeader("MS-Author-Via", "DAV");
+			} catch (AccessDeniedException e) {
+				resp.sendError(WebdavStatus.SC_FORBIDDEN);
+			} catch (WebdavException e) {
+				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+			} finally {
+				resLocks.unlock(path, lockOwner);
+			}
+		} else {
+			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }

@@ -31,61 +31,58 @@ import org.apache.log4j.Logger;
 
 public class DoMove extends ReportingMethod {
 
-    private static Logger log =
-        Logger.getLogger("net.sf.webdav.methods");
+	private static Logger log = Logger.getLogger("net.sf.webdav.methods");
 
-    private ResourceLocks resourceLocks;
-    private DoDelete doDelete;
-    private DoCopy doCopy;
-    private boolean readOnly;
+	private ResourceLocks resourceLocks;
+	private DoDelete doDelete;
+	private DoCopy doCopy;
+	private boolean readOnly;
 
-    public DoMove(ResourceLocks resourceLocks, DoDelete doDelete,
-	    DoCopy doCopy, boolean readOnly) {
-	this.resourceLocks = resourceLocks;
-	this.doDelete = doDelete;
-	this.doCopy = doCopy;
-	this.readOnly = readOnly;
-    }
-
-    public void execute(HttpServletRequest req, HttpServletResponse resp)
-	    throws IOException {
-	if (!readOnly) {
-
-	    log.debug("-- " + this.getClass().getName());
-
-	    String path = getRelativePath(req);
-	    String lockOwner = "doMove" + System.currentTimeMillis()
-		    + req.toString();
-	    if (resourceLocks.lock(path, lockOwner, false, -1)) {
-		try {
-		    if (doCopy.copyResource(req, resp)) {
-
-			Hashtable errorList = new Hashtable();
-			doDelete.deleteResource(path, errorList, req, resp);
-			if (!errorList.isEmpty()) {
-			    sendReport(req, resp, errorList);
-			}
-
-		    } else {
-			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-		    }
-		} catch (AccessDeniedException e) {
-		    resp.sendError(WebdavStatus.SC_FORBIDDEN);
-		} catch (ObjectAlreadyExistsException e) {
-		    resp.sendError(WebdavStatus.SC_NOT_FOUND, req
-			    .getRequestURI());
-		} catch (WebdavException e) {
-		    resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-		} finally {
-		    resourceLocks.unlock(path, lockOwner);
-		}
-	    } else {
-		resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-	    }
-	} else {
-	    resp.sendError(WebdavStatus.SC_FORBIDDEN);
-
+	public DoMove(ResourceLocks resourceLocks, DoDelete doDelete,
+			DoCopy doCopy, boolean readOnly) {
+		this.resourceLocks = resourceLocks;
+		this.doDelete = doDelete;
+		this.doCopy = doCopy;
+		this.readOnly = readOnly;
 	}
 
-    }
+	public void execute(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
+		if (!readOnly) {
+
+			String path = getRelativePath(req);
+			String lockOwner = "doMove" + System.currentTimeMillis()
+					+ req.toString();
+			if (resourceLocks.lock(path, lockOwner, false, -1)) {
+				try {
+					if (doCopy.copyResource(req, resp)) {
+
+						Hashtable errorList = new Hashtable();
+						doDelete.deleteResource(path, errorList, req, resp);
+						if (!errorList.isEmpty()) {
+							sendReport(req, resp, errorList);
+						}
+
+					} else {
+						resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+					}
+				} catch (AccessDeniedException e) {
+					resp.sendError(WebdavStatus.SC_FORBIDDEN);
+				} catch (ObjectAlreadyExistsException e) {
+					resp.sendError(WebdavStatus.SC_NOT_FOUND, req
+							.getRequestURI());
+				} catch (WebdavException e) {
+					resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+				} finally {
+					resourceLocks.unlock(path, lockOwner);
+				}
+			} else {
+				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+			}
+		} else {
+			resp.sendError(WebdavStatus.SC_FORBIDDEN);
+
+		}
+
+	}
 }

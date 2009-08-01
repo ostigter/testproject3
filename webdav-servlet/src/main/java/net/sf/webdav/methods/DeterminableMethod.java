@@ -27,25 +27,16 @@ public abstract class DeterminableMethod extends AbstractMethod {
      * @return all allowed methods, separated by commas
      */
     protected String determineMethodsAllowed(boolean exists, boolean isFolder) {
-	StringBuffer methodsAllowed = new StringBuffer();
-	try {
+		StringBuffer methodsAllowed = new StringBuffer();
 	    if (exists) {
-		methodsAllowed
-			.append("OPTIONS, GET, HEAD, POST, DELETE, TRACE");
-		methodsAllowed
-			.append(", PROPPATCH, COPY, MOVE, LOCK, UNLOCK, PROPFIND");
-		if (isFolder) {
-		    methodsAllowed.append(", PUT");
-		}
-		return methodsAllowed.toString();
+	    	methodsAllowed.append("OPTIONS, GET, HEAD, POST, DELETE, TRACE, PROPPATCH, COPY, MOVE, LOCK, UNLOCK, PROPFIND");
+			if (isFolder) {
+			    methodsAllowed.append(", PUT");
+			}
+	    } else {
+			methodsAllowed.append("OPTIONS, MKCOL, PUT, LOCK");
 	    }
-	} catch (Exception e) {
-	    // we do nothing, just return less allowed methods
-
-	}
-	methodsAllowed.append("OPTIONS, MKCOL, PUT, LOCK");
-	return methodsAllowed.toString();
-
+		return methodsAllowed.toString();
     }
 
 }

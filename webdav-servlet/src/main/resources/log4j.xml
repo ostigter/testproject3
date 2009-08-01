@@ -12,6 +12,10 @@
         <level value="DEBUG" />
     </logger>
 
+    <logger name="net.sf.webdav.LocalFileSystemStore">
+        <level value="INFO" />
+    </logger>
+    
     <root>
         <priority value="INFO" />
         <appender-ref ref="console" />

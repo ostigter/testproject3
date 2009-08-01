@@ -33,132 +33,128 @@ import org.apache.log4j.Logger;
 
 public class DoHead extends AbstractMethod {
 
-    protected String dftIndexFile;
-    protected WebdavStore store;
-    protected String insteadOf404;
-    protected ResourceLocks resLocks;
-    protected MimeTyper mimeTyper;
-    protected int contLength;
+	protected String dftIndexFile;
+	protected WebdavStore store;
+	protected String insteadOf404;
+	protected ResourceLocks resLocks;
+	protected MimeTyper mimeTyper;
+	protected int contLength;
 
-    private static Logger log =
-        Logger.getLogger("net.sf.webdav.methods");
+	private static Logger log = Logger.getLogger("net.sf.webdav.methods");
 
-    public DoHead(WebdavStore store, String dftIndexFile, String insteadOf404,
-	    ResourceLocks resourceLocks, MimeTyper mimeTyper,
-	    int contentLengthHeader) {
-	this.store = store;
-	this.dftIndexFile = dftIndexFile;
-	this.insteadOf404 = insteadOf404;
-	this.resLocks = resourceLocks;
-	this.mimeTyper = mimeTyper;
-	this.contLength = contentLengthHeader;
-    }
-
-    public void execute(HttpServletRequest req, HttpServletResponse resp)
-	    throws IOException {
-
-	// determines if the uri exists.
-
-	boolean bUriExists = false;
-
-	String path = getRelativePath(req);
-	log.debug("-- " + this.getClass().getName());
-
-	log.debug("-- do " + req.getMethod());
-
-	if (store.isFolder(path)) {
-	    bUriExists = true;
-	    if (dftIndexFile != null && !dftIndexFile.trim().equals("")) {
-
-		resp.sendRedirect(resp.encodeRedirectURL(req.getRequestURI()
-			+ this.dftIndexFile));
-		return;
-	    }
+	public DoHead(WebdavStore store, String dftIndexFile, String insteadOf404,
+			ResourceLocks resourceLocks, MimeTyper mimeTyper,
+			int contentLengthHeader) {
+		this.store = store;
+		this.dftIndexFile = dftIndexFile;
+		this.insteadOf404 = insteadOf404;
+		this.resLocks = resourceLocks;
+		this.mimeTyper = mimeTyper;
+		this.contLength = contentLengthHeader;
 	}
-	if (!store.objectExists(path)) {
 
-	    if (this.insteadOf404 != null && !insteadOf404.trim().equals("")) {
-		path = this.insteadOf404;
-	    }
+	public void execute(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException {
 
-	} else
-	    bUriExists = true;
+		// determines if the uri exists.
 
-	String lockOwner = "doGet" + System.currentTimeMillis()
-		+ req.toString();
+		boolean bUriExists = false;
 
-	if (resLocks.lock(path, lockOwner, false, 0)) {
-	    try {
+		String path = getRelativePath(req);
 
-		if (store.isResource(path)) {
-		    // path points to a file but ends with / or \
-		    if (path.endsWith("/") || (path.endsWith("\\"))) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND, req
-				.getRequestURI());
-		    } else {
+		if (store.isFolder(path)) {
+			bUriExists = true;
+			if (dftIndexFile != null && !dftIndexFile.trim().equals("")) {
 
-			// setting headers
-			long lastModified = store.getLastModified(path)
-				.getTime();
-			resp.setDateHeader("last-modified", lastModified);
-
-			long resourceLength = store.getResourceLength(path);
-
-			if (contLength == 1) {
-			    if (resourceLength > 0) {
-				if (resourceLength <= Integer.MAX_VALUE) {
-				    resp.setContentLength((int) resourceLength);
-				} else {
-				    resp.setHeader("content-length", ""
-					    + resourceLength);
-				    // is "content-length" the right header?
-				    // is
-				    // long
-				    // a valid format?
-				}
-			    }
+				resp.sendRedirect(resp.encodeRedirectURL(req.getRequestURI()
+						+ this.dftIndexFile));
+				return;
 			}
-
-			String mimeType = mimeTyper.getMimeType(path);
-			if (mimeType != null) {
-			    resp.setContentType(mimeType);
-			} else {
-			    int lastSlash = path.replace('\\', '/')
-				    .lastIndexOf('/');
-			    int lastDot = path.indexOf(".", lastSlash);
-			    if (lastDot == -1) {
-				resp.setContentType("text/html");
-			    }
-			}
-
-			doBody(resp, path);
-		    }
-		} else {
-		    folderBody(path, resp, req);
 		}
-	    } catch (AccessDeniedException e) {
-		resp.sendError(WebdavStatus.SC_FORBIDDEN);
-	    } catch (ObjectAlreadyExistsException e) {
-		resp.sendError(WebdavStatus.SC_NOT_FOUND, req.getRequestURI());
-	    } catch (WebdavException e) {
-		resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
-	    } finally {
-		resLocks.unlock(path, lockOwner);
-	    }
-	} else {
-	    resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+		if (!store.objectExists(path)) {
+
+			if (this.insteadOf404 != null && !insteadOf404.trim().equals("")) {
+				path = this.insteadOf404;
+			}
+
+		} else
+			bUriExists = true;
+
+		String lockOwner = "doGet" + System.currentTimeMillis()
+				+ req.toString();
+
+		if (resLocks.lock(path, lockOwner, false, 0)) {
+			try {
+
+				if (store.isResource(path)) {
+					// path points to a file but ends with / or \
+					if (path.endsWith("/") || (path.endsWith("\\"))) {
+						resp.sendError(HttpServletResponse.SC_NOT_FOUND, req
+								.getRequestURI());
+					} else {
+
+						// setting headers
+						long lastModified = store.getLastModified(path)
+								.getTime();
+						resp.setDateHeader("last-modified", lastModified);
+
+						long resourceLength = store.getResourceLength(path);
+
+						if (contLength == 1) {
+							if (resourceLength > 0) {
+								if (resourceLength <= Integer.MAX_VALUE) {
+									resp.setContentLength((int) resourceLength);
+								} else {
+									resp.setHeader("content-length", ""
+											+ resourceLength);
+									// is "content-length" the right header?
+									// is
+									// long
+									// a valid format?
+								}
+							}
+						}
+
+						String mimeType = mimeTyper.getMimeType(path);
+						if (mimeType != null) {
+							resp.setContentType(mimeType);
+						} else {
+							int lastSlash = path.replace('\\', '/')
+									.lastIndexOf('/');
+							int lastDot = path.indexOf(".", lastSlash);
+							if (lastDot == -1) {
+								resp.setContentType("text/html");
+							}
+						}
+
+						doBody(resp, path);
+					}
+				} else {
+					folderBody(path, resp, req);
+				}
+			} catch (AccessDeniedException e) {
+				resp.sendError(WebdavStatus.SC_FORBIDDEN);
+			} catch (ObjectAlreadyExistsException e) {
+				resp.sendError(WebdavStatus.SC_NOT_FOUND, req.getRequestURI());
+			} catch (WebdavException e) {
+				resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+			} finally {
+				resLocks.unlock(path, lockOwner);
+			}
+		} else {
+			resp.sendError(WebdavStatus.SC_INTERNAL_SERVER_ERROR);
+		}
+		if (!bUriExists)
+			resp.setStatus(WebdavStatus.SC_NOT_FOUND);
 	}
-	if (!bUriExists)
-	    resp.setStatus(WebdavStatus.SC_NOT_FOUND);
-    }
 
-    protected void folderBody(String path, HttpServletResponse resp,
-	    HttpServletRequest req) throws IOException {
-	// no body for HEAD
-    }
+	protected void folderBody(String path, HttpServletResponse resp,
+			HttpServletRequest req) throws IOException {
+		// no body for HEAD
+	}
 
-    protected void doBody(HttpServletResponse resp, String path)
-	    throws IOException {
-	// no body for HEAD
-    }
+	protected void doBody(HttpServletResponse resp, String path)
+			throws IOException {
+		// no body for HEAD
+	}
 }
