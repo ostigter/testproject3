@@ -1,0 +1,28 @@
+WebDAV server
+=============
+
+resource
+collection
+property
+
+request
+response
+header
+body
+method
+	OPTIONS
+	PROPFIND
+	PROPPATCH
+	HEAD
+	GET
+	PUT
+	DELETE
+	POST
+	MKCOL
+	COPY
+	MOVE
+	LOCK
+	UNLOCK
+
+backend
+file system backend

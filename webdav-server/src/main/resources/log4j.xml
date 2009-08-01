@@ -8,8 +8,12 @@
         </layout>
     </appender>
 
-    <logger name="org.ozsoft.webdav.server">
+    <logger name="org.ozsoft.webdav">
         <level value="DEBUG" />
+    </logger>
+
+    <logger name="org.mortbay.log">
+        <level value="WARN" />
     </logger>
 
     <root>

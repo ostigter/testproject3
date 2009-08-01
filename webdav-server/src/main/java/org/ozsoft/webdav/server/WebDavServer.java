@@ -1,25 +1,50 @@
 package org.ozsoft.webdav.server;
 
+import javax.servlet.Servlet;
+
+import org.apache.log4j.Logger;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.ServletHandler;
+import org.mortbay.jetty.servlet.ServletHolder;
 
 /**
- * Standalone WebDAV level 2 server powered by Jetty.
+ * Standalone WebDAV server powered by Jetty.
  * 
  * @author Oscar Stigter
  */
 public class WebDavServer {
+	
+	/** The log. */
+	private static final Logger LOG = Logger.getLogger(WebDavServer.class);
+	
+	/** The port to listen to. */
+	private static final int PORT = 8088;
 
+	/** The servlet context. */
+	private static final String CONTEXT = "/webdav/*";
+	
+	/** Root directory of the file system backend. */
+	private static final String ROOT_DIR = "data";
+
+	/**
+	 * The application's entry point.
+	 * 
+	 * @param args
+	 *            Command line arguments.
+	 */
 	public static void main(String[] args) {
-		Server server = new Server(8088);
+		System.setProperty("org.mortbay.logger", "");
+		Server server = new Server(PORT);
 		ServletHandler handler = new ServletHandler();
-		handler.addServletWithMapping(WebDavServlet.class, "/webdav/*");
+		WebDavBackend backend = new FileSystemBackend(ROOT_DIR);
+		Servlet servlet = new WebDavServlet(backend);
+		handler.addServletWithMapping(new ServletHolder(servlet), CONTEXT);
 		server.setHandler(handler);
 		try {
 			server.start();
-			server.join();
+			LOG.info(String.format("Started, listening on port %d", PORT));
 		} catch (Exception e) {
-			e.printStackTrace(System.err);
+			LOG.error("Could not start server", e);
 		}
 	}
 
