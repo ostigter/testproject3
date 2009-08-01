@@ -12,32 +12,32 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 /**
- * Servlet implementation of a WebDAV level 2 server.
+ * HTTP servlet handling WebDAV requests.
  * 
  * @author Oscar Stigter
  */
 public class WebDavServlet extends HttpServlet {
 
+	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The log. */
 	private static final Logger LOG = Logger.getLogger(WebDavServlet.class);
-
-	@Override
-	public String getServletInfo() {
-		LOG.debug("getServletInfo()");
-		return "WebDAV level 2 server";
-	}
-
-	@Override
-	public void init() throws ServletException {
-		super.init();
-		LOG.debug("Initialized");
-	}
-
-	@Override
-	public void destroy() {
-		super.destroy();
-		LOG.debug("Destroyed");
+	
+	/** The WebDAV backend. */
+	private final WebDavBackend backend;
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param backend
+	 *            The WebDAV backend.
+	 */
+	public WebDavServlet(WebDavBackend backend) {
+		if (backend == null) {
+			throw new IllegalArgumentException("Null backend");
+		}
+		this.backend = backend;
 	}
 
 	@Override
@@ -90,10 +90,9 @@ public class WebDavServlet extends HttpServlet {
 		super.doOptions(request, response);
 		LOG.debug("OPTIONS");
 		response.setStatus(200);
-		response.addHeader("Allow",
-				"OPTIONS, GET, HEAD, POST, PUT, DELETE, PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, UNLOCK");
-		response.addHeader("DAV", "1, 2");
-		response.addHeader("MS-Author-Via", "DAV");
+		response.addHeader("Allow", "OPTIONS, GET, HEAD, POST, PUT, DELETE, PROPFIND, MKCOL");
+//		response.addHeader("DAV", "1");
+//		response.addHeader("MS-Author-Via", "DAV");
 	}
 
 	private void doPropfind(HttpServletRequest request, HttpServletResponse response)
