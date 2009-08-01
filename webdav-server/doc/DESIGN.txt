@@ -26,3 +26,97 @@ method
 
 backend
 file system backend
+
+
+PROPFIND
+--------
+
+Request:
+	PROPFIND /webdav
+	Host: localhost:8088
+	Depth: 0
+	Content-Type: text/xml
+	Content-Length: 0
+
+Response:
+	HTTP/1.1 200 OK
+	
+	<?xml version="1.0" encoding="utf-8" ?>
+	<multistatus xmlns="DAV:">
+		<response>
+			<href>/webdav/</href>
+			<propstat>
+				<prop>
+					<creationdate>2009-08-01T13:04:28Z</creationdate>
+					<displayname />
+					<resourcetype><collection /></resourcetype>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+	</multistatus>
+
+Request:
+	PROPFIND /webdav
+	Host: localhost:8088
+	Depth: 1
+	Content-Type: text/xml
+	Content-Length: 489
+
+Response:
+	<?xml version="1.0" encoding="utf-8" ?>
+	<multistatus xmlns="DAV:">
+		<response>
+			<href>/webdav/</href>
+			<propstat>
+				<prop>
+					<creationdate>2009-08-01T13:04:28Z</creationdate>
+					<displayname/>
+					<resourcetype><collection /></resourcetype>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+		<response>
+			<href>/webdav/db/</href>
+			<propstat>
+				<prop>
+					<creationdate>2009-08-01T13:04:45Z</creationdate>
+					<displayname>db</displayname>
+					<resourcetype><collection /></resourcetype>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+		<response>
+			<href>/webdav/modules/</href>
+			<propstat>
+				<prop>
+					<creationdate>2009-08-01T13:03:59Z</creationdate>
+					<displayname>modules</displayname>
+					<resourcetype><collection /></resourcetype>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+		<response>
+			<href>/webdav/README.txt</href>
+			<propstat>
+				<prop>
+					<creationdate>2009-07-31T05:22:46Z</creationdate>
+					<displayname>README.txt</displayname>
+					<getlastmodified>Fri, 31 Jul 2009 05:22:46 GMT</getlastmodified>
+					<getcontentlength>26</getcontentlength>
+					<getcontenttype>text/plain</getcontenttype>
+					<getetag>W/"26-Fri, 31 Jul 2009 05:22:46 GMT"</getetag>
+					<resourcetype/>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+	</multistatus>

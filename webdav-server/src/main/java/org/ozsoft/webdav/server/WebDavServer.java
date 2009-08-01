@@ -33,7 +33,6 @@ public class WebDavServer {
 	 *            Command line arguments.
 	 */
 	public static void main(String[] args) {
-		System.setProperty("org.mortbay.logger", "");
 		Server server = new Server(PORT);
 		ServletHandler handler = new ServletHandler();
 		WebDavBackend backend = new FileSystemBackend(ROOT_DIR);
