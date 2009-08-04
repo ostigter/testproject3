@@ -10,6 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 /**
  * HTTP servlet handling WebDAV requests.
@@ -23,6 +27,9 @@ public class WebDavServlet extends HttpServlet {
 
 	/** The log. */
 	private static final Logger LOG = Logger.getLogger(WebDavServlet.class);
+	
+	/** WebDAV namespace URI. */
+	private static final String DAV_NS = "DAV:";
 	
 	/** The WebDAV backend. */
 	private final WebDavBackend backend;
@@ -45,23 +52,12 @@ public class WebDavServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String method = request.getMethod();
-		LOG.debug("Request method: " + method);
+		LOG.debug("*** Request method: " + method);
 
 		for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
 			String name = (String) e.nextElement();
 			String value = request.getHeader(name);
 			LOG.debug("Header: " + name + ": " + value);
-		}
-
-		BufferedReader reader = request.getReader();
-		StringBuilder sb = new StringBuilder();
-		String line = null;
-		while ((line = reader.readLine()) != null) {
-			sb.append(line).append('\n');
-		}
-		String requestBody = sb.toString();
-		if (requestBody.length() != 0) {
-			LOG.debug("Request body:\n" + requestBody);
 		}
 
 		if (method.equals("OPTIONS")) {
@@ -91,7 +87,7 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("OPTIONS");
 		response.setStatus(200);
 		response.addHeader("Allow", "OPTIONS, GET, HEAD, POST, PUT, DELETE, PROPFIND, MKCOL");
-//		response.addHeader("DAV", "1");
+		response.addHeader("DAV", "1");
 //		response.addHeader("MS-Author-Via", "DAV");
 	}
 
@@ -99,8 +95,29 @@ public class WebDavServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String uri = request.getRequestURI();
 		LOG.debug("PROPFIND  " + uri);
-		String host = request.getHeader("Host");
-		LOG.debug("Host: " + host);
+		int depth = getDepth(request);
+		String requestBody = getRequestBody(request);
+		try {
+			Document doc = DocumentHelper.parseText(requestBody);
+			Element root = doc.getRootElement();
+			if (root.getNamespaceURI().equals(DAV_NS) && root.getName().equals("propfind")) {
+				Element prop = root.element("prop");
+				if (prop != null) {
+					for (Object obj : prop.elements()) {
+						Element el = (Element) obj;
+						if (el.getNamespaceURI().equals(DAV_NS)) {
+							LOG.debug("Property: " + el.getName());
+						}
+					}
+				} else {
+					//TODO: Invalid PROPFIND request.
+				}
+			} else {
+				//TODO: Invalid PROPFIND request.
+			}
+		} catch (DocumentException e) {
+			LOG.error("Could not parse request", e);
+		}
 
 		// Response status and headers.
 		response.setStatus(207); // Multi-Status
@@ -116,10 +133,10 @@ public class WebDavServlet extends HttpServlet {
 
 		// Collection.
 		sb.append("  <D:response>\n");
-		sb.append("    <D:href>/webdav/db</D:href>\n");
+		sb.append("    <D:href>/webdav</D:href>\n");
 		sb.append("    <D:propstat>\n");
 		sb.append("      <D:prop>\n");
-		sb.append("        <D:displayname>data</D:displayname>\n");
+		sb.append("        <D:displayname></D:displayname>\n");
 		sb.append("        <D:resourcetype><D:collection/></D:resourcetype>\n");
 		sb.append("        <D:creationdate>2009-07-28T12:44:24Z</D:creationdate>\n");
 		sb.append("        <D:getlastmodified>Tue, 28 Jul 2009 12:44:24 GMT</D:getlastmodified>\n");
@@ -205,6 +222,34 @@ public class WebDavServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String uri = request.getPathInfo();
 		LOG.debug("DELETE " + uri);
+	}
+	
+	private String getRequestBody(HttpServletRequest request) throws IOException {
+		BufferedReader reader = request.getReader();
+		StringBuilder sb = new StringBuilder();
+		String line = null;
+		while ((line = reader.readLine()) != null) {
+			sb.append(line).append('\n');
+		}
+		String requestBody = sb.toString();
+		if (requestBody.length() != 0) {
+			LOG.debug("Request body:\n" + requestBody);
+		}
+		return requestBody;
+	}
+	
+	private int getDepth(HttpServletRequest request) {
+		int depth = -1;
+		String depthString = request.getHeader("Depth");
+		if (depthString != null) {
+			try {
+				depth = Integer.parseInt(depthString);
+			} catch (NumberFormatException e) {
+				//TODO: Invalid Depth header.
+			}
+		}
+		LOG.debug("Depth: " + depth);
+		return depth;
 	}
 
 }

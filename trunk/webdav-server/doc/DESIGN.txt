@@ -120,3 +120,21 @@ Response:
 			</propstat>
 		</response>
 	</multistatus>
+
+	
+Request:
+	propfind
+	| prop
+	| | <property>+
+	propfind
+	| prop
+	| | <property>+
+
+Response:
+	multistatus
+	| response+
+	| | href
+	| | propstat
+	| | | prop
+	| | | | <property>+
+	| | | status
