@@ -1,0 +1,110 @@
+Texas Hold'em Poker
+===================
+
+Phases of each hand:
+ 1. Rotate the dealer position and pay the small and big blinds.
+ 2. Deal the 2 Hole Cards per player.
+ 3. Betting round.
+ 4. Deal the 3 Flop Cards on the board.
+ 5. Betting round.
+ 6. Deal the Turn Card on the board.
+ 7. Betting round.
+ 8. Deal the River Card on the board.
+ 9. Betting round.
+10. Showdown.
+    
+Server
+Client
+Player
+Deck
+Hand
+Card
+Command
+    NewGame(Player[])
+    Connect(Player)
+    CheckCommand
+    BetCommand(int)
+    CallCommand
+    RaiseCommand(int)
+    FoldCommand
+    
+    
+Action
+    CheckAction
+    BetAction(int amount)
+    RaiseAction(int amount)
+    CallAction
+    FoldAction
+
+Hole cards, first position:  Bet or Fold
+Hole cards, other positions: Call, Raise or Fold
+Hole cards, raised:          Call, Raise or Fold
+
+Flop cards, first position:            Check, Bet or Fold
+Flop cards, other positions, checked:  Check, Bet or Fold
+Flop cards, other positions, bet:      Call, Raise or Fold
+Flop cards, other positions, raised:   Call, Raise or Fold
+
+Turn card: idem as Flop
+
+River card: idem as Flop
+
+
+Check: (noOfBoardCards > 0) && (bet == 0)
+Bet:   (bet == 0)
+Call:  (bet > 0)
+Raise: (bet > 0)
+Fold:  Anytime
+
+if (bet == 0) {
+  if (noOfBoardCards == 0) {
+    CheckAction
+  } else {
+    BetAction
+  }
+} else {
+  CallAction || RaiseAction
+}
+|| FoldAction
+
+
+
+Player action algorithm
+-----------------------
+
+Factors:
+- hole cards
+- board cards (flops, turn, river)
+- number of players
+- position
+- actions opponents earlier positions
+- cash
+- bet
+- pot
+- bluffing (self)
+- bluffing opponents
+
+getAction(
+    ActionType[] allowedActions,
+    Card[] board,
+    Action[] prevActions,
+    int pot,
+    int bet,
+    int playersAfter
+) : Action
+
+getAction(
+    {CALL, RAISE, FOLD},
+    {Jh, 10d, 8d, 7c},
+    {CALL, FOLD, RAISE(2), CALL},
+    20,
+    4,
+    3
+);
+Allowed: Call, Raise or Fold
+Board:   Jh 10d 8d 7c
+Actions: CALL, FOLD, RAISE(2), CALL
+Bet:     $4
+Pot:     $20
+Active players before: 3 
+Active players after:  3 (7 players total)
