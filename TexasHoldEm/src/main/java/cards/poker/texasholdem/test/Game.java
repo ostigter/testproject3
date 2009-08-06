@@ -7,7 +7,6 @@ import cards.poker.Action;
 import cards.poker.BetAction;
 import cards.poker.HandValue;
 import cards.poker.RaiseAction;
-import cards.poker.texasholdem.ComputerPlayer;
 import cards.poker.texasholdem.HumanPlayer;
 import cards.poker.texasholdem.Player;
 
@@ -49,18 +48,17 @@ public class Game {
     }
     
     public Game() {
-//    	players = new Player[NO_OF_PLAYERS];
-//    	for (int i = 0; i < NO_OF_PLAYERS; i++) {
-//    		players[i] = new ComputerPlayer(
-//    				"Player " + String.valueOf(i + 1), INITIAL_MONEY);
-//    	}
-    	players = new Player[] {
-    			new ComputerPlayer("Buffy",  INITIAL_MONEY),
-    			new ComputerPlayer("Willow", INITIAL_MONEY),
-    			new ComputerPlayer("Xander", INITIAL_MONEY),
-    			new ComputerPlayer("Anya",   INITIAL_MONEY),
-//    			new HumanPlayer("Oscar", INITIAL_MONEY),
-    	};
+    	players = new Player[NO_OF_PLAYERS];
+    	for (int i = 0; i < NO_OF_PLAYERS; i++) {
+    		players[i] = new HumanPlayer(
+    				"Player " + String.valueOf(i + 1), INITIAL_MONEY);
+    	}
+//    	players = new Player[] {
+//    			new HumanPlayer("Buffy",  INITIAL_MONEY),
+//    			new HumanPlayer("Willow", INITIAL_MONEY),
+//    			new HumanPlayer("Xander", INITIAL_MONEY),
+//    			new HumanPlayer("Anya",   INITIAL_MONEY),
+//    	};
         
         while (!gameOver && noOfHands < MAX_NO_OF_HANDS) {
 
@@ -180,8 +178,8 @@ public class Game {
     private void printPlayer(Player player) {
     	Action action = player.getAction();
     	String lastAction = (action == null) ? "-" : action.toString();
-    	System.out.println(String.format("\t%s\t\t$ %3d\t%s\t%s",
-			player, player.getCash(), player.getHand(), lastAction));
+    	System.out.format("\t%s\t\t$ %3d\t%s\t$ %2d\t%s\n",
+    			player, player.getCash(), player.getHand(), player.getBet(), lastAction);
     }
 
     private void doBettingRound(int round) {

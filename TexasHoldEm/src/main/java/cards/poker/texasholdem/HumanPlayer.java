@@ -23,7 +23,7 @@ public class HumanPlayer extends Player {
             // No previous bets.
             if (noOfBoardCards == 0) {
                 // No flops yet, so Bet or Fold.
-                System.out.print(name + ": Bet of Fold? ");
+                System.out.print(name + ": Bet or Fold? ");
                 getConsoleInput();
                 if (input.length() != 0) {
                     if (input.charAt(0) == 'f') {
@@ -52,7 +52,7 @@ public class HumanPlayer extends Player {
             }
         } else {
             // Call, Raise or Fold.
-            System.out.print(name + ": Call, Raise of Fold? ");
+            System.out.print(name + ": Call, Raise or Fold? ");
             getConsoleInput();
             if (input.length() != 0) {
                 if (input.charAt(0) == 'f') {

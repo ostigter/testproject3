@@ -221,7 +221,7 @@ public abstract class Player {
      */
     public final void raise(int currentBet, int raise) {
         action = new RaiseAction(raise);
-        int amount = (bet < currentBet) ? currentBet - bet + raise : raise;
+        int amount = (currentBet < bet) ? (bet - currentBet) + raise : raise;
         cash -= amount;
         bet += amount;
     }
