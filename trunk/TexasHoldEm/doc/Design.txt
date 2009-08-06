@@ -2,16 +2,17 @@ Texas Hold'em Poker
 ===================
 
 Phases of each hand:
- 1. Rotate the dealer position and pay the small and big blinds.
- 2. Deal the 2 Hole Cards per player.
- 3. Betting round.
- 4. Deal the 3 Flop Cards on the board.
- 5. Betting round.
- 6. Deal the Turn Card on the board.
- 7. Betting round.
- 8. Deal the River Card on the board.
- 9. Betting round.
-10. Showdown.
+ 1. Rotate the dealer position.
+ 2. Post the small and big blinds.
+ 3. Deal the 2 Hole cards per player.
+ 4. Pre-Flop betting round.
+ 5. Deal the 3 Flop cards on the board.
+ 6. Flop betting round.
+ 7. Deal the Turn card on the board.
+ 8. Turn betting round.
+ 9. Deal the River card on the board.
+10. River betting round.
+11. Showdown.
     
 Server
 Client
@@ -40,15 +41,10 @@ Hole cards, first position:  Bet or Fold
 Hole cards, other positions: Call, Raise or Fold
 Hole cards, raised:          Call, Raise or Fold
 
-Flop cards, first position:            Check, Bet or Fold
-Flop cards, other positions, checked:  Check, Bet or Fold
-Flop cards, other positions, bet:      Call, Raise or Fold
-Flop cards, other positions, raised:   Call, Raise or Fold
-
-Turn card: idem as Flop
-
-River card: idem as Flop
-
+Flop/Turn/River, first position:            Check, Bet or Fold
+Flop/Turn/River, other positions, checked:  Check, Bet or Fold
+Flop/Turn/River, other positions, bet:      Call, Raise or Fold
+Flop/Turn/River, other positions, raised:   Call, Raise or Fold
 
 Check: (noOfBoardCards > 0) && (bet == 0)
 Bet:   (bet == 0)
@@ -74,14 +70,16 @@ Player action algorithm
 
 Factors:
 - hole cards
-- board cards (flops, turn, river)
+- board cards (Flop, Turn, River)
 - number of players
-- position
-- actions opponents earlier positions
+- table position
 - cash
 - bet
 - pot
 - bluffing (self)
+- actions opponents earlier positions
+- opponent history
+- opponent aggression
 - bluffing opponents
 
 getAction(
