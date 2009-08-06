@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
+import org.ozsoft.webdav.WebDavException;
+
 /**
  * File system WebDAV backend.
  * 
