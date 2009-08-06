@@ -5,8 +5,12 @@ resource
 collection
 property
 
+client
+server
+
 request
 response
+
 header
 body
 method
@@ -24,19 +28,68 @@ method
 	LOCK
 	UNLOCK
 
-backend
+backend (server)
 file system backend
+
+
+WebDAV namespace: "DAV:"
 
 
 PROPFIND
 --------
 
+WebDAV properties:
+	displayname
+	resourcetype
+	creationdate
+	getlastmodified
+	getcontenttype
+	getcontentlength
+	getetag
+
 Request:
-	PROPFIND /webdav
+	propfind             # Request specific properties
+	| prop
+	| | <property>+
+or:
+	propfind             # Request all properties (incl. values)
+	| allprop
+or:
+	propfind             # Request all property names
+	| propname
+
+Response:
+	multistatus
+	| response+
+	| | href
+	| | propstat
+	| | | prop
+	| | | | <property>+
+	| | | status
+
+Example data tree:
+	webdav/
+	| | data/
+	| | README.txt
+
+Request:
+	PROPFIND /webdav HTTP/1.1
 	Host: localhost:8088
 	Depth: 0
 	Content-Type: text/xml
-	Content-Length: 0
+	Content-Length: xxx
+	
+	<propfind xmlns="DAV:">
+		<prop>
+			<displayname />
+			<resourcetype />
+			<creationdate />
+			<getlastmodified />
+			<getcontenttype />
+			<getcontentlength />
+			<getetag />
+		</prop>
+	</propfind>
 
 Response:
 	HTTP/1.1 200 OK
@@ -47,6 +100,50 @@ Response:
 			<href>/webdav/</href>
 			<propstat>
 				<prop>
+					<displayname />
+					<resourcetype><collection /></resourcetype>
+					<creationdate>2009-08-01T13:04:28+01:00</creationdate>
+					<getlastmodified>2009-08-01T13:04:28+01:00</getlastmodified>
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+			<propstat>
+				<prop>
+					<getcontenttype />
+					<getcontentlength />
+					<getetag />
+				</prop>
+				<status>HTTP/1.1 404 Not Found</status>
+			</propstat>
+		</response>
+	</multistatus>
+
+Request:
+	PROPFIND /webdav HTTP/1.1
+	Host: localhost:8088
+	Depth: 1
+	Content-Type: text/xml
+	Content-Length: xxx
+	
+	<propfind xmlns="DAV:">
+		<prop>
+			<displayname />
+			<resourcetype />
+			<creationdate />
+			<getlastmodified />
+			<getcontenttype />
+			<getcontentlength />
+			<getetag />
+		</prop>
+	</propfind>
+
+Response:
+	<?xml version="1.0" encoding="utf-8" ?>
+	<multistatus xmlns="DAV:">
+		<response>
+			<href>/webdav</href>
+			<propstat>
+				<prop>
 					<creationdate>2009-08-01T13:04:28Z</creationdate>
 					<displayname />
 					<resourcetype><collection /></resourcetype>
@@ -54,21 +151,6 @@ Response:
 				</prop>
 				<status>HTTP/1.1 200 OK</status>
 			</propstat>
-		</response>
-	</multistatus>
-
-Request:
-	PROPFIND /webdav
-	Host: localhost:8088
-	Depth: 1
-	Content-Type: text/xml
-	Content-Length: 489
-
-Response:
-	<?xml version="1.0" encoding="utf-8" ?>
-	<multistatus xmlns="DAV:">
-		<response>
-			<href>/webdav/</href>
 			<propstat>
 				<prop>
 					<creationdate>2009-08-01T13:04:28Z</creationdate>
@@ -80,23 +162,11 @@ Response:
 			</propstat>
 		</response>
 		<response>
-			<href>/webdav/db/</href>
+			<href>/webdav/db</href>
 			<propstat>
 				<prop>
 					<creationdate>2009-08-01T13:04:45Z</creationdate>
-					<displayname>db</displayname>
-					<resourcetype><collection /></resourcetype>
-					<source />
-				</prop>
-				<status>HTTP/1.1 200 OK</status>
-			</propstat>
-		</response>
-		<response>
-			<href>/webdav/modules/</href>
-			<propstat>
-				<prop>
-					<creationdate>2009-08-01T13:03:59Z</creationdate>
-					<displayname>modules</displayname>
+					<displayname>data</displayname>
 					<resourcetype><collection /></resourcetype>
 					<source />
 				</prop>
@@ -107,8 +177,8 @@ Response:
 			<href>/webdav/README.txt</href>
 			<propstat>
 				<prop>
-					<creationdate>2009-07-31T05:22:46Z</creationdate>
 					<displayname>README.txt</displayname>
+					<creationdate>2009-07-31T05:22:46Z</creationdate>
 					<getlastmodified>Fri, 31 Jul 2009 05:22:46 GMT</getlastmodified>
 					<getcontentlength>26</getcontentlength>
 					<getcontenttype>text/plain</getcontenttype>
@@ -121,20 +191,75 @@ Response:
 		</response>
 	</multistatus>
 
-	
 Request:
-	propfind
-	| prop
-	| | <property>+
-	propfind
-	| prop
-	| | <property>+
+	PROPFIND /webdav/README.txt HTTP/1.1
+	Host: localhost:8088
+	Depth: 0
+	Content-Type: text/xml
+	Content-Length: xxx
+	
+	<propfind xmlns="DAV:">
+		<prop>
+			<displayname />
+			<resourcetype />
+			<creationdate />
+			<getlastmodified />
+			<getcontenttype />
+			<getcontentlength />
+			<getetag />
+		</prop>
+	</propfind>
 
 Response:
-	multistatus
-	| response+
-	| | href
-	| | propstat
-	| | | prop
-	| | | | <property>+
-	| | | status
+	<?xml version="1.0" encoding="utf-8" ?>
+	<multistatus xmlns="DAV:">
+		<response>
+			<href>/webdav</href>
+			<propstat>
+				<prop>
+					<creationdate>2009-08-01T13:04:28Z</creationdate>
+					<displayname />
+					<resourcetype><collection /></resourcetype>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+			<propstat>
+				<prop>
+					<creationdate>2009-08-01T13:04:28Z</creationdate>
+					<displayname/>
+					<resourcetype><collection /></resourcetype>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+		<response>
+			<href>/webdav/db</href>
+			<propstat>
+				<prop>
+					<creationdate>2009-08-01T13:04:45Z</creationdate>
+					<displayname>data</displayname>
+					<resourcetype><collection /></resourcetype>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+		<response>
+			<href>/webdav/README.txt</href>
+			<propstat>
+				<prop>
+					<displayname>README.txt</displayname>
+					<creationdate>2009-07-31T05:22:46Z</creationdate>
+					<getlastmodified>Fri, 31 Jul 2009 05:22:46 GMT</getlastmodified>
+					<getcontentlength>26</getcontentlength>
+					<getcontenttype>text/plain</getcontenttype>
+					<getetag>W/"26-Fri, 31 Jul 2009 05:22:46 GMT"</getetag>
+					<resourcetype/>
+					<source />
+				</prop>
+				<status>HTTP/1.1 200 OK</status>
+			</propstat>
+		</response>
+	</multistatus>

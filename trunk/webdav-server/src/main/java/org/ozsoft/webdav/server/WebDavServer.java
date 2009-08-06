@@ -8,7 +8,11 @@ import org.mortbay.jetty.servlet.ServletHandler;
 import org.mortbay.jetty.servlet.ServletHolder;
 
 /**
- * Standalone WebDAV server powered by Jetty.
+ * Standalone WebDAV server with a simple filesystem backend.
+ * 
+ * Uses a WebDAV servlet deployed in an embedded Jetty.
+ * 
+ * Connection URL: "http://localhost:8088/webdav/".
  * 
  * @author Oscar Stigter
  */

@@ -2,7 +2,8 @@ package org.ozsoft.webdav.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +15,13 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.ozsoft.webdav.Depth;
+import org.ozsoft.webdav.WebDavConstants;
 
 /**
  * HTTP servlet handling WebDAV requests.
+ * 
+ * Only the basic WebDAV level 1 operations are supported.
  * 
  * @author Oscar Stigter
  */
@@ -27,9 +32,6 @@ public class WebDavServlet extends HttpServlet {
 
 	/** The log. */
 	private static final Logger LOG = Logger.getLogger(WebDavServlet.class);
-	
-	/** WebDAV namespace URI. */
-	private static final String DAV_NS = "DAV:";
 	
 	/** The WebDAV backend. */
 	private final WebDavBackend backend;
@@ -47,18 +49,21 @@ public class WebDavServlet extends HttpServlet {
 		this.backend = backend;
 	}
 
+	/**
+	 * Handles an HTTP request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String method = request.getMethod();
-		LOG.debug("*** Request method: " + method);
-
-		for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
-			String name = (String) e.nextElement();
-			String value = request.getHeader(name);
-			LOG.debug("Header: " + name + ": " + value);
-		}
+//		for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
+//			String name = (String) e.nextElement();
+//			String value = request.getHeader(name);
+//			LOG.debug("Header: " + name + ": " + value);
+//		}
 
 		if (method.equals("OPTIONS")) {
 			doOptions(request, response);
@@ -80,115 +85,143 @@ public class WebDavServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Handles an OPTIONS request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
 	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		super.doOptions(request, response);
 		LOG.debug("OPTIONS");
 		response.setStatus(200);
-		response.addHeader("Allow", "OPTIONS, GET, HEAD, POST, PUT, DELETE, PROPFIND, MKCOL");
+		response.addHeader("Allow", "OPTIONS, HEAD, GET, PUT, DELETE, POST, PROPFIND, MKCOL");
 		response.addHeader("DAV", "1");
-//		response.addHeader("MS-Author-Via", "DAV");
+//		response.addHeader("MS-Author-Via", "DAV");  // Required for Microsoft Windows Explorer?
 	}
 
+	/**
+	 * Handles a PROPFIND request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
+	@SuppressWarnings("unchecked")  // dom4j
 	private void doPropfind(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String uri = request.getRequestURI();
 		LOG.debug("PROPFIND  " + uri);
-		int depth = getDepth(request);
+		Depth depth = getDepth(request);
 		String requestBody = getRequestBody(request);
-		try {
-			Document doc = DocumentHelper.parseText(requestBody);
-			Element root = doc.getRootElement();
-			if (root.getNamespaceURI().equals(DAV_NS) && root.getName().equals("propfind")) {
-				Element prop = root.element("prop");
-				if (prop != null) {
-					for (Object obj : prop.elements()) {
-						Element el = (Element) obj;
-						if (el.getNamespaceURI().equals(DAV_NS)) {
-							LOG.debug("Property: " + el.getName());
+		if (requestBody.length() == 0) {
+			// No request body, so handle as 'allprop' type.
+			doPropfindAllprop(uri, depth, response);
+		} else {
+			// Parse request body.
+			try {
+				Document doc = DocumentHelper.parseText(requestBody);
+				Element root = doc.getRootElement();
+				if (root.getNamespaceURI().equals(WebDavConstants.DAV_NS) && root.getName().equals("propfind")) {
+					List children = root.elements();
+					if (children.size() == 1) {
+						Element typeElement = (Element) children.get(0);
+						String typeName = typeElement.getName();
+						if (typeName.equals("prop")) {
+							// Request for specific set of properties.
+							LOG.debug("Request for a specific set of properties");
+							List<String> propNames = new ArrayList<String>();
+							for (Object obj : typeElement.elements()) {
+								if (obj instanceof Element) {
+									Element el = (Element) obj;
+									//TODO: Handle request for non-WebDAV properties. 
+									if (el.getNamespaceURI().equals(WebDavConstants.DAV_NS)) {
+										propNames.add(el.getName());
+									}
+								} else {
+									//TODO: Child of 'prop' element not an element.
+								}
+							}
+							if (propNames.size() == 0) {
+								//TODO: Invalid request; no (WebDAV) properties specified.
+							} else {
+								doPropfindProp(uri, depth, propNames, response);
+							}
+							for (String name : propNames) {
+								LOG.debug("Property: " + name);
+							}
+						} else if (typeName.equals("allprop")) {
+							// Request for all properties (incl. values).
+							doPropfindAllprop(uri, depth, response);
+						} else if (typeName.equals("propname")) {
+							// Request for all property names.
+							doPropfindPropname(uri, depth, response);
+						} else {
+							//TODO: Invalid request; invalid child element of 'propfind' element.
 						}
+					} else {
+						//TODO: Invalid request; 'propfind' element has invalid number of child elements. 
 					}
 				} else {
-					//TODO: Invalid PROPFIND request.
+					//TODO: Invalid request; no 'propfind' element.
 				}
-			} else {
-				//TODO: Invalid PROPFIND request.
+			} catch (DocumentException e) {
+				//TODO: Invalid XML request body.
+				LOG.error("Could not parse request", e);
 			}
-		} catch (DocumentException e) {
-			LOG.error("Could not parse request", e);
 		}
 
-		// Response status and headers.
-		response.setStatus(207); // Multi-Status
-		response.setContentType("text/xml;charset=UTF-8");
+//		// Response status and headers.
+//		response.setStatus(207); // Multi-Status
+//		response.setContentType("text/xml;charset=UTF-8");
 //		response.addHeader("DAV", "1");
 //		response.addHeader("MS-Author-Via", "DAV");
-
-		// Response body.
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-		sb.append("<D:multistatus xmlns:D=\"DAV:\">\n");
-
-		// Collection.
-		sb.append("  <D:response>\n");
-		sb.append("    <D:href>/webdav</D:href>\n");
-		sb.append("    <D:propstat>\n");
-		sb.append("      <D:prop>\n");
-		sb.append("        <D:displayname></D:displayname>\n");
-		sb.append("        <D:resourcetype><D:collection/></D:resourcetype>\n");
-		sb.append("        <D:creationdate>2009-07-28T12:44:24Z</D:creationdate>\n");
-		sb.append("        <D:getlastmodified>Tue, 28 Jul 2009 12:44:24 GMT</D:getlastmodified>\n");
-		sb.append("      </D:prop>\n");
-		sb.append("      <D:status>HTTP/1.1 200 OK</D:status>\n");
-		sb.append("    </D:propstat>\n");
-		sb.append("    <D:propstat>\n");
-		sb.append("      <D:prop>\n");
-		sb.append("        <D:getcontentlength/>\n");
-		sb.append("        <D:getcontenttype/>\n");
-		sb.append("        <D:getetag/>\n");
-		sb.append("      </D:prop>\n");
-		sb.append("      <D:status>HTTP/1.1 404 Not Found</D:status>\n");
-		sb.append("    </D:propstat>\n");
-		sb.append("  </D:response>\n");
-
-		// Document.
-		// sb.append("<response>");
-		// sb.append("<href>");
-		// sb.append(host);
-		// sb.append("/");
-		// sb.append("doc.xml");
-		// sb.append("</href>");
-		// sb.append("<propstat>");
-		// sb.append("<prop>");
-		// sb.append("<displayname>");
-		// sb.append("doc.xml");
-		// sb.append("</displayname>");
-		// sb.append("<resourcetype><resource /></resourcetype>");
-		// sb.append("<getcontenttype>text/xml</getcontenttype>");
-		// sb.append("<getcontentlength>123</getcontentlength>");
-		// sb.append("<getlastmodified></getlastmodified>");
-		// sb.append("<name>name1</name>");
-		// sb.append("<parentname>parentname1</parentname>");
-		// sb.append("<isroot>false</isroot>");
-		// sb.append("<ishidden>false</ishidden>");
-		// sb.append("<isreadonly>false</isreadonly>");
-		// sb.append("<iscollection>false</iscollection>");
-		// sb.append("<isstructureddocument>false</isstructureddocument>");
-		// sb.append("<defaultdocument></defaultdocument>");
-		// sb.append("</prop>");
-		// sb.append("<status>HTTP/1.1 200 OK</status>");
-		// sb.append("</propstat>");
-		// sb.append("</response>");
-
-		sb.append("</D:multistatus>\n");
-
-		String responseBody = sb.toString();
-		LOG.debug("Response body:\n" + responseBody);
-		response.getWriter().write(responseBody);
+	}
+	
+	/**
+	 * Handles a PROPFIND 'prop' request.
+	 * 
+	 * @param uri The resource URI.
+	 * @param depth The Depth header value.
+	 * @param propNames The property names.
+	 * @param response The response.
+	 */
+	private void doPropfindProp(String uri, Depth depth, List<String> propNames, HttpServletResponse response)
+			throws ServletException, IOException {
+		//TODO
 	}
 
+	/**
+	 * Handles a PROPFIND 'allprop' request.
+	 * 
+	 * @param uri The resource URI.
+	 * @param depth The Depth header value.
+	 * @param response The response.
+	 */
+	private void doPropfindAllprop(String uri, Depth depth, HttpServletResponse response)
+			throws ServletException, IOException {
+		//TODO
+	}
+
+	/**
+	 * Handles a PROPFIND 'propname' request.
+	 * 
+	 * @param uri The resource URI.
+	 * @param depth The Depth header value.
+	 * @param response The response.
+	 */
+	private void doPropfindPropname(String uri, Depth depth, HttpServletResponse response)
+			throws ServletException, IOException {
+		//TODO
+	}
+
+	/**
+	 * Handles a HEAD request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
 	@Override
 	protected void doHead(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -196,6 +229,12 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("HEAD " + uri);
 	}
 
+	/**
+	 * Handles a GET request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -203,13 +242,12 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("GET " + uri);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String uri = request.getPathInfo();
-		LOG.debug("POST " + uri);
-	}
-
+	/**
+	 * Handles a PUT request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -217,6 +255,12 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("PUT " + uri);
 	}
 
+	/**
+	 * Handles a DELETE request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -224,6 +268,30 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("DELETE " + uri);
 	}
 	
+	/**
+	 * Handles a POST request.
+	 * 
+	 * @param request The request.
+	 * @param response The response.
+	 */
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String uri = request.getPathInfo();
+		LOG.debug("POST " + uri);
+	}
+
+	/**
+	 * Returns the request body from an HTTP request.
+	 * 
+	 * @param request
+	 *            The request.
+	 * 
+	 * @return The request body.
+	 * 
+	 * @throws IOException
+	 *             If the request could not be read.
+	 */
 	private String getRequestBody(HttpServletRequest request) throws IOException {
 		BufferedReader reader = request.getReader();
 		StringBuilder sb = new StringBuilder();
@@ -238,14 +306,21 @@ public class WebDavServlet extends HttpServlet {
 		return requestBody;
 	}
 	
-	private int getDepth(HttpServletRequest request) {
-		int depth = -1;
-		String depthString = request.getHeader("Depth");
-		if (depthString != null) {
-			try {
-				depth = Integer.parseInt(depthString);
-			} catch (NumberFormatException e) {
-				//TODO: Invalid Depth header.
+	/**
+	 * Returns the value of the Depth header from a request.
+	 * 
+	 * @param request
+	 *            The request.
+	 * 
+	 * @return The Depth value.
+	 */
+	private Depth getDepth(HttpServletRequest request) {
+		Depth depth = Depth.INFINITY;
+		String value = request.getHeader("Depth");
+		if (value != null) {
+			depth = Depth.parse(value);
+			if (depth == null) {
+				depth = Depth.INFINITY;
 			}
 		}
 		LOG.debug("Depth: " + depth);
