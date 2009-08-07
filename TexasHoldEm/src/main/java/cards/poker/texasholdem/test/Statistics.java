@@ -3,10 +3,10 @@ package cards.poker.texasholdem.test;
 import java.util.Date;
 import java.util.Locale;
 
-import cards.Card;
-import cards.Deck;
-import cards.Hand;
-import cards.poker.HandValue;
+import cards.poker.texasholdem.Card;
+import cards.poker.texasholdem.Deck;
+import cards.poker.texasholdem.Hand;
+import cards.poker.texasholdem.HandValue;
 
 /**
  * Test driver to calculate the winning chance with a specific hand against a

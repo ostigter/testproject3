@@ -1,4 +1,4 @@
-package cards.poker;
+package cards.poker.texasholdem.actions;
 
 public class RaiseAction implements Action {
     
@@ -14,12 +14,12 @@ public class RaiseAction implements Action {
     
     @Override
     public String getVerb() {
-        return "raises $" + amount;
+        return "raises with $ " + amount;
     }
     
     @Override
     public String toString() {
-        return "Raise $" + amount;
+        return "Raise";
     }
     
 }

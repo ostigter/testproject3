@@ -1,36 +1,41 @@
 package cards.poker.texasholdem;
 
-import cards.Card;
-import cards.Hand;
-import cards.poker.Action;
-import cards.poker.BetAction;
-import cards.poker.BigBlindAction;
-import cards.poker.CallAction;
-import cards.poker.CheckAction;
-import cards.poker.FoldAction;
-import cards.poker.RaiseAction;
-import cards.poker.SmallBlindAction;
+import cards.poker.texasholdem.actions.Action;
+import cards.poker.texasholdem.actions.BetAction;
+import cards.poker.texasholdem.actions.BigBlindAction;
+import cards.poker.texasholdem.actions.CallAction;
+import cards.poker.texasholdem.actions.CheckAction;
+import cards.poker.texasholdem.actions.FoldAction;
+import cards.poker.texasholdem.actions.RaiseAction;
+import cards.poker.texasholdem.actions.SmallBlindAction;
 
 public abstract class Player {
     
     protected String name;
-    protected int cash;
+    
+    protected int money;
+    
     protected Hand hand = new Hand();
+    
     protected boolean isPlaying;
+    
     protected int bet;
+    
     protected boolean allIn;
+    
     protected Action action;
+    
     protected boolean hasFolded;
     
     /**
-     * Constructs a player with the specified name and initial cash.
+     * Constructs a player with the specified name and initial money.
      *
      * @param  name  the name
-     * @param  cash  the initial cash
+     * @param  money  the initial money
      */
-    public Player(String name, int cash) {
+    public Player(String name, int money) {
         this.name = name;
-        this.cash = cash;
+        this.money = money;
         reset();
     }
     
@@ -78,16 +83,16 @@ public abstract class Player {
      * @return  true if the player is broke
      */
     public final boolean isBroke() {
-        return (cash == 0);
+        return (money == 0);
     }
     
     /**
-     * Returns the player's amount of cash.
+     * Returns the player's amount of money.
      *
-     * @return  the amount of cash
+     * @return  the amount of money
      */
     public final int getCash() {
-        return cash;
+        return money;
     }
     
     /**
@@ -133,7 +138,7 @@ public abstract class Player {
      */
     public final void postSmallBlind(int amount) {
         action = new SmallBlindAction();
-        cash -= amount;
+        money -= amount;
         bet += amount;
     }
     
@@ -144,7 +149,7 @@ public abstract class Player {
      */
     public final void postBigBlind(int amount) {
         action = new BigBlindAction();
-        cash -= amount;
+        money -= amount;
         bet += amount;
     }
     
@@ -171,30 +176,30 @@ public abstract class Player {
     public final void call(int newBet) {
         int amount = newBet - bet;
         action = new CallAction(amount);
-        cash -= amount;
+        money -= amount;
         bet += amount;
     }
     
     /**
      * Bets the specified bet.
-     * If the bet is equal to or greater than the remaining cash, the player
+     * If the bet is equal to or greater than the remaining money, the player
      * goes all in.
      *
      * @param  bet  the bet
      */
     public final void bet(int amount) {
-        if (amount >= cash) {
-            amount = cash;
+        if (amount >= money) {
+            amount = money;
             allIn = true;
         }
         action = new BetAction(amount);
-        cash -= amount;
+        money -= amount;
         bet += amount;
     }
     
     /**
      * Raises the specified bet with the specified raise.
-     * If the amount to raise up to is more than the amount of cash, the player
+     * If the amount to raise up to is more than the amount of money, the player
      * goes all in.
      *
      * @param  currentBet  the current bet
@@ -203,7 +208,7 @@ public abstract class Player {
     public final void raise(int currentBet, int raise) {
         action = new RaiseAction(raise);
         int amount = (currentBet < bet) ? (bet - currentBet) + raise : raise;
-        cash -= amount;
+        money -= amount;
         bet += amount;
     }
     
@@ -213,7 +218,7 @@ public abstract class Player {
      * @return  the pot
      */
     public final void win(int pot) {
-        cash += pot;
+        money += pot;
     }
     
     /**

@@ -1,4 +1,4 @@
-package cards;
+package cards.poker.texasholdem;
 
 /**
  * Represents a hand of cards.

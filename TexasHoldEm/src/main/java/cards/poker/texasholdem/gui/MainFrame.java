@@ -1,4 +1,4 @@
-package cards.poker.texasholdem;
+package cards.poker.texasholdem.gui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -7,8 +7,11 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JFrame;
 
-import cards.Card;
-import cards.Deck;
+import cards.poker.texasholdem.Card;
+import cards.poker.texasholdem.ComputerPlayer;
+import cards.poker.texasholdem.Deck;
+import cards.poker.texasholdem.Player;
+
 
 public class MainFrame extends JFrame {
     

@@ -1,4 +1,4 @@
-package cards.poker;
+package cards.poker.texasholdem.actions;
 
 public class SmallBlindAction implements Action {
     

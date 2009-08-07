@@ -1,4 +1,4 @@
-package cards;
+package cards.poker.texasholdem;
 
 import java.util.Random;
 
