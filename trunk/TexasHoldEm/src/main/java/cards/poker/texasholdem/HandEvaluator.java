@@ -1,12 +1,11 @@
 package cards.poker.texasholdem;
 
-
 /**
  * The value of a Texas Hold'em Poker hand.
  *
  * NOTE: This class is implemented with the focus on performance (instead of clean design).
  */
-public class HandValue {
+public class HandEvaluator {
     
     /** The number of hand rankings. */
     private static final int NO_OF_RANKINGS  = 6;
@@ -27,21 +26,29 @@ public class HandValue {
     private final Card[] cards;
     
     private int[] rankDist = new int[Card.NO_OF_RANKS];
+    
     private int[] suitDist = new int[Card.NO_OF_SUITS];
+    
     private int flushRank = -1;
+    
     private int straightRank = -1;
+    
     private int quadRank = -1;
+    
     private int tripleRank = -1;
+    
     private int noOfPairs = 0;
+    
     private int[] pairs = new int[MAX_NO_OF_PAIRS];
+    
     private int[] rankings = new int[NO_OF_RANKINGS];
 
     /**
-     * Constructs a HandValue with the poker value of the specified hand.
+     * Constructor.
      *
-     * @param  hand  the hand
+     * @param  hand  The hand to evaulate.
      */
-    public HandValue(Hand hand) {
+    public HandEvaluator(Hand hand) {
         cards = hand.getCards();
         
         // Find patterns.

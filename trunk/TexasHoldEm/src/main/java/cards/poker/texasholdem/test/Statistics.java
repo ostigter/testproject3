@@ -6,7 +6,7 @@ import java.util.Locale;
 import cards.poker.texasholdem.Card;
 import cards.poker.texasholdem.Deck;
 import cards.poker.texasholdem.Hand;
-import cards.poker.texasholdem.HandValue;
+import cards.poker.texasholdem.HandEvaluator;
 
 /**
  * Test driver to calculate the winning chance with a specific hand against a
@@ -59,7 +59,7 @@ public abstract class Statistics {
             for (int j = 0; j < NO_OF_PLAYERS; j++) {
                 hands[j].addCards(board.getCards());
 //                System.out.println(hands[j]);
-                int value = new HandValue(hands[j]).getValue();
+                int value = new HandEvaluator(hands[j]).getValue();
                 if (value > highestValue) {
                     highestValue = value;
                     winner = j;

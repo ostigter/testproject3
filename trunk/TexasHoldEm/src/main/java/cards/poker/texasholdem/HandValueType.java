@@ -23,15 +23,33 @@ public enum HandValueType {
     /** The hand value. */
     private int value;
     
+	/**
+	 * Constructor.
+	 * 
+	 * @param description
+	 *            The description.
+	 * @param value
+	 *            The hand value.
+	 */
     HandValueType(String description, int value) {
         this.description = description;
         this.value = value;
     }
     
+    /**
+     * Returns the description.
+     * 
+     * @return The description.
+     */
     public String getDescription() {
         return description;
     }
     
+    /**
+     * Returns the hand value.
+     * 
+     * @return The hand value.
+     */
     public int getValue() {
         return value;
     }

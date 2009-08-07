@@ -4,7 +4,7 @@ import cards.poker.texasholdem.Card;
 import cards.poker.texasholdem.ConsolePlayer;
 import cards.poker.texasholdem.Deck;
 import cards.poker.texasholdem.Hand;
-import cards.poker.texasholdem.HandValue;
+import cards.poker.texasholdem.HandEvaluator;
 import cards.poker.texasholdem.Player;
 import cards.poker.texasholdem.actions.Action;
 import cards.poker.texasholdem.actions.BetAction;
@@ -19,19 +19,19 @@ import cards.poker.texasholdem.actions.RaiseAction;
 public class Game {
 	
 	/** The number of players at the table. */
-	private static final int NO_OF_PLAYERS   = 4;
+	private static final int NO_OF_PLAYERS = 4;
 	
 	/** The number of hands to play. */
-	private static final int MAX_NO_OF_HANDS = 3;
+	private static final int MAX_NO_OF_HANDS = 1;
 	
 	/** The amount of starting money. */
-	private static final int STARTING_MONEY   = 100;
+	private static final int STARTING_MONEY = 100;
 	
 	/** The minimum bet. */
-	private static final int MINIMUM_BET     = 2;
+	private static final int MINIMUM_BET = 2;
 	
 	/** The number of community cards on the board. */
-	private static final int BOARD_SIZE      = 5;
+	private static final int BOARD_SIZE = 5;
 	
 	/** The deck of cards. */
 	private final Deck deck = new Deck();
@@ -166,6 +166,7 @@ public class Game {
             int winnerValue = -1;
             int pot = 0;
             boolean allBroke = true;
+            //TODO: Rewrite winning algorithm (e.g. ties).
             for (int i = 0; i < NO_OF_PLAYERS; i++) {
                 int inTurn = (dealer + 1 + i) % NO_OF_PLAYERS;
                 Player player = players[inTurn];
@@ -174,9 +175,10 @@ public class Game {
                     allBroke = allBroke && (player.getCash() <= 0);
                     Hand hand = new Hand(board);
                     hand.addCards(player.getCards());
-                    HandValue handValue = new HandValue(hand);
-                    int value = handValue.getValue();
-                    System.out.format("%s's hand: %s (%s, %d)\n", player, hand, handValue.getType().getDescription(), value);
+                    HandEvaluator evaluator = new HandEvaluator(hand);
+                    String handDescription = evaluator.getType().getDescription();
+                    int value = evaluator.getValue();
+                    System.out.format("%s's hand: %s (%s, %d)\n", player, hand, handDescription, value);
                     if (value > winnerValue) {
                         winner = inTurn;
                         winnerValue = value;
