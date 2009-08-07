@@ -3,9 +3,9 @@ package cards.poker.texasholdem.test;
 import java.util.Date;
 import java.util.Locale;
 
-import cards.Deck;
-import cards.Hand;
-import cards.poker.HandValue;
+import cards.poker.texasholdem.Deck;
+import cards.poker.texasholdem.Hand;
+import cards.poker.texasholdem.HandValue;
 
 /**
  * Simulates a large number of poker hands.

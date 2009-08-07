@@ -1,9 +1,11 @@
-package cards.poker.texasholdem;
+package cards.poker.texasholdem.gui;
 
 import java.net.URL;
+
 import javax.swing.ImageIcon;
 
-import cards.Card;
+import cards.poker.texasholdem.Card;
+
 
 /**
  * Resource manager.
@@ -24,7 +26,6 @@ public abstract class ResourceManager {
     
     public static ImageIcon getIcon(String path) {
         ImageIcon icon = null;
-//        URL url = ClassLoader.getSystemResource(path);
         URL url = ResourceManager.class.getResource(path);
         if (url != null) {
             icon = new ImageIcon(url);

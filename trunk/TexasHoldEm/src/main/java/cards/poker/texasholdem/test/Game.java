@@ -1,14 +1,15 @@
 package cards.poker.texasholdem.test;
 
-import cards.Card;
-import cards.Deck;
-import cards.Hand;
-import cards.poker.Action;
-import cards.poker.BetAction;
-import cards.poker.HandValue;
-import cards.poker.RaiseAction;
-import cards.poker.texasholdem.HumanPlayer;
+import cards.poker.texasholdem.Card;
+import cards.poker.texasholdem.ConsolePlayer;
+import cards.poker.texasholdem.Deck;
+import cards.poker.texasholdem.Hand;
+import cards.poker.texasholdem.HandValue;
 import cards.poker.texasholdem.Player;
+import cards.poker.texasholdem.actions.Action;
+import cards.poker.texasholdem.actions.BetAction;
+import cards.poker.texasholdem.actions.FoldAction;
+import cards.poker.texasholdem.actions.RaiseAction;
 
 /**
  * Console version of Texas Hold'em Poker.
@@ -17,47 +18,69 @@ import cards.poker.texasholdem.Player;
  */
 public class Game {
 	
+	/** The number of players at the table. */
 	private static final int NO_OF_PLAYERS   = 4;
 	
-	private static final int INITIAL_MONEY   = 100;
+	/** The number of hands to play. */
+	private static final int MAX_NO_OF_HANDS = 3;
 	
+	/** The amount of starting money. */
+	private static final int STARTING_MONEY   = 100;
+	
+	/** The minimum bet. */
 	private static final int MINIMUM_BET     = 2;
 	
-	private static final int MAX_NO_OF_HANDS = 1;
-	
+	/** The number of community cards on the board. */
 	private static final int BOARD_SIZE      = 5;
 	
-    private final Deck deck = new Deck();
+	/** The deck of cards. */
+	private final Deck deck = new Deck();
     
-    private final Card[] board = new Card[BOARD_SIZE];
+	/** The community cards on the board. */
+	private final Card[] board = new Card[BOARD_SIZE];
     
-    private final Player[] players;
+	/** The players. */
+	private final Player[] players;
     
-    private int noOfHands = 0;
+	/** The number of hands played. */
+	private int noOfHands = 0;
     
-    private int dealer = -1;
+	/** The current dealer position. */
+	private int dealer = -1;
     
-    private int noOfBoardCards;
+	/** The number of community cards on the board. */
+	private int noOfBoardCards;
     
-    private int bet;
+	/** The current bet. */
+	private int bet;
     
+	/** Whether the game is over. */
 	private boolean gameOver = false;
 	
-    public static void main(String[] args) {
+	/**
+	 * Application's entry point.
+	 * 
+	 * @param args
+	 *            The command line arguments.
+	 */
+	public static void main(String[] args) {
     	new Game();
     }
     
-    public Game() {
+	/**
+	 * Constructor.
+	 */
+	public Game() {
     	players = new Player[NO_OF_PLAYERS];
     	for (int i = 0; i < NO_OF_PLAYERS; i++) {
-    		players[i] = new HumanPlayer(
-    				"Player " + String.valueOf(i + 1), INITIAL_MONEY);
+    		players[i] = new ConsolePlayer(
+    				"Player " + String.valueOf(i + 1), STARTING_MONEY);
     	}
 //    	players = new Player[] {
-//    			new HumanPlayer("Buffy",  INITIAL_MONEY),
-//    			new HumanPlayer("Willow", INITIAL_MONEY),
-//    			new HumanPlayer("Xander", INITIAL_MONEY),
-//    			new HumanPlayer("Anya",   INITIAL_MONEY),
+//    			new HumanPlayer("Buffy",  STARTING_MONEY),
+//    			new HumanPlayer("Willow", STARTING_MONEY),
+//    			new HumanPlayer("Xander", STARTING_MONEY),
+//    			new HumanPlayer("Anya",   STARTING_MONEY),
 //    	};
         
         while (!gameOver && noOfHands < MAX_NO_OF_HANDS) {
@@ -169,17 +192,16 @@ public class Game {
         }
     }
     
-    private void printPlayers() {
+	/**
+	 * Prints the status of all players.
+	 */
+	private void printPlayers() {
     	for (Player player : players) {
-    		printPlayer(player);
+        	Action action = player.getAction();
+        	String lastAction = (action == null) ? "-" : action.toString();
+        	System.out.format("\t%s\t\t$ %3d\t%s\t$ %2d\t%s\n",
+        			player, player.getCash(), player.getHand(), player.getBet(), lastAction);
     	}
-    }
-
-    private void printPlayer(Player player) {
-    	Action action = player.getAction();
-    	String lastAction = (action == null) ? "-" : action.toString();
-    	System.out.format("\t%s\t\t$ %3d\t%s\t$ %2d\t%s\n",
-    			player, player.getCash(), player.getHand(), player.getBet(), lastAction);
     }
 
     private void doBettingRound(int round) {
@@ -187,7 +209,7 @@ public class Game {
     	// but two positons further at Pre-Flop (because of blinds). 
         int offset = (round == 1) ? 2 : 0;
         int actor = (dealer + offset) % NO_OF_PLAYERS;
-        // Cound the number of active players in this hand.
+        // Cound the number of active players left in this hand.
         int activePlayers = 0;
         for (Player player : players) {
         	if (!player.isBroke() && !player.hasFolded()) {
@@ -195,27 +217,31 @@ public class Game {
         	}
         }
         // Keep record of how many players still have to act.
-        int actorsLeft = activePlayers;
+        int playersToAct = activePlayers;
         // Keep going round the table until all players have acted.
-        while (actorsLeft > 0) {
+        while (playersToAct > 0) {
         	// Rotate actor.
             actor = (actor + 1) % NO_OF_PLAYERS;
             Player player = players[actor];
             // Only allow active players.
             if (!player.hasFolded() && !player.isBroke()) {
-            	// Player's turn. 
+            	// Ask player to act. 
                 player.performAction(board, noOfBoardCards, MINIMUM_BET, bet);
+                playersToAct--;
                 Action action = player.getAction();
                 System.out.format("%s %s.\n", player, action.getVerb());
-                actorsLeft--;
-                // In case of a bet or raise, all other players must react.
-                if (action instanceof BetAction) {
+                if (action instanceof FoldAction && playersToAct == 1) {
+                    // The last remaining player wins.
+                	//TODO: Last remaining player wins.
+                } else if (action instanceof BetAction) {
                     bet = ((BetAction) action).getAmount();
-                    actorsLeft = activePlayers - 1;
-                } 
-                if (action instanceof RaiseAction) {
+                    // Make sure other players must react to this bet.
+                    playersToAct = activePlayers - 1;
+                } else if (action instanceof RaiseAction) {
                     bet += ((RaiseAction) action).getAmount();
-                    actorsLeft = activePlayers - 1;
+                    System.out.format("The bet is now $ %d.\n", bet);
+                    // Make sure other players must react to this raise.
+                    playersToAct = activePlayers - 1;
                 }
             }
         }

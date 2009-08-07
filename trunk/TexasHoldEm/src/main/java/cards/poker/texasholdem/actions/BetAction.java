@@ -1,4 +1,4 @@
-package cards.poker;
+package cards.poker.texasholdem.actions;
 
 /**
  * A action of placing a bet.
@@ -34,7 +34,7 @@ public class BetAction implements Action {
      */
     @Override
     public String getVerb() {
-        return "bets $" + amount;
+        return "bets $ " + amount;
     }
     
     /*
@@ -43,7 +43,7 @@ public class BetAction implements Action {
      */
     @Override
     public String toString() {
-        return "Bet $" + amount;
+        return "Bet";
     }
     
 }

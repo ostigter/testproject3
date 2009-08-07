@@ -1,6 +1,5 @@
 package cards.poker.texasholdem;
 
-import cards.Card;
 
 public class ComputerPlayer extends Player {
 

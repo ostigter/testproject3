@@ -1,4 +1,4 @@
-package cards.poker.texasholdem;
+package cards.poker.texasholdem.gui;
 
 import java.awt.Color;
 import java.awt.Component;

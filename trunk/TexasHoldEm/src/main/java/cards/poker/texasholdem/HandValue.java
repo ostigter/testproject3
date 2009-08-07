@@ -1,10 +1,8 @@
-package cards.poker;
+package cards.poker.texasholdem;
 
-import cards.Card;
-import cards.Hand;
 
 /**
- * The value of a poker hand.
+ * The value of a Texas Hold'em Poker hand.
  *
  * NOTE: This class is implemented with the focus on performance (instead of clean design).
  */
@@ -17,9 +15,7 @@ public class HandValue {
     private static final int MAX_NO_OF_PAIRS = 2;
     
     /** Pre-calculated ranking factors (power of 13). */
-    private static final int[] RANKING_FACTORS = {
-        371293, 28561, 2197, 169, 13, 1
-    };
+    private static final int[] RANKING_FACTORS = {371293, 28561, 2197, 169, 13, 1};
     
     /** The hand value type. */
     private HandValueType type;
@@ -65,7 +61,7 @@ public class HandValue {
                  isThreeOfAKind()  ||
                  isTwoPairs()      ||
                  isOnePair());
-        if ( ! isSpecialValue) {
+        if (!isSpecialValue) {
             calculateHighCard();
         }
         
@@ -135,7 +131,7 @@ public class HandValue {
                 inStraight = false;
                 count = 0;
             } else {
-                if ( ! inStraight) {
+                if (!inStraight) {
                     // First card of the potential Straight.
                     inStraight = true;
                     rank = i;
