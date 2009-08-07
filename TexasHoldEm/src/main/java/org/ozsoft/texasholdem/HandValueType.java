@@ -1,4 +1,4 @@
-package cards.poker.texasholdem;
+package org.ozsoft.texasholdem;
 
 /**
  * The hand value types.

@@ -1,4 +1,4 @@
-package cards.poker.texasholdem;
+package org.ozsoft.texasholdem;
 
 import java.util.Random;
 
@@ -22,8 +22,9 @@ public class Deck {
     private Random random = new Random();
 
     /**
-     * Constructs a full deck of cards, ordered from Ace of Spades to Deuce of
-     * Diamonds.
+     * Constructor.
+     * 
+     * Starts as a full, ordered deck.
      */
     public Deck() {
         cards = new Card[NO_OF_CARDS];
@@ -50,7 +51,8 @@ public class Deck {
     
     /**
      * Resets the deck to full.
-     * This method does not reorder the cards.
+     * 
+     * Does not re-order the cards.
      */
     public void reset() {
         nextCardIndex = 0;
@@ -63,26 +65,30 @@ public class Deck {
      */
     public Card deal() {
         if (nextCardIndex + 1 >= NO_OF_CARDS) {
-            throw new IllegalArgumentException(
-                    "Deck.deal(): Not enough cards left in the deck.");
+            throw new IllegalStateException("No cards left in deck");
         }
         return cards[nextCardIndex++];
     }
     
-    /**
-     * Returns the specified number of dealt cards.
-     *
-     * @param   noOfCards  the number of cards to deal
-     * @return  the cards dealt
-     */
+	/**
+	 * Returns the specified number of dealt cards.
+	 * 
+	 * @param noOfCards
+	 *            the number of cards to deal
+	 * 
+	 * @return The cards.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If the number of cards is invalid.
+	 * @throws IllegalStateException
+	 *             If there are no cards left in the deck.
+	 */
     public Card[] deal(int noOfCards) {
         if (noOfCards < 1) {
-            throw new IllegalArgumentException(
-                    "Deck.deal(): Illegal number of cards to deal: " + noOfCards);
+            throw new IllegalArgumentException("noOfCards < 1");
         }
         if (nextCardIndex + noOfCards >= NO_OF_CARDS) {
-            throw new IllegalArgumentException(
-                    "Deck.deal(): Not enough cards left in the deck.");
+        	throw new IllegalStateException("No cards left in deck");
         }
         Card[] dealtCards = new Card[noOfCards];
         for (int i = 0; i < noOfCards; i++) {
@@ -91,10 +97,22 @@ public class Deck {
         return dealtCards;
     }
     
+	/**
+	 * Deals a specific card.
+	 * 
+	 * @param rank
+	 *            The card's rank.
+	 * @param suit
+	 *            The card's suit.
+	 * 
+	 * @return The card if available, otherwise null.
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no cards left in the deck.
+	 */
     public Card deal(int rank, int suit) {
         if (nextCardIndex + 1 >= NO_OF_CARDS) {
-            throw new IllegalArgumentException(
-                    "Deck.deal(): Not enough cards left in the deck.");
+            throw new IllegalStateException("No cards left in deck");
         }
         Card card = null;
         int index = -1;
@@ -115,12 +133,11 @@ public class Deck {
         return card;
     }
     
-    /**
-     * Returns a string representation of this object instance.
-     *
-     * @return  the string representation
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
      */
-    @Override // Object
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Card card : cards) {

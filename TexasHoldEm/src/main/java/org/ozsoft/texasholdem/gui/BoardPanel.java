@@ -1,4 +1,4 @@
-package cards.poker.texasholdem.gui;
+package org.ozsoft.texasholdem.gui;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;

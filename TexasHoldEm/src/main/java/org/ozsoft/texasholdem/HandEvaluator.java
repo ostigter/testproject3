@@ -1,4 +1,4 @@
-package cards.poker.texasholdem;
+package org.ozsoft.texasholdem;
 
 /**
  * The value of a Texas Hold'em Poker hand.

@@ -1,4 +1,4 @@
-package cards.poker.texasholdem;
+package org.ozsoft.texasholdem;
 
 /**
  * Represents a hand of cards.
@@ -17,14 +17,14 @@ public class Hand {
     private int noOfCards = 0;
     
     /**
-     * Constructs an empty hand.
+     * Constructor for an empty hand.
      */
     public Hand() {
         // Empty implementation.
     }
     
     /**
-     * Constructs a hand with the specified initial cards.
+     * Constructor with initial cards.
      *
      * @param  initialCards  the initial cards
      */

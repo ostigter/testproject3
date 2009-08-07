@@ -1,10 +1,11 @@
-package cards.poker.texasholdem.gui;
+package org.ozsoft.texasholdem.gui;
 
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import cards.poker.texasholdem.Card;
+import org.ozsoft.texasholdem.Card;
+
 
 
 /**

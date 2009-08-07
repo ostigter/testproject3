@@ -1,11 +1,6 @@
-package cards.poker.texasholdem.actions;
+package org.ozsoft.texasholdem.actions;
 
-/**
- * The action of folding.
- * 
- * @author Oscar Stigter
- */
-public class FoldAction implements Action {
+public class SmallBlindAction implements Action {
     
     /*
      * (non-Javadoc)
@@ -13,16 +8,16 @@ public class FoldAction implements Action {
      */
 	@Override
 	public String getVerb() {
-        return "folds";
+        return "pays the small blind";
     }
     
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()
      */
-	@Override
+    @Override
     public String toString() {
-        return "Fold";
+        return "Small Blind";
     }
     
 }

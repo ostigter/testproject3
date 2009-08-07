@@ -1,4 +1,4 @@
-package cards.poker.texasholdem.gui;
+package org.ozsoft.texasholdem.gui;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -12,9 +12,10 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import cards.poker.texasholdem.Card;
-import cards.poker.texasholdem.Player;
-import cards.poker.texasholdem.actions.Action;
+import org.ozsoft.texasholdem.Card;
+import org.ozsoft.texasholdem.Player;
+import org.ozsoft.texasholdem.actions.Action;
+
 
 
 public class PlayerPanel extends JPanel {
