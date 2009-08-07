@@ -9,6 +9,11 @@ import cards.poker.texasholdem.actions.FoldAction;
 import cards.poker.texasholdem.actions.RaiseAction;
 import cards.poker.texasholdem.actions.SmallBlindAction;
 
+/**
+ * A Texas Hold'em player.
+ * 
+ * @author Oscar Stigter
+ */
 public abstract class Player {
     
     protected String name;

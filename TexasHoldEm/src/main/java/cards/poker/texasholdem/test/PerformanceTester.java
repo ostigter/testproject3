@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import cards.poker.texasholdem.Deck;
 import cards.poker.texasholdem.Hand;
-import cards.poker.texasholdem.HandValue;
+import cards.poker.texasholdem.HandEvaluator;
 
 /**
  * Simulates a large number of poker hands.
@@ -43,7 +43,7 @@ public class PerformanceTester {
         for (int i = 0; i < NO_OF_HANDS; i++) {
             deck.shuffle();
             hand.addCards(deck.deal(HAND_SIZE));
-            new HandValue(hand);
+            new HandEvaluator(hand);
 //            System.out.println("\nHand:        " + hand);
 //            System.out.println("Value:       " + handValue.getValue());
             hand.removeAllCards();
