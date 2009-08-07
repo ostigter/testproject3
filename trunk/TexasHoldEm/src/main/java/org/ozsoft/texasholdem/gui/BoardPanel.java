@@ -15,18 +15,15 @@ import javax.swing.border.LineBorder;
 public class BoardPanel extends JPanel {
     
 	private static final long serialVersionUID = 1L;
-
+	
 	private static final Border LABEL_BORDER = new LineBorder(Color.BLACK, 1);
     
-    private static final Border PANEL_BORDER =
+	private static final Border PANEL_BORDER =
     		new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(10, 10, 10, 10));
-    
+
     private final JLabel potLabel;
-    
     private final JLabel[] cardLabels;
-    
     private final JLabel messageLabel;
-    
     private final ControlPanel controlPanel;
     
     public BoardPanel(MainFrame mainFrame) {
@@ -45,11 +42,11 @@ public class BoardPanel extends JPanel {
         gc.gridy = 0;
         gc.gridwidth = 1;
         gc.gridheight = 1;
-        gc.weightx = 1.0;
-        gc.weighty = 1.0;
-        gc.insets = new Insets(10, 0, 5, 0);
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1.0;
+        gc.weighty = 0.0;
+        gc.insets = new Insets(10, 0, 5, 0);
         add(potLabel, gc);
 
         // The five card positions.
@@ -60,11 +57,11 @@ public class BoardPanel extends JPanel {
             gc.gridy = 1;
             gc.gridwidth = 1;
             gc.gridheight = 1;
-            gc.weightx = 1.0;
-            gc.weighty = 1.0;
-            gc.insets = new Insets(5, 5, 5, 5);
+            gc.weightx = 0.0;
+            gc.weighty = 0.0;
             gc.anchor = GridBagConstraints.CENTER;
             gc.fill = GridBagConstraints.NONE;
+            gc.insets = new Insets(5, 5, 5, 5);
             add(cardLabels[i], gc);
         }
         
@@ -77,10 +74,10 @@ public class BoardPanel extends JPanel {
         gc.gridwidth = 5;
         gc.gridheight = 1;
         gc.weightx = 1.0;
-        gc.weighty = 1.0;
-        gc.insets = new Insets(10, 0, 5, 0);
+        gc.weighty = 0.0;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.insets = new Insets(10, 0, 5, 0);
         add(messageLabel, gc);
         
         // Control panel.
@@ -114,6 +111,10 @@ public class BoardPanel extends JPanel {
     
     public void setChoices(int choices) {
         controlPanel.setChoices(choices);
+    }
+    
+    public int getAction() {
+    	return controlPanel.getAction();
     }
     
 }

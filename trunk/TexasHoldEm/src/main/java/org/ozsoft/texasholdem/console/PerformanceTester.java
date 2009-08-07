@@ -1,4 +1,4 @@
-package org.ozsoft.texasholdem.test;
+package org.ozsoft.texasholdem.console;
 
 import java.util.Date;
 import java.util.Locale;

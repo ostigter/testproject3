@@ -1,4 +1,4 @@
-package org.ozsoft.texasholdem.test;
+package org.ozsoft.texasholdem.console;
 
 import org.ozsoft.texasholdem.Card;
 import org.ozsoft.texasholdem.ConsolePlayer;

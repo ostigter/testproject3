@@ -140,7 +140,7 @@ public class PlayerPanel extends JPanel {
     public void update() {
         int cash = player.getCash();
         if (cash == 0) {
-            cashLabel.setText("Broke!");
+            cashLabel.setText("BROKE!");
         } else {
             cashLabel.setText("$ " + player.getCash());
         }

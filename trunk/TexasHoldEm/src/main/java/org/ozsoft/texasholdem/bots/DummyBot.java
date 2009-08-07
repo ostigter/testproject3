@@ -1,23 +1,24 @@
-package org.ozsoft.texasholdem;
+package org.ozsoft.texasholdem.bots;
+
+import org.ozsoft.texasholdem.Card;
+import org.ozsoft.texasholdem.Player;
 
 /**
- * A computer controlled player.
- * 
- * The current implementation simply always Checks or Calls.
+ * The most simplistic bot possible, which always checks or calls.
  * 
  * @author Oscar Stigter
  */
-public class ComputerPlayer extends Player {
+public class DummyBot extends Player {
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param name
-	 *            The name.
+	 *            The bot's name.
 	 * @param money
-	 *            The initial amount of money.
+	 *            The bot's initial amount of money.
 	 */
-	public ComputerPlayer(String name, int money) {
+	public DummyBot(String name, int money) {
 		super(name, money);
 	}
 
@@ -28,15 +29,15 @@ public class ComputerPlayer extends Player {
 	@Override
 	public void performAction(Card[] board, int noOfBoardCards, int minBet, int currentBet) {
         if (currentBet == 0) {
-            // No previous bets -- Check, Bet or Fold.
+            // Check, Bet or Fold.
         	//FIXME: For now, always Check.
         	check();
         } else if (bet < currentBet) {
-            // Must bet to proceed -- Call, Raise or Fold.
+            // Call, Raise or Fold.
         	//FIXME: For now, always Call.
         	call(currentBet);
         } else {
-            // Sufficient bet -- Check, Raise or Fold.
+            // Check, Raise or Fold.
         	//FIXME: For now, always Check.
         	check();
         }
