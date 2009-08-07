@@ -17,7 +17,6 @@ public abstract class Player {
     protected int cash;
     protected Hand hand = new Hand();
     protected boolean isPlaying;
-//    protected boolean isDealer = false;
     protected int bet;
     protected boolean allIn;
     protected Action action;
@@ -47,15 +46,6 @@ public abstract class Player {
     	}
     }
     
-//    /**
-//     * Sets whether this player is the dealer.
-//     *
-//     * @param  isDealer  true if this player is the dealer
-//     */
-//    public void setDealer(boolean isDealer) {
-//        this.isDealer = isDealer;
-//    }
-    
     /**
      * Sets the hole cards.
      */
@@ -81,15 +71,6 @@ public abstract class Player {
     public final boolean isPlaying() {
         return isPlaying;
     }
-    
-//    /**
-//     * Return true if the player is the dealer.
-//     *
-//     * @return  true if the player is the dealer
-//     */
-//    public boolean isDealer() {
-//        return isDealer;
-//    }
     
     /**
      * Returns true if the player is broke.
@@ -244,7 +225,7 @@ public abstract class Player {
      * @param  currentBet      the current bet
      */
     public abstract void performAction(
-            Card[] board, int noOfBoardCards, int minBet, int currentBet);
+    		Card[] board, int noOfBoardCards, int minBet, int currentBet);
 
     /**
      * Returns the player's action.
