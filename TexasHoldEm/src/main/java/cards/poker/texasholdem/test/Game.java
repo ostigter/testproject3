@@ -183,28 +183,42 @@ public class Game {
     }
 
     private void doBettingRound(int round) {
-        boolean aggressiveAct;
-        int offset = (round == 1) ? 3 : 1;
-        do {
-            aggressiveAct = false;
-            for (int i = 0; i < NO_OF_PLAYERS; i++) {
-                int actor = (dealer + offset + i) % NO_OF_PLAYERS;
-                Player player = players[actor];
-                if (!player.hasFolded() && !player.isBroke()) {
-                    player.performAction(board, noOfBoardCards, MINIMUM_BET, bet);
-                    Action action = player.getAction();
-                    System.out.format("%s %s.\n", player, action.getVerb());
-                    if (action instanceof BetAction) {
-                        bet = ((BetAction) action).getAmount();
-                        aggressiveAct = true;
-                    } 
-                    if (action instanceof RaiseAction) {
-                        bet += ((RaiseAction) action).getAmount();
-                        aggressiveAct = true;
-                    }
+    	// Determine starting actor. Normally position 2 (1 left of dealer),
+    	// but two positons further at Pre-Flop (because of blinds). 
+        int offset = (round == 1) ? 2 : 0;
+        int actor = (dealer + offset) % NO_OF_PLAYERS;
+        // Cound the number of active players in this hand.
+        int activePlayers = 0;
+        for (Player player : players) {
+        	if (!player.isBroke() && !player.hasFolded()) {
+        		activePlayers++;
+        	}
+        }
+        // Keep record of how many players still have to act.
+        int actorsLeft = activePlayers;
+        // Keep going round the table until all players have acted.
+        while (actorsLeft > 0) {
+        	// Rotate actor.
+            actor = (actor + 1) % NO_OF_PLAYERS;
+            Player player = players[actor];
+            // Only allow active players.
+            if (!player.hasFolded() && !player.isBroke()) {
+            	// Player's turn. 
+                player.performAction(board, noOfBoardCards, MINIMUM_BET, bet);
+                Action action = player.getAction();
+                System.out.format("%s %s.\n", player, action.getVerb());
+                actorsLeft--;
+                // In case of a bet or raise, all other players must react.
+                if (action instanceof BetAction) {
+                    bet = ((BetAction) action).getAmount();
+                    actorsLeft = activePlayers - 1;
+                } 
+                if (action instanceof RaiseAction) {
+                    bet += ((RaiseAction) action).getAmount();
+                    actorsLeft = activePlayers - 1;
                 }
             }
-        } while (aggressiveAct);
+        }
     }
     
 }
