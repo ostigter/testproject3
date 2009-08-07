@@ -1,9 +1,8 @@
-package cards.poker.texasholdem;
+package org.ozsoft.texasholdem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 
 /**
  * Human player with a console interface.
@@ -12,7 +11,8 @@ import java.io.InputStreamReader;
  */
 public class ConsolePlayer extends Player {
     
-    private BufferedReader consoleReader;
+	/** The console reader. */
+	private BufferedReader consoleReader;
     
 	/**
 	 * Constructor.
@@ -35,30 +35,29 @@ public class ConsolePlayer extends Player {
     public void performAction(Card[] board, int noOfBoardCards, int minBet, int currentBet) {
         if (currentBet == 0) {
             // No previous bets.
-            if (noOfBoardCards == 0) {
-                // No flops yet, so Bet or Fold.
-                String response = getConsoleInput(name + ": Bet or Fold? ", new String[] {"b", "f"});
-                if (response.equals("b")) {
-                    bet(minBet);
-                } else {
-                    fold();
-                }
+            String response = getConsoleInput(name + ": Check, Bet or Fold? ", new String[] {"c", "b", "f"});
+            if (response.equals("c")) {
+                check();
+            }else if (response.equals("b")) {
+                bet(minBet);
             } else {
-                // Check, Bet or Fold.
-                String response = getConsoleInput(name + ": Check, Bet or Fold? ", new String[] {"c", "b", "f"});
-                if (response.equals("c")) {
-                	check();
-                } else if (response.equals("b")) {
-                    bet(minBet);
-                } else {
-                    fold();
-                }
+                fold();
             }
-        } else {
+        } else if (bet < currentBet) {
             // Call, Raise or Fold.
             String response = getConsoleInput(name + ": Call, Raise or Fold? ", new String[] {"c", "r", "f"});
             if (response.equals("c")) {
                 call(currentBet);
+            } else if (response.equals("r")) {
+                raise(currentBet, minBet);
+            } else {
+                fold();
+            }
+        } else {
+            // Check, Raise or Fold.
+            String response = getConsoleInput(name + ": Check, Raise or Fold? ", new String[] {"c", "r", "f"});
+            if (response.equals("c")) {
+            	check();
             } else if (response.equals("r")) {
                 raise(currentBet, minBet);
             } else {
@@ -79,17 +78,19 @@ public class ConsolePlayer extends Player {
             try {
             	System.out.print(message);
                 String input = consoleReader.readLine();
-                for (String res : responses) {
-                	if (input.startsWith(res)) {
-                		response = res;
-                		break;
-                	}
+                if (input != null) {
+	                for (String res : responses) {
+	                	if (input.startsWith(res)) {
+	                		response = res;
+	                		break;
+	                	}
+	                }
+	                if (response == null) {
+	                	System.out.println("Invalid option -- please try again.");
+	                }
                 }
-                if (response == null) {
-                	System.out.println("Invalid option -- please try again.");
-                }
-            } catch (IOException ex) {
-                // Ignore.
+            } catch (IOException e) {
+            	// Ignore.
             }
     	}
         return response;

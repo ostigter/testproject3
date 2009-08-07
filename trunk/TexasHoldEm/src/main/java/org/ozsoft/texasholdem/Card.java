@@ -1,4 +1,4 @@
-package cards.poker.texasholdem;
+package org.ozsoft.texasholdem;
 
 /**
  * A game card.

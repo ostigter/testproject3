@@ -1,12 +1,13 @@
-package cards.poker.texasholdem.test;
+package org.ozsoft.texasholdem.test;
 
 import java.util.Date;
 import java.util.Locale;
 
-import cards.poker.texasholdem.Card;
-import cards.poker.texasholdem.Deck;
-import cards.poker.texasholdem.Hand;
-import cards.poker.texasholdem.HandEvaluator;
+import org.ozsoft.texasholdem.Card;
+import org.ozsoft.texasholdem.Deck;
+import org.ozsoft.texasholdem.Hand;
+import org.ozsoft.texasholdem.HandEvaluator;
+
 
 /**
  * Test driver to calculate the winning chance with a specific hand against a

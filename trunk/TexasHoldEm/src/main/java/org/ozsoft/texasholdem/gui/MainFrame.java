@@ -1,4 +1,4 @@
-package cards.poker.texasholdem.gui;
+package org.ozsoft.texasholdem.gui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -7,12 +7,21 @@ import java.awt.GridBagLayout;
 
 import javax.swing.JFrame;
 
-import cards.poker.texasholdem.Card;
-import cards.poker.texasholdem.ComputerPlayer;
-import cards.poker.texasholdem.Deck;
-import cards.poker.texasholdem.Player;
+import org.ozsoft.texasholdem.Card;
+import org.ozsoft.texasholdem.ComputerPlayer;
+import org.ozsoft.texasholdem.Deck;
+import org.ozsoft.texasholdem.Player;
+import org.ozsoft.texasholdem.actions.Action;
+import org.ozsoft.texasholdem.actions.BetAction;
+import org.ozsoft.texasholdem.actions.CallAction;
+import org.ozsoft.texasholdem.actions.FoldAction;
+import org.ozsoft.texasholdem.actions.RaiseAction;
 
-
+/**
+ * The game's main frame.
+ * 
+ * @author Oscar Stigter
+ */
 public class MainFrame extends JFrame {
     
 	private static final long serialVersionUID = 1L;
@@ -54,7 +63,7 @@ public class MainFrame extends JFrame {
     private boolean gameOver = false;
     
     public MainFrame() {
-        super("Texas Hold'em Poker");
+        super("Texas Hold'em Limit Poker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setBackground(TABLE_COLOR);
         setLayout(new GridBagLayout());
@@ -145,18 +154,18 @@ public class MainFrame extends JFrame {
             rotateActor();
             players[actor].postSmallBlind(MIN_BET / 2);
             pot += MIN_BET / 2;
-            playerPanels[actor].update();
             boardPanel.setPot(pot);
             boardPanel.setMessage(players[actor].getName() + " posts the small blind.");
+            playerPanels[actor].update();
             waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
             
             // Post the big blind.
             rotateActor();
-            players[actor].postSmallBlind(MIN_BET);
+            players[actor].postBigBlind(MIN_BET);
             pot += MIN_BET;
-            playerPanels[actor].update();
             boardPanel.setPot(pot);
             boardPanel.setMessage(players[actor].getName() + " posts the big blind.");
+            playerPanels[actor].update();
             waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
             
             // Deal the hole cards.
@@ -171,13 +180,68 @@ public class MainFrame extends JFrame {
             waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
             
             // Pre-flop betting round.
-            bet = MIN_BET;
-            
-            play();
-            
+            doBettingRound(1);
+
             gameOver = true;
         }
         boardPanel.setMessage("Game over.");
+    }
+    
+    private void doBettingRound(int round) {
+        bet = 0;
+    	// Determine starting actor. Normally position 2 (1 left of dealer),
+    	// but two positons further at Pre-Flop (because of blinds). 
+        int offset = (round == 1) ? 2 : 0;
+        int actor = (dealer + offset) % NO_OF_PLAYERS;
+        // Cound the number of active players left in this hand.
+        int activePlayers = 0;
+        for (Player player : players) {
+        	if (!player.isBroke() && !player.hasFolded()) {
+        		activePlayers++;
+        	}
+        }
+        // Keep record of how many players still have to act.
+        int playersToAct = activePlayers;
+        // Keep going round the table until all players have acted.
+        while (playersToAct > 0) {
+        	// Rotate actor.
+            actor = (actor + 1) % NO_OF_PLAYERS;
+            Player player = players[actor];
+            // Only allow active players.
+            if (!player.hasFolded() && !player.isBroke()) {
+            	// Ask player to act. 
+                player.performAction(board, noOfBoardCards, MIN_BET, bet);
+                playersToAct--;
+                Action action = player.getAction();
+                System.out.format("%s %s.\n", player, action.getVerb());
+                if (action instanceof FoldAction && playersToAct == 1) {
+                    // The last remaining player wins.
+                	//TODO: Last remaining player wins.
+                } else if (action instanceof CallAction) {
+                	int amount = ((CallAction) action).getAmount(); 
+                	pot += amount;
+                } else if (action instanceof BetAction) {
+                	
+                    int amount = ((BetAction) action).getAmount();
+                    bet = amount;
+                    pot += amount;
+                    // Make sure other players must react.
+                    playersToAct = activePlayers - 1;
+                } else if (action instanceof RaiseAction) {
+                	int amount = ((RaiseAction) action).getAmount();
+                    bet += amount;
+                    pot += amount;
+                    System.out.format("The bet is now $ %d.\n", bet);
+                    // Make sure other players must react.
+                    playersToAct = activePlayers - 1;
+                } else {
+                	// Player checked.
+                }
+            }
+        }
+        for (Player player : players) {
+        	player.reset();
+        }
     }
     
     private void resetHand() {

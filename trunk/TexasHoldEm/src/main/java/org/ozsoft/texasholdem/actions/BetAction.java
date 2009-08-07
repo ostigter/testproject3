@@ -1,4 +1,4 @@
-package cards.poker.texasholdem.actions;
+package org.ozsoft.texasholdem.actions;
 
 /**
  * A action of placing a bet.

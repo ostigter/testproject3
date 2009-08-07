@@ -1,13 +1,13 @@
-package cards.poker.texasholdem;
+package org.ozsoft.texasholdem;
 
-import cards.poker.texasholdem.actions.Action;
-import cards.poker.texasholdem.actions.BetAction;
-import cards.poker.texasholdem.actions.BigBlindAction;
-import cards.poker.texasholdem.actions.CallAction;
-import cards.poker.texasholdem.actions.CheckAction;
-import cards.poker.texasholdem.actions.FoldAction;
-import cards.poker.texasholdem.actions.RaiseAction;
-import cards.poker.texasholdem.actions.SmallBlindAction;
+import org.ozsoft.texasholdem.actions.Action;
+import org.ozsoft.texasholdem.actions.BetAction;
+import org.ozsoft.texasholdem.actions.BigBlindAction;
+import org.ozsoft.texasholdem.actions.CallAction;
+import org.ozsoft.texasholdem.actions.CheckAction;
+import org.ozsoft.texasholdem.actions.FoldAction;
+import org.ozsoft.texasholdem.actions.RaiseAction;
+import org.ozsoft.texasholdem.actions.SmallBlindAction;
 
 /**
  * A Texas Hold'em player.
@@ -22,7 +22,7 @@ public abstract class Player {
     
     protected Hand hand = new Hand();
     
-    protected boolean isPlaying;
+//    protected boolean isPlaying;
     
     protected int bet;
     
@@ -73,14 +73,14 @@ public abstract class Player {
         return name;
     }
     
-    /**
-     * Returns true if the player is playing.
-     *
-     * @return  true if the player is playing
-     */
-    public final boolean isPlaying() {
-        return isPlaying;
-    }
+//    /**
+//     * Returns true if the player is playing.
+//     *
+//     * @return  true if the player is playing
+//     */
+//    public final boolean isPlaying() {
+//        return isPlaying;
+//    }
     
     /**
      * Returns true if the player is broke.
@@ -186,11 +186,12 @@ public abstract class Player {
     }
     
     /**
-     * Bets the specified bet.
+     * Bets the specified amount.
+     * 
      * If the bet is equal to or greater than the remaining money, the player
-     * goes all in.
+     * goes all-in.
      *
-     * @param  bet  the bet
+     * @param  bet  the amount to bet
      */
     public final void bet(int amount) {
         if (amount >= money) {
@@ -208,7 +209,7 @@ public abstract class Player {
      * goes all in.
      *
      * @param  currentBet  the current bet
-     * @param  raise  the raise
+     * @param  raise  the amount to raise with
      */
     public final void raise(int currentBet, int raise) {
         action = new RaiseAction(raise);
@@ -217,11 +218,12 @@ public abstract class Player {
         bet += amount;
     }
     
-    /**
-     * Wins the specified pot.
-     *
-     * @return  the pot
-     */
+	/**
+	 * Wins the pot.
+	 * 
+	 * @param pot
+	 *            The pot.
+	 */
     public final void win(int pot) {
         money += pot;
     }

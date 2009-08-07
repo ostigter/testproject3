@@ -1,18 +1,19 @@
-package cards.poker.texasholdem.test;
+package org.ozsoft.texasholdem.test;
 
-import cards.poker.texasholdem.Card;
-import cards.poker.texasholdem.ConsolePlayer;
-import cards.poker.texasholdem.Deck;
-import cards.poker.texasholdem.Hand;
-import cards.poker.texasholdem.HandEvaluator;
-import cards.poker.texasholdem.Player;
-import cards.poker.texasholdem.actions.Action;
-import cards.poker.texasholdem.actions.BetAction;
-import cards.poker.texasholdem.actions.FoldAction;
-import cards.poker.texasholdem.actions.RaiseAction;
+import org.ozsoft.texasholdem.Card;
+import org.ozsoft.texasholdem.ConsolePlayer;
+import org.ozsoft.texasholdem.Deck;
+import org.ozsoft.texasholdem.Hand;
+import org.ozsoft.texasholdem.HandEvaluator;
+import org.ozsoft.texasholdem.Player;
+import org.ozsoft.texasholdem.actions.Action;
+import org.ozsoft.texasholdem.actions.BetAction;
+import org.ozsoft.texasholdem.actions.CallAction;
+import org.ozsoft.texasholdem.actions.FoldAction;
+import org.ozsoft.texasholdem.actions.RaiseAction;
 
 /**
- * Console version of Texas Hold'em Poker.
+ * Console version of Texas Hold'em Limit Poker.
  * 
  * @author Oscar Stigter
  */
@@ -28,7 +29,7 @@ public class Game {
 	private static final int STARTING_MONEY = 100;
 	
 	/** The minimum bet. */
-	private static final int MINIMUM_BET = 2;
+	private static final int MIN_BET = 2;
 	
 	/** The number of community cards on the board. */
 	private static final int BOARD_SIZE = 5;
@@ -50,6 +51,9 @@ public class Game {
     
 	/** The number of community cards on the board. */
 	private int noOfBoardCards;
+	
+	/** The pot. */
+	private int pot;
     
 	/** The current bet. */
 	private int bet;
@@ -87,8 +91,8 @@ public class Game {
 
             // Prepare a new hand.
         	System.out.println("New hand.");
+        	pot = 0;
             noOfBoardCards = 0;
-            bet = 0;
             for (Player player : players) {
             	player.reset();
             }
@@ -102,9 +106,11 @@ public class Game {
             System.out.format("%s shuffles the deck.\n", players[dealer]);
             
             // Post the small and big blinds.
-            players[(dealer + 1) % NO_OF_PLAYERS].postSmallBlind(MINIMUM_BET / 2);
+            players[(dealer + 1) % NO_OF_PLAYERS].postSmallBlind(MIN_BET / 2);
+            pot += MIN_BET / 2;
             System.out.format("%s posts the small blind.\n", players[dealer + 1]);
-            players[(dealer + 2) % NO_OF_PLAYERS].postBigBlind(MINIMUM_BET);
+            players[(dealer + 2) % NO_OF_PLAYERS].postBigBlind(MIN_BET);
+            pot += MIN_BET;
             System.out.format("%s posts the big blind.\n", players[dealer + 2]);
             
             // Deal the hole cards.
@@ -115,7 +121,6 @@ public class Game {
             printPlayers();
             
             // Pre-flop betting round.
-            bet = MINIMUM_BET;
             doBettingRound(1);
             printPlayers();
             
@@ -129,7 +134,6 @@ public class Game {
             System.out.println();
             
             // Flop betting round.
-            bet = 0;
             doBettingRound(2);
             printPlayers();
             
@@ -143,7 +147,6 @@ public class Game {
             System.out.println();
             
             // Turn betting round.
-            bet = 0;
             doBettingRound(3);
             printPlayers();
             
@@ -157,20 +160,17 @@ public class Game {
             System.out.println();
             
             // River betting round.
-            bet = 0;
             doBettingRound(4);
             printPlayers();
             
             // Showdown.
             int winner = -1;
             int winnerValue = -1;
-            int pot = 0;
             boolean allBroke = true;
             //TODO: Rewrite winning algorithm (e.g. ties).
             for (int i = 0; i < NO_OF_PLAYERS; i++) {
                 int inTurn = (dealer + 1 + i) % NO_OF_PLAYERS;
                 Player player = players[inTurn];
-                pot += player.getBet();
                 if (!player.hasFolded()) {
                     allBroke = allBroke && (player.getCash() <= 0);
                     Hand hand = new Hand(board);
@@ -185,13 +185,15 @@ public class Game {
                     }
                 }
             }
-            System.out.format("%s wins ($ %d).\n", players[winner], pot);
+            System.out.format("\n%s wins ($ %d).\n", players[winner], pot);
             players[winner].win(pot);
             
             gameOver = allBroke;
             
             noOfHands++;
         }
+        
+        System.out.println("\nGame over.");
     }
     
 	/**
@@ -204,9 +206,11 @@ public class Game {
         	System.out.format("\t%s\t\t$ %3d\t%s\t$ %2d\t%s\n",
         			player, player.getCash(), player.getHand(), player.getBet(), lastAction);
     	}
+    	System.out.format("\tPot: $ %d\n", pot);
     }
 
     private void doBettingRound(int round) {
+        bet = 0;
     	// Determine starting actor. Normally position 2 (1 left of dealer),
     	// but two positons further at Pre-Flop (because of blinds). 
         int offset = (round == 1) ? 2 : 0;
@@ -228,24 +232,37 @@ public class Game {
             // Only allow active players.
             if (!player.hasFolded() && !player.isBroke()) {
             	// Ask player to act. 
-                player.performAction(board, noOfBoardCards, MINIMUM_BET, bet);
+                player.performAction(board, noOfBoardCards, MIN_BET, bet);
                 playersToAct--;
                 Action action = player.getAction();
                 System.out.format("%s %s.\n", player, action.getVerb());
                 if (action instanceof FoldAction && playersToAct == 1) {
                     // The last remaining player wins.
                 	//TODO: Last remaining player wins.
+                } else if (action instanceof CallAction) {
+                	int amount = ((CallAction) action).getAmount(); 
+                	pot += amount;
                 } else if (action instanceof BetAction) {
-                    bet = ((BetAction) action).getAmount();
-                    // Make sure other players must react to this bet.
+                	
+                    int amount = ((BetAction) action).getAmount();
+                    bet = amount;
+                    pot += amount;
+                    // Make sure other players must react.
                     playersToAct = activePlayers - 1;
                 } else if (action instanceof RaiseAction) {
-                    bet += ((RaiseAction) action).getAmount();
+                	int amount = ((RaiseAction) action).getAmount();
+                    bet += amount;
+                    pot += amount;
                     System.out.format("The bet is now $ %d.\n", bet);
-                    // Make sure other players must react to this raise.
+                    // Make sure other players must react.
                     playersToAct = activePlayers - 1;
+                } else {
+                	// Player checked.
                 }
             }
+        }
+        for (Player player : players) {
+        	player.reset();
         }
     }
     
