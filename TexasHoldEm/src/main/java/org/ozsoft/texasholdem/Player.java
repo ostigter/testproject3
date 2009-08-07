@@ -16,20 +16,25 @@ import org.ozsoft.texasholdem.actions.SmallBlindAction;
  */
 public abstract class Player {
     
-    protected String name;
-    
+	/** The name. */
+	protected String name;
+	
+	/** Current amount of money. */
     protected int money;
     
+    /** The hand of cards. */
     protected Hand hand = new Hand();
-    
-//    protected boolean isPlaying;
-    
+
+    /** The current bet. */
     protected int bet;
     
+    /** Whether the player has gone all-in. */
     protected boolean allIn;
     
+    /** The last action performed. */
     protected Action action;
-    
+
+    /** Whether the player has folded. */
     protected boolean hasFolded;
     
     /**
@@ -45,7 +50,7 @@ public abstract class Player {
     }
     
     /**
-     * Prepares the player for another hand, unless broke.
+     * Prepares the player for another hand.
      */
     public final void reset() {
     	if (!isBroke()) {
@@ -60,6 +65,9 @@ public abstract class Player {
      * Sets the hole cards.
      */
     public final void setCards(Card[] cards) {
+    	if (cards.length != 2) {
+    		throw new IllegalArgumentException("Invalid number of cards");
+    	}
         hand.removeAllCards();
         hand.addCards(cards);
     }
@@ -67,34 +75,25 @@ public abstract class Player {
     /**
      * Returns the player's name.
      *
-     * @return  the name
+     * @return The name.
      */
     public final String getName() {
         return name;
     }
     
-//    /**
-//     * Returns true if the player is playing.
-//     *
-//     * @return  true if the player is playing
-//     */
-//    public final boolean isPlaying() {
-//        return isPlaying;
-//    }
-    
     /**
-     * Returns true if the player is broke.
+     * Returns whether the player is broke.
      *
-     * @return  true if the player is broke
+     * @return True if the player is broke, otherwise false.
      */
     public final boolean isBroke() {
         return (money == 0);
     }
     
     /**
-     * Returns the player's amount of money.
+     * Returns the player's current amount of money.
      *
-     * @return  the amount of money
+     * @return The amount of money.
      */
     public final int getCash() {
         return money;
@@ -103,25 +102,43 @@ public abstract class Player {
     /**
      * Returns the player's current bet.
      *
-     * @return  the current bet
+     * @return The current bet.
      */
     public final int getBet() {
         return bet;
     }
     
     /**
-     * Returns true if folded.
+     * Returns whether the player has gone all-in.
      *
-     * @return  true if folded
+     * @return True if all-in, otherwise false.
+     */
+    public final boolean isAllIn() {
+        return allIn;
+    }
+    
+    /**
+     * Returns the player's action.
+     *
+     * @return  the action
+     */
+    public final Action getAction() {
+        return action;
+    }
+    
+    /**
+     * Returns whether the player has folded.
+     *
+     * @return True if folded, otherwise false.
      */
     public final boolean hasFolded() {
         return hasFolded;
     }
     
     /**
-     * Returns the player's hand.
+     * Returns the player's hand of cards.
      *
-     * @return  the hand
+     * @return The hand of cards.
      */
     public final Hand getHand() {
         return hand;
@@ -130,28 +147,30 @@ public abstract class Player {
     /**
      * Returns the player's hole cards.
      *
-     * @return  the hole cards
+     * @return The hole cards.
      */
     public final Card[] getCards() {
         return hand.getCards();
     }
     
-    /**
-     * Posts the specified small blind.
-     *
-     * @param  amount  the small blind
-     */
+	/**
+	 * Posts the small blind.
+	 * 
+	 * @param amount
+	 *            The small blind.
+	 */
     public final void postSmallBlind(int amount) {
         action = new SmallBlindAction();
         money -= amount;
         bet += amount;
     }
     
-    /**
-     * Posts the specified big blind.
-     *
-     * @param  amount  the big blind
-     */
+	/**
+	 * Posts the big blinds.
+	 * 
+	 * @param amount
+	 *            The big blind.
+	 */
     public final void postBigBlind(int amount) {
         action = new BigBlindAction();
         money -= amount;
@@ -186,7 +205,7 @@ public abstract class Player {
     }
     
     /**
-     * Bets the specified amount.
+     * Bets an amount of money.
      * 
      * If the bet is equal to or greater than the remaining money, the player
      * goes all-in.
@@ -228,26 +247,21 @@ public abstract class Player {
         money += pot;
     }
     
-    /**
-     * Performs an action: Fold, Check, Call, Bet or Raise.
-     *
-     * @param  board           the board cards
-     * @param  noOfBoardCards  the number of board cards
-     * @param  minBet          the minimum bet
-     * @param  currentBet      the current bet
-     */
+	/**
+	 * Performs an action (Check, Call, Bet, Raise or Fold).
+	 * 
+	 * @param board
+	 *            The community cards on the board.
+	 * @param noOfBoardCards
+	 *            The number of community cards on the board.
+	 * @param minBet
+	 *            The minimum bet.
+	 * @param currentBet
+	 *            The current bet.
+	 */
     public abstract void performAction(
     		Card[] board, int noOfBoardCards, int minBet, int currentBet);
 
-    /**
-     * Returns the player's action.
-     *
-     * @return  the action
-     */
-    public final Action getAction() {
-        return action;
-    }
-    
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()

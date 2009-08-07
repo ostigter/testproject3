@@ -8,7 +8,6 @@ import java.awt.GridBagLayout;
 import javax.swing.JFrame;
 
 import org.ozsoft.texasholdem.Card;
-import org.ozsoft.texasholdem.ComputerPlayer;
 import org.ozsoft.texasholdem.Deck;
 import org.ozsoft.texasholdem.Player;
 import org.ozsoft.texasholdem.actions.Action;
@@ -16,6 +15,7 @@ import org.ozsoft.texasholdem.actions.BetAction;
 import org.ozsoft.texasholdem.actions.CallAction;
 import org.ozsoft.texasholdem.actions.FoldAction;
 import org.ozsoft.texasholdem.actions.RaiseAction;
+import org.ozsoft.texasholdem.bots.DummyBot;
 
 /**
  * The game's main frame.
@@ -25,41 +25,23 @@ import org.ozsoft.texasholdem.actions.RaiseAction;
 public class MainFrame extends JFrame {
     
 	private static final long serialVersionUID = 1L;
-	
 	private static final int NO_OF_PLAYERS = 4;
-	
     private static final int INITIAL_CASH = 100;
-    
     private static final int MIN_BET = 2;
-    
     public  static final Color TABLE_COLOR = new Color(0, 128, 0);
-    
     private static final GridBagConstraints gc = new GridBagConstraints();
-
     private final Deck deck = new Deck();
-    
     private final Card[] board = new Card[5];
-    
     private final BoardPanel boardPanel = new BoardPanel(this);
-    
     private Player[] players;
-    
     private PlayerPanel[] playerPanels;
-    
     private int noOfBoardCards;
-    
     private int handNumber;
-    
     private int dealer;
-    
     private int actor;
-    
     private int bet;
-    
     private int pot;
-    
     private boolean waitingForPlayer = false;
-    
     private boolean gameOver = false;
     
     public MainFrame() {
@@ -68,10 +50,10 @@ public class MainFrame extends JFrame {
         getContentPane().setBackground(TABLE_COLOR);
         setLayout(new GridBagLayout());
         players = new Player[] {
-            new ComputerPlayer("Buffy",    INITIAL_CASH),
-            new ComputerPlayer("Willow",   INITIAL_CASH),
-            new ComputerPlayer("Xander",   INITIAL_CASH),
-            new ComputerPlayer("Anya",     INITIAL_CASH),
+            new HumanPlayer("Buffy",    INITIAL_CASH),
+            new DummyBot("Willow",   INITIAL_CASH),
+            new DummyBot("Xander",   INITIAL_CASH),
+            new DummyBot("Anya",     INITIAL_CASH),
 //            new ComputerPlayer("Giles",    INITIAL_CASH),
 //            new ComputerPlayer("Wesley",   INITIAL_CASH),
 //            new ComputerPlayer("Cordelia", INITIAL_CASH),
@@ -86,14 +68,14 @@ public class MainFrame extends JFrame {
         }
         
         // 4 player table.
-        addComponent(boardPanel, 1, 1, 1, 1);
+        addComponent(boardPanel,      1, 1, 1, 1);
         addComponent(playerPanels[0], 1, 0, 1, 1);
         addComponent(playerPanels[1], 2, 1, 1, 1);
         addComponent(playerPanels[2], 1, 2, 1, 1);
         addComponent(playerPanels[3], 0, 1, 1, 1);
         
 //        // 10 player table.
-//        addComponent(boardPanel, 1, 1, 3, 3);
+//        addComponent(boardPanel,      1, 1, 3, 3);
 //        addComponent(playerPanels[0], 1, 0, 1, 1);
 //        addComponent(playerPanels[1], 2, 0, 1, 1);
 //        addComponent(playerPanels[2], 3, 0, 1, 1);
@@ -105,13 +87,14 @@ public class MainFrame extends JFrame {
 //        addComponent(playerPanels[8], 0, 3, 1, 1);
 //        addComponent(playerPanels[9], 0, 1, 1, 1);
 
-        showFrame();
+//      Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+//      setSize(dimension.width, dimension.height - 30);
+		pack();
+		setResizable(false);
+		setLocationRelativeTo(null);
+		setVisible(true);
         
         start();
-    }
-    
-    public static void main(String[] args) {
-        new MainFrame();
     }
     
     private void addComponent(Component component, int x, int y, int width, int height) {
@@ -119,20 +102,11 @@ public class MainFrame extends JFrame {
         gc.gridy = y;
         gc.gridwidth = width;
         gc.gridheight = height;
-        gc.weightx = 1.0;
-        gc.weighty = 1.0;
+        gc.weightx = 0.0;
+        gc.weighty = 0.0;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.NONE;
         getContentPane().add(component, gc);
-    }
-    
-    private void showFrame() {
-//        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-//        setSize(dimension.width, dimension.height - 30);
-        pack();
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setVisible(true);
     }
     
     private void start() {
@@ -148,7 +122,7 @@ public class MainFrame extends JFrame {
             rotateDealer();
             rotateActor();
             boardPanel.setMessage(String.format("New hand. %s is the dealer.", players[dealer].getName()));
-            waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
+        	getInput(ControlPanel.CONTINUE);
             
             // Post the small blind.
             rotateActor();
@@ -157,7 +131,7 @@ public class MainFrame extends JFrame {
             boardPanel.setPot(pot);
             boardPanel.setMessage(players[actor].getName() + " posts the small blind.");
             playerPanels[actor].update();
-            waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
+        	getInput(ControlPanel.CONTINUE);
             
             // Post the big blind.
             rotateActor();
@@ -166,10 +140,9 @@ public class MainFrame extends JFrame {
             boardPanel.setPot(pot);
             boardPanel.setMessage(players[actor].getName() + " posts the big blind.");
             playerPanels[actor].update();
-            waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
+        	getInput(ControlPanel.CONTINUE);
             
             // Deal the hole cards.
-            rotateActor();
             for (Player player : players) {
                 player.setCards(deck.deal(2));
             }
@@ -177,23 +150,22 @@ public class MainFrame extends JFrame {
             	playerPanels[i].update();
             }
             boardPanel.setMessage(players[dealer].getName() + " deals the hole cards.");
-            waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
+        	getInput(ControlPanel.CONTINUE);
             
             // Pre-flop betting round.
             doBettingRound(1);
-
+            
             gameOver = true;
         }
+    	
         boardPanel.setMessage("Game over.");
+        boardPanel.setChoices(ControlPanel.NONE);
     }
     
     private void doBettingRound(int round) {
+    	// Reset the bet.
         bet = 0;
-    	// Determine starting actor. Normally position 2 (1 left of dealer),
-    	// but two positons further at Pre-Flop (because of blinds). 
-        int offset = (round == 1) ? 2 : 0;
-        int actor = (dealer + offset) % NO_OF_PLAYERS;
-        // Cound the number of active players left in this hand.
+        // Count the number of active players left in this hand.
         int activePlayers = 0;
         for (Player player : players) {
         	if (!player.isBroke() && !player.hasFolded()) {
@@ -204,16 +176,13 @@ public class MainFrame extends JFrame {
         int playersToAct = activePlayers;
         // Keep going round the table until all players have acted.
         while (playersToAct > 0) {
-        	// Rotate actor.
-            actor = (actor + 1) % NO_OF_PLAYERS;
+        	rotateActor();
             Player player = players[actor];
             // Only allow active players.
             if (!player.hasFolded() && !player.isBroke()) {
-            	// Ask player to act. 
-                player.performAction(board, noOfBoardCards, MIN_BET, bet);
+            	act(player);
                 playersToAct--;
                 Action action = player.getAction();
-                System.out.format("%s %s.\n", player, action.getVerb());
                 if (action instanceof FoldAction && playersToAct == 1) {
                     // The last remaining player wins.
                 	//TODO: Last remaining player wins.
@@ -221,19 +190,17 @@ public class MainFrame extends JFrame {
                 	int amount = ((CallAction) action).getAmount(); 
                 	pot += amount;
                 } else if (action instanceof BetAction) {
-                	
                     int amount = ((BetAction) action).getAmount();
                     bet = amount;
                     pot += amount;
                     // Make sure other players must react.
-                    playersToAct = activePlayers - 1;
+                    playersToAct = activePlayers;
                 } else if (action instanceof RaiseAction) {
                 	int amount = ((RaiseAction) action).getAmount();
                     bet += amount;
                     pot += amount;
-                    System.out.format("The bet is now $ %d.\n", bet);
                     // Make sure other players must react.
-                    playersToAct = activePlayers - 1;
+                    playersToAct = activePlayers;
                 } else {
                 	// Player checked.
                 }
@@ -242,6 +209,61 @@ public class MainFrame extends JFrame {
         for (Player player : players) {
         	player.reset();
         }
+    }
+    
+    private void act(Player player) {
+    	boardPanel.setMessage(String.format("%s's turn.", player));
+    	int action = -1;
+    	
+//    	if (player instanceof DummyBot) {
+//        	getInput(ControlPanel.CONTINUE);
+//        	player.performAction(board, noOfBoardCards, MIN_BET, bet);
+//    	} else {
+	    	// Determine action.
+	    	if (bet == 0) {
+	            // No previous bets -- Check, Bet or Fold.
+	        	action = getInput(ControlPanel.CHECK_BET_FOLD);
+	        } else if (player.getBet() < bet) {
+	            // Call, Raise or Fold.
+	        	action = getInput(ControlPanel.CALL_RAISE_FOLD);
+	        } else {
+	            // Check, Raise or Fold.
+	        	action = getInput(ControlPanel.CHECK_RAISE_FOLD);
+	        }
+	
+	    	// Perform action.
+	    	if (action == ControlPanel.CHECK) {
+	        	player.check();
+	        } else if (action == ControlPanel.CALL) {
+	        	player.call(bet);
+	        } else if (action == ControlPanel.BET) {
+	        	player.bet(MIN_BET);
+	        } else if (action == ControlPanel.RAISE) {
+	        	player.raise(bet, MIN_BET);
+	        } else {
+	        	player.fold();
+	        }
+//    	}
+    	
+    	playerPanels[actor].update();
+    	boardPanel.setPot(pot);
+    }
+    
+    private int getInput(int choices) {
+        boardPanel.setChoices(choices);
+        waitingForPlayer = true;
+        try {
+            while (waitingForPlayer) {
+                Thread.sleep(10);
+            }
+        } catch (Exception ex) {
+            // Ignore.
+        }
+        return boardPanel.getAction();
+    }
+    
+    public void playerActed() {
+        waitingForPlayer = false;
     }
     
     private void resetHand() {
@@ -272,38 +294,6 @@ public class MainFrame extends JFrame {
         }
         actor = (actor + 1) % NO_OF_PLAYERS;
         playerPanels[actor].setInTurn(true);
-    }
-    
-    private void play() {
-        if (actor == 0) {
-            playHumanPlayer();
-        } else {
-            playComputerPlayer();
-        }
-    }
-    
-    private void playHumanPlayer() {
-    	waitForHumanInput(ControlPanel.CHOICE_CONTINUE);
-    }
-    
-    private void waitForHumanInput(int choices) {
-        boardPanel.setChoices(choices);
-        waitingForPlayer = true;
-        try {
-            while (waitingForPlayer) {
-                Thread.sleep(10);
-            }
-        } catch (Exception ex) {
-            // Ignore.
-        }
-    }
-    
-    private void playComputerPlayer() {
-    	//TODO
-    }
-    
-    public void playerActed() {
-        waitingForPlayer = false;
     }
     
 }
