@@ -8,6 +8,8 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.ozsoft.texasholdem.Card;
+
 /**
  * Board panel with the community cards and general information.
  *  
@@ -104,6 +106,22 @@ public class BoardPanel extends JPanel {
         
         setPot(0);
         setMessage("");
+    }
+    
+	/**
+	 * Sets the community cards.
+	 * 
+	 * @param cards
+	 *            The community cards.
+	 */
+    public void setCards(Card[] cards, int noOfBoardCards) {
+    	for (int i = 0; i < cards.length; i++) {
+    		if (i < noOfBoardCards) {
+    			cardLabels[i].setIcon(ResourceManager.getCardImage(cards[i]));
+    		} else {
+    			cardLabels[i].setIcon(ResourceManager.getIcon("/images/card_placeholder.png"));
+    		}
+    	}
     }
     
 	/**
