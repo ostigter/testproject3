@@ -7,10 +7,6 @@ import java.awt.Insets;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 /**
  * Board panel with the community cards and general information.
@@ -19,13 +15,9 @@ import javax.swing.border.LineBorder;
  */
 public class BoardPanel extends JPanel {
     
+	/** The serial version UID. */
 	private static final long serialVersionUID = 1L;
 	
-	private static final Border LABEL_BORDER = new LineBorder(Color.BLACK, 1);
-    
-	private static final Border PANEL_BORDER =
-    		new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(10, 10, 10, 10));
-
 	/** Label with the pot. */
 	private final JLabel potLabel;
 
@@ -45,14 +37,14 @@ public class BoardPanel extends JPanel {
 	 *            The main frame.
 	 */
     public BoardPanel(MainFrame mainFrame) {
-        setBorder(PANEL_BORDER);
-        setBackground(MainFrame.TABLE_COLOR);
+        setBorder(UIConstants.PANEL_BORDER);
+        setBackground(UIConstants.TABLE_COLOR);
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
         
         // The pot.
         potLabel = new JLabel();
-        potLabel.setBorder(LABEL_BORDER);
+        potLabel.setBorder(UIConstants.LABEL_BORDER);
         potLabel.setForeground(Color.GREEN);
         potLabel.setHorizontalAlignment(JLabel.CENTER);
         gc.gridx = 2;

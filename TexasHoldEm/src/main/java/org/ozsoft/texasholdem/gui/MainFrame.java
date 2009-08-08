@@ -24,12 +24,22 @@ import org.ozsoft.texasholdem.bots.DummyBot;
  */
 public class MainFrame extends JFrame {
     
+	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The number of players at the table. */
 	private static final int NO_OF_PLAYERS = 4;
-    private static final int INITIAL_CASH = 100;
+	
+    /** The starting money per player in dollars. */
+    private static final int STARTING_MONEY = 100;
+    
+    /** The minimum bet in dollars. */
     private static final int MIN_BET = 2;
-    public  static final Color TABLE_COLOR = new Color(0, 128, 0);
-    private static final GridBagConstraints gc = new GridBagConstraints();
+    
+    /** The polling delay in ms when waiting for a player to act. */
+    private static final long POLLING_DELAY = 100L;
+    
+    private final GridBagConstraints gc = new GridBagConstraints();
     private final Deck deck = new Deck();
     private final Card[] board = new Card[5];
     private final BoardPanel boardPanel = new BoardPanel(this);
@@ -47,20 +57,20 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         super("Texas Hold'em Limit poker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        getContentPane().setBackground(TABLE_COLOR);
+        getContentPane().setBackground(UIConstants.TABLE_COLOR);
         setLayout(new GridBagLayout());
         players = new Player[] {
-            new HumanPlayer("Buffy",    INITIAL_CASH),
-            new DummyBot("Willow",   INITIAL_CASH),
-            new DummyBot("Xander",   INITIAL_CASH),
-            new DummyBot("Anya",     INITIAL_CASH),
-//            new ComputerPlayer("Giles",    INITIAL_CASH),
-//            new ComputerPlayer("Wesley",   INITIAL_CASH),
-//            new ComputerPlayer("Cordelia", INITIAL_CASH),
-//            new ComputerPlayer("Angel",    INITIAL_CASH),
-//            new ComputerPlayer("Spike",    INITIAL_CASH),
-//            new ComputerPlayer("Drusilla", INITIAL_CASH),
-//            new ComputerPlayer("Darla",    INITIAL_CASH),
+            new HumanPlayer("Buffy",    STARTING_MONEY),
+            new HumanPlayer("Willow",   STARTING_MONEY),
+            new HumanPlayer("Xander",   STARTING_MONEY),
+            new HumanPlayer("Anya",     STARTING_MONEY),
+//            new DummyBot("Giles",    STARTING_MONEY),
+//            new DummyBot("Wesley",   STARTING_MONEY),
+//            new DummyBot("Cordelia", STARTING_MONEY),
+//            new DummyBot("Angel",    STARTING_MONEY),
+//            new DummyBot("Spike",    STARTING_MONEY),
+//            new DummyBot("Drusilla", STARTING_MONEY),
+//            new DummyBot("Darla",    STARTING_MONEY),
         };
         playerPanels = new PlayerPanel[NO_OF_PLAYERS];
         for (int i = 0; i < NO_OF_PLAYERS; i++) {
@@ -94,9 +104,23 @@ public class MainFrame extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(true);
         
-        start();
+        runGame();
     }
     
+	/**
+	 * Adds a UI component.
+	 * 
+	 * @param component
+	 *            The component.
+	 * @param x
+	 *            The column.
+	 * @param y
+	 *            The row.
+	 * @param width
+	 *            The number of columns to span.
+	 * @param height
+	 *            The number of rows to span.
+	 */
     private void addComponent(Component component, int x, int y, int width, int height) {
         gc.gridx = x;
         gc.gridy = y;
@@ -109,7 +133,10 @@ public class MainFrame extends JFrame {
         getContentPane().add(component, gc);
     }
     
-    private void start() {
+    /**
+     * Main loop of the game.
+     */
+    private void runGame() {
     	handNumber = 1;
     	dealer = -1;
     	actor = -1;
@@ -153,16 +180,22 @@ public class MainFrame extends JFrame {
         	getInput(ControlPanel.CONTINUE);
             
             // Pre-flop betting round.
-            doBettingRound(1);
+            doBettingRound();
             
-            gameOver = true;
+            // Flop betting round.
+            doBettingRound();
+            
+            handNumber++;
         }
     	
         boardPanel.setMessage("Game over.");
         boardPanel.setActions(ControlPanel.NONE);
     }
     
-    private void doBettingRound(int round) {
+    /**
+     * Performs a betting round.
+     */
+    private void doBettingRound() {
     	// Reset the bet.
         bet = 0;
         // Count the number of active players left in this hand.
@@ -211,6 +244,12 @@ public class MainFrame extends JFrame {
         }
     }
     
+	/**
+	 * Allows a player to act her turn.
+	 * 
+	 * @param player
+	 *            The player.
+	 */
     private void act(Player player) {
     	boardPanel.setMessage(String.format("%s's turn.", player));
     	int action = -1;
@@ -253,14 +292,22 @@ public class MainFrame extends JFrame {
     	}
     }
     
-    private int getInput(int choices) {
-        boardPanel.setActions(choices);
+	/**
+	 * Asks the human player to select an action, and returns the action.
+	 * 
+	 * @param actions
+	 *            The allowed actions.
+	 * 
+	 * @return The selected action.
+	 */
+    private int getInput(int actions) {
+        boardPanel.setActions(actions);
         waitingForPlayer = true;
         try {
             while (waitingForPlayer) {
-                Thread.sleep(10);
+                Thread.sleep(POLLING_DELAY);
             }
-        } catch (Exception ex) {
+        } catch (InterruptedException e) {
             // Ignore.
         }
         return boardPanel.getAction();
