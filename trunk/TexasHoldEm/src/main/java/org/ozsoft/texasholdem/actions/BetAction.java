@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem.actions;
 
 /**
- * A action of placing a bet.
+ * The poker action of placing a bet.
  * 
  * @author Oscar Stigter
  */

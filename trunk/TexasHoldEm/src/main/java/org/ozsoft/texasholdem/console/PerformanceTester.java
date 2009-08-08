@@ -7,7 +7,6 @@ import org.ozsoft.texasholdem.Deck;
 import org.ozsoft.texasholdem.Hand;
 import org.ozsoft.texasholdem.HandEvaluator;
 
-
 /**
  * Simulates a large number of poker hands.
  * 

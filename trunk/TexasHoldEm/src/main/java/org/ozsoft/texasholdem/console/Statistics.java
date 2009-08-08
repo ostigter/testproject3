@@ -8,7 +8,6 @@ import org.ozsoft.texasholdem.Deck;
 import org.ozsoft.texasholdem.Hand;
 import org.ozsoft.texasholdem.HandEvaluator;
 
-
 /**
  * Test driver to calculate the winning chance with a specific hand against a
  * specific number of opponents.

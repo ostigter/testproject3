@@ -19,8 +19,8 @@ public abstract class Player {
 	/** The name. */
 	protected String name;
 	
-	/** Current amount of money. */
-    protected int money;
+	/** Current amount of cash. */
+    protected int cash;
     
     /** The hand of cards. */
     protected Hand hand = new Hand();
@@ -37,15 +37,17 @@ public abstract class Player {
     /** Whether the player has folded. */
     protected boolean hasFolded;
     
-    /**
-     * Constructs a player with the specified name and initial money.
-     *
-     * @param  name  the name
-     * @param  money  the initial money
-     */
-    public Player(String name, int money) {
+	/**
+	 * Constructs a player.
+	 * 
+	 * @param name
+	 *            The name.
+	 * @param cash
+	 *            The starting cash.
+	 */
+    public Player(String name, int cash) {
         this.name = name;
-        this.money = money;
+        this.cash = cash;
         reset();
     }
     
@@ -87,16 +89,16 @@ public abstract class Player {
      * @return True if the player is broke, otherwise false.
      */
     public final boolean isBroke() {
-        return (money == 0);
+        return (cash == 0);
     }
     
     /**
-     * Returns the player's current amount of money.
+     * Returns the player's current amount of cash.
      *
-     * @return The amount of money.
+     * @return The amount of cash.
      */
     public final int getCash() {
-        return money;
+        return cash;
     }
     
     /**
@@ -161,7 +163,7 @@ public abstract class Player {
 	 */
     public final void postSmallBlind(int amount) {
         action = new SmallBlindAction();
-        money -= amount;
+        cash -= amount;
         bet += amount;
     }
     
@@ -173,7 +175,7 @@ public abstract class Player {
 	 */
     public final void postBigBlind(int amount) {
         action = new BigBlindAction();
-        money -= amount;
+        cash -= amount;
         bet += amount;
     }
     
@@ -200,31 +202,31 @@ public abstract class Player {
     public final void call(int newBet) {
         int amount = newBet - bet;
         action = new CallAction(amount);
-        money -= amount;
+        cash -= amount;
         bet += amount;
     }
     
     /**
-     * Bets an amount of money.
+     * Bets an amount of cash.
      * 
-     * If the bet is equal to or greater than the remaining money, the player
+     * If the bet is equal to or greater than the remaining cash, the player
      * goes all-in.
      *
      * @param  bet  the amount to bet
      */
     public final void bet(int amount) {
-        if (amount >= money) {
-            amount = money;
+        if (amount >= cash) {
+            amount = cash;
             allIn = true;
         }
         action = new BetAction(amount);
-        money -= amount;
+        cash -= amount;
         bet += amount;
     }
     
     /**
      * Raises the specified bet with the specified raise.
-     * If the amount to raise up to is more than the amount of money, the player
+     * If the amount to raise up to is more than the amount of cash, the player
      * goes all in.
      *
      * @param  currentBet  the current bet
@@ -233,7 +235,7 @@ public abstract class Player {
     public final void raise(int currentBet, int raise) {
         action = new RaiseAction(raise);
         int amount = (currentBet < bet) ? (bet - currentBet) + raise : raise;
-        money -= amount;
+        cash -= amount;
         bet += amount;
     }
     
@@ -244,7 +246,7 @@ public abstract class Player {
 	 *            The pot.
 	 */
     public final void win(int pot) {
-        money += pot;
+        cash += pot;
     }
     
 	/**

@@ -15,11 +15,11 @@ public class HumanPlayer extends Player {
 	 * 
 	 * @param name
 	 *            The name.
-	 * @param money
-	 *            The initial amount of money.
+	 * @param cash
+	 *            The starting amount of cash.
 	 */
-	public HumanPlayer(String name, int money) {
-		super(name, money);
+	public HumanPlayer(String name, int cash) {
+		super(name, cash);
 	}
 
 	/*

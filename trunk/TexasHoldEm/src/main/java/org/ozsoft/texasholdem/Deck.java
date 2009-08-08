@@ -3,7 +3,7 @@ package org.ozsoft.texasholdem;
 import java.util.Random;
 
 /**
- * Represents a standard deck of cards.
+ * A standard, generic deck of game cards (no jokers).
  *
  * NOTE: This class is implemented with the focus on performance (instead of clean design).
  */

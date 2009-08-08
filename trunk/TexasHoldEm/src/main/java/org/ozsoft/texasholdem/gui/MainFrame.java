@@ -1,6 +1,5 @@
 package org.ozsoft.texasholdem.gui;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -30,8 +29,8 @@ public class MainFrame extends JFrame {
 	/** The number of players at the table. */
 	private static final int NO_OF_PLAYERS = 4;
 	
-    /** The starting money per player in dollars. */
-    private static final int STARTING_MONEY = 100;
+    /** The starting cash per player. */
+    private static final int STARTING_CASH = 100;
     
     /** The minimum bet in dollars. */
     private static final int MIN_BET = 2;
@@ -60,17 +59,17 @@ public class MainFrame extends JFrame {
         getContentPane().setBackground(UIConstants.TABLE_COLOR);
         setLayout(new GridBagLayout());
         players = new Player[] {
-            new HumanPlayer("Buffy",    STARTING_MONEY),
-            new HumanPlayer("Willow",   STARTING_MONEY),
-            new HumanPlayer("Xander",   STARTING_MONEY),
-            new HumanPlayer("Anya",     STARTING_MONEY),
-//            new DummyBot("Giles",    STARTING_MONEY),
-//            new DummyBot("Wesley",   STARTING_MONEY),
-//            new DummyBot("Cordelia", STARTING_MONEY),
-//            new DummyBot("Angel",    STARTING_MONEY),
-//            new DummyBot("Spike",    STARTING_MONEY),
-//            new DummyBot("Drusilla", STARTING_MONEY),
-//            new DummyBot("Darla",    STARTING_MONEY),
+            new HumanPlayer("Buffy",    STARTING_CASH),
+            new HumanPlayer("Willow",   STARTING_CASH),
+            new HumanPlayer("Xander",   STARTING_CASH),
+            new HumanPlayer("Anya",     STARTING_CASH),
+//            new DummyBot("Giles",    STARTING_CASH),
+//            new DummyBot("Wesley",   STARTING_CASH),
+//            new DummyBot("Cordelia", STARTING_CASH),
+//            new DummyBot("Angel",    STARTING_CASH),
+//            new DummyBot("Spike",    STARTING_CASH),
+//            new DummyBot("Drusilla", STARTING_CASH),
+//            new DummyBot("Darla",    STARTING_CASH),
         };
         playerPanels = new PlayerPanel[NO_OF_PLAYERS];
         for (int i = 0; i < NO_OF_PLAYERS; i++) {

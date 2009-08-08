@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem.actions;
 
 /**
- * The action of calling.
+ * The poker action of calling.
  * 
  * @author Oscar Stigter
  */

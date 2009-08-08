@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem.actions;
 
 /**
- * The action of paying the big blind.
+ * The poker action of posting the big blind.
  * 
  * @author Oscar Stigter
  */
@@ -15,7 +15,11 @@ public class BigBlindAction implements Action {
         return "pays the big blind";
     }
     
-    @Override
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
     public String toString() {
         return "Big Blind";
     }
