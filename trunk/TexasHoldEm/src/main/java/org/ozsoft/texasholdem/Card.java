@@ -125,7 +125,7 @@ public class Card implements Comparable<Card> {
      */
     @Override
     public int hashCode() {
-        return (rank * NO_OF_SUITS + suit);
+        return (suit * NO_OF_RANKS + rank);
     }
 
     /*
@@ -135,8 +135,7 @@ public class Card implements Comparable<Card> {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Card) {
-            Card card = (Card) obj;
-            return ((card.rank == rank) && (card.suit == suit));
+        	return ((Card) obj).hashCode() == hashCode();
         } else {
             return false;
         }
