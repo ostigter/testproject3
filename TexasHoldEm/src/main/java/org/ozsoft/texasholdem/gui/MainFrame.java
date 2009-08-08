@@ -45,7 +45,7 @@ public class MainFrame extends JFrame {
     private boolean gameOver = false;
     
     public MainFrame() {
-        super("Texas Hold'em Limit Poker");
+        super("Texas Hold'em Limit poker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setBackground(TABLE_COLOR);
         setLayout(new GridBagLayout());
@@ -120,11 +120,11 @@ public class MainFrame extends JFrame {
             resetHand();
             
             rotateDealer();
-            rotateActor();
-            boardPanel.setMessage(String.format("New hand. %s is the dealer.", players[dealer].getName()));
+            boardPanel.setMessage(String.format("%s is the dealer.", players[dealer].getName()));
         	getInput(ControlPanel.CONTINUE);
             
             // Post the small blind.
+            actor = dealer;
             rotateActor();
             players[actor].postSmallBlind(MIN_BET / 2);
             pot += MIN_BET / 2;
@@ -159,7 +159,7 @@ public class MainFrame extends JFrame {
         }
     	
         boardPanel.setMessage("Game over.");
-        boardPanel.setChoices(ControlPanel.NONE);
+        boardPanel.setActions(ControlPanel.NONE);
     }
     
     private void doBettingRound(int round) {
@@ -215,10 +215,13 @@ public class MainFrame extends JFrame {
     	boardPanel.setMessage(String.format("%s's turn.", player));
     	int action = -1;
     	
-//    	if (player instanceof DummyBot) {
-//        	getInput(ControlPanel.CONTINUE);
-//        	player.performAction(board, noOfBoardCards, MIN_BET, bet);
-//    	} else {
+    	if (player instanceof DummyBot) {
+        	player.performAction(board, noOfBoardCards, MIN_BET, bet);
+        	boardPanel.setMessage(String.format("%s %s.", player, player.getAction().getVerb()));
+        	playerPanels[actor].update();
+        	boardPanel.setPot(pot);
+        	getInput(ControlPanel.CONTINUE);
+    	} else {
 	    	// Determine action.
 	    	if (bet == 0) {
 	            // No previous bets -- Check, Bet or Fold.
@@ -243,14 +246,15 @@ public class MainFrame extends JFrame {
 	        } else {
 	        	player.fold();
 	        }
-//    	}
-    	
-    	playerPanels[actor].update();
-    	boardPanel.setPot(pot);
+	    	
+	    	// Update screen.
+        	playerPanels[actor].update();
+        	boardPanel.setPot(pot);
+    	}
     }
     
     private int getInput(int choices) {
-        boardPanel.setChoices(choices);
+        boardPanel.setActions(choices);
         waitingForPlayer = true;
         try {
             while (waitingForPlayer) {
