@@ -12,6 +12,11 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+/**
+ * Board panel with the community cards and general information.
+ *  
+ * @author Oscar Stigter
+ */
 public class BoardPanel extends JPanel {
     
 	private static final long serialVersionUID = 1L;
@@ -21,13 +26,25 @@ public class BoardPanel extends JPanel {
 	private static final Border PANEL_BORDER =
     		new CompoundBorder(new LineBorder(Color.BLACK, 1), new EmptyBorder(10, 10, 10, 10));
 
-    private final JLabel potLabel;
+	/** Label with the pot. */
+	private final JLabel potLabel;
+
+	/** Labels with the community cards. */
     private final JLabel[] cardLabels;
+    
+    /** Label with a custom message. */
     private final JLabel messageLabel;
+    
+    /** The control panel. */
     private final ControlPanel controlPanel;
     
+	/**
+	 * Constructor.
+	 * 
+	 * @param mainFrame
+	 *            The main frame.
+	 */
     public BoardPanel(MainFrame mainFrame) {
-        super();
         setBorder(PANEL_BORDER);
         setBackground(MainFrame.TABLE_COLOR);
         setLayout(new GridBagLayout());
@@ -97,10 +114,22 @@ public class BoardPanel extends JPanel {
         setMessage("");
     }
     
+	/**
+	 * Sets the pot.
+	 * 
+	 * @param pot
+	 *            The pot.
+	 */
     public void setPot(int pot) {
         potLabel.setText("$ " + pot);
     }
     
+	/**
+	 * Sets a custom message.
+	 * 
+	 * @param message
+	 *            The message.
+	 */
     public void setMessage(String message) {
         if (message.length() == 0) {
             messageLabel.setText(" ");
@@ -109,10 +138,21 @@ public class BoardPanel extends JPanel {
         }
     }
     
-    public void setChoices(int choices) {
-        controlPanel.setChoices(choices);
+	/**
+	 * Sets the allowed actions for the control panel.
+	 * 
+	 * @param actions
+	 *            The allowed actions.
+	 */
+    public void setActions(int actions) {
+        controlPanel.setActions(actions);
     }
     
+	/**
+	 * Returns the selected action from the control panel.
+	 * 
+	 * @return The selected action.
+	 */
     public int getAction() {
     	return controlPanel.getAction();
     }

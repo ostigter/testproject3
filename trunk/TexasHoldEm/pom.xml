@@ -7,8 +7,8 @@
     <artifactId>TexasHoldEm</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>Fondsbeheer</name>
-    <description>Programma voor het beheren van aandelenfondsen</description>
+    <name>TexasHoldEm</name>
+    <description>Texas Hold 'em Limit poker</description>
     
     <developers>
         <developer>

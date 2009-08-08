@@ -8,10 +8,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+/**
+ * Panel with buttons to let the human player choose an action.
+ * 
+ * @author Oscar Stigter
+ */
 public class ControlPanel extends JPanel implements ActionListener {
     
 	private static final long serialVersionUID = 1L;
 	
+	// The actions.
 	public static final int NONE             = 0;
 	public static final int CONTINUE         = 1;
 	public static final int CHECK            = 2;
@@ -31,8 +37,15 @@ public class ControlPanel extends JPanel implements ActionListener {
     private final JButton raiseButton;
     private final JButton foldButton;
     
+    /** The selected action. */
     private int action;
     
+	/**
+	 * Constructor.
+	 * 
+	 * @param mainFrame
+	 *            The main frame.
+	 */
     public ControlPanel(MainFrame mainFrame) {
     	super();
         this.mainFrame = mainFrame;
@@ -46,57 +59,52 @@ public class ControlPanel extends JPanel implements ActionListener {
         foldButton = createButton("Fold", 'f');
     }
     
-    private JButton createButton(String label, char mnemonic) {
-    	JButton button = new JButton(label);
-    	button.setMnemonic(mnemonic);
-    	button.setSize(100, 30);
-    	button.addActionListener(this);
-    	return button;
-    }
-    
-    public void setChoices(int choice) {
+	/**
+	 * Sets the allowed actions.
+	 * 
+	 * @param actions
+	 *            The allowed actions.
+	 */
+    public void setActions(int actions) {
         removeAll();
-        switch (choice) {
+        switch (actions) {
         	case NONE:
-        		// No buttons.
+        		// Hide all buttons.
         		break;
             case CONTINUE:
+            	// Continue button only.
                 add(continueButton);
                 break;
             case CHECK_BET_FOLD:
+            	// Check, Bet or Fold.
                 add(checkButton);
                 add(betButton);
                 add(foldButton);
                 break;
             case CALL_RAISE_FOLD:
+            	// Call, Raise or Fold.
                 add(callButton);
                 add(raiseButton);
                 add(foldButton);
                 break;
             case CHECK_RAISE_FOLD:
+            	// Check, Raise or Fold.
                 add(checkButton);
                 add(raiseButton);
                 add(foldButton);
                 break;
             default:
             	// Should never happen.
-                System.err.println("ERROR: Invalid button choice: " + choice);
+                System.err.println("ERROR: Invalid selected action: " + actions);
         }
-//        activateButtons();
+        repaint();
     }
     
-//    private void activateButtons() {
-//        for (Component component : getComponents()) {
-//            component.setEnabled(true);
-//        }
-//    }
-    
-//    private void deactivateButtons() {
-//        for (Component component : getComponents()) {
-//            component.setEnabled(false);
-//        }
-//    }
-    
+	/**
+	 * Returns the selected action.
+	 * 
+	 * @return The selected action.
+	 */
     public int getAction() {
     	return action;
     }
@@ -121,7 +129,27 @@ public class ControlPanel extends JPanel implements ActionListener {
     	} else {
     		action = FOLD;
     	}
+    	
+    	// Notify the caller that the user has selected an action.
     	mainFrame.playerActed();
 	}
+    
+	/**
+	 * Creates a button.
+	 * 
+	 * @param label
+	 *            The label text.
+	 * @param mnemonic
+	 *            The mnemonic character.
+	 * 
+	 * @return The button.
+	 */
+    private JButton createButton(String label, char mnemonic) {
+    	JButton button = new JButton(label);
+    	button.setMnemonic(mnemonic);
+    	button.setSize(100, 30);
+    	button.addActionListener(this);
+    	return button;
+    }
     
 }
