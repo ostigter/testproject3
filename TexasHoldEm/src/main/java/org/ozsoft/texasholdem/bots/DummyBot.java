@@ -15,11 +15,11 @@ public class DummyBot extends Player {
 	 * 
 	 * @param name
 	 *            The bot's name.
-	 * @param money
-	 *            The bot's initial amount of money.
+	 * @param cash
+	 *            The bot's starting amount of cash.
 	 */
-	public DummyBot(String name, int money) {
-		super(name, money);
+	public DummyBot(String name, int cash) {
+		super(name, cash);
 	}
 
 	/*

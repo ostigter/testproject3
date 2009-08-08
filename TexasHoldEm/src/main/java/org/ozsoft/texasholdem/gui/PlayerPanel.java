@@ -10,52 +10,69 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import org.ozsoft.texasholdem.Card;
 import org.ozsoft.texasholdem.Player;
 import org.ozsoft.texasholdem.actions.Action;
 
-
-
+/**
+ * Panel representing a player at the table.
+ * 
+ * @author Oscar Stigter
+ */
 public class PlayerPanel extends JPanel {
     
+	/** The serial version UID. */
 	private static final long serialVersionUID = 1L;
 
-	private static final Color TABLE_COLOR = new Color(0, 128, 0);
-    
-    private static final Icon BUTTON_PRESENT_ICON =
+	/** Filled dealer button image when player is dealer. */
+	private static final Icon BUTTON_PRESENT_ICON =
     		ResourceManager.getIcon("/images/button_present.png");
     
-    private static final Icon BUTTON_ABSENT_ICON =
+    /** Empty dealer button image when player is not dealer. */
+	private static final Icon BUTTON_ABSENT_ICON =
             ResourceManager.getIcon("/images/button_absent.png");
     
-    private static final Border LABEL_BORDER = new LineBorder(Color.BLACK, 1);
+	/** The border. */
+	private static final Border BORDER = new EmptyBorder(10, 10, 10, 10);
     
-    private static final Border NORMAL_BORDER = new EmptyBorder(10, 10, 10, 10);
-    
-//    private static final Border SELECTED_BORDER =
-//    		new CompoundBorder(new LineBorder(Color.YELLOW, 2), new EmptyBorder(10, 10, 10, 10));
-    
-    private static final GridBagConstraints gc = new GridBagConstraints();
-    
+    /** The player. */
     private Player player;
+    
+    /** The label with the player's name. */
     private JLabel nameLabel;
+    
+    /** The label with the player's amount of cash. */
     private JLabel cashLabel;
+    
+    /** The label with the last action performed. */
     private JLabel actionLabel;
+    
+    /** The label with the player's current bet. */
     private JLabel betLabel;
+
+    /** The label for the first hole card. */
     private JLabel card1Label;
+
+    /** The label for the second hole card. */
     private JLabel card2Label;
+
+    /** The label for the dealer button image. */
     private JLabel dealerButton;
     
+	/**
+	 * Constructor.
+	 * 
+	 * @param player
+	 *            The player.
+	 */
     public PlayerPanel(Player player) {
-        super();
-        
         this.player = player;
         
-        setBorder(NORMAL_BORDER);
-        setBackground(TABLE_COLOR);
+        setBorder(BORDER);
+        setBackground(UIConstants.TABLE_COLOR);
         setLayout(new GridBagLayout());
+        GridBagConstraints gc = new GridBagConstraints();
         
         nameLabel = new MyLabel();
         nameLabel.setText(player.getName());
@@ -137,6 +154,9 @@ public class PlayerPanel extends JPanel {
         setDealer(false);
     }
     
+    /**
+     * Updates the panel with the player's status.
+     */
     public void update() {
         int cash = player.getCash();
         if (cash == 0) {
@@ -167,14 +187,12 @@ public class PlayerPanel extends JPanel {
         }
     }
     
-    public void setInTurn(boolean inTurn) {
-        if (inTurn) {
-            nameLabel.setForeground(Color.YELLOW);
-        } else {
-            nameLabel.setForeground(Color.GREEN);
-        }
-    }
-    
+	/**
+	 * Sets whether the player is the dealer.
+	 * 
+	 * @param isDealer
+	 *            True if the dealer, otherwise false.
+	 */
     public void setDealer(boolean isDealer) {
         if (isDealer) {
             dealerButton.setIcon(BUTTON_PRESENT_ICON);
@@ -183,13 +201,32 @@ public class PlayerPanel extends JPanel {
         }
     }
     
+	/**
+	 * Sets whether it's this player's turn to act.
+	 * 
+	 * @param inTurn
+	 *            True if it's the player's turn, otherwise false.
+	 */
+    public void setInTurn(boolean inTurn) {
+        if (inTurn) {
+            nameLabel.setForeground(Color.YELLOW);
+        } else {
+            nameLabel.setForeground(Color.GREEN);
+        }
+    }
+    
+    /**
+     * Custom label for a player panel.
+     * 
+     * @author Oscar Stigter
+     */
     private static class MyLabel extends JLabel {
 
 		private static final long serialVersionUID = 1L;
 
 		public MyLabel() {
-            setBorder(LABEL_BORDER);
-            setForeground(Color.GREEN);
+            setBorder(UIConstants.LABEL_BORDER);
+            setForeground(UIConstants.TEXT_COLOR);
             setHorizontalAlignment(JLabel.HORIZONTAL);
         }
 		

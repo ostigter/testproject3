@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem.actions;
 
 /**
- * The action of folding.
+ * The poker action of folding.
  * 
  * @author Oscar Stigter
  */

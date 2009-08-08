@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem;
 
 /**
- * The value of a Texas Hold'em Poker hand.
+ * Evaluator to calculate the hand value in Texas Hold'em poker.
  *
  * NOTE: This class is implemented with the focus on performance (instead of clean design).
  */

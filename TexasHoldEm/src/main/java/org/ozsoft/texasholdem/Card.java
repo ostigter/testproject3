@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem;
 
 /**
- * A game card.
+ * A generic game card.
  * 
  * Its value is determined first by rank, then by suit.
  */

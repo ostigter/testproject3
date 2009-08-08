@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem.actions;
 
 /**
- * The action of checking (staying).
+ * The poker action of checking.
  *  
  * @author Oscar Stigter
  */

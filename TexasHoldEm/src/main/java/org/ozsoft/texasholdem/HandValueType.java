@@ -1,20 +1,40 @@
 package org.ozsoft.texasholdem;
 
 /**
- * The hand value types.
+ * The poker hand value types.
  */
 public enum HandValueType {
     
-    ROYAL_FLUSH     ("Royal Flush",     9),
-    STRAIGHT_FLUSH  ("Straight Flush",  8),
-    FOUR_OF_A_KIND  ("Four of a Kind",  7),
-    FULL_HOUSE      ("Full House",      6),
-    FLUSH           ("Flush",           5),
-    STRAIGHT        ("Straight",        4),
-    THREE_OF_A_KIND ("Three of a Kind", 3),
-    TWO_PAIRS       ("Two Pairs",       2),
-    ONE_PAIR        ("One Pair",        1),
-    HIGH_CARD       ("High Card",       0),
+	/** Royal flush (Ace-high Straight Flush). */
+	ROYAL_FLUSH("Royal Flush", 9),
+	
+	/** Straight Flush (a Straight and a Flush, less than Ace-high). */
+    STRAIGHT_FLUSH("Straight Flush", 8),
+
+    /** Four of a Kind (four cards of the same rank). */ 
+    FOUR_OF_A_KIND("Four of a Kind", 7),
+    
+    /** Full House (a Three of a Kind and Two Pairs). */
+    FULL_HOUSE("Full House", 6),
+    
+    /** Flush (five cards of the same suit). */
+    FLUSH("Flush", 5),
+    
+    /** Straight (five cards in sequential order). */
+    STRAIGHT("Straight", 4),
+
+    /** Three of a Kind (three cards of the same rank). */
+    THREE_OF_A_KIND("Three of a Kind", 3),
+    
+    /** Two Pairs (two pairs). */
+    TWO_PAIRS("Two Pairs", 2),
+
+    /** One Pair (two cards of the same rank). */
+    ONE_PAIR("One Pair", 1),
+    
+    /** Highest Card (the card with the highest rank). */
+    HIGH_CARD("High Card", 0),
+
     ;
     
     /** The description. */

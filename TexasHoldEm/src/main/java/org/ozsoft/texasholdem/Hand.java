@@ -1,7 +1,9 @@
 package org.ozsoft.texasholdem;
 
 /**
- * Represents a hand of cards.
+ * A generic hand of game cards.
+ * 
+ * The cards are ordered highest to lowest.
  *
  * NOTE: This class is implemented with the focus on performance (instead of clean design).
  */

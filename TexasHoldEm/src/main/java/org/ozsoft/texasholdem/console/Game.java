@@ -25,8 +25,8 @@ public class Game {
 	/** The number of hands to play. */
 	private static final int MAX_NO_OF_HANDS = 1;
 	
-	/** The amount of starting money. */
-	private static final int STARTING_MONEY = 100;
+	/** The amount of starting cash. */
+	private static final int STARTING_CASH = 100;
 	
 	/** The minimum bet. */
 	private static final int MIN_BET = 2;
@@ -78,13 +78,13 @@ public class Game {
     	players = new Player[NO_OF_PLAYERS];
     	for (int i = 0; i < NO_OF_PLAYERS; i++) {
     		players[i] = new ConsolePlayer(
-    				"Player " + String.valueOf(i + 1), STARTING_MONEY);
+    				"Player " + String.valueOf(i + 1), STARTING_CASH);
     	}
 //    	players = new Player[] {
-//    			new HumanPlayer("Buffy",  STARTING_MONEY),
-//    			new HumanPlayer("Willow", STARTING_MONEY),
-//    			new HumanPlayer("Xander", STARTING_MONEY),
-//    			new HumanPlayer("Anya",   STARTING_MONEY),
+//    			new HumanPlayer("Buffy",  STARTING_CASH),
+//    			new HumanPlayer("Willow", STARTING_CASH),
+//    			new HumanPlayer("Xander", STARTING_CASH),
+//    			new HumanPlayer("Anya",   STARTING_CASH),
 //    	};
         
         while (!gameOver && noOfHands < MAX_NO_OF_HANDS) {

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Human player with a console interface.
+ * A human controlled player using a console interface.
  * 
  * @author Oscar Stigter
  */
@@ -20,7 +20,7 @@ public class ConsolePlayer extends Player {
 	 * @param name
 	 *            The name.
 	 * @param cash
-	 *            The starting amount of money.
+	 *            The starting amount of cash.
 	 */
     public ConsolePlayer(String name, int cash) {
         super(name, cash);

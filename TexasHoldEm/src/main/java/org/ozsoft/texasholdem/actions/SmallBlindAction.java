@@ -1,5 +1,10 @@
 package org.ozsoft.texasholdem.actions;
 
+/**
+ * The poker action of posting the small blind.
+ * 
+ * @author Oscar Stigter
+ */
 public class SmallBlindAction implements Action {
     
     /*
