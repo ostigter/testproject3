@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
     
     private final GridBagConstraints gc = new GridBagConstraints();
     private final Deck deck = new Deck();
-    private final Card[] board = new Card[5];
+    private final Card[] boardCards = new Card[5];
     private final BoardPanel boardPanel = new BoardPanel(this);
     private Player[] players;
     private PlayerPanel[] playerPanels;
@@ -136,15 +136,21 @@ public class MainFrame extends JFrame {
      * Main loop of the game.
      */
     private void runGame() {
-    	handNumber = 1;
+    	// Initialize the game.
+    	handNumber = 0;
     	dealer = -1;
     	actor = -1;
     	
-        // Main game loop.
+    	// Show welcome text.
+        boardPanel.setMessage("Welcome to Texas Hold'em Limit poker!");
+    	getInput(ControlPanel.CONTINUE);
+    	
+        // Main game loop, playing hands until all but one player are broke.
     	while (!gameOver) {
         	
             resetHand();
             
+            // Rotate dealer.
             rotateDealer();
             boardPanel.setMessage(String.format("%s is the dealer.", players[dealer].getName()));
         	getInput(ControlPanel.CONTINUE);
@@ -168,23 +174,34 @@ public class MainFrame extends JFrame {
             playerPanels[actor].update();
         	getInput(ControlPanel.CONTINUE);
             
-            // Deal the hole cards.
+            // Deal the Hole Cards.
             for (Player player : players) {
                 player.setCards(deck.deal(2));
             }
             for (int i = 0; i < NO_OF_PLAYERS; i++) {
             	playerPanels[i].update();
             }
-            boardPanel.setMessage(players[dealer].getName() + " deals the hole cards.");
+            boardPanel.setMessage(players[dealer].getName() + " deals the Hole Cards.");
         	getInput(ControlPanel.CONTINUE);
             
-            // Pre-flop betting round.
+            // Pre-Flop betting round.
             doBettingRound();
+            
+            // Deal the Flop Cards.
+            noOfBoardCards = 3;
+            for (int i = 0; i < noOfBoardCards; i++) {
+                boardCards[i] = deck.deal();
+            }
+            boardPanel.setCards(boardCards, noOfBoardCards);
+            boardPanel.setMessage(players[dealer].getName() + " deals the Flop.");
+        	getInput(ControlPanel.CONTINUE);
             
             // Flop betting round.
+        	actor = dealer;
             doBettingRound();
             
-            handNumber++;
+            //FIXME: Stop here for now.
+            gameOver = true;
         }
     	
         boardPanel.setMessage("Game over.");
@@ -195,8 +212,7 @@ public class MainFrame extends JFrame {
      * Performs a betting round.
      */
     private void doBettingRound() {
-    	// Reset the bet.
-        bet = 0;
+        bet = MIN_BET;
         // Count the number of active players left in this hand.
         int activePlayers = 0;
         for (Player player : players) {
@@ -244,7 +260,7 @@ public class MainFrame extends JFrame {
     }
     
 	/**
-	 * Allows a player to act her turn.
+	 * Lets a player act her turn.
 	 * 
 	 * @param player
 	 *            The player.
@@ -254,7 +270,7 @@ public class MainFrame extends JFrame {
     	int action = -1;
     	
     	if (player instanceof DummyBot) {
-        	player.performAction(board, noOfBoardCards, MIN_BET, bet);
+        	player.performAction(boardCards, noOfBoardCards, MIN_BET, bet);
         	boardPanel.setMessage(String.format("%s %s.", player, player.getAction().getVerb()));
         	playerPanels[actor].update();
         	boardPanel.setPot(pot);
@@ -262,7 +278,7 @@ public class MainFrame extends JFrame {
     	} else {
 	    	// Determine action.
 	    	if (bet == 0) {
-	            // No previous bets -- Check, Bet or Fold.
+	            // Check, Bet or Fold.
 	        	action = getInput(ControlPanel.CHECK_BET_FOLD);
 	        } else if (player.getBet() < bet) {
 	            // Call, Raise or Fold.
@@ -317,6 +333,7 @@ public class MainFrame extends JFrame {
     }
     
     private void resetHand() {
+    	handNumber++;
     	noOfBoardCards = 0;
     	pot = 0;
     	bet = 0;

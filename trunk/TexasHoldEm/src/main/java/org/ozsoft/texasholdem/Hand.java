@@ -86,14 +86,15 @@ public class Hand {
                 break;
             }
         }
-        if (insertIndex != -1) {
+        if (insertIndex == -1) {
+        	// Could not insert anywhere, so append at the end.
+            cards[noOfCards++] = card;
+        } else {
             for (int i = noOfCards; i > insertIndex; i--) {
                 cards[i] = cards[i - 1];
             }
             cards[insertIndex] = card;
             noOfCards++;
-        } else {
-            cards[noOfCards++] = card;
         }
     }
     
