@@ -6,34 +6,50 @@ import javax.swing.ImageIcon;
 
 import org.ozsoft.texasholdem.Card;
 
-
-
 /**
- * Resource manager.
+ * Utility class responsible for retrieving resource files.
  * 
  * @author Oscar Stigter
  */
 public abstract class ResourceManager {
+	
+	private static final String IMAGE_PATH_FORMAT = "/images/card_%s.png"; 
     
-    public static ImageIcon getCardImage(Card card) {
+	/**
+	 * Returns the image of a specific card.
+	 * 
+	 * @param card
+	 *            The card.
+	 * 
+	 * @return The image.
+	 */
+	public static ImageIcon getCardImage(Card card) {
         String numberString = String.valueOf(card.hashCode());
         if (numberString.length() == 1) {
             numberString = "0" + numberString;
         }
-        String path = "/images/card_" + numberString + ".png";
-        ImageIcon icon = getIcon(path);
-        return icon;
+        String path = String.format(IMAGE_PATH_FORMAT, numberString);
+        return getIcon(path);
     }
     
-    public static ImageIcon getIcon(String path) {
-        ImageIcon icon = null;
+	/**
+	 * Returns an image resource.
+	 * 
+	 * @param path
+	 *            The path on the classpath.
+	 * 
+	 * @return The image resource.
+	 * 
+	 * @throws RuntimeException
+	 *             If the resource could not be found.
+	 */
+	public static ImageIcon getIcon(String path) {
         URL url = ResourceManager.class.getResource(path);
         if (url != null) {
-            icon = new ImageIcon(url);
+            return new ImageIcon(url);
         } else {
-            System.err.println("ERROR: Resource file not found: " + path);
+            throw new RuntimeException("Resource file not found: " + path);
         }
-        return icon;
     }
     
 }
