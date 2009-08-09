@@ -125,7 +125,7 @@ public class Card implements Comparable<Card> {
      */
     @Override
     public int hashCode() {
-        return (suit * NO_OF_RANKS + rank);
+        return (rank * NO_OF_SUITS + suit);
     }
 
     /*
@@ -147,7 +147,7 @@ public class Card implements Comparable<Card> {
      */
     @Override
     public int compareTo(Card card) {
-        int thisValue = this.hashCode();
+        int thisValue = hashCode();
         int otherValue = card.hashCode();
         if (thisValue < otherValue) {
             return -1;
