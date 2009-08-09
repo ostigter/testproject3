@@ -24,11 +24,13 @@ public abstract class ResourceManager {
 	 * @return The image.
 	 */
 	public static ImageIcon getCardImage(Card card) {
-        String numberString = String.valueOf(card.hashCode());
-        if (numberString.length() == 1) {
-            numberString = "0" + numberString;
+		// Use image order, which is different from value order.
+		int sequenceNr = card.getSuit() * Card.NO_OF_RANKS + card.getRank();
+        String sequenceNrString = String.valueOf(sequenceNr);
+        if (sequenceNrString.length() == 1) {
+            sequenceNrString = "0" + sequenceNrString;
         }
-        String path = String.format(IMAGE_PATH_FORMAT, numberString);
+        String path = String.format(IMAGE_PATH_FORMAT, sequenceNrString);
         return getIcon(path);
     }
     

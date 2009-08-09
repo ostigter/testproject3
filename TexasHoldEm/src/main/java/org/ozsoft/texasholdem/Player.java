@@ -72,6 +72,7 @@ public abstract class Player {
     	}
         hand.removeAllCards();
         hand.addCards(cards);
+        System.out.format("%s's cards: %s\n", name, hand);
     }
     
     /**
