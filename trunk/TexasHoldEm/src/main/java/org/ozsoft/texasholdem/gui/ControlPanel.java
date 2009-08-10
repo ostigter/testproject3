@@ -27,7 +27,8 @@ public class ControlPanel extends JPanel implements ActionListener {
 	public static final int FOLD             = 6;
 	public static final int CHECK_BET_FOLD   = 7;
 	public static final int CALL_RAISE_FOLD  = 8;
-	public static final int CHECK_RAISE_FOLD = 9;
+	public static final int CALL_FOLD        = 9;
+	public static final int CHECK_RAISE_FOLD = 10;
     
     private final MainFrame mainFrame;
     private final JButton continueButton;
@@ -85,6 +86,11 @@ public class ControlPanel extends JPanel implements ActionListener {
             	// Call, Raise or Fold.
                 add(callButton);
                 add(raiseButton);
+                add(foldButton);
+                break;
+            case CALL_FOLD:
+            	// Call or Fold.
+                add(callButton);
                 add(foldButton);
                 break;
             case CHECK_RAISE_FOLD:

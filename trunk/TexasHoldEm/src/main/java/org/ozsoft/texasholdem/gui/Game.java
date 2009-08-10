@@ -1,7 +1,7 @@
 package org.ozsoft.texasholdem.gui;
 
 /**
- * Swing version of Texas Hold'em Limit Poker.
+ * Swing version of Limit Texas Hold'em poker.
  * 
  * @author Oscar Stigter
  */
