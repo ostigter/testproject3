@@ -1,19 +1,131 @@
 Texas Hold'em Poker
 ===================
 
-Phases of each hand:
- 1. Rotate the dealer position.
- 2. Post the small and big blinds.
- 3. Deal the 2 Hole cards per player.
- 4. Pre-Flop betting round.
- 5. Deal the 3 Flop cards on the board.
- 6. Flop betting round.
- 7. Deal the Turn card on the board.
- 8. Turn betting round.
- 9. Deal the River card on the board.
-10. River betting round.
-11. Showdown.
+
+Concepts
+--------
+
+card
+	rank
+	suit
+deck
+dealer
+player
+	cash
+	position
+	hole cards
+board
+hand
+bet
+pot
+small blind
+large blind
+checking
+calling
+betting
+raising
+folding
+showdown
+winning
+
     
+Hand phases
+-----------
+
+- Rotate the dealer position.
+- Post the small and big blinds.
+- Deal the 2 Hole cards per player.
+- Pre-Flop betting round.
+- Deal the 3 Flop cards on the board.
+- Flop betting round.
+- Deal the Turn card on the board.
+- Turn betting round.
+- Deal the River card on the board.
+- River betting round.
+- Showdown.
+
+
+Action types
+------------
+
+enum ActionType {
+	CHECK
+	CALL
+	BET
+	RAISE
+	FOLD
+}
+
+
+Action classes
+--------------
+
+Action
+	CheckAction()
+	CallAction(int bet)
+	BetAction(int amount)
+	RaiseAction(int amount)
+	FoldAction()
+
+
+Action conditions
+-----------------
+
+Check: (bet == 0)
+Bet:   (bet == 0)
+Call:  (myBet < bet)
+Raise: (bet > 0)
+Fold:  Anytime
+
+
+Player interface
+----------------
+
+/**
+ * A Texas Hold'em player.
+ *
+ * Must be implemented by all players (humans and bots).
+ */
+interface Player {
+
+	/**
+	 * Requests the player to act.
+	 *
+	 * @param allowedActions  The allowed actions.
+	 * @param board           The board (community cards).
+	 * @param bet             The current bet.
+	 * @param pot             The current pot.
+	 * @param position        The player's table position
+	 * @param players         The other players
+	 *
+	 * @return The selected action.
+	 */
+	Action act(ActionType[] allowedActions, Card[] board, bet, pot, position, PlayerInfo[] players)
+
+	/**
+	 * Notification that a player has acted her turn.
+	 *
+	 * @param player The player.
+	 * @param action The action.
+	 */
+	void playerActed(PlayerInfo player, Action action)
+
+}
+
+/**
+ * A player's public information.
+ */
+class PlayerInfo {
+	String getName()
+	int getCash()
+	int getBet()
+	Action getLastAction()
+}
+
+
+Client/server
+-------------
+
 Server
 Client
 Player
@@ -28,81 +140,28 @@ Command
     CallCommand
     RaiseCommand(int)
     FoldCommand
-    
-    
-Action
-    CheckAction
-    BetAction(int amount)
-    RaiseAction(int amount)
-    CallAction
-    FoldAction
-
-Hole cards, first position:  Bet or Fold
-Hole cards, other positions: Call, Raise or Fold
-Hole cards, raised:          Call, Raise or Fold
-
-Flop/Turn/River, first position:            Check, Bet or Fold
-Flop/Turn/River, other positions, checked:  Check, Bet or Fold
-Flop/Turn/River, other positions, bet:      Call, Raise or Fold
-Flop/Turn/River, other positions, raised:   Call, Raise or Fold
-
-Check: (noOfBoardCards > 0) && (bet == 0)
-Bet:   (bet == 0)
-Call:  (bet > 0)
-Raise: (bet > 0)
-Fold:  Anytime
-
-if (bet == 0) {
-  if (noOfBoardCards == 0) {
-    CheckAction
-  } else {
-    BetAction
-  }
-} else {
-  CallAction || RaiseAction
-}
-|| FoldAction
 
 
-
-Player action algorithm
------------------------
+Bot algorithm
+-------------
 
 Factors:
 - hole cards
-- board cards (Flop, Turn, River)
+- board cards
+  - potential duplicates (more than One Pair)
+  - potential straight
+  - potential flush
 - number of players
 - table position
-- cash
 - bet
 - pot
-- bluffing (self)
-- actions opponents earlier positions
-- opponent history
-- opponent aggression
-- bluffing opponents
+- cash
+- actions from earlier table positions
+- bluffing
+- opponent behavior
+  - bet
+  - cash
+  - tightness (loose/tight)
+  - aggression (passive/aggressive)
+  - bluffing
 
-getAction(
-    ActionType[] allowedActions,
-    Card[] board,
-    Action[] prevActions,
-    int pot,
-    int bet,
-    int playersAfter
-) : Action
-
-getAction(
-    {CALL, RAISE, FOLD},
-    {Jh, 10d, 8d, 7c},
-    {CALL, FOLD, RAISE(2), CALL},
-    20,
-    4,
-    3
-);
-Allowed: Call, Raise or Fold
-Board:   Jh 10d 8d 7c
-Actions: CALL, FOLD, RAISE(2), CALL
-Bet:     $4
-Pot:     $20
-Active players before: 3 
-Active players after:  3 (7 players total)
