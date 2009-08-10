@@ -45,7 +45,7 @@ public class MainFrame extends JFrame {
     private Player[] players;
     private PlayerPanel[] playerPanels;
     private int noOfBoardCards;
-    private int handNumber;
+    private int hand;
     private int dealer;
     private int actor;
     private int bet;
@@ -60,9 +60,9 @@ public class MainFrame extends JFrame {
         setLayout(new GridBagLayout());
         players = new Player[] {
             new HumanPlayer("Buffy",    STARTING_CASH),
-            new HumanPlayer("Willow",   STARTING_CASH),
-            new HumanPlayer("Xander",   STARTING_CASH),
-            new HumanPlayer("Anya",     STARTING_CASH),
+            new DummyBot("Willow",   STARTING_CASH),
+            new DummyBot("Xander",   STARTING_CASH),
+            new DummyBot("Anya",     STARTING_CASH),
 //            new DummyBot("Giles",    STARTING_CASH),
 //            new DummyBot("Wesley",   STARTING_CASH),
 //            new DummyBot("Cordelia", STARTING_CASH),
@@ -137,7 +137,7 @@ public class MainFrame extends JFrame {
      */
     private void runGame() {
     	// Initialize the game.
-    	handNumber = 0;
+    	hand = 0;
     	dealer = -1;
     	actor = -1;
     	
@@ -159,8 +159,9 @@ public class MainFrame extends JFrame {
             actor = dealer;
             rotateActor();
             players[actor].postSmallBlind(MIN_BET / 2);
+            bet = MIN_BET;
             pot += MIN_BET / 2;
-            boardPanel.setPot(pot);
+            boardPanel.update(hand, bet, pot);
             boardPanel.setMessage(players[actor].getName() + " posts the small blind.");
             playerPanels[actor].update();
         	getInput(ControlPanel.CONTINUE);
@@ -169,7 +170,7 @@ public class MainFrame extends JFrame {
             rotateActor();
             players[actor].postBigBlind(MIN_BET);
             pot += MIN_BET;
-            boardPanel.setPot(pot);
+            boardPanel.update(hand, bet, pot);
             boardPanel.setMessage(players[actor].getName() + " posts the big blind.");
             playerPanels[actor].update();
         	getInput(ControlPanel.CONTINUE);
@@ -212,7 +213,6 @@ public class MainFrame extends JFrame {
      * Performs a betting round.
      */
     private void doBettingRound() {
-        bet = MIN_BET;
         // Count the number of active players left in this hand.
         int activePlayers = 0;
         for (Player player : players) {
@@ -273,7 +273,7 @@ public class MainFrame extends JFrame {
         	player.performAction(boardCards, noOfBoardCards, MIN_BET, bet);
         	boardPanel.setMessage(String.format("%s %s.", player, player.getAction().getVerb()));
         	playerPanels[actor].update();
-        	boardPanel.setPot(pot);
+            boardPanel.update(hand, bet, pot);
         	getInput(ControlPanel.CONTINUE);
     	} else {
 	    	// Determine action.
@@ -303,7 +303,7 @@ public class MainFrame extends JFrame {
 	    	
 	    	// Update screen.
         	playerPanels[actor].update();
-        	boardPanel.setPot(pot);
+            boardPanel.update(hand, bet, pot);
     	}
     }
     
@@ -315,7 +315,7 @@ public class MainFrame extends JFrame {
 	 * 
 	 * @return The selected action.
 	 */
-    private int getInput(int actions) {
+    private int getInput(final int actions) {
         boardPanel.setActions(actions);
         waitingForPlayer = true;
         try {
@@ -328,16 +328,22 @@ public class MainFrame extends JFrame {
         return boardPanel.getAction();
     }
     
+    /**
+     * Notification that a human player has selected an action.
+     */
     public void playerActed() {
         waitingForPlayer = false;
     }
     
+    /**
+     * Prepares game for a new hand.
+     */
     private void resetHand() {
-    	handNumber++;
+    	hand++;
     	noOfBoardCards = 0;
     	pot = 0;
     	bet = 0;
-    	boardPanel.setPot(pot);
+        boardPanel.update(hand, bet, pot);
         for (Player player : players) {
         	player.reset();
         }
@@ -347,6 +353,9 @@ public class MainFrame extends JFrame {
     	deck.shuffle();
     }
     
+    /**
+     * Rotates the dealer button one position clockwise.
+     */
     private void rotateDealer() {
         if (dealer != -1) {
             playerPanels[dealer].setDealer(false);
@@ -355,6 +364,9 @@ public class MainFrame extends JFrame {
         playerPanels[dealer].setDealer(true);
     }
     
+    /**
+     * Rotates the acting player by one position clockwise.
+     */
     private void rotateActor() {
         if (actor != -1) {
             playerPanels[actor].setInTurn(false);

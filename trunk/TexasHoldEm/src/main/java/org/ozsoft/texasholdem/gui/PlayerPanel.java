@@ -32,6 +32,12 @@ public class PlayerPanel extends JPanel {
     /** Empty dealer button image when player is not dealer. */
 	private static final Icon BUTTON_ABSENT_ICON =
             ResourceManager.getIcon("/images/button_absent.png");
+	
+	private static final Icon CARD_PLACEHOLDER_ICON =
+		ResourceManager.getIcon("/images/card_placeholder.png");
+
+	private static final Icon CARD_BACK_ICON =
+			ResourceManager.getIcon("/images/card_back.png");
     
 	/** The border. */
 	private static final Border BORDER = new EmptyBorder(10, 10, 10, 10);
@@ -179,11 +185,17 @@ public class PlayerPanel extends JPanel {
         
         Card[] cards = player.getCards();
         if (cards.length == 2) {
-            card1Label.setIcon(ResourceManager.getCardImage(cards[0]));
-            card2Label.setIcon(ResourceManager.getCardImage(cards[1]));
+        	if (player instanceof HumanPlayer) {
+	            card1Label.setIcon(ResourceManager.getCardImage(cards[0]));
+	            card2Label.setIcon(ResourceManager.getCardImage(cards[1]));
+        	} else {
+	            card1Label.setIcon(CARD_BACK_ICON);
+	            card2Label.setIcon(CARD_BACK_ICON);
+        		
+        	}
         } else {
-            card1Label.setIcon(ResourceManager.getIcon("/images/card_placeholder.png"));
-            card2Label.setIcon(ResourceManager.getIcon("/images/card_placeholder.png"));
+            card1Label.setIcon(CARD_PLACEHOLDER_ICON);
+            card2Label.setIcon(CARD_PLACEHOLDER_ICON);
         }
     }
     
