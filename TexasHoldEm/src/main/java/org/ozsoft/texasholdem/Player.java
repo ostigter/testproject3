@@ -28,6 +28,9 @@ public abstract class Player {
     /** The current bet. */
     protected int bet;
     
+    /** The number of bets and raises in the current betting round. */
+    protected int raises;
+    
     /** Whether the player has gone all-in. */
     protected boolean allIn;
     
@@ -57,6 +60,7 @@ public abstract class Player {
     public final void reset() {
     	if (!isBroke()) {
 	        bet = 0;
+	        raises = 0;
 	        allIn = false;
 	        action = null;
 	        hasFolded = false;
@@ -109,6 +113,15 @@ public abstract class Player {
      */
     public final int getBet() {
         return bet;
+    }
+    
+    /**
+	 * Returns the number of raises the player has done in this betting round.
+	 * 
+	 * @return The number of raises.
+	 */
+    public final int getRaises() {
+    	return raises;
     }
     
     /**
@@ -223,6 +236,7 @@ public abstract class Player {
         action = new BetAction(amount);
         cash -= amount;
         bet += amount;
+        raises++;
     }
     
     /**
@@ -235,9 +249,11 @@ public abstract class Player {
      */
     public final void raise(int currentBet, int raise) {
         action = new RaiseAction(raise);
-        int amount = (currentBet < bet) ? (bet - currentBet) + raise : raise;
+        currentBet += raise;
+        int amount = currentBet - bet;
         cash -= amount;
         bet += amount;
+        raises++;
     }
     
 	/**

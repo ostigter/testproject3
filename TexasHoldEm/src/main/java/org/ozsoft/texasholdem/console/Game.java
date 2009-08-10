@@ -13,7 +13,7 @@ import org.ozsoft.texasholdem.actions.FoldAction;
 import org.ozsoft.texasholdem.actions.RaiseAction;
 
 /**
- * Console version of Texas Hold'em Limit Poker.
+ * Console version of Limit Texas Hold'em poker.
  * 
  * @author Oscar Stigter
  */

@@ -35,42 +35,80 @@ public class MainFrame extends JFrame {
     /** The minimum bet in dollars. */
     private static final int MIN_BET = 2;
     
+    /** The maximum number of bets and raises per player. */
+    private static final int MAX_RAISES = 4;
+    
+    /** The maximum number of community cards on the board. */
+    private static final int BOARD_SIZE = 5;
+    
     /** The polling delay in ms when waiting for a player to act. */
     private static final long POLLING_DELAY = 100L;
     
     private final GridBagConstraints gc = new GridBagConstraints();
-    private final Deck deck = new Deck();
-    private final Card[] boardCards = new Card[5];
-    private final BoardPanel boardPanel = new BoardPanel(this);
-    private Player[] players;
-    private PlayerPanel[] playerPanels;
-    private int noOfBoardCards;
-    private int hand;
-    private int dealer;
-    private int actor;
-    private int bet;
-    private int pot;
-    private boolean waitingForPlayer = false;
-    private boolean gameOver = false;
     
+    /** The deck of cards. */
+    private final Deck deck;
+    
+    /** The board with the community cards. */
+    private final Card[] boardCards;
+    
+    /** The board panel. */
+    private final BoardPanel boardPanel;
+    
+    /** The players. */
+    private Player[] players;
+    
+    /** The player panels. */
+    private PlayerPanel[] playerPanels;
+
+    /** The number of dealt community cards. */
+    private int noOfBoardCards;
+
+    /** The current hand number. */
+    private int hand;
+
+    /** The current dealer position. */
+    private int dealer;
+
+    /** The current player in turn (actor). */
+    private int actor;
+
+    /** The minimum bet. */
+    private int minBet;
+
+    /** The current bet. */
+    private int bet;
+    
+    /** The pot. */
+    private int pot;
+    
+    /** Whether the game is waiting for a player to act. */
+    private boolean waitingForPlayer;
+
+    /** Whether the game is over. */
+    private boolean gameOver;
+    
+    /**
+     * Constructor.
+     */
     public MainFrame() {
-        super("Texas Hold'em Limit poker");
+        super("Limit Texas Hold'em poker");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setBackground(UIConstants.TABLE_COLOR);
         setLayout(new GridBagLayout());
+        
+        deck = new Deck();
+
+        boardCards = new Card[BOARD_SIZE];
+        boardPanel = new BoardPanel(this);        
+        
         players = new Player[] {
-            new HumanPlayer("Buffy",    STARTING_CASH),
-            new DummyBot("Willow",   STARTING_CASH),
-            new DummyBot("Xander",   STARTING_CASH),
-            new DummyBot("Anya",     STARTING_CASH),
-//            new DummyBot("Giles",    STARTING_CASH),
-//            new DummyBot("Wesley",   STARTING_CASH),
-//            new DummyBot("Cordelia", STARTING_CASH),
-//            new DummyBot("Angel",    STARTING_CASH),
-//            new DummyBot("Spike",    STARTING_CASH),
-//            new DummyBot("Drusilla", STARTING_CASH),
-//            new DummyBot("Darla",    STARTING_CASH),
+            new HumanPlayer("Player", STARTING_CASH),
+            new HumanPlayer("Joe", STARTING_CASH),
+            new HumanPlayer("Mike", STARTING_CASH),
+            new HumanPlayer("Eddy", STARTING_CASH),
         };
+        
         playerPanels = new PlayerPanel[NO_OF_PLAYERS];
         for (int i = 0; i < NO_OF_PLAYERS; i++) {
             playerPanels[i] = new PlayerPanel(players[i]);
@@ -107,7 +145,7 @@ public class MainFrame extends JFrame {
     }
     
 	/**
-	 * Adds a UI component.
+	 * Adds an UI component.
 	 * 
 	 * @param component
 	 *            The component.
@@ -140,9 +178,10 @@ public class MainFrame extends JFrame {
     	hand = 0;
     	dealer = -1;
     	actor = -1;
+    	gameOver = false;
     	
     	// Show welcome text.
-        boardPanel.setMessage("Welcome to Texas Hold'em Limit poker!");
+        boardPanel.setMessage("Welcome to Limit Texas Hold'em poker!");
     	getInput(ControlPanel.CONTINUE);
     	
         // Main game loop, playing hands until all but one player are broke.
@@ -152,7 +191,7 @@ public class MainFrame extends JFrame {
             
             // Rotate dealer.
             rotateDealer();
-            boardPanel.setMessage(String.format("%s is the dealer.", players[dealer].getName()));
+            boardPanel.setMessage(String.format("%s is the dealer.", players[dealer]));
         	getInput(ControlPanel.CONTINUE);
             
             // Post the small blind.
@@ -162,7 +201,7 @@ public class MainFrame extends JFrame {
             bet = MIN_BET;
             pot += MIN_BET / 2;
             boardPanel.update(hand, bet, pot);
-            boardPanel.setMessage(players[actor].getName() + " posts the small blind.");
+            boardPanel.setMessage(players[actor] + " posts the small blind.");
             playerPanels[actor].update();
         	getInput(ControlPanel.CONTINUE);
             
@@ -171,7 +210,7 @@ public class MainFrame extends JFrame {
             players[actor].postBigBlind(MIN_BET);
             pot += MIN_BET;
             boardPanel.update(hand, bet, pot);
-            boardPanel.setMessage(players[actor].getName() + " posts the big blind.");
+            boardPanel.setMessage(players[actor] + " posts the big blind.");
             playerPanels[actor].update();
         	getInput(ControlPanel.CONTINUE);
             
@@ -182,22 +221,43 @@ public class MainFrame extends JFrame {
             for (int i = 0; i < NO_OF_PLAYERS; i++) {
             	playerPanels[i].update();
             }
-            boardPanel.setMessage(players[dealer].getName() + " deals the Hole Cards.");
+            boardPanel.setMessage(players[dealer] + " deals the Hole Cards.");
         	getInput(ControlPanel.CONTINUE);
             
             // Pre-Flop betting round.
+        	minBet = MIN_BET;
             doBettingRound();
             
-            // Deal the Flop Cards.
-            noOfBoardCards = 3;
-            for (int i = 0; i < noOfBoardCards; i++) {
-                boardCards[i] = deck.deal();
-            }
+            // Deal the Flop.
+            boardCards[noOfBoardCards++] = deck.deal();
+            boardCards[noOfBoardCards++] = deck.deal();
+            boardCards[noOfBoardCards++] = deck.deal();
             boardPanel.setCards(boardCards, noOfBoardCards);
-            boardPanel.setMessage(players[dealer].getName() + " deals the Flop.");
+            boardPanel.setMessage(players[dealer] + " deals the Flop.");
         	getInput(ControlPanel.CONTINUE);
             
             // Flop betting round.
+        	actor = dealer;
+            doBettingRound();
+            
+            // Deal the Turn.
+            boardCards[noOfBoardCards++] = deck.deal();
+            boardPanel.setCards(boardCards, noOfBoardCards);
+            boardPanel.setMessage(players[dealer] + " deals the Turn.");
+        	getInput(ControlPanel.CONTINUE);
+            
+            // Turn betting round.
+        	actor = dealer;
+        	minBet = 2 * MIN_BET;
+            doBettingRound();
+            
+            // Deal the River.
+            boardCards[noOfBoardCards++] = deck.deal();
+            boardPanel.setCards(boardCards, noOfBoardCards);
+            boardPanel.setMessage(players[dealer] + " deals the River.");
+        	getInput(ControlPanel.CONTINUE);
+            
+            // River betting round.
         	actor = dealer;
             doBettingRound();
             
@@ -224,11 +284,13 @@ public class MainFrame extends JFrame {
         int playersToAct = activePlayers;
         // Keep going round the table until all players have acted.
         while (playersToAct > 0) {
+        	boolean hasActed = false;
         	rotateActor();
             Player player = players[actor];
             // Only allow active players.
-            if (!player.hasFolded() && !player.isBroke()) {
+            if (!player.isBroke() && !player.hasFolded() && player.getRaises() < MAX_RAISES) {
             	act(player);
+            	hasActed = true;
                 playersToAct--;
                 Action action = player.getAction();
                 if (action instanceof FoldAction && playersToAct == 1) {
@@ -241,17 +303,21 @@ public class MainFrame extends JFrame {
                     int amount = ((BetAction) action).getAmount();
                     bet = amount;
                     pot += amount;
-                    // Make sure other players must react.
+                    // Make sure other players must react to the bet.
+                    // This player will get another turn.
                     playersToAct = activePlayers;
                 } else if (action instanceof RaiseAction) {
                 	int amount = ((RaiseAction) action).getAmount();
                     bet += amount;
                     pot += amount;
-                    // Make sure other players must react.
+                    // Make sure other players must react to the raise.
                     playersToAct = activePlayers;
                 } else {
                 	// Player checked.
                 }
+            }
+            if (!hasActed) {
+            	playersToAct = 0;
             }
         }
         for (Player player : players) {
@@ -263,14 +329,14 @@ public class MainFrame extends JFrame {
 	 * Lets a player act her turn.
 	 * 
 	 * @param player
-	 *            The player.
+	 *            The player who's turn it is to act.
 	 */
     private void act(Player player) {
     	boardPanel.setMessage(String.format("%s's turn.", player));
     	int action = -1;
     	
     	if (player instanceof DummyBot) {
-        	player.performAction(boardCards, noOfBoardCards, MIN_BET, bet);
+        	player.performAction(boardCards, noOfBoardCards, minBet, bet);
         	boardPanel.setMessage(String.format("%s %s.", player, player.getAction().getVerb()));
         	playerPanels[actor].update();
             boardPanel.update(hand, bet, pot);
@@ -281,10 +347,16 @@ public class MainFrame extends JFrame {
 	            // Check, Bet or Fold.
 	        	action = getInput(ControlPanel.CHECK_BET_FOLD);
 	        } else if (player.getBet() < bet) {
-	            // Call, Raise or Fold.
-	        	action = getInput(ControlPanel.CALL_RAISE_FOLD);
+	        	if (player.getRaises() < MAX_RAISES) {
+		            // Call, Raise or Fold.
+		        	action = getInput(ControlPanel.CALL_RAISE_FOLD);
+	        	} else {
+		            // Call or Fold.
+		        	action = getInput(ControlPanel.CALL_FOLD);
+	        	}
 	        } else {
 	            // Check, Raise or Fold.
+	        	//FIXME: Is this even possible?
 	        	action = getInput(ControlPanel.CHECK_RAISE_FOLD);
 	        }
 	
@@ -294,9 +366,9 @@ public class MainFrame extends JFrame {
 	        } else if (action == ControlPanel.CALL) {
 	        	player.call(bet);
 	        } else if (action == ControlPanel.BET) {
-	        	player.bet(MIN_BET);
+	        	player.bet(minBet);
 	        } else if (action == ControlPanel.RAISE) {
-	        	player.raise(bet, MIN_BET);
+	        	player.raise(bet, minBet);
 	        } else {
 	        	player.fold();
 	        }
