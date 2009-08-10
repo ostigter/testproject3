@@ -108,6 +108,7 @@ public class Game {
             // Post the small and big blinds.
             players[(dealer + 1) % NO_OF_PLAYERS].postSmallBlind(MIN_BET / 2);
             pot += MIN_BET / 2;
+            bet = MIN_BET;
             System.out.format("%s posts the small blind.\n", players[dealer + 1]);
             players[(dealer + 2) % NO_OF_PLAYERS].postBigBlind(MIN_BET);
             pot += MIN_BET;
@@ -134,6 +135,7 @@ public class Game {
             System.out.println();
             
             // Flop betting round.
+            bet = 0;
             doBettingRound(2);
             printPlayers();
             
@@ -147,6 +149,7 @@ public class Game {
             System.out.println();
             
             // Turn betting round.
+            bet = 0;
             doBettingRound(3);
             printPlayers();
             
@@ -160,6 +163,7 @@ public class Game {
             System.out.println();
             
             // River betting round.
+            bet = 0;
             doBettingRound(4);
             printPlayers();
             
@@ -210,7 +214,6 @@ public class Game {
     }
 
     private void doBettingRound(int round) {
-        bet = 0;
     	// Determine starting actor. Normally position 2 (1 left of dealer),
     	// but two positons further at Pre-Flop (because of blinds). 
         int offset = (round == 1) ? 2 : 0;
