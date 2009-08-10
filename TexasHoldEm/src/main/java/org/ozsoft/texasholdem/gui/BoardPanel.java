@@ -20,6 +20,12 @@ public class BoardPanel extends JPanel {
 	/** The serial version UID. */
 	private static final long serialVersionUID = 1L;
 	
+	/** Label with the hand number. */
+	private final JLabel handLabel;
+
+	/** Label with the bet. */
+	private final JLabel betLabel;
+
 	/** Label with the pot. */
 	private final JLabel potLabel;
 
@@ -44,20 +50,88 @@ public class BoardPanel extends JPanel {
         setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
         
-        // The pot.
-        potLabel = new JLabel();
-        potLabel.setBorder(UIConstants.LABEL_BORDER);
-        potLabel.setForeground(Color.GREEN);
-        potLabel.setHorizontalAlignment(JLabel.CENTER);
+        JLabel label = new JLabel("Hand");
+        label.setForeground(Color.GREEN);
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 1.0;
+        gc.weighty = 0.0;
+        gc.insets = new Insets(5, 5, 0, 5);
+        add(label, gc);
+        
+        label = new JLabel("Bet");
+        label.setForeground(Color.GREEN);
         gc.gridx = 2;
         gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 1.0;
+        gc.weighty = 0.0;
+        gc.insets = new Insets(5, 5, 0, 5);
+        add(label, gc);
+        
+        label = new JLabel("Pot");
+        label.setForeground(Color.GREEN);
+        gc.gridx = 4;
+        gc.gridy = 0;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.NONE;
+        gc.weightx = 1.0;
+        gc.weighty = 0.0;
+        gc.insets = new Insets(5, 5, 0, 5);
+        add(label, gc);
+        
+        handLabel = new JLabel();
+        handLabel.setBorder(UIConstants.LABEL_BORDER);
+        handLabel.setForeground(Color.GREEN);
+        handLabel.setHorizontalAlignment(JLabel.CENTER);
+        gc.gridx = 0;
+        gc.gridy = 1;
         gc.gridwidth = 1;
         gc.gridheight = 1;
         gc.anchor = GridBagConstraints.CENTER;
         gc.fill = GridBagConstraints.HORIZONTAL;
         gc.weightx = 1.0;
         gc.weighty = 0.0;
-        gc.insets = new Insets(10, 0, 5, 0);
+        gc.insets = new Insets(5, 5, 5, 5);
+        add(handLabel, gc);
+
+        betLabel = new JLabel();
+        betLabel.setBorder(UIConstants.LABEL_BORDER);
+        betLabel.setForeground(Color.GREEN);
+        betLabel.setHorizontalAlignment(JLabel.CENTER);
+        gc.gridx = 2;
+        gc.gridy = 1;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1.0;
+        gc.weighty = 0.0;
+        gc.insets = new Insets(5, 5, 5, 5);
+        add(betLabel, gc);
+
+        potLabel = new JLabel();
+        potLabel.setBorder(UIConstants.LABEL_BORDER);
+        potLabel.setForeground(Color.GREEN);
+        potLabel.setHorizontalAlignment(JLabel.CENTER);
+        gc.gridx = 4;
+        gc.gridy = 1;
+        gc.gridwidth = 1;
+        gc.gridheight = 1;
+        gc.anchor = GridBagConstraints.CENTER;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1.0;
+        gc.weighty = 0.0;
+        gc.insets = new Insets(5, 5, 5, 5);
         add(potLabel, gc);
 
         // The five card positions.
@@ -65,14 +139,14 @@ public class BoardPanel extends JPanel {
         for (int i = 0; i < 5; i++) {
             cardLabels[i] = new JLabel(ResourceManager.getIcon("/images/card_placeholder.png"));
             gc.gridx = i;
-            gc.gridy = 1;
+            gc.gridy = 2;
             gc.gridwidth = 1;
             gc.gridheight = 1;
             gc.weightx = 0.0;
             gc.weighty = 0.0;
             gc.anchor = GridBagConstraints.CENTER;
             gc.fill = GridBagConstraints.NONE;
-            gc.insets = new Insets(5, 5, 5, 5);
+            gc.insets = new Insets(10, 5, 10, 5);
             add(cardLabels[i], gc);
         }
         
@@ -81,7 +155,7 @@ public class BoardPanel extends JPanel {
         messageLabel.setForeground(Color.YELLOW);
         messageLabel.setHorizontalAlignment(JLabel.CENTER);
         gc.gridx = 0;
-        gc.gridy = 2;
+        gc.gridy = 3;
         gc.gridwidth = 5;
         gc.gridheight = 1;
         gc.weightx = 1.0;
@@ -94,7 +168,7 @@ public class BoardPanel extends JPanel {
         // Control panel.
         controlPanel = new ControlPanel(mainFrame);
         gc.gridx = 0;
-        gc.gridy = 3;
+        gc.gridy = 4;
         gc.gridwidth = 5;
         gc.gridheight = 1;
         gc.weightx = 1.0;
@@ -104,8 +178,32 @@ public class BoardPanel extends JPanel {
         gc.fill = GridBagConstraints.BOTH;
         add(controlPanel, gc);
         
-        setPot(0);
+        update(1, 0, 0);
         setMessage("");
+    }
+    
+	/**
+	 * Updates the current hand status.
+	 * 
+	 * @param handNumber
+	 *            The hand number.
+	 * @param bet
+	 *            The bet.
+	 * @param pot
+	 *            The pot.
+	 */
+    public void update(int handNumber, int bet, int pot) {
+        handLabel.setText(String.valueOf(handNumber));
+    	if (bet == 0) {
+            betLabel.setText(" ");
+    	} else {
+            betLabel.setText("$ " + bet);
+    	}
+    	if (pot == 0) {
+            potLabel.setText(" ");
+    	} else {
+            potLabel.setText("$ " + pot);
+    	}
     }
     
 	/**
@@ -122,16 +220,6 @@ public class BoardPanel extends JPanel {
     			cardLabels[i].setIcon(ResourceManager.getIcon("/images/card_placeholder.png"));
     		}
     	}
-    }
-    
-	/**
-	 * Sets the pot.
-	 * 
-	 * @param pot
-	 *            The pot.
-	 */
-    public void setPot(int pot) {
-        potLabel.setText("$ " + pot);
     }
     
 	/**
@@ -154,8 +242,8 @@ public class BoardPanel extends JPanel {
 	 * @param actions
 	 *            The allowed actions.
 	 */
-    public void setActions(int actions) {
-        controlPanel.setActions(actions);
+    public void setActions(final int actions) {
+    	controlPanel.setActions(actions);
     }
     
 	/**

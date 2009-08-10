@@ -65,7 +65,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 	 * @param actions
 	 *            The allowed actions.
 	 */
-    public void setActions(int actions) {
+    public void setActions(final int actions) {
         removeAll();
         switch (actions) {
         	case NONE:
