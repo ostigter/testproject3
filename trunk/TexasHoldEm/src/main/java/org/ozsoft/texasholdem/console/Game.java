@@ -94,7 +94,7 @@ public class Game {
         	pot = 0;
             noOfBoardCards = 0;
             for (Player player : players) {
-            	player.reset();
+            	player.resetHand();
             }
             
             // Rotate the dealer position clockwise.
@@ -265,7 +265,7 @@ public class Game {
             }
         }
         for (Player player : players) {
-        	player.reset();
+        	player.resetBet();
         }
     }
     
