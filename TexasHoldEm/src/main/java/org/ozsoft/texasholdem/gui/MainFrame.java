@@ -293,9 +293,13 @@ public class MainFrame extends JFrame {
             	hasActed = true;
                 playersToAct--;
                 Action action = player.getAction();
-                if (action instanceof FoldAction && playersToAct == 1) {
-                    // The last remaining player wins.
-                	//TODO: Last remaining player wins.
+                if (action instanceof FoldAction) {
+                	activePlayers--;
+                	if (playersToAct == 1) {
+                        // The last remaining player wins.
+                		win(player);
+                		playersToAct = 0;
+                	}
                 } else if (action instanceof CallAction) {
                 	int amount = ((CallAction) action).getAmount(); 
                 	pot += amount;
@@ -321,7 +325,7 @@ public class MainFrame extends JFrame {
             }
         }
         for (Player player : players) {
-        	player.reset();
+        	player.resetBet();
         }
     }
     
@@ -379,29 +383,8 @@ public class MainFrame extends JFrame {
     	}
     }
     
-	/**
-	 * Asks the human player to select an action, and returns the action.
-	 * 
-	 * @param actions
-	 *            The allowed actions.
-	 * 
-	 * @return The selected action.
-	 */
-    private int getInput(final int actions) {
-        boardPanel.setActions(actions);
-        waitingForPlayer = true;
-        try {
-            while (waitingForPlayer) {
-                Thread.sleep(POLLING_DELAY);
-            }
-        } catch (InterruptedException e) {
-            // Ignore.
-        }
-        return boardPanel.getAction();
-    }
-    
     /**
-     * Notification that a human player has selected an action.
+     * Notification that a player has acted.
      */
     public void playerActed() {
         waitingForPlayer = false;
@@ -417,7 +400,7 @@ public class MainFrame extends JFrame {
     	bet = 0;
         boardPanel.update(hand, bet, pot);
         for (Player player : players) {
-        	player.reset();
+        	player.resetHand();
         }
         for (int i = 0; i < NO_OF_PLAYERS; i++) {
         	playerPanels[i].update();
@@ -445,6 +428,40 @@ public class MainFrame extends JFrame {
         }
         actor = (actor + 1) % NO_OF_PLAYERS;
         playerPanels[actor].setInTurn(true);
+    }
+    
+	/**
+	 * Asks the human player to select an action, and returns the action.
+	 * 
+	 * @param actions
+	 *            The allowed actions.
+	 * 
+	 * @return The selected action.
+	 */
+    private int getInput(final int actions) {
+        boardPanel.setActions(actions);
+        waitingForPlayer = true;
+        try {
+            while (waitingForPlayer) {
+                Thread.sleep(POLLING_DELAY);
+            }
+        } catch (InterruptedException e) {
+            // Ignore.
+        }
+        return boardPanel.getAction();
+    }
+    
+	/**
+	 * A player wins the pot.
+	 * 
+	 * @param player
+	 *            The winning player.
+	 */
+    private void win(Player player) {
+    	player.win(pot);
+    	playerPanels[actor].update();
+    	boardPanel.setMessage(String.format("%s wins.", player));
+    	getInput(ControlPanel.CONTINUE);
     }
     
 }

@@ -78,14 +78,47 @@ Raise: (bet > 0)
 Fold:  Anytime
 
 
-Player interface
-----------------
+Classes
+-------
 
-/**
- * A Texas Hold'em player.
- *
- * Must be implemented by all players (humans and bots).
- */
+class Card {
+	-rank : int
+	-suit : int
+	+Card(int rank, int suit)
+	+Card(String s)
+	+getRank() : int
+	+getSuit() : int
+}
+
+class Deck {
+	-cards : Card[]
+	+shuffle()
+	+deal() : Card
+	+deal(int noOfCards) : Card[]
+	+deal(int rank, int suit) : Card
+	+reset()
+}
+
+class GameEngine {
+	int blind;
+	Deck deck;
+	Board board;
+	Player[] players;
+	List<Player> activePlayers;
+	int handNumber;
+	int bet;
+	int pot;
+	GameEngine(int blind, Players[] players)
+	start();
+}
+
+class Board {
+    -cards : Card[]
+    -noOfCards : int
+	+update(Card[] cards, int noOfCards, int bet, int pot)
+	+setMessage(String message)
+}
+
 interface Player {
 
 	/**
@@ -112,34 +145,12 @@ interface Player {
 
 }
 
-/**
- * A player's public information.
- */
 class PlayerInfo {
 	String getName()
 	int getCash()
 	int getBet()
 	Action getLastAction()
 }
-
-
-Client/server
--------------
-
-Server
-Client
-Player
-Deck
-Hand
-Card
-Command
-    NewGame(Player[])
-    Connect(Player)
-    CheckCommand
-    BetCommand(int)
-    CallCommand
-    RaiseCommand(int)
-    FoldCommand
 
 
 Bot algorithm

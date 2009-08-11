@@ -51,19 +51,30 @@ public abstract class Player {
     public Player(String name, int cash) {
         this.name = name;
         this.cash = cash;
-        reset();
+        resetHand();
     }
     
     /**
      * Prepares the player for another hand.
      */
-    public final void reset() {
+    public final void resetHand() {
     	if (!isBroke()) {
 	        bet = 0;
 	        raises = 0;
 	        allIn = false;
 	        action = null;
 	        hasFolded = false;
+    	}
+    }
+    
+    /**
+     * Prepares the player for another betting round.
+     */
+    public final void resetBet() {
+    	if (!isBroke()) {
+	        bet = 0;
+	        raises = 0;
+	        allIn = false;
     	}
     }
     
@@ -199,6 +210,7 @@ public abstract class Player {
     public final void fold() {
         action = new FoldAction();
         hasFolded = true;
+        hand.removeAllCards();
     }
     
     /**
