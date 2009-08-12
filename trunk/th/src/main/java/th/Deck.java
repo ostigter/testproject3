@@ -1,5 +1,7 @@
 package th;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -83,16 +85,16 @@ public class Deck {
 	 * @throws IllegalStateException
 	 *             If there are no cards left in the deck.
 	 */
-    public Card[] deal(int noOfCards) {
+    public List<Card> deal(int noOfCards) {
         if (noOfCards < 1) {
             throw new IllegalArgumentException("noOfCards < 1");
         }
         if (nextCardIndex + noOfCards >= NO_OF_CARDS) {
         	throw new IllegalStateException("No cards left in deck");
         }
-        Card[] dealtCards = new Card[noOfCards];
+        List<Card> dealtCards = new ArrayList<Card>();
         for (int i = 0; i < noOfCards; i++) {
-            dealtCards[i] = cards[nextCardIndex++];
+            dealtCards.add(cards[nextCardIndex++]);
         }
         return dealtCards;
     }

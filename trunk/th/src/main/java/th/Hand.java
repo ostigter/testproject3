@@ -1,5 +1,7 @@
 package th;
 
+import java.util.Collection;
+
 /**
  * A generic hand of game cards.
  * 
@@ -107,7 +109,7 @@ public class Hand {
 	 * @param addedCards
 	 *            The cards to add.
 	 */
-    public void addCards(Card[] addedCards) {
+    public void addCards(Collection<Card> addedCards) {
         for (Card card : addedCards) {
             addCard(card);
         }

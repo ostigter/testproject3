@@ -1,5 +1,6 @@
 package th;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -68,13 +69,16 @@ public abstract class Player {
     /**
      * Sets the hole cards.
      */
-    public final void setCards(Card[] cards) {
-    	if (cards.length != 2) {
-    		throw new IllegalArgumentException("Invalid number of cards");
-    	}
+    public final void setCards(List<Card> cards) {
         hand.removeAllCards();
-        hand.addCards(cards);
-        System.out.format("%s's cards: %s\n", name, hand);
+    	if (cards != null) {
+    		if (cards.size() == 2) {
+    	        hand.addCards(cards);
+    	        System.out.format("%s's cards: %s\n", name, hand);
+    		} else {
+    			throw new IllegalArgumentException("Invalid number of cards");
+    		}
+    	}
     }
     
     /**
@@ -258,6 +262,15 @@ public abstract class Player {
         cash += pot;
     }
     
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public final String toString() {
+    	return name;
+    }
+    
 	/**
 	 * Performs an action.
 	 * 
@@ -265,24 +278,11 @@ public abstract class Player {
 	 *            The allowed actions to choose from.
 	 * @param board
 	 *            The community cards on the board.
-	 * @param noOfBoardCards
-	 *            The number of community cards on the board.
 	 * @param minBet
 	 *            The minimum bet.
 	 * @param currentBet
 	 *            The current bet.
-	 *
-	 * @return The performed action.
 	 */
-    public abstract void act(Set<Action> actions, Card[] board, int noOfBoardCards, int minBet, int currentBet);
+    public abstract void act(Set<Action> actions, List<Card> board, int minBet, int currentBet);
 
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-    	return name;
-    }
-    
 }
