@@ -1,5 +1,6 @@
 package th;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,7 +27,7 @@ public class Bot extends ComputerPlayer {
 	 * @see th.Player#act(java.util.Set, th.Card[], int, int, int)
 	 */
 	@Override
-	public void act(Set<Action> actions, Card[] board, int noOfBoardCards, int minBet, int currentBet) {
+	public void act(Set<Action> actions, List<Card> board, int minBet, int currentBet) {
 		if (actions.contains(Action.CHECK)) {
 			check();
 		} else {
