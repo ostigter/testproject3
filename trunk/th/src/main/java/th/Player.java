@@ -3,45 +3,53 @@ package th;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * A Texas Hold'em player.
  * 
+ * The player's actions are delegated to the client, which can be either human
+ * controlled or computer controlled.
+ * 
  * @author Oscar Stigter
  */
-public abstract class Player {
+public class Player {
     
 	/** The name. */
-	protected final String name;
+	private final String name;
+	
+	/** The client responsible for the actual behavior. */
+	private final PlayerClient client;
 	
     /** The hand of cards. */
-    protected final Hand hand;
+    private final Hand hand;
 
 	/** Current amount of cash. */
-    protected int cash;
+    private int cash;
     
     /** The current bet. */
-    protected int bet;
+    private int bet;
     
     /** The number of bets and raises in the current betting round. */
-    protected int raises;
+    private int raises;
     
     /** The last action performed. */
-    protected Action action;
+    private Action action;
 
     /** Whether the player has gone all-in. */
-    protected boolean allIn;
+    private boolean allIn;
     
 	/**
 	 * Constructs a player.
 	 * 
 	 * @param name
-	 *            The name.
+	 *            The player's name.
+	 * @param client
+	 *            The client interface.
 	 * @param cash
-	 *            The starting cash.
+	 *            The player's starting amount of cash.
 	 */
-    public Player(String name, int cash) {
+    public Player(String name, PlayerClient client, int cash) {
         this.name = name;
+        this.client = client;
         this.cash = cash;
 
         hand = new Hand();
@@ -52,7 +60,7 @@ public abstract class Player {
     /**
      * Prepares the player for another hand.
      */
-    public final void resetHand() {
+    public void resetHand() {
         action = null;
     	resetBet();
     }
@@ -60,7 +68,7 @@ public abstract class Player {
     /**
      * Prepares the player for another betting round.
      */
-    public final void resetBet() {
+    public void resetBet() {
         bet = 0;
         raises = 0;
         allIn = false;
@@ -69,7 +77,7 @@ public abstract class Player {
     /**
      * Sets the hole cards.
      */
-    public final void setCards(List<Card> cards) {
+    public void setCards(List<Card> cards) {
         hand.removeAllCards();
     	if (cards != null) {
     		if (cards.size() == 2) {
@@ -86,7 +94,7 @@ public abstract class Player {
      *
      * @return The name.
      */
-    public final String getName() {
+    public String getName() {
         return name;
     }
     
@@ -95,7 +103,7 @@ public abstract class Player {
      *
      * @return True if the player is broke, otherwise false.
      */
-    public final boolean isBroke() {
+    public boolean isBroke() {
         return (cash == 0);
     }
     
@@ -104,7 +112,7 @@ public abstract class Player {
      *
      * @return The amount of cash.
      */
-    public final int getCash() {
+    public int getCash() {
         return cash;
     }
     
@@ -113,7 +121,7 @@ public abstract class Player {
      *
      * @return The current bet.
      */
-    public final int getBet() {
+    public int getBet() {
         return bet;
     }
     
@@ -122,7 +130,7 @@ public abstract class Player {
 	 * 
 	 * @return The number of raises.
 	 */
-    public final int getRaises() {
+    public int getRaises() {
     	return raises;
     }
     
@@ -131,7 +139,7 @@ public abstract class Player {
      *
      * @return True if all-in, otherwise false.
      */
-    public final boolean isAllIn() {
+    public boolean isAllIn() {
         return allIn;
     }
     
@@ -140,7 +148,7 @@ public abstract class Player {
      *
      * @return  the action
      */
-    public final Action getAction() {
+    public Action getAction() {
         return action;
     }
     
@@ -149,7 +157,7 @@ public abstract class Player {
      *
      * @return The hand of cards.
      */
-    public final Hand getHand() {
+    public Hand getHand() {
         return hand;
     }
     
@@ -158,7 +166,7 @@ public abstract class Player {
      *
      * @return The hole cards.
      */
-    public final Card[] getCards() {
+    public Card[] getCards() {
         return hand.getCards();
     }
     
@@ -168,7 +176,7 @@ public abstract class Player {
 	 * @param blind
 	 *            The small blind.
 	 */
-    public final void postSmallBlind(int blind) {
+    public void postSmallBlind(int blind) {
         action = Action.SMALL_BLIND;
         cash -= blind;
         bet += blind;
@@ -180,76 +188,55 @@ public abstract class Player {
 	 * @param blind
 	 *            The big blind.
 	 */
-    public final void postBigBlind(int blind) {
+    public void postBigBlind(int blind) {
         action = Action.BIG_BLIND;
         cash -= blind;
         bet += blind;
     }
     
-    /**
-     * Checks.
-     */
-    public final void check() {
-        action = Action.CHECK;
-    }
-    
-    /**
-     * Calls.
-     *
-     * @param  bet  the current bet
-     */
-    public final void call(int currentBet) {
-        action = Action.CALL;
-        int amount = currentBet - bet;
-        cash -= amount;
-        bet += amount;
-    }
-    
-    /**
-     * Bets.
-     * 
-     * If the bet is equal to or greater than the remaining cash, the player
-     * goes all-in.
-     *
-     * @param  bet  the amount to bet
-     */
-    public final void bet(int amount) {
-        if (amount >= cash) {
-            amount = cash;
-            allIn = true;
-        }
-        action = Action.BET;
-        cash -= amount;
-        bet += amount;
-        raises++;
-    }
-    
 	/**
-	 * Raises the specified bet with the specified raise.
+	 * Asks the player to act and returns the selected action.
 	 * 
-	 * If the amount to raise up to is more than the amount of cash, the player
-	 * goes all in.
-	 * 
+	 * @param actions
+	 *            The allowed actions.
+	 * @param board
+	 *            The board with the community cards.
+	 * @param minBet
+	 *            The minimum bet.
 	 * @param currentBet
-	 *            The current bet
-	 * @param raise
-	 *            The amount to raise with
+	 *            The current bet.
+	 * 
+	 * @return The selected action.
 	 */
-    public final void raise(int currentBet, int raise) {
-        action = Action.RAISE;
-        currentBet += raise;
-        int amount = currentBet - bet;
-        cash -= amount;
-        bet += amount;
-        raises++;
-    }
-    
-    /**
-     * Folds.
-     */
-    public final void fold() {
-        action = Action.FOLD;
-        hand.removeAllCards();
+    public Action act(Set<Action> actions, List<Card> board, int minBet, int currentBet) {
+    	action = client.act(actions, board, minBet, currentBet);
+    	switch (action) {
+        	case CHECK:
+        		break;
+        	case CALL:
+                cash -= currentBet - bet;
+                bet += currentBet - bet;
+        		break;
+        	case BET:
+                if (minBet >= cash) {
+                    minBet = cash;
+                    allIn = true;
+                }
+                cash -= minBet;
+                bet += minBet;
+                raises++;
+        		break;
+        	case RAISE:
+                currentBet += minBet;
+                cash -= currentBet - bet;
+                bet += currentBet - bet;
+                raises++;
+        		break;
+        	case FOLD:
+                hand.removeAllCards();
+        		break;
+    	}
+    	return action;
     }
     
 	/**
@@ -258,7 +245,7 @@ public abstract class Player {
 	 * @param pot
 	 *            The pot.
 	 */
-    public final void win(int pot) {
+    public void win(int pot) {
         cash += pot;
     }
     
@@ -267,22 +254,8 @@ public abstract class Player {
      * @see java.lang.Object#toString()
      */
     @Override
-    public final String toString() {
+    public String toString() {
     	return name;
     }
     
-	/**
-	 * Performs an action.
-	 * 
-	 * @param actions
-	 *            The allowed actions to choose from.
-	 * @param board
-	 *            The community cards on the board.
-	 * @param minBet
-	 *            The minimum bet.
-	 * @param currentBet
-	 *            The current bet.
-	 */
-    public abstract void act(Set<Action> actions, List<Card> board, int minBet, int currentBet);
-
 }

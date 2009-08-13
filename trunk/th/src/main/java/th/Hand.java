@@ -28,11 +28,22 @@ public class Hand {
     }
     
     /**
-     * Constructor with initial cards.
+     * Constructor with an array of initial cards.
      *
      * @param  initialCards  the initial cards
      */
     public Hand(Card[] initialCards) {
+        for (Card card : initialCards) {
+            addCard(card);
+        }
+    }
+    
+    /**
+     * Constructor with a collection of initial cards.
+     *
+     * @param  initialCards  the initial cards
+     */
+    public Hand(Collection<Card> initialCards) {
         for (Card card : initialCards) {
             addCard(card);
         }
@@ -110,6 +121,21 @@ public class Hand {
 	 *            The cards to add.
 	 */
     public void addCards(Collection<Card> addedCards) {
+        for (Card card : addedCards) {
+            addCard(card);
+        }
+    }
+    
+    /**
+	 * Adds multiple cards.
+	 * 
+	 * The cards are inserted at such a position that the hand remains sorted
+	 * (highest ranking cards first).
+	 * 
+	 * @param addedCards
+	 *            The cards to add.
+	 */
+    public void addCards(Card[] addedCards) {
         for (Card card : addedCards) {
             addCard(card);
         }
