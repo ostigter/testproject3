@@ -11,7 +11,7 @@ import java.util.List;
 public class ConsoleGame implements GameListener {
 	
 	/** The size of the big blind. */
-	private static final int BLIND = 2;
+	private static final int BIG_BLIND = 2;
 
 	/** The amount of starting cash per player. */
 	private static final int STARTING_CASH = 100;
@@ -28,7 +28,7 @@ public class ConsoleGame implements GameListener {
 		players.add(new Player("Player 4", new ConsoleClient(), STARTING_CASH));
 
 		// Play the game.
-		GameEngine engine = new GameEngine(BLIND, players);
+		GameEngine engine = new GameEngine(BIG_BLIND, players);
 		engine.addListener(this);
 		engine.run();
 	}
@@ -58,7 +58,9 @@ public class ConsoleGame implements GameListener {
 	 */
 	@Override
 	public void playerActed(PlayerInfo playerInfo) {
-		//TODO: Broadcast player action
+		String name = playerInfo.getName();
+		String actionVerb = playerInfo.getAction().getVerb();
+		System.out.format("%s %s.\n", name, actionVerb);
 	}
 
 	/*

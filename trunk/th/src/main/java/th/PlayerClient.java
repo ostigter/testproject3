@@ -6,6 +6,8 @@ import java.util.Set;
 /**
  * Client interface of a Texas Hold'em player.
  * 
+ * Must be implemented by any client application acting as a player (human or bot).
+ * 
  * @author Oscar Stigter
  */
 public interface PlayerClient {

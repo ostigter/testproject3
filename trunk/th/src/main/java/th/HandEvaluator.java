@@ -25,22 +25,31 @@ public class HandEvaluator {
     /** The cards. */
     private final Card[] cards;
     
+    /** The rank distribution (number of cards for each rank). */
     private int[] rankDist = new int[Card.NO_OF_RANKS];
     
+    /** The suit distribution (number of cards for each suit). */
     private int[] suitDist = new int[Card.NO_OF_SUITS];
     
-    private int flushRank = -1;
-    
-    private int straightRank = -1;
-    
-    private int quadRank = -1;
-    
-    private int tripleRank = -1;
-    
+    /** The number of pairs. */
     private int noOfPairs = 0;
     
+    /** The ranks of the pairs. */
     private int[] pairs = new int[MAX_NO_OF_PAIRS];
     
+    /** The rank of the Flush. */
+    private int flushRank = -1;
+    
+    /** The rank of the Straight. */
+    private int straightRank = -1;
+    
+    /** The rank of the Three-of-a-Kind. */
+    private int tripleRank = -1;
+    
+    /** The rank of the Four-of-a-Kind. */
+    private int quadRank = -1;
+    
+    /** The ranking elements of the hand value (exponential, highest first). */
     private int[] rankings = new int[NO_OF_RANKINGS];
 
     /**

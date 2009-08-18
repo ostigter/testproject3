@@ -103,14 +103,14 @@ public class GameEngine {
 		while (!gameOver) {
 			playHand();
 		}
-		sendMessage("Game over.");
+		notifyMessage("Game over.");
 	}
 	
     /**
      * Resets the game.
      */
     private void resetGame() {
-		sendMessage("New game.");
+		notifyMessage("New game.");
 		hand = 0;
     	dealerPosition = -1;
     	actorPosition = -1;
@@ -122,7 +122,7 @@ public class GameEngine {
 	 */
     private void resetHand() {
 		hand++;
-		sendMessage("New hand.");
+		notifyMessage("New hand.");
 		board.clear();
 		for (Player player : players) {
 			player.resetHand();
@@ -134,7 +134,7 @@ public class GameEngine {
 			}
 		}
 		rotateDealer();
-		sendMessage("%s shuffles the deck.", dealer);
+		notifyMessage("%s shuffles the deck.", dealer);
 		deck.shuffle();
 		actorPosition = dealerPosition;
 		minBet = bigBlind;
@@ -146,7 +146,7 @@ public class GameEngine {
     private void rotateDealer() {
         dealerPosition = (dealerPosition + 1) % players.size();
         dealer = players.get(dealerPosition);
-        sendMessage("%s is the dealer.", dealer);
+        notifyMessage("%s is the dealer.", dealer);
     }
 
     /**
@@ -202,7 +202,7 @@ public class GameEngine {
      */
     private void postSmallBlind() {
         rotateActor();
-        sendMessage("%s posts the small blind.", actor);
+        notifyMessage("%s posts the small blind.", actor);
 		int smallBlind = bigBlind / 2;
         actor.postSmallBlind(smallBlind);
         pot += smallBlind;
@@ -213,7 +213,7 @@ public class GameEngine {
      */
     private void postBigBlind() {
         rotateActor();
-        sendMessage("%s posts the big blind.", actor);
+        notifyMessage("%s posts the big blind.", actor);
         actor.postBigBlind(bigBlind);
         pot += bigBlind;
 	}
@@ -222,7 +222,7 @@ public class GameEngine {
      * Deals the Hole Cards.
      */
     private void dealHoleCards() {
-        sendMessage("%s deals the Hole Cards.", dealer);
+        notifyMessage("%s deals the Hole Cards.", dealer);
         for (Player player : players) {
             player.setCards(deck.deal(2));
         }
@@ -237,11 +237,11 @@ public class GameEngine {
 	 *            The number of cards to deal.
 	 */
     private void dealCommunityCards(String name, int noOfCards) {
-        sendMessage("%s deals the %s.", dealer, name);
+        notifyMessage("%s deals the %s.", dealer, name);
         for (int i = 0; i < noOfCards; i++) {
         	board.add(deck.deal());
         }
-        sendMessage("Board: %s", board);
+        notifyMessage("Board: %s", board);
 	}
 	
     /**
@@ -258,12 +258,11 @@ public class GameEngine {
 		}
 		int playersToAct = activePlayers.size();
 		while (playersToAct > 0) {
-        	sendMessage("Hand: %d, MinBet: %d, Bet: %d, Pot: %d", hand, minBet, bet, pot);
+        	notifyMessage("Hand: %d, MinBet: %d, Bet: %d, Pot: %d", hand, minBet, bet, pot);
         	rotateActor();
-        	sendMessage("It's %s's turn to act.", actor);
+        	notifyMessage("It's %s's turn to act.", actor);
         	boolean smallBlindPosition = (actor.getBet() == bigBlind / 2);
         	Action action = actor.act(getAllowedActions(actor), board, minBet, bet);
-        	sendMessage("%s %s.", actor, action.getVerb());
         	playersToAct--;
         	switch (action) {
         		case CHECK:
@@ -301,6 +300,7 @@ public class GameEngine {
         		default:
         			throw new IllegalStateException("Invalid action: " + action);
         	}
+    		notifyPlayerActed(actor);
 		}
 		for (Player player : players) {
 			player.resetBet();
@@ -344,8 +344,9 @@ public class GameEngine {
      * Performs the Showdown.
      */
     private void doShowdown() {
-		sendMessage("Showdown!");
-		sendMessage("The board: %s", board);
+		notifyMessage("Showdown!");
+		notifyMessage("The board: %s", new Hand(board));
+		notifyBoardUpdated();
 		int highestValue = 0;
 		List<Player> winners = new ArrayList<Player>();
 		for (Player player : activePlayers) {
@@ -353,9 +354,10 @@ public class GameEngine {
 			Hand playerHand = new Hand(board);
 			playerHand.addCards(player.getCards());
 			// Evaluate the combined hand.
-			HandEvaluator evaluator = new HandEvaluator(player.getHand());
+			HandEvaluator evaluator = new HandEvaluator(playerHand);
 			int value = evaluator.getValue();
-			sendMessage("%s's cards:  %s\t(%d)", player, player.getHand(), value);
+			String description = evaluator.getType().getDescription();
+			notifyMessage("%s's cards:  %s\t(%s, %d)", player, player.getHand(), description, value);
 			// Look for one or more winners.
 			if (value > highestValue) {
 				// New winner.
@@ -375,7 +377,7 @@ public class GameEngine {
 		} else {
 			// Tie; multiple winners.
 			//TODO: Handle tie
-			sendMessage("A tie! X and Y share the pot.");
+			notifyMessage("A tie! X and Y share the pot.");
 		}
 	}
 	
@@ -386,24 +388,45 @@ public class GameEngine {
 	 *            The winning player.
 	 */
     private void playerWins(Player player) {
-		sendMessage("%s wins.", player);
+		notifyMessage("%s wins.", player);
 		player.win(pot);
 		pot = 0;
 	}
 	
 	/**
-	 * Broadcasts a game message to the listeners.
+	 * Notifies listeners that a player has acted.
+	 * 
+	 * @param player
+	 *            The player that has acted.
+	 */
+    private void notifyPlayerActed(Player player) {
+    	for (GameListener listener : listeners) {
+    		listener.playerActed(new PlayerInfo(player, false));
+    	}
+    }
+    
+    /**
+     * Notifies listeners that the board has been updated.
+     */
+    private void notifyBoardUpdated() {
+    	for (GameListener listener : listeners) {
+    		listener.boardUpdated(hand, board, bet, pot);
+    	}
+    }
+
+	/**
+	 * Notifies listeners with a custom game message.
 	 * 
 	 * @param message
 	 *            The formatted message.
 	 * @param args
 	 *            Any arguments.
 	 */
-    private void sendMessage(String message, Object... args) {
+    private void notifyMessage(String message, Object... args) {
     	message = String.format(message, args);
     	for (GameListener listener : listeners) {
     		listener.messageReceived(message);
     	}
     }
-
+    
 }
