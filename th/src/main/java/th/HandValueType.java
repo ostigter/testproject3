@@ -1,7 +1,7 @@
 package th;
 
 /**
- * The poker hand value types.
+ * The hand value types in poker.
  */
 public enum HandValueType {
     

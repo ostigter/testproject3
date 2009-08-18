@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Very simplistic bot that always checks or calls.
+ * Very simplistic implementation of a bot that always checks or calls (in that
+ * order).
  * 
  * @author Oscar Stigter
  */

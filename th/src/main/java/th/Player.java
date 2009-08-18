@@ -6,8 +6,8 @@ import java.util.Set;
 /**
  * A Texas Hold'em player.
  * 
- * The player's actions are delegated to the client, which can be either human
- * controlled or computer controlled.
+ * The player's actions are delegated to a PlayerClient, which can be either
+ * human controlled or computer controlled.
  * 
  * @author Oscar Stigter
  */
