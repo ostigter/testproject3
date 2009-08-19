@@ -68,7 +68,7 @@ public class Hand {
         Hand hand = new Hand();
         String[] parts = s.split("\\s");
         for (String part : parts) {
-            hand.addCard(Card.parseCard(part));
+            hand.addCard(new Card(part));
         }
         return hand;
     }

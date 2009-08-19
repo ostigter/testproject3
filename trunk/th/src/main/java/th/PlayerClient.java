@@ -17,15 +17,17 @@ public interface PlayerClient {
 	 * 
 	 * @param actions
 	 *            The allowed actions to select from.
-	 * @param board
+	 * @param holeCards
+	 *            The player's hole cards.
+	 * @param boardCards
 	 *            The community cards on the board.
 	 * @param minBet
 	 *            The minimum bet.
 	 * @param currentBet
 	 *            The current bet.
-	 *
+	 * 
 	 * @return The selected action.
 	 */
-    Action act(Set<Action> actions, List<Card> board, int minBet, int currentBet);
+    Action act(Set<Action> actions, Card[] holeCards, List<Card> boardCards, int minBet, int currentBet);
 
 }

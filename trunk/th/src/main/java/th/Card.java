@@ -36,8 +36,7 @@ public class Card implements Comparable<Card> {
     
     /** The rank symbols. */
     public static final String[] RANK_SYMBOLS = {
-        "2", "3", "4", "5", "6", "7", "8", "9", "10",
-        "J", "Q", "K", "A"
+        "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"
     };
     
     /** The suit symbols. */
@@ -58,15 +57,15 @@ public class Card implements Comparable<Card> {
 	 * Returns the card represented by the specified string.
 	 * 
 	 * @param s
-	 *            The string representation of the card, e.g. "10d"
+	 *            The string representation of the card, e.g. "As", "Td", "7h".
 	 * 
 	 * @return The card.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If the card string could not be parsed.
 	 */
-    public static Card parseCard(String s) {
-        if ((s != null) && (s.length() != 0)) {
+    public Card(String s) {
+        if ((s != null) && (s.length() == 2)) {
             int length = s.length();
             String rankSymbol = s.substring(0, length - 1);
             char suitSymbol = s.charAt(length - 1);
@@ -78,9 +77,7 @@ public class Card implements Comparable<Card> {
                 }
             }
             if (rank == -1) {
-                throw new IllegalArgumentException(
-                        "Card.parseCard(): Error parsing card; unknown rank: "
-                        + rankSymbol);
+                throw new IllegalArgumentException("Error parsing card; unknown rank: " + rankSymbol);
             }
             int suit = -1;
             for (int i = 0; i < Card.NO_OF_SUITS; i++) {
@@ -90,14 +87,12 @@ public class Card implements Comparable<Card> {
                 }
             }
             if (suit == -1) {
-                throw new IllegalArgumentException(
-                        "Card.parseCard(): Error parsing card; unknown suit: "
-                        + suitSymbol);
+                throw new IllegalArgumentException("Error parsing card; unknown suit: " + suitSymbol);
             }
-            return new Card(rank, suit);
+            this.rank = rank;
+            this.suit = suit;
         } else {
-            throw new IllegalArgumentException(
-                    "Card.parseCard(): Could not parse NULL or empty string.");
+            throw new IllegalArgumentException("Null or empty string, or invalid length");
         }
     }
     
