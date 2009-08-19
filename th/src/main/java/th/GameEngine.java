@@ -117,6 +117,39 @@ public class GameEngine {
 		gameOver = false;
 	}
 	
+    /**
+     * Plays a single hand.
+     */
+    private void playHand() {
+		resetHand();
+		postSmallBlind();
+		postBigBlind();
+        bet = bigBlind;
+		// The Pre-Flop.
+		dealHoleCards();
+		doBettingRound();
+		if (activePlayers.size() > 1) {
+			// The Flop.
+			dealCommunityCards("Flop", 3);
+			doBettingRound();
+			if (activePlayers.size() > 1) {
+				// The Turn.
+    			dealCommunityCards("Turn", 1);
+    			doBettingRound();
+    			if (activePlayers.size() > 1) {
+    				// The River.
+        			dealCommunityCards("River", 1);
+        	        bet = 2 * bigBlind;
+        			doBettingRound();
+        			if (activePlayers.size() > 1) {
+        				// The Showdown.
+        				doShowdown();
+        			}
+    			}
+			}
+		}
+	}
+	
 	/**
 	 * Resets the game for a new hand.
 	 */
@@ -153,7 +186,7 @@ public class GameEngine {
      * Rotates the position of the player in turn (the actor).
      */
     private void rotateActor() {
-    	if (activePlayers.size() != 0) {
+    	if (activePlayers.size() > 0) {
         	do {
         		actorPosition = (actorPosition + 1) % players.size();
         		actor = players.get(actorPosition);
@@ -164,39 +197,6 @@ public class GameEngine {
     	}
     }
     
-    /**
-     * Plays a single hand.
-     */
-    private void playHand() {
-		resetHand();
-		postSmallBlind();
-		postBigBlind();
-        bet = bigBlind;
-		// The Pre-Flop.
-		dealHoleCards();
-		doBettingRound();
-		if (activePlayers.size() > 1) {
-			// The Flop.
-			dealCommunityCards("Flop", 3);
-			doBettingRound();
-			if (activePlayers.size() > 1) {
-				// The Turn.
-    			dealCommunityCards("Turn", 1);
-    			doBettingRound();
-    			if (activePlayers.size() > 1) {
-    				// The River.
-        			dealCommunityCards("River", 1);
-        	        bet = 2 * bigBlind;
-        			doBettingRound();
-        			if (activePlayers.size() > 1) {
-        				// The Showdown.
-        				doShowdown();
-        			}
-    			}
-			}
-		}
-	}
-	
     /**
      * Posts the small blind.
      */
@@ -248,29 +248,38 @@ public class GameEngine {
      * Performs a betting round.
      */
     private void doBettingRound() {
-		// Determine the initial bet size.
+    	// Determine the number of active players.
+		int playersToAct = activePlayers.size();
+		// Determine the initial player and bet size.
 		if (board.size() == 0) {
-			// Pre-Flop; bet is the big blind.
+			// Pre-Flop; player left of big blind starts, bet is the big blind.
 			bet = bigBlind;
 		} else {
-			// Otherwise, start with no bet.
+			// Otherwise, player left of dealer starts, no initial bet.
+			actorPosition = dealerPosition;
 			bet = 0;
 		}
-		int playersToAct = activePlayers.size();
 		while (playersToAct > 0) {
         	notifyMessage("Hand: %d, MinBet: %d, Bet: %d, Pot: %d", hand, minBet, bet, pot);
         	rotateActor();
         	notifyMessage("It's %s's turn to act.", actor);
-        	boolean smallBlindPosition = (actor.getBet() == bigBlind / 2);
-        	Action action = actor.act(getAllowedActions(actor), board, minBet, bet);
+        	int smallBlind = bigBlind / 2;
+        	boolean isSmallBlindPosition = (actor.getBet() == smallBlind);
+        	Set<Action> allowedActions = getAllowedActions(actor);
+        	Action action = actor.act(allowedActions, actor.getCards(), board, minBet, bet);
+        	if (!allowedActions.contains(action)) {
+        		String msg = String.format("Illegal action (%s) from player %s!", action, actor);
+        		throw new IllegalStateException(msg);
+        	}
         	playersToAct--;
         	switch (action) {
         		case CHECK:
         			// Do nothing.
         			break;
         		case CALL:
-        			if (smallBlindPosition) {
-        				bet -= 1;
+        			if (isSmallBlindPosition) {
+            			// Correct bet for small blind.
+        				bet -= smallBlind;
         			}
     				pot += bet;
         			break;
@@ -283,8 +292,10 @@ public class GameEngine {
         			bet += minBet;
         			pot += bet;
         			if (actor.getRaises() == MAX_RAISES) {
+        				// Max. number of raises reached; other players get one more turn.
             			playersToAct = activePlayers.size() - 1;
         			} else {
+        				// Otherwise, all players get another turn.
             			playersToAct = activePlayers.size();
         			}
         			break;
@@ -292,7 +303,7 @@ public class GameEngine {
             		actor.setCards(null);
             		activePlayers.remove(actor);
             		if (activePlayers.size() == 1) {
-            			// The player left is the winner.
+            			// The player left wins.
             			playerWins(activePlayers.get(0));
             			playersToAct = 0;
             		}

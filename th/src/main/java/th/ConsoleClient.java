@@ -27,10 +27,10 @@ public class ConsoleClient implements PlayerClient {
     
     /*
      * (non-Javadoc)
-     * @see th.PlayerClient#act(java.util.Set, java.util.List, int, int)
+     * @see th.PlayerClient#act(java.util.Set, th.Card[], java.util.List, int, int)
      */
     @Override
-	public Action act(Set<Action> actions, List<Card> board, int minBet, int currentBet) {
+	public Action act(Set<Action> actions, Card[] holeCards, List<Card> boardCards, int minBet, int currentBet) {
     	StringBuilder sb = new StringBuilder("Please select an action: ");
     	int i = actions.size();
     	for (Action action : actions) {

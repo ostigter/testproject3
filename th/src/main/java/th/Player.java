@@ -199,8 +199,10 @@ public class Player {
 	 * 
 	 * @param actions
 	 *            The allowed actions.
-	 * @param board
-	 *            The board with the community cards.
+	 * @param holeCards
+	 *            The player's hole cards.
+	 * @param boardCards
+	 *            The community cards on the board.
 	 * @param minBet
 	 *            The minimum bet.
 	 * @param currentBet
@@ -208,8 +210,8 @@ public class Player {
 	 * 
 	 * @return The selected action.
 	 */
-    public Action act(Set<Action> actions, List<Card> board, int minBet, int currentBet) {
-    	action = client.act(actions, board, minBet, currentBet);
+    public Action act(Set<Action> actions, Card[] holeCards, List<Card> boardCards, int minBet, int currentBet) {
+    	action = client.act(actions, holeCards, boardCards, minBet, currentBet);
     	switch (action) {
         	case CHECK:
         		break;
