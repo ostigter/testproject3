@@ -3,7 +3,7 @@ package th;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class BotTest {
+public class BasicBotTest {
 	
 	@Test
 	public void test() {
