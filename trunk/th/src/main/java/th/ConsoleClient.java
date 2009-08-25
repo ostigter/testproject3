@@ -7,32 +7,56 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Console implementation of a player client.
- * 
- * Intended for human players with a console interface.
+ * Console version of a Texas Hold'em client.
  * 
  * @author Oscar Stigter
  */
 public class ConsoleClient implements Client {
-    
+	
+	/** The size of the big blind. */
+	private static final int BIG_BLIND = 2;
+
+	/** The amount of starting cash per player. */
+	private static final int STARTING_CASH = 100;
+	
 	/** The console reader. */
 	private final BufferedReader consoleReader;
     
 	/**
 	 * Constructor.
 	 */
-    public ConsoleClient() {
+	public ConsoleClient() {
         consoleReader = new BufferedReader(new InputStreamReader(System.in));
-    }
-    
+		Table table = new Table(BIG_BLIND);
+		table.addPlayer(new Player("Player", STARTING_CASH, this));
+		table.addPlayer(new Player("Joe",    STARTING_CASH, new DummyBot()));
+		table.addPlayer(new Player("Mike",   STARTING_CASH, new DummyBot()));
+		table.addPlayer(new Player("Eddie",  STARTING_CASH, new DummyBot()));
+		table.start();
+	}
+
+	/**
+	 * Application's entry point.
+	 * 
+	 * @param args
+	 *            The command line arguments.
+	 */
+	public static void main(String[] args) {
+		new ConsoleClient();
+	}
+	
 	@Override
 	public void messageReceived(String message) {
 		System.out.println(message);
 	}
 
 	@Override
-	public void dealerRotated(Player dealer) {
-		System.out.format("%s is the dealer.\n", dealer);
+	public void joinedTable(int bigBlind, List<Player> players) {
+	}
+
+	@Override
+	public void handStarted(Player dealer) {
+		System.out.format("New hand, %s is the dealer.\n", dealer);
 	}
 
 	@Override
@@ -42,14 +66,14 @@ public class ConsoleClient implements Client {
 
 	@Override
 	public void boardUpdated(List<Card> cards, int bet, int pot) {
+		System.out.format("Board: %s, Bet: %d, Pot: %d\n", cards, bet, pot);
 	}
 
 	@Override
 	public void holeCardsUpdated(Card[] cards) {
-	}
-
-	@Override
-	public void joinedTable(int bigBlind, List<Player> players) {
+//		if (cards.length == 2) {
+//			System.out.format("Hole cards: %s %s\n", cards[0], cards[1]);
+//		}
 	}
 
 	@Override

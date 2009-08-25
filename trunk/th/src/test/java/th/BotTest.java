@@ -1,16 +1,21 @@
 package th;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 public class BotTest {
 	
-//	@Test
-//	public void test() {
-//		BasicBot bot = new BasicBot();
-//		int value1, value2;
-//		
-//		value1 = bot.evaluateHoleCards(new Card[]{new Card("As"), new Card("Ah")});
-//		value2 = bot.evaluateHoleCards(new Card[]{new Card("As"), new Card("Ks")});
-//		Assert.assertTrue(value1 > value2);
-//
+	@Test
+	public void test() {
+		BasicBot bot = new BasicBot();
+		int value1, value2;
+		
+		bot.holeCardsUpdated(new Card[]{new Card("As"), new Card("Ah")});
+		value1 = bot.evaluateHoleCards();
+		bot.holeCardsUpdated(new Card[]{new Card("As"), new Card("Ks")});
+		value2 = bot.evaluateHoleCards();
+		Assert.assertTrue(value1 > value2);
+
 //		value1 = bot.evaluateHoleCards(new Card[]{new Card("As"), new Card("Ah")});
 //		value2 = bot.evaluateHoleCards(new Card[]{new Card("Ac"), new Card("Ad")});
 //		Assert.assertTrue(value1 == value2);
@@ -38,6 +43,6 @@ public class BotTest {
 //		value1 = bot.evaluateHoleCards(new Card[]{new Card("2d"), new Card("2c")});
 //		value2 = bot.evaluateHoleCards(new Card[]{new Card("3d"), new Card("2s")});
 //		Assert.assertTrue(value1 > value2);
-//	}
+	}
 
 }

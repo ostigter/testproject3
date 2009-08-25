@@ -10,7 +10,7 @@ import java.util.Set;
  * 
  * @author Oscar Stigter
  */
-public class GameEngine {
+public class Table {
 	
     /** The maximum number of bets or raises in a single hand per player. */
     private static final int MAX_RAISES = 4;
@@ -29,9 +29,6 @@ public class GameEngine {
 	
 	/** The community cards on the board. */
     private final List<Card> board;
-	
-	/** The number of hands played. */
-    private int hand;
 	
     /** The current dealer position. */
     private int dealerPosition;
@@ -63,7 +60,7 @@ public class GameEngine {
 	 * @param bigBlind
 	 *            The size of the big blind.
 	 */
-    public GameEngine(int bigBlind) {
+    public Table(int bigBlind) {
 		this.bigBlind = bigBlind;
 		players = new ArrayList<Player>();
 		activePlayers = new ArrayList<Player>();
@@ -96,8 +93,6 @@ public class GameEngine {
      * Resets the game.
      */
     private void resetGame() {
-		notifyMessage("New game.");
-		hand = 0;
     	dealerPosition = -1;
     	actorPosition = -1;
 		gameOver = false;
@@ -140,8 +135,6 @@ public class GameEngine {
 	 * Resets the game for a new hand.
 	 */
     private void resetHand() {
-		hand++;
-		notifyMessage("New hand.");
 		board.clear();
 		for (Player player : players) {
 			player.resetHand();
@@ -153,7 +146,7 @@ public class GameEngine {
 			}
 		}
 		rotateDealer();
-		notifyMessage("%s shuffles the deck.", dealer);
+//		notifyMessage("%s shuffles the deck.", dealer);
 		deck.shuffle();
 		actorPosition = dealerPosition;
 		minBet = bigBlind;
@@ -188,10 +181,10 @@ public class GameEngine {
      */
     private void postSmallBlind() {
         rotateActor();
-        notifyMessage("%s posts the small blind.", actor);
 		int smallBlind = bigBlind / 2;
         actor.postSmallBlind(smallBlind);
         pot += smallBlind;
+        notifyPlayerActed();
 	}
 	
     /**
@@ -199,9 +192,9 @@ public class GameEngine {
      */
     private void postBigBlind() {
         rotateActor();
-        notifyMessage("%s posts the big blind.", actor);
         actor.postBigBlind(bigBlind);
         pot += bigBlind;
+        notifyPlayerActed();
 	}
 	
     /**
@@ -211,6 +204,7 @@ public class GameEngine {
         notifyMessage("%s deals the Hole Cards.", dealer);
         for (Player player : players) {
             player.setCards(deck.deal(2));
+            notifyHoleCardsUpdated(player);
         }
 	}
 	
@@ -227,7 +221,7 @@ public class GameEngine {
         for (int i = 0; i < noOfCards; i++) {
         	board.add(deck.deal());
         }
-        notifyMessage("Board: %s", board);
+//        notifyBoardUpdated();
 	}
 	
     /**
@@ -245,8 +239,8 @@ public class GameEngine {
 			actorPosition = dealerPosition;
 			bet = 0;
 		}
+		notifyBoardUpdated();
 		while (playersToAct > 0) {
-        	notifyMessage("Hand: %d, MinBet: %d, Bet: %d, Pot: %d", hand, minBet, bet, pot);
         	rotateActor();
         	notifyMessage("It's %s's turn to act.", actor);
         	int smallBlind = bigBlind / 2;
@@ -265,9 +259,10 @@ public class GameEngine {
         		case CALL:
         			if (isSmallBlindPosition) {
             			// Correct bet for small blind.
-        				bet -= smallBlind;
+        				pot += bet - smallBlind;
+        			} else {
+        				pot += bet;
         			}
-    				pot += bet;
         			break;
         		case BET:
         			bet = minBet;
@@ -297,7 +292,7 @@ public class GameEngine {
         		default:
         			throw new IllegalStateException("Invalid action: " + action);
         	}
-    		notifyPlayerActed(actor);
+    		notifyPlayerActed();
 		}
 		for (Player player : players) {
 			player.resetBet();
@@ -342,7 +337,6 @@ public class GameEngine {
      */
     private void doShowdown() {
 		notifyMessage("Showdown!");
-		notifyMessage("The board: %s", new Hand(board));
 		notifyBoardUpdated();
 		int highestValue = 0;
 		List<Player> winners = new ArrayList<Player>();
@@ -385,9 +379,10 @@ public class GameEngine {
 	 *            The winning player.
 	 */
     private void playerWins(Player player) {
-		notifyMessage("%s wins.", player);
 		player.win(pot);
 		pot = 0;
+//		notifyBoardUpdated();
+		notifyMessage("%s wins.", player);
 	}
 	
 	/**
@@ -415,14 +410,24 @@ public class GameEngine {
     }
 
 	/**
+	 * Notifies a client that the player's hole cards have been updated.
+	 * 
+	 * @param player
+	 *            The player.
+	 */
+    private void notifyHoleCardsUpdated(Player player) {
+		player.getClient().holeCardsUpdated(player.getCards());
+    }
+    
+	/**
 	 * Notifies clients that a player has acted.
 	 * 
 	 * @param player
 	 *            The player that has acted.
 	 */
-    private void notifyPlayerActed(Player player) {
+    private void notifyPlayerActed() {
     	for (Player p : players) {
-    		p.getClient().playerActed(player);
+    		p.getClient().playerActed(actor);
     	}
     }
     
