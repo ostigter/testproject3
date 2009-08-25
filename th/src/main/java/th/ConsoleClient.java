@@ -13,7 +13,7 @@ import java.util.Set;
  * 
  * @author Oscar Stigter
  */
-public class ConsoleClient implements PlayerClient {
+public class ConsoleClient implements Client {
     
 	/** The console reader. */
 	private final BufferedReader consoleReader;
@@ -25,12 +25,40 @@ public class ConsoleClient implements PlayerClient {
         consoleReader = new BufferedReader(new InputStreamReader(System.in));
     }
     
-    /*
-     * (non-Javadoc)
-     * @see th.PlayerClient#act(java.util.Set, th.Card[], java.util.List, int, int)
-     */
+	@Override
+	public void messageReceived(String message) {
+		System.out.println(message);
+	}
+
+	@Override
+	public void dealerRotated(Player dealer) {
+		System.out.format("%s is the dealer.\n", dealer);
+	}
+
+	@Override
+	public void actorRotated(Player actor) {
+		System.out.format("It's %s's turn to act.\n", actor);
+	}
+
+	@Override
+	public void boardUpdated(List<Card> cards, int bet, int pot) {
+	}
+
+	@Override
+	public void holeCardsUpdated(Card[] cards) {
+	}
+
+	@Override
+	public void joinedTable(int bigBlind, List<Player> players) {
+	}
+
+	@Override
+	public void playerActed(Player player) {
+		System.out.format("%s %s.\n", player, player.getAction().getVerb());
+	}
+
     @Override
-	public Action act(Set<Action> actions, Card[] holeCards, List<Card> boardCards, int minBet, int currentBet) {
+	public Action act(Set<Action> actions) {
     	StringBuilder sb = new StringBuilder("Please select an action: ");
     	int i = actions.size();
     	for (Action action : actions) {

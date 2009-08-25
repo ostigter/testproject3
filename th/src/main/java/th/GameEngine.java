@@ -30,9 +30,6 @@ public class GameEngine {
 	/** The community cards on the board. */
     private final List<Card> board;
 	
-    /** The listeners to this game. */
-    private final Set<GameListener> listeners;
-	
 	/** The number of hands played. */
     private int hand;
 	
@@ -60,45 +57,34 @@ public class GameEngine {
     /** Whether the game is over. */
     private boolean gameOver;
 	
-    /**
-     * Constructor.
-     * 
-     * @param bigBlind The size of the big blind.
-     * @param players The players at the table.
-     */
-    public GameEngine(int bigBlind, List<Player> players) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param bigBlind
+	 *            The size of the big blind.
+	 */
+    public GameEngine(int bigBlind) {
 		this.bigBlind = bigBlind;
-		this.players = players;
+		players = new ArrayList<Player>();
 		activePlayers = new ArrayList<Player>();
 		deck = new Deck();
 		board = new ArrayList<Card>();
-		listeners = new HashSet<GameListener>();
 	}
 	
 	/**
-	 * Adds a game listener.
+	 * Adds a player.
 	 * 
-	 * @param listener
-	 *            The game listener.
+	 * @param player
+	 *            The player.
 	 */
-    public void addListener(GameListener listener) {
-		listeners.add(listener);
-	}
-	
-	/**
-	 * Removes a game listener.
-	 * 
-	 * @param listener
-	 *            The game listener.
-	 */
-    public void removeListener(GameListener listener) {
-		listeners.remove(listener);
+    public void addPlayer(Player player) {
+		players.add(player);
 	}
 	
     /**
      * Main game loop.
      */
-    public void run() {
+    public void start() {
 		resetGame();
 		while (!gameOver) {
 			playHand();
@@ -405,27 +391,6 @@ public class GameEngine {
 	}
 	
 	/**
-	 * Notifies listeners that a player has acted.
-	 * 
-	 * @param player
-	 *            The player that has acted.
-	 */
-    private void notifyPlayerActed(Player player) {
-    	for (GameListener listener : listeners) {
-    		listener.playerActed(new PlayerInfo(player, false));
-    	}
-    }
-    
-    /**
-     * Notifies listeners that the board has been updated.
-     */
-    private void notifyBoardUpdated() {
-    	for (GameListener listener : listeners) {
-    		listener.boardUpdated(hand, board, bet, pot);
-    	}
-    }
-
-	/**
 	 * Notifies listeners with a custom game message.
 	 * 
 	 * @param message
@@ -435,8 +400,29 @@ public class GameEngine {
 	 */
     private void notifyMessage(String message, Object... args) {
     	message = String.format(message, args);
-    	for (GameListener listener : listeners) {
-    		listener.messageReceived(message);
+    	for (Player p : players) {
+    		p.getClient().messageReceived(message);
+    	}
+    }
+    
+    /**
+     * Notifies clients that the board has been updated.
+     */
+    private void notifyBoardUpdated() {
+    	for (Player p : players) {
+    		p.getClient().boardUpdated(board, bet, pot);
+    	}
+    }
+
+	/**
+	 * Notifies clients that a player has acted.
+	 * 
+	 * @param player
+	 *            The player that has acted.
+	 */
+    private void notifyPlayerActed(Player player) {
+    	for (Player p : players) {
+    		p.getClient().playerActed(player);
     	}
     }
     
