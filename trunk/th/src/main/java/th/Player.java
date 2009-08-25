@@ -17,7 +17,7 @@ public class Player {
 	private final String name;
 	
 	/** The client responsible for the actual behavior. */
-	private final PlayerClient client;
+	private final Client client;
 	
     /** The hand of cards. */
     private final Hand hand;
@@ -34,27 +34,33 @@ public class Player {
     /** The last action performed. */
     private Action action;
 
-    /** Whether the player has gone all-in. */
-    private boolean allIn;
-    
 	/**
 	 * Constructs a player.
 	 * 
 	 * @param name
 	 *            The player's name.
-	 * @param client
-	 *            The client interface.
 	 * @param cash
 	 *            The player's starting amount of cash.
+	 * @param client
+	 *            The client interface.
 	 */
-    public Player(String name, PlayerClient client, int cash) {
+    public Player(String name, int cash, Client client) {
         this.name = name;
-        this.client = client;
         this.cash = cash;
+        this.client = client;
 
         hand = new Hand();
 
         resetHand();
+    }
+    
+	/**
+	 * Returns the client.
+	 * 
+	 * @return The client.
+	 */
+    public Client getClient() {
+    	return client;
     }
     
     /**
@@ -71,7 +77,6 @@ public class Player {
     public void resetBet() {
         bet = 0;
         raises = 0;
-        allIn = false;
     }
     
     /**
@@ -99,21 +104,21 @@ public class Player {
     }
     
     /**
-     * Returns whether the player is broke.
-     *
-     * @return True if the player is broke, otherwise false.
-     */
-    public boolean isBroke() {
-        return (cash == 0);
-    }
-    
-    /**
      * Returns the player's current amount of cash.
      *
      * @return The amount of cash.
      */
     public int getCash() {
         return cash;
+    }
+    
+    /**
+     * Returns whether the player is broke.
+     *
+     * @return True if the player is broke, otherwise false.
+     */
+    public boolean isBroke() {
+        return (cash == 0);
     }
     
     /**
@@ -132,15 +137,6 @@ public class Player {
 	 */
     public int getRaises() {
     	return raises;
-    }
-    
-    /**
-     * Returns whether the player has gone all-in.
-     *
-     * @return True if all-in, otherwise false.
-     */
-    public boolean isAllIn() {
-        return allIn;
     }
     
     /**
@@ -211,7 +207,7 @@ public class Player {
 	 * @return The selected action.
 	 */
     public Action act(Set<Action> actions, Card[] holeCards, List<Card> boardCards, int minBet, int currentBet) {
-    	action = client.act(actions, holeCards, boardCards, minBet, currentBet);
+    	action = client.act(actions);
     	switch (action) {
         	case CHECK:
         		break;
@@ -222,7 +218,6 @@ public class Player {
         	case BET:
                 if (minBet >= cash) {
                     minBet = cash;
-                    allIn = true;
                 }
                 cash -= minBet;
                 bet += minBet;
