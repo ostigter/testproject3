@@ -159,11 +159,7 @@ public class Card implements Comparable<Card> {
      */
     @Override
     public String toString() {
-        String rankSymbol = RANK_SYMBOLS[rank];
-//        if (rankSymbol.length() == 1) {
-//            rankSymbol = " " + rankSymbol;
-//        }
-        return (rankSymbol + SUIT_SYMBOLS[suit]);
+        return RANK_SYMBOLS[rank] + SUIT_SYMBOLS[suit];
     }
     
 }
