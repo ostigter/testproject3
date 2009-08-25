@@ -19,6 +19,7 @@ import java.util.Set;
  *
  * @author Oscar Stigter
  */
+@SuppressWarnings("unused")
 public class BasicBot extends Bot {
 	
 	/** The hole cards. */
@@ -44,10 +45,10 @@ public class BasicBot extends Bot {
 
 	/*
 	 * (non-Javadoc)
-	 * @see th.Client#dealerRotated(th.Player)
+	 * @see th.Client#handStarted(th.Player)
 	 */
 	@Override
-	public void dealerRotated(Player dealer) {
+	public void handStarted(Player dealer) {
 		// Not implemented.
 	}
 
@@ -93,7 +94,7 @@ public class BasicBot extends Bot {
 	 */
 	@Override
 	public Action act(Set<Action> allowedActions) {
-//		int holeValue = evaluateHoleCards();
+		int holeValue = evaluateHoleCards();
 		if (allowedActions.contains(Action.CHECK)) {
 			return Action.CHECK;
 		} else {
@@ -101,34 +102,34 @@ public class BasicBot extends Bot {
 		}
 	}
 	
-//	/**
-//	 * Evaluates the hole cards using the Chen formula and returns the value.
-//	 * 
-//	 * @return The value of the hole cards.
-//	 */
-//	public int evaluateHoleCards() {
-//		if (cards.length != 2) {
-//			throw new IllegalArgumentException("Invalid number of cards: " + cards.length);
-//		}
-//
-//		int rank1 = cards[0].getRank();
-//		int suit1 = cards[0].getSuit();
-//		int rank2 = cards[1].getRank();
-//		int suit2 = cards[1].getSuit();
-//		int highRank = Math.max(rank1, rank2);
-//		int lowRank = Math.min(rank1, rank2);
-//		boolean isSuited = (suit1 == suit2);
-//		boolean isPair = (rank1 == rank2);
-//		int distance = highRank - lowRank;
-//		boolean isSequential = (distance == 1);
-//		
-//		int value = highRank * Card.NO_OF_RANKS + lowRank;
-//		
-//		if (isPair) {
-//			value += Card.NO_OF_RANKS + 1;
-//		}
-//		
-//		return value;
-//	}
+	/**
+	 * Evaluates the hole cards using the Chen formula and returns the value.
+	 * 
+	 * @return The value of the hole cards.
+	 */
+	public int evaluateHoleCards() {
+		if (cards.length != 2) {
+			throw new IllegalArgumentException("Invalid number of cards: " + cards.length);
+		}
+
+		int rank1 = cards[0].getRank();
+		int suit1 = cards[0].getSuit();
+		int rank2 = cards[1].getRank();
+		int suit2 = cards[1].getSuit();
+		int highRank = Math.max(rank1, rank2);
+		int lowRank = Math.min(rank1, rank2);
+		boolean isSuited = (suit1 == suit2);
+		boolean isPair = (rank1 == rank2);
+		int distance = highRank - lowRank;
+		boolean isSequential = (distance == 1);
+		
+		int value = highRank * Card.NO_OF_RANKS + lowRank;
+		
+		if (isPair) {
+			value += Card.NO_OF_RANKS + 1;
+		}
+		
+		return value;
+	}
 
 }

@@ -31,10 +31,10 @@ public class DummyBot extends Bot {
 
 	/*
 	 * (non-Javadoc)
-	 * @see th.Client#dealerRotated(th.Player)
+	 * @see th.Client#handStarted(th.Player)
 	 */
 	@Override
-	public void dealerRotated(Player dealer) {
+	public void handStarted(Player dealer) {
 		// Not implemented.
 	}
 
