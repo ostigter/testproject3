@@ -73,6 +73,16 @@ public interface WebDavBackend {
 	 */
 	void createResource(String uri) throws WebDavException;
 	
+    /**
+     * Returns the content type of a resource.
+     * 
+     * @param uri
+     *            The resource URI.
+     * 
+     * @return The content type.
+     */
+    String getContentType(String uri);
+    
 	/**
 	 * Returns the content length of the resource.
 	 * 
@@ -132,17 +142,17 @@ public interface WebDavBackend {
 	Date getCreated(String uri) throws WebDavException;
 
 	/**
-	 * Returns the date of the last modification of a resource.
+	 * Returns the modification date of a resource.
 	 * 
 	 * @param uri
 	 *            The resource URI.
 	 * 
-	 * @return The last modified date.
+	 * @return The modification date.
 	 * 
 	 * @throws WebDavException
 	 *             If the resource does not exist.
 	 */
-	Date getLastModified(String uri) throws WebDavException;
+	Date getModified(String uri) throws WebDavException;
 	
 	/**
 	 * Deletes a resource.

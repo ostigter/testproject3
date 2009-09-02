@@ -36,7 +36,7 @@ public class FileSystemBackend implements WebDavBackend {
 			throw new IllegalArgumentException("Null or empty path");
 		}
 		ROOT_DIR = new File(path);
-		if (ROOT_DIR.isDirectory()) {
+		if (!ROOT_DIR.isDirectory()) {
 			throw new IllegalArgumentException("Root directory not found: " + path);
 		}
 	}
@@ -50,7 +50,7 @@ public class FileSystemBackend implements WebDavBackend {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
-		return new File(ROOT_DIR, uri).exists();
+        return new File(ROOT_DIR, uri).exists();
 	}
 
 	/*
@@ -134,6 +134,16 @@ public class FileSystemBackend implements WebDavBackend {
 		}
 	}
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.webdav.server.WebDavBackend#getContentType(java.lang.String)
+     */
+    @Override
+    public String getContentType(String uri) {
+        //FIXME: Determine a resource's content type.
+        return "text/xml";
+    }
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.ozsoft.webdav.server.WebDavBackend#getContentLength(java.lang.String)
@@ -157,16 +167,16 @@ public class FileSystemBackend implements WebDavBackend {
 	 */
 	@Override
 	public Date getCreated(String uri) throws WebDavException {
-		// Since Java doesn't support the creation date on files, just return the last modified date.
-		return getLastModified(uri);
+		// Since Java doesn't support the creation date on files, just return the modification date.
+		return getModified(uri);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.ozsoft.webdav.server.WebDavBackend#getLastModified(java.lang.String)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getModified(java.lang.String)
 	 */
 	@Override
-	public Date getLastModified(String uri) throws WebDavException {
+	public Date getModified(String uri) throws WebDavException {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:a="http://www.example.com/XMLSchema/Address/v1.0"
+    targetNamespace="http://www.example.com/XMLSchema/Address/v1.0">
+
+  <element name="Address" type="a:Address"/>
+
+  <complexType name="Address">
+    <sequence>
+      <element name="Street" type="string"/>
+      <element name="City" type="string"/>
+      <element name="State" type="string"/>
+      <element name="ZipCode" type="string"/>
+      <element name="Country" type="string"/>
+    </sequence>
+  </complexType>
+
+</schema>

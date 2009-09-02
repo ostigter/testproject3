@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<foo:FooDocument xmlns:foo="http://www.example.com/XMLSchema/Foo/v1.1">
+  <Header>
+    <Id>2</Id>
+    <Type>Foo</Type>
+    <Version>v1.1</Version>
+  </Header>
+  <Body>
+    <FooValue>22</FooValue>
+    <NewValue>222</NewValue>
+  </Body>
+</foo:FooDocument>
