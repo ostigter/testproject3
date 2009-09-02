@@ -7,14 +7,19 @@ package org.ozsoft.webdav;
  */
 public interface WebDavConstants {
 
-	/** The WebDAV namespace URI. */
+    /** The XML declaration. */
+    String XML_DECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    
+    String CONTENT_TYPE = "text/xml;charset=UTF-8";
+    
+    /** The WebDAV namespace URI. */
 	String DAV_NS = "DAV:";
 	
     /** The display name property. */
-    String DISPLAY_NAME = "displayname";
+    String DISPLAYNAME = "displayname";
     
 	/** The resource type property. */
-	String RESOURCE_TYPE = "resourcetype";
+	String RESOURCETYPE = "resourcetype";
 	
     /** Resource type for a non-collection resource. */
     String RESOURCE = "<resource />";
@@ -23,18 +28,18 @@ public interface WebDavConstants {
     String COLLECTION = "<collection />";
     
     /** The content type property. */
-    String CONTENT_TYPE = "getcontenttype";
+    String GETCONTENTTYPE = "getcontenttype";
 	        
     /** The content length property. */
-    String CONTENT_LENGTH = "getcontentlength";
+    String GETCONTENTLENGTH = "getcontentlength";
     
     /** The creation date property. */
-    String CREATED = "creationdate";
+    String CREATIONDATE = "creationdate";
     
     /** The modification date property. */
-    String MODIFIED = "getlastmodified";
+    String GETLASTMODIFIED = "getlastmodified";
     
     /** The etag property. */
-    String E_TAG = "getetag";
+    String GETETAG = "getetag";
     
 }
