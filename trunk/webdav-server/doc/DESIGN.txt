@@ -97,7 +97,7 @@ Response:
 	<?xml version="1.0" encoding="utf-8" ?>
 	<multistatus xmlns="DAV:">
 		<response>
-			<href>/webdav/</href>
+			<href>/webdav</href>
 			<propstat>
 				<prop>
 					<displayname />

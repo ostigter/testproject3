@@ -109,7 +109,7 @@ public class WebDavServlet extends HttpServlet {
 	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		super.doOptions(request, response);
+//		super.doOptions(request, response);
 		LOG.debug("OPTIONS");
 		response.setStatus(200);
 		response.addHeader("Allow", "OPTIONS, HEAD, GET, PUT, DELETE, POST, PROPFIND, MKCOL");
@@ -132,8 +132,6 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("PROPFIND  " + uri);
 		Depth depth = getDepth(request);
 		List<WebDavResponse> responses = new ArrayList<WebDavResponse>();
-		WebDavResponse webDavResponse = new WebDavResponse(uri);
-		responses.add(webDavResponse);
 		String requestBody = getRequestBody(request);
 		if (requestBody.length() == 0) {
 			// No request body, so handle as 'allprop' type.
@@ -151,21 +149,22 @@ public class WebDavServlet extends HttpServlet {
 						if (typeName.equals("prop")) {
 							// Request for specific set of properties.
 							LOG.debug("Request for a specific set of properties");
+							List<String> propNames = new ArrayList<String>();
 							for (Object obj : typeElement.elements()) {
 								if (obj instanceof Element) {
 									Element el = (Element) obj;
 									//TODO: Handle request for non-WebDAV properties. 
 									if (el.getNamespaceURI().equals(WebDavConstants.DAV_NS)) {
-									    webDavResponse.addProperty(el.getName());
+									    propNames.add(el.getName());
 									}
 								} else {
 									//TODO: Child of 'prop' element not an element.
 								}
 							}
-							if (webDavResponse.getPropStats().size() == 0) {
+							if (propNames.size() == 0) {
 								//TODO: Invalid request; no (WebDAV) properties specified.
 							} else {
-								doPropfindProp(uri, depth, responses);
+								doPropfindProp(uri, depth, propNames, responses);
 							}
 						} else if (typeName.equals("allprop")) {
 							// Request for all properties (incl. values).
@@ -182,6 +181,35 @@ public class WebDavServlet extends HttpServlet {
 				} else {
 					//TODO: Invalid request; no 'propfind' element.
 				}
+				
+				StringBuilder sb = new StringBuilder();
+				sb.append(WebDavConstants.XML_DECLARATION);
+				sb.append("<multistatus xmlns=\"").append(WebDavConstants.DAV_NS).append("\">\n");
+				for (WebDavResponse r : responses) {
+	                sb.append("  <response>\n");
+	                sb.append("    <href>").append(r.getUri()).append("</href>\n");
+	                for (PropStat propStat : r.getPropStats()) {
+	                    sb.append("    <propstat>\n");
+                        sb.append("      <prop>\n");
+                        String propName = propStat.getName();
+                        sb.append("        <").append(propName).append(">");
+                        String propValue = propStat.getValue();
+                        if (propValue != null) {
+                            sb.append(propValue);
+                        }
+                        sb.append("</").append(propName).append(">\n");
+                        sb.append("      </prop>\n");
+                        WebDavStatus status = propStat.getStatus();
+                        sb.append("      <status>HTTP/1.1 ").append(status.getCode());
+                        sb.append(' ').append(status.getName()).append("</status>\n");
+                        sb.append("    </propstat>\n");
+	                }
+                    sb.append("  </response>\n");
+				}
+                sb.append("</multistatus>\n");
+                String responseBody = sb.toString();
+                LOG.debug("Response:\n" + responseBody);
+                response.getWriter().write(responseBody);
 			} catch (DocumentException e) {
 				//TODO: Invalid XML request body.
 				LOG.error("Could not parse request", e);
@@ -189,12 +217,12 @@ public class WebDavServlet extends HttpServlet {
 			    LOG.error(e);
 			}
 		}
-
-//		// Response status and headers.
-//		response.setStatus(207); // Multi-Status
-//		response.setContentType("text/xml;charset=UTF-8");
-//		response.addHeader("DAV", "1");
-//		response.addHeader("MS-Author-Via", "DAV");
+		
+		// Response status and headers.
+		response.setStatus(WebDavStatus.MULTI_STATUS.getCode());
+		response.setContentType(WebDavConstants.CONTENT_TYPE);
+		response.addHeader("DAV", "1");
+		response.addHeader("MS-Author-Via", "DAV");
 	}
 	
     /**
@@ -209,19 +237,19 @@ public class WebDavServlet extends HttpServlet {
      * @param responses
      *            The property responses.
      */
-	private void doPropfindProp(String uri, Depth depth, List<WebDavResponse> responses)
+	private void doPropfindProp(String uri, Depth depth, List<String> propNames, List<WebDavResponse> responses)
 			throws ServletException, IOException, WebDavException {
 	    if (backend.exists(uri)) {
-            doPropfindProp(uri, responses);
+            doPropfindProp(uri, propNames, responses);
             if (backend.isCollection(uri)) {
                 if (depth != Depth.ZERO) {
                     String[] children = backend.getChildrenNames(uri);
                     for (String child : children) {
                         String childUri = (uri.endsWith("/")) ? uri + child : uri + "/" + child;
                         if (depth == Depth.ONE){
-                            doPropfindProp(childUri, responses);
+                            doPropfindProp(childUri, propNames, responses);
                         } else {
-                            doPropfindProp(childUri, depth, responses);
+                            doPropfindProp(childUri, depth, propNames, responses);
                         }
                     }
                 }
@@ -241,56 +269,57 @@ public class WebDavServlet extends HttpServlet {
      * @param responses
      *            The resource responses.
      */
-	private void doPropfindProp(String uri, List<WebDavResponse> responses)
+	private void doPropfindProp(String uri, List<String> propNames, List<WebDavResponse> responses)
 	        throws ServletException, IOException, WebDavException {
         if (backend.exists(uri)) {
-            for (WebDavResponse response : responses) {
-                for (PropStat propStat : response.getPropStats()) {
-                    String propName = propStat.getName();
-                    if (propName.equals(WebDavConstants.DISPLAY_NAME)) {
-                        // Display name.
-                        propStat.setValue(uri);
-                        propStat.setStatus(WebDavStatus.OK);
-                    } else if (propName.equals(WebDavConstants.RESOURCE_TYPE)) {
-                        // Resource type.
-                        if (backend.isCollection(uri)) {
-                            propStat.setValue(WebDavConstants.COLLECTION);
-                        } else {
-                            propStat.setValue(WebDavConstants.RESOURCE);
-                        }
-                        propStat.setStatus(WebDavStatus.OK);
-                    } else if (propName.equals(WebDavConstants.CONTENT_TYPE)) {
-                        // Content type.
-                        if (!backend.isCollection(uri)) {
-                            propStat.setValue(backend.getContentType(uri));
-                            propStat.setStatus(WebDavStatus.OK);
-                        } else {
-                            propStat.setStatus(WebDavStatus.NOT_FOUND);
-                        }
-                    } else if (propName.equals(WebDavConstants.CONTENT_LENGTH)) {
-                        // Content length.
-                        if (!backend.isCollection(uri)) {
-                            propStat.setValue(String.valueOf(backend.getContentLength(uri)));
-                            propStat.setStatus(WebDavStatus.OK);
-                        } else {
-                            propStat.setStatus(WebDavStatus.NOT_FOUND);
-                        }
-                    } else if (propName.equals(WebDavConstants.CREATED)) {
-                        // Creation date.
-                        //FIXME: Use ISO date format.
-                        propStat.setValue(backend.getCreated(uri).toString());
-                        propStat.setStatus(WebDavStatus.OK);
-                    } else if (propName.equals(WebDavConstants.MODIFIED)) {
-                        // Creation date.
-                        //FIXME: Use ISO date format.
-                        propStat.setValue(backend.getModified(uri).toString());
+            WebDavResponse response = new WebDavResponse(uri);
+            for (String propName : propNames) {
+                PropStat propStat = new PropStat(propName);
+                if (propName.equals(WebDavConstants.DISPLAYNAME)) {
+                    // Display name.
+                    propStat.setValue(uri);
+                    propStat.setStatus(WebDavStatus.OK);
+                } else if (propName.equals(WebDavConstants.RESOURCETYPE)) {
+                    // Resource type.
+                    if (backend.isCollection(uri)) {
+                        propStat.setValue(WebDavConstants.COLLECTION);
+                    } else {
+                        propStat.setValue(WebDavConstants.RESOURCE);
+                    }
+                    propStat.setStatus(WebDavStatus.OK);
+                } else if (propName.equals(WebDavConstants.CONTENT_TYPE)) {
+                    // Content type.
+                    if (!backend.isCollection(uri)) {
+                        propStat.setValue(backend.getContentType(uri));
                         propStat.setStatus(WebDavStatus.OK);
                     } else {
-                        // Unknown property.
                         propStat.setStatus(WebDavStatus.NOT_FOUND);
                     }
+                } else if (propName.equals(WebDavConstants.GETCONTENTLENGTH)) {
+                    // Content length.
+                    if (!backend.isCollection(uri)) {
+                        propStat.setValue(String.valueOf(backend.getContentLength(uri)));
+                        propStat.setStatus(WebDavStatus.OK);
+                    } else {
+                        propStat.setStatus(WebDavStatus.NOT_FOUND);
+                    }
+                } else if (propName.equals(WebDavConstants.CREATIONDATE)) {
+                    // Creation date.
+                    //FIXME: Use ISO date format.
+                    propStat.setValue(backend.getCreated(uri).toString());
+                    propStat.setStatus(WebDavStatus.OK);
+                } else if (propName.equals(WebDavConstants.GETLASTMODIFIED)) {
+                    // Creation date.
+                    //FIXME: Use ISO date format.
+                    propStat.setValue(backend.getModified(uri).toString());
+                    propStat.setStatus(WebDavStatus.OK);
+                } else {
+                    // Unknown property.
+                    propStat.setStatus(WebDavStatus.NOT_FOUND);
                 }
+                response.addPropStat(propStat);
             }
+            responses.add(response);
         } else {
             //TODO: Resource not found.
         }

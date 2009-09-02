@@ -50,11 +50,20 @@ public class WebDavResponse {
     /**
      * Adds a property status.
      * 
-     * @param name
-     *            The property name.
+     * @param propStat
+     *            The property status.
      */
-    public void addProperty(String name) {
-        propStats.add(new PropStat(name));
+    public void addPropStat(PropStat propStat) {
+        propStats.add(propStat);
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return uri;
     }
     
 }

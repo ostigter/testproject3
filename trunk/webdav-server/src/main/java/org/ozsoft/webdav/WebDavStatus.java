@@ -10,6 +10,9 @@ public enum WebDavStatus {
     /** OK. */
     OK(200, "OK"),
     
+    /** WebDAV multistatus. */
+    MULTI_STATUS(207, "MultiStatus"),
+    
     /** Invalid request. */
     INVALID_REQUEST(401, "Invalid Request"),
     
@@ -21,20 +24,20 @@ public enum WebDavStatus {
     /** The code. */
     private final int code;
     
-    /** The description. */
-    private final String description;
+    /** The name. */
+    private final String name;
     
     /**
      * Constructor.
      * 
      * @param code
      *            The code.
-     * @param description
-     *            The description.
+     * @param name
+     *            The name.
      */
-    WebDavStatus(int code, String description) {
+    WebDavStatus(int code, String name) {
         this.code = code;
-        this.description = description;
+        this.name = name;
     }
     
     /**
@@ -47,12 +50,12 @@ public enum WebDavStatus {
     }
     
     /**
-     * Returns the description.
+     * Returns the name.
      * 
-     * @return The description.
+     * @return The name.
      */
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
 }

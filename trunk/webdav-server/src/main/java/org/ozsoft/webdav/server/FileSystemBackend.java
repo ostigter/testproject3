@@ -2,8 +2,10 @@ package org.ozsoft.webdav.server;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -22,6 +24,9 @@ public class FileSystemBackend implements WebDavBackend {
 	/** Buffer size for copying streams. */
 	private static final int BUFFER_SIZE = 8192;  // 8 kB
 	
+	/** File filter. */
+	private static final FilenameFilter FILENAME_FILTER = new WebDavFilenameFilter();  
+    
 	/** Root directory. */
 	private final File ROOT_DIR;
 	
@@ -76,7 +81,7 @@ public class FileSystemBackend implements WebDavBackend {
 		}
 		File dir = new File(ROOT_DIR, uri);
 		if (dir.isDirectory()) {
-			return dir.list();
+			return dir.list(FILENAME_FILTER);
 		} else {
 			throw new IllegalStateException("Not a collection: " + uri);
 		}
@@ -266,5 +271,25 @@ public class FileSystemBackend implements WebDavBackend {
 			throw new WebDavException("Resource not found: " + uri);
 		}
 	}
+	
+	
+    /**
+     * Filename filter that filters out certain files and directories that
+     * should not be listed.
+     * 
+     * @author Oscar Stigter
+     */
+	private static class WebDavFilenameFilter implements FilenameFilter {
+
+	    /*
+	     * (non-Javadoc)
+	     * @see java.io.FilenameFilter#accept(java.io.File, java.lang.String)
+	     */
+	    @Override
+        public boolean accept(File dir, String name) {
+            return !name.equals(".svn");
+        }
+	    
+	} // WebDavFileFilter class
 
 }
