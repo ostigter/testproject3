@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bar:BarDocument xmlns:bar="http://www.example.com/XMLSchema/Bar/v1.0">
+  <Header>
+    <Id>3</Id>
+    <Type>Bar</Type>
+    <Version>v1.0</Version>
+    <Title>Some Bar document</Title>
+  </Header>
+  <Body>
+    <BarValue>33</BarValue>
+  </Body>
+</bar:BarDocument>

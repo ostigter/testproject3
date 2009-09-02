@@ -16,7 +16,11 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.ozsoft.webdav.Depth;
+import org.ozsoft.webdav.PropStat;
 import org.ozsoft.webdav.WebDavConstants;
+import org.ozsoft.webdav.WebDavException;
+import org.ozsoft.webdav.WebDavResponse;
+import org.ozsoft.webdav.WebDavStatus;
 
 /**
  * HTTP servlet handling WebDAV requests.
@@ -33,6 +37,9 @@ public class WebDavServlet extends HttpServlet {
 	/** The log. */
 	private static final Logger LOG = Logger.getLogger(WebDavServlet.class);
 	
+	/** The servlet context. */
+	private final String context;
+	
 	/** The WebDAV backend. */
 	private final WebDavBackend backend;
 	
@@ -42,19 +49,25 @@ public class WebDavServlet extends HttpServlet {
 	 * @param backend
 	 *            The WebDAV backend.
 	 */
-	public WebDavServlet(WebDavBackend backend) {
-		if (backend == null) {
-			throw new IllegalArgumentException("Null backend");
+	public WebDavServlet(String context, WebDavBackend backend) {
+		if (context == null) {
+			throw new IllegalArgumentException("Null context");
 		}
+        if (backend == null) {
+            throw new IllegalArgumentException("Null backend");
+        }
+        this.context = context;
 		this.backend = backend;
 	}
 
-	/**
-	 * Handles an HTTP request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles an HTTP request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -85,12 +98,14 @@ public class WebDavServlet extends HttpServlet {
 		}
 	}
 
-	/**
-	 * Handles an OPTIONS request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles an OPTIONS request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -102,22 +117,27 @@ public class WebDavServlet extends HttpServlet {
 //		response.addHeader("MS-Author-Via", "DAV");  // Required for Microsoft Windows Explorer?
 	}
 
-	/**
-	 * Handles a PROPFIND request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles a PROPFIND request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@SuppressWarnings("unchecked")  // dom4j
 	private void doPropfind(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String uri = request.getRequestURI();
+		String uri = getUriFromRequest(request);
 		LOG.debug("PROPFIND  " + uri);
 		Depth depth = getDepth(request);
+		List<WebDavResponse> responses = new ArrayList<WebDavResponse>();
+		WebDavResponse webDavResponse = new WebDavResponse(uri);
+		responses.add(webDavResponse);
 		String requestBody = getRequestBody(request);
 		if (requestBody.length() == 0) {
 			// No request body, so handle as 'allprop' type.
-			doPropfindAllprop(uri, depth, response);
+			doPropfindAllprop(uri, depth, responses);
 		} else {
 			// Parse request body.
 			try {
@@ -131,32 +151,28 @@ public class WebDavServlet extends HttpServlet {
 						if (typeName.equals("prop")) {
 							// Request for specific set of properties.
 							LOG.debug("Request for a specific set of properties");
-							List<String> propNames = new ArrayList<String>();
 							for (Object obj : typeElement.elements()) {
 								if (obj instanceof Element) {
 									Element el = (Element) obj;
 									//TODO: Handle request for non-WebDAV properties. 
 									if (el.getNamespaceURI().equals(WebDavConstants.DAV_NS)) {
-										propNames.add(el.getName());
+									    webDavResponse.addProperty(el.getName());
 									}
 								} else {
 									//TODO: Child of 'prop' element not an element.
 								}
 							}
-							if (propNames.size() == 0) {
+							if (webDavResponse.getPropStats().size() == 0) {
 								//TODO: Invalid request; no (WebDAV) properties specified.
 							} else {
-								doPropfindProp(uri, depth, propNames, response);
-							}
-							for (String name : propNames) {
-								LOG.debug("Property: " + name);
+								doPropfindProp(uri, depth, responses);
 							}
 						} else if (typeName.equals("allprop")) {
 							// Request for all properties (incl. values).
-							doPropfindAllprop(uri, depth, response);
+							doPropfindAllprop(uri, depth, responses);
 						} else if (typeName.equals("propname")) {
 							// Request for all property names.
-							doPropfindPropname(uri, depth, response);
+							doPropfindPropname(uri, depth, responses);
 						} else {
 							//TODO: Invalid request; invalid child element of 'propfind' element.
 						}
@@ -169,6 +185,8 @@ public class WebDavServlet extends HttpServlet {
 			} catch (DocumentException e) {
 				//TODO: Invalid XML request body.
 				LOG.error("Could not parse request", e);
+			} catch (WebDavException e) {
+			    LOG.error(e);
 			}
 		}
 
@@ -179,49 +197,143 @@ public class WebDavServlet extends HttpServlet {
 //		response.addHeader("MS-Author-Via", "DAV");
 	}
 	
-	/**
-	 * Handles a PROPFIND 'prop' request.
-	 * 
-	 * @param uri The resource URI.
-	 * @param depth The Depth header value.
-	 * @param propNames The property names.
-	 * @param response The response.
-	 */
-	private void doPropfindProp(String uri, Depth depth, List<String> propNames, HttpServletResponse response)
+    /**
+     * Handles a PROPFIND 'prop' request.
+     * 
+     * @param uri
+     *            The resource URI.
+     * @param depth
+     *            The Depth header value.
+     * @param propNames
+     *            The property names.
+     * @param responses
+     *            The property responses.
+     */
+	private void doPropfindProp(String uri, Depth depth, List<WebDavResponse> responses)
+			throws ServletException, IOException, WebDavException {
+	    if (backend.exists(uri)) {
+            doPropfindProp(uri, responses);
+            if (backend.isCollection(uri)) {
+                if (depth != Depth.ZERO) {
+                    String[] children = backend.getChildrenNames(uri);
+                    for (String child : children) {
+                        String childUri = (uri.endsWith("/")) ? uri + child : uri + "/" + child;
+                        if (depth == Depth.ONE){
+                            doPropfindProp(childUri, responses);
+                        } else {
+                            doPropfindProp(childUri, depth, responses);
+                        }
+                    }
+                }
+            }
+	    } else {
+	        //TODO: Resource not found.
+	    }
+	}
+	
+    /**
+     * Handles a PROPFIND 'prop' request for a specific resource.
+     * 
+     * @param uri
+     *            The resource URI.
+     * @param propNames
+     *            The property names.
+     * @param responses
+     *            The resource responses.
+     */
+	private void doPropfindProp(String uri, List<WebDavResponse> responses)
+	        throws ServletException, IOException, WebDavException {
+        if (backend.exists(uri)) {
+            for (WebDavResponse response : responses) {
+                for (PropStat propStat : response.getPropStats()) {
+                    String propName = propStat.getName();
+                    if (propName.equals(WebDavConstants.DISPLAY_NAME)) {
+                        // Display name.
+                        propStat.setValue(uri);
+                        propStat.setStatus(WebDavStatus.OK);
+                    } else if (propName.equals(WebDavConstants.RESOURCE_TYPE)) {
+                        // Resource type.
+                        if (backend.isCollection(uri)) {
+                            propStat.setValue(WebDavConstants.COLLECTION);
+                        } else {
+                            propStat.setValue(WebDavConstants.RESOURCE);
+                        }
+                        propStat.setStatus(WebDavStatus.OK);
+                    } else if (propName.equals(WebDavConstants.CONTENT_TYPE)) {
+                        // Content type.
+                        if (!backend.isCollection(uri)) {
+                            propStat.setValue(backend.getContentType(uri));
+                            propStat.setStatus(WebDavStatus.OK);
+                        } else {
+                            propStat.setStatus(WebDavStatus.NOT_FOUND);
+                        }
+                    } else if (propName.equals(WebDavConstants.CONTENT_LENGTH)) {
+                        // Content length.
+                        if (!backend.isCollection(uri)) {
+                            propStat.setValue(String.valueOf(backend.getContentLength(uri)));
+                            propStat.setStatus(WebDavStatus.OK);
+                        } else {
+                            propStat.setStatus(WebDavStatus.NOT_FOUND);
+                        }
+                    } else if (propName.equals(WebDavConstants.CREATED)) {
+                        // Creation date.
+                        //FIXME: Use ISO date format.
+                        propStat.setValue(backend.getCreated(uri).toString());
+                        propStat.setStatus(WebDavStatus.OK);
+                    } else if (propName.equals(WebDavConstants.MODIFIED)) {
+                        // Creation date.
+                        //FIXME: Use ISO date format.
+                        propStat.setValue(backend.getModified(uri).toString());
+                        propStat.setStatus(WebDavStatus.OK);
+                    } else {
+                        // Unknown property.
+                        propStat.setStatus(WebDavStatus.NOT_FOUND);
+                    }
+                }
+            }
+        } else {
+            //TODO: Resource not found.
+        }
+    }
+
+    /**
+     * Handles a PROPFIND 'allprop' request.
+     * 
+     * @param uri
+     *            The resource URI.
+     * @param depth
+     *            The Depth header value.
+     * @param responses
+     *            The property responses.
+     */
+	private void doPropfindAllprop(String uri, Depth depth, List<WebDavResponse> responses)
 			throws ServletException, IOException {
 		//TODO
 	}
 
-	/**
-	 * Handles a PROPFIND 'allprop' request.
-	 * 
-	 * @param uri The resource URI.
-	 * @param depth The Depth header value.
-	 * @param response The response.
-	 */
-	private void doPropfindAllprop(String uri, Depth depth, HttpServletResponse response)
+    /**
+     * Handles a PROPFIND 'propname' request.
+     * 
+     * @param uri
+     *            The resource URI.
+     * @param depth
+     *            The Depth header value.
+     * @param responses
+     *            The property responses.
+     */
+	private void doPropfindPropname(String uri, Depth depth, List<WebDavResponse> responses)
 			throws ServletException, IOException {
 		//TODO
 	}
 
-	/**
-	 * Handles a PROPFIND 'propname' request.
-	 * 
-	 * @param uri The resource URI.
-	 * @param depth The Depth header value.
-	 * @param response The response.
-	 */
-	private void doPropfindPropname(String uri, Depth depth, HttpServletResponse response)
-			throws ServletException, IOException {
-		//TODO
-	}
-
-	/**
-	 * Handles a HEAD request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles a HEAD request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@Override
 	protected void doHead(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -229,12 +341,14 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("HEAD " + uri);
 	}
 
-	/**
-	 * Handles a GET request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles a GET request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -242,12 +356,14 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("GET " + uri);
 	}
 
-	/**
-	 * Handles a PUT request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles a PUT request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -255,12 +371,14 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("PUT " + uri);
 	}
 
-	/**
-	 * Handles a DELETE request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles a DELETE request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -268,18 +386,41 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("DELETE " + uri);
 	}
 	
-	/**
-	 * Handles a POST request.
-	 * 
-	 * @param request The request.
-	 * @param response The response.
-	 */
+    /**
+     * Handles a POST request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String uri = request.getPathInfo();
 		LOG.debug("POST " + uri);
 	}
+
+    /**
+     * Returns the request URI, trimming the servlet context.
+     * 
+     * @param request
+     *            The request.
+     * 
+     * @return The request URI.
+     */
+    private String getUriFromRequest(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        if (context.length() != 0) {
+            if (uri.startsWith(context)) {
+                uri = uri.substring(context.length());
+            }
+        }
+        if (uri.length() == 0) {
+            uri = "/";
+        }
+        return uri;
+    }
 
 	/**
 	 * Returns the request body from an HTTP request.
@@ -326,5 +467,5 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("Depth: " + depth);
 		return depth;
 	}
-
+	
 }

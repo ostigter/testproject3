@@ -14,7 +14,9 @@ public enum Depth {
 	ONE("1"),
 	
 	/** Infinite depth 1 (resource and all of its descendants). */
-	INFINITY("infinity");
+	INFINITY("infinity"),
+	
+	;
 	
 	/** The name. */
 	private final String name;
