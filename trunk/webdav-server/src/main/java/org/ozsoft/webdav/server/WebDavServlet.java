@@ -2,6 +2,7 @@ package org.ozsoft.webdav.server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,6 +93,8 @@ public class WebDavServlet extends HttpServlet {
 			doDelete(request, response);
 		} else if (method.equals("POST")) {
 			doPost(request, response);
+        } else if (method.equals("MKCOL")) {
+            doMkCol(request, response);
 		} else {
 			LOG.warn("Unsupported HTTP method: " + method);
 			response.setStatus(400);
@@ -395,9 +398,18 @@ public class WebDavServlet extends HttpServlet {
      */
 	@Override
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String uri = request.getPathInfo();
+	        throws ServletException, IOException {
+		String uri = getUriFromRequest(request);
 		LOG.debug("PUT " + uri);
+		try {
+		    String contentType = request.getContentType();
+		    String encoding = request.getCharacterEncoding();
+		    InputStream content = (InputStream) request.getInputStream();
+	        backend.setContent(uri, content, contentType, encoding);
+	        response.setStatus(WebDavStatus.OK.getCode());
+		} catch (WebDavException e) {
+            response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e.getMessage());
+		}
 	}
 
     /**
@@ -411,8 +423,14 @@ public class WebDavServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String uri = request.getPathInfo();
+        String uri = getUriFromRequest(request);
 		LOG.debug("DELETE " + uri);
+		try {
+		    backend.delete(uri);
+            response.setStatus(WebDavStatus.OK.getCode());
+		} catch (WebDavException e) {
+            response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e.getMessage());
+		}
 	}
 	
     /**
@@ -426,8 +444,28 @@ public class WebDavServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String uri = request.getPathInfo();
+        String uri = getUriFromRequest(request);
 		LOG.debug("POST " + uri);
+	}
+	
+    /**
+     * Handles a MKCOL request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
+	private void doMkCol(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
+        String uri = getUriFromRequest(request);
+        LOG.debug("MKCOL " + uri);
+        try {
+            backend.createCollection(uri);
+            response.setStatus(WebDavStatus.OK.getCode());
+        } catch (WebDavException e) {
+            response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e.getMessage());
+        }
 	}
 
     /**
