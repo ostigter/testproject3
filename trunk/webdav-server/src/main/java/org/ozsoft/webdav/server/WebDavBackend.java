@@ -166,4 +166,18 @@ public interface WebDavBackend {
 	 */
 	void delete(String uri) throws WebDavException;
 	
+    /**
+     * Moves a resource.
+     * 
+     * @param uri
+     *            The resource source URI.
+     * @param destination
+     *            The resource destination URI.
+     * 
+     * @throws WebDavException
+     *             If the resource does not exist, the user has insufficient
+     *             privileges, or the resource could not be moved.
+     */
+    void move(String uri, String destination) throws WebDavException;
+    
 }
