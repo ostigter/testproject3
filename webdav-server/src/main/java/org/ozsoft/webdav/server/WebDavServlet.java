@@ -3,10 +3,13 @@ package org.ozsoft.webdav.server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +29,7 @@ import org.ozsoft.webdav.WebDavStatus;
 /**
  * HTTP servlet handling WebDAV requests.
  * 
- * Only the basic WebDAV level 1 operations are supported.
+ * Only basic WebDAV level 1 operations are supported.
  * 
  * @author Oscar Stigter
  */
@@ -73,12 +76,12 @@ public class WebDavServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String method = request.getMethod();
-//		for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
-//			String name = (String) e.nextElement();
-//			String value = request.getHeader(name);
-//			LOG.debug("Header: " + name + ": " + value);
-//		}
-
+		LOG.debug("Method: " + method);
+		for (Enumeration e = request.getHeaderNames(); e.hasMoreElements();) {
+			String name = (String) e.nextElement();
+			String value = request.getHeader(name);
+			LOG.debug("Header: " + name + ": " + value);
+		}
 		if (method.equals("OPTIONS")) {
 			doOptions(request, response);
 		} else if (method.equals("PROPFIND")) {
@@ -95,6 +98,8 @@ public class WebDavServlet extends HttpServlet {
 			doPost(request, response);
         } else if (method.equals("MKCOL")) {
             doMkCol(request, response);
+        } else if (method.equals("MOVE")) {
+            doMove(request, response);
 		} else {
 			LOG.warn("Unsupported HTTP method: " + method);
 			response.setStatus(400);
@@ -112,9 +117,8 @@ public class WebDavServlet extends HttpServlet {
 	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-//		super.doOptions(request, response);
 		LOG.debug("OPTIONS");
-		response.setStatus(200);
+		response.setStatus(WebDavStatus.OK.getCode());
 		response.addHeader("Allow", "OPTIONS, HEAD, GET, PUT, DELETE, POST, PROPFIND, MKCOL");
 		response.addHeader("DAV", "1");
 //		response.addHeader("MS-Author-Via", "DAV");  // Required for Microsoft Windows Explorer?
@@ -151,7 +155,6 @@ public class WebDavServlet extends HttpServlet {
 						String typeName = typeElement.getName();
 						if (typeName.equals("prop")) {
 							// Request for specific set of properties.
-							LOG.debug("Request for a specific set of properties");
 							List<String> propNames = new ArrayList<String>();
 							for (Object obj : typeElement.elements()) {
 								if (obj instanceof Element) {
@@ -190,7 +193,11 @@ public class WebDavServlet extends HttpServlet {
 				sb.append("<multistatus xmlns=\"").append(WebDavConstants.DAV_NS).append("\">\n");
 				for (WebDavResponse r : responses) {
 	                sb.append("  <response>\n");
-	                sb.append("    <href>").append(r.getUri()).append("</href>\n");
+	                String href = context + r.getUri();
+	                if (href.endsWith("/")) {
+	                    href = href.substring(0, href.length() - 1);
+	                }
+	                sb.append("    <href>").append(href).append("</href>\n");
 	                for (PropStat propStat : r.getPropStats()) {
 	                    sb.append("    <propstat>\n");
                         sb.append("      <prop>\n");
@@ -211,7 +218,7 @@ public class WebDavServlet extends HttpServlet {
 				}
                 sb.append("</multistatus>\n");
                 String responseBody = sb.toString();
-                LOG.debug("Response:\n" + responseBody);
+//                LOG.debug("Response:\n" + responseBody);
                 response.getWriter().write(responseBody);
 			} catch (DocumentException e) {
 				//TODO: Invalid XML request body.
@@ -224,8 +231,8 @@ public class WebDavServlet extends HttpServlet {
 		// Response status and headers.
 		response.setStatus(WebDavStatus.MULTI_STATUS.getCode());
 		response.setContentType(WebDavConstants.CONTENT_TYPE);
-		response.addHeader("DAV", "1");
-		response.addHeader("MS-Author-Via", "DAV");
+//		response.addHeader("DAV", "1");
+//		response.addHeader("MS-Author-Via", "DAV");
 	}
 	
     /**
@@ -280,7 +287,7 @@ public class WebDavServlet extends HttpServlet {
                 PropStat propStat = new PropStat(propName);
                 if (propName.equals(WebDavConstants.DISPLAYNAME)) {
                     // Display name.
-                    propStat.setValue(uri);
+                    propStat.setValue(getResourceName(uri));
                     propStat.setStatus(WebDavStatus.OK);
                 } else if (propName.equals(WebDavConstants.RESOURCETYPE)) {
                     // Resource type.
@@ -371,6 +378,11 @@ public class WebDavServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String uri = request.getPathInfo();
 		LOG.debug("HEAD " + uri);
+		if (backend.exists(uri)) {
+	        response.setStatus(WebDavStatus.OK.getCode());
+		} else {
+            response.setStatus(WebDavStatus.NOT_FOUND.getCode());
+		}
 	}
 
     /**
@@ -384,8 +396,50 @@ public class WebDavServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String uri = request.getPathInfo();
+		String uri = getUriFromRequest(request);
 		LOG.debug("GET " + uri);
+		try {
+    		if (backend.exists(uri)) {
+    	        if (backend.isCollection(uri)) {
+    	            response.setContentType("text/plain");
+    	            Writer writer = response.getWriter();
+    	            writer.write(String.format("Contents of collection '%s':\n", uri));
+    	            String[] children = backend.getChildrenNames(uri);
+    	            if (children.length == 0) {
+    	                writer.write("(Empty collection)\n");
+    	            } else {
+    	                for (String child : children) {
+    	                    writer.write(String.format("    %s\n", child));
+    	                }
+    	            }
+    	        } else {
+    	            String type = backend.getContentType(uri);
+    	            response.setContentType(type);
+    	            long length = backend.getContentLength(uri);
+    	            response.setContentLength((int) length);
+    	            if (length > 0) {
+                        InputStream is = backend.getContent(uri);
+                        ServletOutputStream os = response.getOutputStream();
+                        byte[] buffer = new byte[8192];
+                        int read = 0;
+                        while ((read = is.read(buffer)) > 0) {
+                            os.write(buffer, 0, read);
+                        }
+                        is.close();
+    	            }
+    	        }
+    	        response.setStatus(WebDavStatus.OK.getCode());
+    		} else {
+    	        response.setContentType("text/plain");
+    	        Writer writer = response.getWriter();
+    		    writer.write("Resource not found: " + uri);
+    		    response.setStatus(WebDavStatus.NOT_FOUND.getCode());
+    		}
+		} catch (WebDavException e) {
+	        response.setContentType("text/plain");
+	        Writer writer = response.getWriter();
+		    writer.write(String.format("Error while retrieving resource '%s': %s\n", uri, e));
+		}
 	}
 
     /**
@@ -404,6 +458,9 @@ public class WebDavServlet extends HttpServlet {
 		try {
 		    String contentType = request.getContentType();
 		    String encoding = request.getCharacterEncoding();
+		    if (!backend.exists(uri)) {
+		        backend.createResource(uri);
+		    }
 		    InputStream content = (InputStream) request.getInputStream();
 	        backend.setContent(uri, content, contentType, encoding);
 	        response.setStatus(WebDavStatus.OK.getCode());
@@ -469,6 +526,37 @@ public class WebDavServlet extends HttpServlet {
 	}
 
     /**
+     * Handles a MOVE request.
+     * 
+     * @param request
+     *            The request.
+     * @param response
+     *            The response.
+     */
+    private void doMove(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String uri = getUriFromRequest(request);
+        LOG.debug("MOVE " + uri);
+        String destination = request.getHeader("destination");
+        if (destination == null) {
+            //TODO: Invalid request; no destination header.
+        } else {
+            if (context != null && context.length() > 0) {
+                int pos = destination.indexOf(context);
+                if (pos != -1) {
+                    destination = destination.substring(pos + context.length());
+                }
+            }
+            try {
+                backend.move(uri, destination);
+                response.setStatus(WebDavStatus.OK.getCode());
+            } catch (WebDavException e) {
+                response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e.getMessage());
+            }
+        }
+    }
+
+    /**
      * Returns the request URI, trimming the servlet context.
      * 
      * @param request
@@ -489,6 +577,25 @@ public class WebDavServlet extends HttpServlet {
         return uri;
     }
 
+    /**
+     * Returns the resource name from a resource URI.
+     * 
+     * @param uri
+     *            The resource URI.
+     * 
+     * @return The resource name.
+     */
+    private static String getResourceName(String uri) {
+        String name = uri;
+        if (name.length() > 1) {
+            int pos = name.lastIndexOf('/');
+            if (pos != -1) {
+                name = name.substring(pos + 1);
+            }
+        }
+        return name;
+    }
+    
 	/**
 	 * Returns the request body from an HTTP request.
 	 * 
@@ -500,7 +607,7 @@ public class WebDavServlet extends HttpServlet {
 	 * @throws IOException
 	 *             If the request could not be read.
 	 */
-	private String getRequestBody(HttpServletRequest request) throws IOException {
+	private static String getRequestBody(HttpServletRequest request) throws IOException {
 		BufferedReader reader = request.getReader();
 		StringBuilder sb = new StringBuilder();
 		String line = null;
@@ -522,7 +629,7 @@ public class WebDavServlet extends HttpServlet {
 	 * 
 	 * @return The Depth value.
 	 */
-	private Depth getDepth(HttpServletRequest request) {
+	private static Depth getDepth(HttpServletRequest request) {
 		Depth depth = Depth.INFINITY;
 		String value = request.getHeader("Depth");
 		if (value != null) {

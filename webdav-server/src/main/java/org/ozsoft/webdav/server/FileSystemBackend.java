@@ -8,14 +8,17 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ozsoft.webdav.WebDavException;
 
 /**
  * File system WebDAV backend.
  * 
- * Serves files (resources) and directories (collections) stored in a specific directory.
- *  
+ * Serves files (resources) and directories (collections) stored in a specific
+ * root directory.
+ * 
  * @author Oscar Stigter
  */
 public class FileSystemBackend implements WebDavBackend {
@@ -23,11 +26,14 @@ public class FileSystemBackend implements WebDavBackend {
 	/** Buffer size for copying streams. */
 	private static final int BUFFER_SIZE = 8192;  // 8 kB
 	
-	/** File filter. */
+	/** The filename filter. */
 	private static final FilenameFilter FILENAME_FILTER = new WebDavFilenameFilter();  
     
-	/** Root directory. */
+	/** The root directory. */
 	private final File ROOT_DIR;
+	
+	/** The supported MIME types. */
+	private final Map<String, String> mimeTypes;
 	
 	/**
 	 * Constructor.
@@ -39,10 +45,21 @@ public class FileSystemBackend implements WebDavBackend {
 		if (path == null || path.length() == 0) {
 			throw new IllegalArgumentException("Null or empty path");
 		}
+		
+		// Set root directory.
 		ROOT_DIR = new File(path);
 		if (!ROOT_DIR.isDirectory()) {
 			throw new IllegalArgumentException("Root directory not found: " + path);
 		}
+		
+		// Define MIME types.
+		mimeTypes = new HashMap<String, String>();
+		mimeTypes.put("txt", "text/plain");
+        mimeTypes.put("xml", "text/xml");
+        mimeTypes.put("gif", "image/gif");
+        mimeTypes.put("jpg", "image/jpg");
+        mimeTypes.put("png", "image/png");
+        mimeTypes.put("pdf", "application/pdf");
 	}
 
 	/*
@@ -144,8 +161,20 @@ public class FileSystemBackend implements WebDavBackend {
      */
     @Override
     public String getContentType(String uri) {
-        //FIXME: Determine a resource's content type.
-        return "text/xml";
+        String extention = "";
+        if (uri.length() > 0) {
+            int pos = uri.lastIndexOf('.');
+            if (pos != 0) {
+                extention = uri.substring(pos).toLowerCase();
+            }
+        }
+        String type = mimeTypes.get(extention);
+        if (type != null) {
+            return type;
+        } else {
+            // Unknown type; handle as binary file.
+            return "application/octet-stream";
+        }
     }
 
 	/*
@@ -269,6 +298,31 @@ public class FileSystemBackend implements WebDavBackend {
 		} else {
 			throw new WebDavException("Resource not found: " + uri);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#move(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void move(String uri, String destination) throws WebDavException {
+        if (uri == null || uri.length() == 0) {
+            throw new IllegalArgumentException("Null or empty uri");
+        }
+        if (destination == null || destination.length() == 0) {
+            throw new IllegalArgumentException("Null or empty destination");
+        }
+        File file = new File(ROOT_DIR, uri);
+        if (!file.exists()) {
+            throw new WebDavException("Resource not found: " + uri);
+        } else {
+            File destinationFile = new File(ROOT_DIR, destination);
+            if (destinationFile.exists()) {
+                //TODO: Overwrite resource.
+            } else {
+                file.renameTo(destinationFile);
+            }
+        }
 	}
 	
 	

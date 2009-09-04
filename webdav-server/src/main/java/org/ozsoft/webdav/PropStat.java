@@ -1,7 +1,7 @@
 package org.ozsoft.webdav;
 
 /**
- * A WebDAV propstat element.
+ * A WebDAV property.
  * 
  * @author Oscar Stigter
  */
@@ -26,22 +26,49 @@ public class PropStat {
         this.name = name;
     }
     
+    /**
+     * Returns the property name.
+     * 
+     * @return The property name.
+     */
     public String getName() {
         return name;
     }
     
+    /**
+     * Returns the property value.
+     * 
+     * @return The property value, or null if not set.
+     */
     public String getValue() {
         return value;
     }
     
+    /**
+     * Sets the property value.
+     * 
+     * @param value
+     *            The property value
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Returns the property status.
+     * 
+     * @return The property status, or null if not set.
+     */
     public WebDavStatus getStatus() {
         return status;
     }
     
+    /**
+     * Sets the property status.
+     * 
+     * @param status
+     *            The property status.
+     */
     public void setStatus(WebDavStatus status) {
         this.status = status;
     }
