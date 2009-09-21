@@ -11,6 +11,9 @@ public interface Constants {
     /** Data file with the watched episodes. */
     String DATA_FILE = "MediaCenter.dat";
     
+    /** Parent folder name. */
+    String PARENT_FOLDER_NAME = "..";
+    
     /** Application width in pixels. */
     int WIDTH = 800;
     
@@ -42,6 +45,6 @@ public interface Constants {
     Color FOREGROUND_SEEN = Color.GRAY;
     
     /** Duration in seconds after which media file is marked as seen. */
-    int SEEN_DURATION = 60;
+    int SEEN_DURATION = 300; // 5 minutes
     
 }

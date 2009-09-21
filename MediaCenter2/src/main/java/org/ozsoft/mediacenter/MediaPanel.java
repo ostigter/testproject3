@@ -23,16 +23,21 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class MediaPanel extends JPanel implements LibraryListener {
+public abstract class MediaPanel extends JPanel implements LibraryListener {
 
 	private static final long serialVersionUID = 1L;
-	private static final String PARENT_FOLDER_NAME = "..";
+	
 	private final Configuration config;
-	private final Library library;
+	
+	protected final Library library;
+	
 	private JList list;
+	
     private JButton deleteButton;
+    
 	private DefaultListModel listModel;
-	private MediaFolder currentFolder;
+	
+	protected MediaFolder currentFolder;
 	
 	public MediaPanel(Configuration config, Library library) {
 	    this.config = config;
@@ -41,37 +46,53 @@ public class MediaPanel extends JPanel implements LibraryListener {
 		createUI();
 	}
 	
-	public void libraryUpdated() {
-        currentFolder = library.getShowsRoot();
-        updateList();
-    }
+    public abstract void libraryUpdated();
 
-	private void createUI() {
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
+	protected void updateList() {
+		listModel.clear();
 		
-		listModel = new DefaultListModel();
+		// First add a phony parent folder (if any)...
+		MediaFolder parent = currentFolder.getParent();
+		if (parent != null) {
+			listModel.addElement(new MediaFolder(
+					Constants.PARENT_FOLDER_NAME, parent.getPath(), parent));
+		}
+		// ...then add any subfolders...
+		for (MediaFolder folder : currentFolder.getFolders()) {
+			listModel.addElement(folder);
+		}
+		// ...then any files.
+		for (MediaFile file : currentFolder.getFiles()) {
+			listModel.addElement(file);
+		}
+	}
+	
+    private void createUI() {
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        
+        listModel = new DefaultListModel();
 
-		list = new JList(listModel);
-		list.setBackground(Constants.BACKGROUND);		
+        list = new JList(listModel);
+        list.setBackground(Constants.BACKGROUND);       
         list.setForeground(Constants.FOREGROUND);     
-		list.setCellRenderer(new MediaCellRenderer(library));
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        list.setCellRenderer(new MediaCellRenderer(library));
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 deleteButton.setEnabled(list.getSelectedIndex() != -1);
             }
-		});
-		list.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getClickCount() == 2) {
-					activateListItem();
-				}
-			}
-		});
-		JScrollPane scrollPane = new JScrollPane(list);
+        });
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    activateListItem();
+                }
+            }
+        });
+        JScrollPane scrollPane = new JScrollPane(list);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -81,7 +102,7 @@ public class MediaPanel extends JPanel implements LibraryListener {
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-		add(scrollPane, gbc);
+        add(scrollPane, gbc);
 
         JButton refreshButton = new JButton("Refresh");
         refreshButton.setFont(Constants.FONT);
@@ -101,7 +122,7 @@ public class MediaPanel extends JPanel implements LibraryListener {
         gbc.weighty = 0.0;
         add(refreshButton, gbc);
         
-		deleteButton = new JButton("Delete");
+        deleteButton = new JButton("Delete");
         deleteButton.setFont(Constants.FONT);
         deleteButton.setEnabled(false);
         deleteButton.addActionListener(new ActionListener() {
@@ -119,32 +140,13 @@ public class MediaPanel extends JPanel implements LibraryListener {
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
         add(deleteButton, gbc);
-	}
-	
-	private void updateList() {
-		listModel.clear();
-		
-		// First add a phony parent folder (if any)...
-		MediaFolder parent = currentFolder.getParent();
-		if (parent != null) {
-			listModel.addElement(new MediaFolder(
-					PARENT_FOLDER_NAME, parent.getPath(), parent));
-		}
-		// ...then add any subfolders...
-		for (MediaFolder folder : currentFolder.getFolders()) {
-			listModel.addElement(folder);
-		}
-		// ...then any files.
-		for (MediaFile file : currentFolder.getFiles()) {
-			listModel.addElement(file);
-		}
-	}
-	
+    }
+    
 	private void activateListItem() {
 		Object value = list.getSelectedValue();
 		if (value instanceof MediaFolder) {
 			MediaFolder folder = (MediaFolder) value;
-			if (folder.getName().equals(PARENT_FOLDER_NAME)) {
+			if (folder.getName().equals(Constants.PARENT_FOLDER_NAME)) {
 				currentFolder = folder.getParent();
 			} else {
 				currentFolder = folder;

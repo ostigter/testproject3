@@ -43,8 +43,10 @@ public class Main extends JFrame {
         
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(Constants.FONT);
-        MediaPanel seriesPanel = new MediaPanel(config, library);
+        MediaPanel seriesPanel = new ShowsMediaPanel(config, library);
         tabbedPane.add("TV Series", seriesPanel);
+        MediaPanel moviesPanel = new MoviesMediaPanel(config, library);
+        tabbedPane.add("Movies", moviesPanel);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
