@@ -17,6 +17,8 @@ public class Library {
 	
 	private final MediaFolder showsRoot;
 	
+    private final MediaFolder moviesRoot;
+    
 	private final Set<String> seenFiles;
 	
 	private final Set<LibraryListener> listeners;
@@ -24,6 +26,7 @@ public class Library {
 	public Library(Configuration config) {
 		this.config = config;
 		showsRoot = new MediaFolder("", "", null);
+        moviesRoot = new MediaFolder("", "", null);
 		seenFiles = new HashSet<String>();
 		listeners = new HashSet<LibraryListener>();
 		load();
@@ -37,18 +40,33 @@ public class Library {
 		return showsRoot;
 	}
 	
+    public MediaFolder getMoviesRoot() {
+        return moviesRoot;
+    }
+    
 	public void update() {
 	    final Popup popup = new Popup("Refreshing list...");
 	    popup.setVisible(true);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                // Search for TV shows.
                 showsRoot.clear();
                 for (String path : config.getShowRoots()) {
                     File dir = new File(path);
                     if (dir.isDirectory() && dir.canRead()) {
                         scanDirectory(dir, showsRoot);
                     } else {
-                        throw new RuntimeException("Invalid root path: " + path);
+                        throw new RuntimeException("Invalid TV shows root path: " + path);
+                    }
+                }
+                // Search for movies.
+                moviesRoot.clear();
+                for (String path : config.getMovieRoots()) {
+                    File dir = new File(path);
+                    if (dir.isDirectory() && dir.canRead()) {
+                        scanDirectory(dir, moviesRoot);
+                    } else {
+                        throw new RuntimeException("Invalid movies root path: " + path);
                     }
                 }
                 popup.dispose();
@@ -69,6 +87,10 @@ public class Library {
 	    showsRoot.deleteFile(file);
 	}
 	
+    public void deleteMovie(MediaFile file) {
+        moviesRoot.deleteFile(file);
+    }
+    
 	private void scanDirectory(File dir, MediaFolder folder) {
 		// First process directories recusively (depth-first)...
         for (File file : dir.listFiles()) {

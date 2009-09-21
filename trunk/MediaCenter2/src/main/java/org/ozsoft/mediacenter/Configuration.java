@@ -14,17 +14,21 @@ import java.util.List;
  */
 public class Configuration {
 	
+    /** The path to the media player application. */
+    private String playerPath;
+    
     /** The TV show root directories. */
     private final List<String> showRoots;
     
-    /** The path to the media player application. */
-    private String playerPath;
+    /** The movie root directories. */
+    private final List<String> movieRoots;
     
     /**
      * Constructor.
      */
     public Configuration() {
         showRoots = new ArrayList<String>();
+        movieRoots = new ArrayList<String>();
         readConfigFile();
     }
     
@@ -44,6 +48,15 @@ public class Configuration {
 	 */
     public List<String> getShowRoots() {
     	return showRoots;
+    }
+    
+    /**
+     * Returns the movie root directories.
+     * 
+     * @return The movie root directories.
+     */
+    public List<String> getMovieRoots() {
+        return movieRoots;
     }
     
     /**
@@ -78,9 +91,16 @@ public class Configuration {
                     	if (new File(value).isDirectory()) {
                             showRoots.add(value);
                     	} else {
-                    		String msg = String.format("Error in configuration file: Invalid root directory: '%s'", value);
+                    		String msg = String.format("Error in configuration file: Invalid TV shows root directory: '%s'", value);
                     		throw new RuntimeException(msg);
                     	}
+                    } else if (key.equals("movies.root")) {
+                        if (new File(value).isDirectory()) {
+                            movieRoots.add(value);
+                        } else {
+                            String msg = String.format("Error in configuration file: Invalid movies root directory: '%s'", value);
+                            throw new RuntimeException(msg);
+                        }
                     } else {
                         // Unparsable line; ignore.
                         System.err.println("Warning: Unpasable line in configuration file: " + line);
