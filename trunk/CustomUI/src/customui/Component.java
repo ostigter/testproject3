@@ -1,11 +1,8 @@
 package customui;
 
-
 import java.awt.Graphics;
 
-
 public interface Component {
-	
 	
 	Component getParent();
 	
@@ -20,6 +17,5 @@ public interface Component {
 	void doLayout();
 	
 	void paintComponent(Graphics g);
-	
 
 }

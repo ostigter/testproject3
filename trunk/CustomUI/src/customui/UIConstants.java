@@ -1,7 +1,6 @@
 package customui;
 
 public enum UIConstants {
-	
 
 	// Anchor positions
 	CENTER,
@@ -19,6 +18,5 @@ public enum UIConstants {
 	HORIZONTAL,
 	VERTICAL,
 	BOTH,
-
 
 }
