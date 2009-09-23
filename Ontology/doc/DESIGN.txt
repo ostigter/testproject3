@@ -1,0 +1,158 @@
+Ontology
+========
+
+
+Rules/relations
+---------------
+
+is REFLECTIVE TRANSITIVE
+
+    is(X, Y) <-> is(Y, X)
+    is(X, Y) AND is(Y, Z) -> is(X, Z)
+
+isClass DISJOINT isInstance
+
+    isClass(Animal)
+    isClass(Car)
+    isClass(Engine)
+
+    isInstance(MyCar)
+    isInstance(Car) -> ERROR: isClass() DISJOINT isInstance()
+
+specializes TRANSITIVE INVERSE generalizes
+
+    specializes(Mammal, Animal)     <-> generalizes(Animal, Mammal)
+    specializes(HumanBeing, Mammal) <-> generalizes(Mammal, HumanBeing)
+    specializes(HumanBeing, Animal) <-> generalizes(Animal, HumanBeing)
+
+hasPart INVERSE isPartOf
+
+    hasPart(Car, Engine) <-> isPartOf(Engine, Car)
+    hasPart(Car, Engine)?  -> true
+    hasPart(Engine, Car)?  -> false
+    isPartOf(Engine, Car)? -> true
+    hasPart(Bird, Engine)? -> false
+    is(Automobile, Car)
+    hasPart(Automobile, Engine)? -> true
+
+contains ALIAS hasPart INVERSE isContainedBy
+
+    contains(Car, Engine) <-> hasPart(Car, Engine) <-> isContainedBy(Engine, Car)
+
+isInstanceOf INVERSE isClassOf
+
+    isInstanceOf(Oscar, HumanBeing) <-> isClassOf(HumanBeing, Oscar)
+
+isProperty
+
+    isProperty(Length)
+    isProperty(Volume)
+    isProperty(Mass)
+    isProperty(Temperature)
+    isProperty(Time)
+    isProperty(Color)
+
+isMeasurementUnit
+
+    isMeasurementUnit(Meter)
+    isMeasurementUnit(Liter)
+    isMeasurementUnit(Gram)
+    isMeasurementUnit(Celcius)
+    isMeasurementUnit(Second)
+
+measuredIn(isProperty, isMeasurementUnit)
+
+    measuredIn(Length, Meter)
+    measuredIn(Volume, Liter)
+    measuredIn(Mass, Gram)
+    measuredIn(Temperature, Celcius)
+    measuredIn(Time, Second)
+
+isColor
+
+    isColor(Red)
+    isColor(Blue)
+    isColor(Green)
+
+hasProperty(isClass, isProperty)
+
+    hasProperty(Car, Color)
+    hasProperty(Car, Mass)
+    hasProperty(Car, Length)
+
+isInstance
+
+    isInstanceOf(MyCar, Car)
+
+isInstanceOf(X, Y) -> isInstance(X) AND isClass(Y)
+
+    isClass(Car)?      -> true
+    isInstance(Car)?   -> false
+    isClass(MyCar)?    -> false
+    isInstance(MyCar)? -> true
+
+isPhysical DISJOINT isAbstract
+
+    isPhysical(Car)  <-> NOT isAbstract(Car)
+    isAbstract(Time) <-> NOT isPhysical(Time)
+
+hasColor(isInstance AND isPhysical, isColor)
+
+    hasColor(MyCar, Red)
+    hasColor(MyCar)       -> ERROR: Invalid number of operands
+    hasColor(Color, MyCar)-> ERROR: NOT isInstance(Color)
+    hasColor(Car,   Red)  -> ERROR: NOT isInstance(Car)
+    hasColor(MyCar, Blah) -> ERROR: NOT isColor(Blah)
+    hasColor(Time,  Red)  -> ERROR: NOT isPhysical(Time)
+
+    hasColor(MyCar)? -> Red
+    hasColor(Car)?   -> ERROR: NOT isInstance(Car)
+
+
+isClass(Vehicle)
+isClass(Car)
+isSubClassOf(Car, Vehicle)
+isSuperClassOf(Vehicle, Car)
+
+isInstance(MyCar)
+isInstanceOf(MyCar, Car)
+
+isPhysical(Car)
+
+isClass(Color)
+isInstance(Red)
+isInstanceOf(Red, Color)
+isColor(Red)
+
+hasColor(isPhysical, isColor)
+hasColor(MyCar, Red)
+
+
+class Concept {
+    -name : String
+    -relations : Map<String, Relation>
+}
+
+class Relation {
+    -name : String
+    -isReflective : boolean
+    -isTransative : boolean
+    -inverses : Set<Relation>
+    -disjoints : Set<Relation>
+    -concept : Concept
+}
+
+
+isClass(Animal)
+
+    Item {
+        name = "Animal"
+        relations = {Relation {name = "isClass", item = null}}
+    }
+
+generalizes(Animal, Mammal) <-> specializes(Mammal, Animal)
+
+    Item {
+        name = "Animal"
+        relations = {Relation {name = "isClass", item = null}, Relation {name = "generalizes", item = Item {name = "Mammal", relations = {Relation{name = "specializes", item{"Animal"}}}}}}
+    }
