@@ -1,8 +1,6 @@
 package xmlvalidator;
 
-
 import java.io.File;
-
 
 /**
  * Application's main class.
@@ -10,7 +8,6 @@ import java.io.File;
  * @author  Oscar Stigter
  */
 public class Main {
-    
     
     private final XmlValidator validator = new XmlValidator();
     
@@ -22,28 +19,26 @@ public class Main {
     
     private int errors = 0;
     
-    
-    public Main() {
-        validator.setSchemaRootDir(schemaRoot);
-        validateXmlFiles(documentRoot);
-        System.out.println("Processed " + validated + " document(s), "
-                + errors + " errors.");
-    }
+    private int warnings = 0;
     
     /**
-     * Test driver.
+     * The application's entry point.
      * 
-     * @param  args  the command line arguments
+     * @param  args  The command line arguments.
      */
     public static void main(String[] args) {
-        new Main();
+        new Main().run();
+    }
+
+    private void run() {
+        validator.setSchemaRootDir(schemaRoot);
+        validateXmlFiles(documentRoot);
+        System.out.format("Processed %d documents, %d errors, %d warnings.\n", validated, errors, warnings);
     }
     
-
     private void validateXmlFiles(String path) {
         validateXmlFiles(new File(path));
     }
-    
 
     /**
      * Validates all XML files in the specified directory and below.
@@ -53,8 +48,7 @@ public class Main {
     private void validateXmlFiles(File dir) {
         // First process files in this directory...
         for (File file : dir.listFiles()) {
-            if (file.isFile() &&
-                    file.getName().toLowerCase().endsWith(".xml")) {
+            if (file.isFile() && file.getName().toLowerCase().endsWith(".xml")) {
                 try {
                     validated++;
                     validator.validate(file);

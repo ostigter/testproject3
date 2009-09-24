@@ -84,11 +84,15 @@ public class XmlValidator {
      * @throws SAXException  If the XML file is invalid 
      * @throws IOException   If the XML file could not be read
      */
-    public void validate(File xmlFile, File schemaFile)
-            throws SAXException, IOException {
-//        System.out.println("Validating file '" + xmlFile + "'...");
+    public void validate(File xmlFile, File schemaFile) {
         Validator validator = getValidator(schemaFile);
-        validator.validate(new StreamSource(xmlFile));
+        try {
+            validator.validate(new StreamSource(xmlFile));
+        } catch (SAXException e) {
+            System.err.println(String.format("ERROR: %s: ", xmlFile, e));
+        } catch (IOException e) {
+            System.err.println(String.format("I/O error: %s: ", xmlFile, e));
+        }
     }
     
     /**
