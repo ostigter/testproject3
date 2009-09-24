@@ -1,6 +1,5 @@
 package xmlvalidator;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,7 +17,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 /**
  * Utility class to validate XML files against their schema.
  * 
@@ -29,8 +27,7 @@ import org.xml.sax.helpers.DefaultHandler;
 public class XmlValidator {
     
     /** Schema factory for WC3 XML schema's with namespaces. */ 
-    private static final SchemaFactory schemaFactory =
-            SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+    private static final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
     
     /** SAX parser. */
     private final SAXParser parser;
@@ -50,8 +47,7 @@ public class XmlValidator {
         try {
             parser = spf.newSAXParser();
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "Could not instantiate SAX parser: " + e);
+            throw new RuntimeException("Could not instantiate SAX parser: " + e);
         }
         
         validators = new HashMap<String, Validator>();
@@ -70,8 +66,7 @@ public class XmlValidator {
             schemaRootDir = dir;
             updateSchemas();
         } else {
-            throw new IllegalArgumentException(
-                    "Invalid schema root directory: " + path);
+            throw new IllegalArgumentException("Invalid schema root directory: " + path);
         }
     }
     
@@ -89,9 +84,9 @@ public class XmlValidator {
         try {
             validator.validate(new StreamSource(xmlFile));
         } catch (SAXException e) {
-            System.err.println(String.format("ERROR: %s: ", xmlFile, e));
+            System.err.format("ERROR: Invalid document: %s: %s\n", xmlFile, e);
         } catch (IOException e) {
-            System.err.println(String.format("I/O error: %s: ", xmlFile, e));
+            System.err.format("ERROR: %s: %s\n", xmlFile, e);
         }
     }
     
@@ -104,7 +99,7 @@ public class XmlValidator {
      * @throws  IOException   If the XML file cannot be read
      */
     public void validate(File file) throws SAXException, IOException {
-//        System.out.println("Validating '" + file + "'...");
+//        System.out.format("Validating document '%s'\n", file);
         String namespace = getNamespaceFromXmlFile(file);
         if (namespace != null && namespace.length() > 0) {
             Validator validator = validators.get(namespace);
@@ -123,13 +118,11 @@ public class XmlValidator {
     
     private void updateSchemas() {
         validators.clear();
-//        System.out.println("Collecting schema's in '"
-//                + schemaRootDir.getAbsolutePath() + "'...");
-//        long startTime = System.currentTimeMillis();
+        System.out.format("Collecting schema's in '%s'\n", schemaRootDir.getAbsolutePath());
+        long startTime = System.currentTimeMillis();
         collectSchemas(schemaRootDir);
-//        long endTime = System.currentTimeMillis();
-//        System.out.println("Found and compiled " + validators.size() + " schema's in " + (endTime - startTime) + " ms.");
-        System.out.println("Found " + validators.size() + " schema's.");
+        long endTime = System.currentTimeMillis();
+        System.out.format("Compiled %d schema's in %d ms.\n", validators.size(), endTime - startTime);
     }
     
     /**
@@ -148,12 +141,10 @@ public class XmlValidator {
                 Schema schema = schemaFactory.newSchema(file);
                 return schema.newValidator();
             } catch (SAXException e) {
-                throw new IllegalArgumentException(
-                        "Could not parse schema file '" + file + "': " + e);
+                throw new IllegalArgumentException("Could not parse schema file '" + file + "': " + e);
             }
         } else {
-            throw new IllegalArgumentException(
-                    "Could not find or read schema file: " + file);
+            throw new IllegalArgumentException("Could not find or read schema file: " + file);
         }
     }
 
@@ -173,10 +164,9 @@ public class XmlValidator {
                     Schema schema = schemaFactory.newSchema(file);
                     Validator validator = schema.newValidator();
                     validators.put(namespace, validator);
-//                    System.out.println("Schema found: " + namespace);
+                    System.out.format("Schema found with target namespace '%s'\n", namespace);
                 } catch (Exception e) {
-                    System.err.println("ERROR: Invalid schema file: "
-                            + file + ": " + e.getMessage());
+                    System.err.format("ERROR: Invalid schema file: %s: %s\n", file, e.getMessage());
                 }
             }
         }
@@ -196,10 +186,8 @@ public class XmlValidator {
      * 
      * @return  the target namespace
      */
-    public String getTargetNamespaceFromSchema(File file)
-            throws SAXException, IOException {
+    public String getTargetNamespaceFromSchema(File file) throws SAXException, IOException {
         String namespace = null;
-        
         SchemaContentHandler handler = new SchemaContentHandler();
         try {
             parser.parse(file, handler);
@@ -207,7 +195,6 @@ public class XmlValidator {
             // We have found what we were looking for.
             namespace = handler.getNamespace();
         }
-        
         return namespace;
     }
 
@@ -222,7 +209,6 @@ public class XmlValidator {
     public String getNamespaceFromXmlFile(File file)
             throws SAXException, IOException {
         String namespace = null;
-        
         DocumentContentHandler handler = new DocumentContentHandler();
         try {
             parser.parse(file, handler);
@@ -230,17 +216,9 @@ public class XmlValidator {
             // We have found what we were looking for.
             namespace = handler.getNamespace();
         }
-        
         return namespace;
     }
 
-    
-    
-    //------------------------------------------------------------------------
-    //  Inner classes.
-    //------------------------------------------------------------------------
-    
-    
     /**
      * SAX content handler to retrieve the target namespace from a schema file. 
      */
@@ -266,9 +244,8 @@ public class XmlValidator {
          * @param  qName      the element's qualified name
          * @param  attr       the element's attributes
          */
-        @Override // DefaultHandler
-        public void startElement(String uri, String localName, String qName,
-                Attributes attr) throws SAXException {
+        @Override
+        public void startElement(String uri, String localName, String qName, Attributes attr) throws SAXException {
             if (localName.equals("schema")) {
                 namespace = attr.getValue("targetNamespace");
                 throw new ParsingDoneException();
@@ -276,10 +253,6 @@ public class XmlValidator {
         }
         
     }
-    
-    
-    //------------------------------------------------------------------------
-    
     
     /**
      * SAX content handler to retrieve the root elememt namespace. 
@@ -307,17 +280,12 @@ public class XmlValidator {
          * @return  the root element namespace, or null if no namespace
          */
         @Override // DefaultHandler
-        public void startElement(String uri, String localName, String qName,
-                Attributes attributes) throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             namespace = uri;
             throw new ParsingDoneException();
         }
         
     }
-    
-    
-    //------------------------------------------------------------------------
-    
     
     /**
      * Exception used to abort a SAX parser when all required data has been
