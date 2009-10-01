@@ -156,3 +156,20 @@ generalizes(Animal, Mammal) <-> specializes(Mammal, Animal)
         name = "Animal"
         relations = {Relation {name = "isClass", item = null}, Relation {name = "generalizes", item = Item {name = "Mammal", relations = {Relation{name = "specializes", item{"Animal"}}}}}}
     }
+
+    
+new class Vehicle
+new class Car extends Vehicle
+new class Color
+new property Color color
+new instance Color Red
+new instance Car MyCar
+set property color of MyCar to Red
+
+extends(Car, Vehicle)
+Car extends Vehicle <--> Vehicle is-extended-by Car
+
+<relation>[(<relation>[, <relation>])]
+    isClass
+    isInstance
+        inverse isExtendedBy
