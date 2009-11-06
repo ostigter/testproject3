@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+		xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+		xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		xmlns:b="http://www.example.org/bericht"
+		targetNamespace="http://www.example.org/bericht"
+		name="bericht">
+
+	<import namespace="http://www.example.org/bericht" location="../schema/bericht.xsd"/>
+
+	<message name="Bericht">
+		<part name="bericht" element="b:Bericht" />
+	</message>
+
+	<portType name="BerichtPortType">
+		<operation name="ontvangBericht">
+			<input message="b:Bericht" />
+			<output message="b:Bericht" />
+		</operation>
+	</portType>
+
+	<binding name="SOAPBinding" type="b:BerichtPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<operation name="ontvangBericht">
+			<soap:operation soapAction="http://www.example.org/bericht"/>
+			<input>
+				<soap:body use="literal"/>
+			</input>
+			<output>
+				<soap:body use="literal"/>
+			</output>
+		</operation>
+	</binding>
+
+	<service name="Bericht">
+		<port name="BerichtPort" binding="b:SOAPBinding">
+			<soap:address location="http://localhost:8500/bericht"/>
+		</port>
+	</service>
+
+</definitions>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.example.org/bericht"
+        xmlns:b="http://www.example.org/bericht"
+		elementFormDefault="qualified"
+		attributeFormDefault="unqualified">
+        
+    <element name="Bericht" type="b:Bericht" />
+    
+    <complexType name="Bericht">
+        <sequence>
+        	<element name="Id" type="string" />
+        	<element name="BronApplicatie" type="string" />
+            <element name="Status" type="string" />
+        </sequence>
+    </complexType>
+
+</schema>

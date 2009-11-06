@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.example.org/message"
+        xmlns:m="http://www.example.org/message"
+		elementFormDefault="qualified"
+		attributeFormDefault="unqualified">
+        
+    <element name="message" type="m:Message" />
+    
+    <complexType name="Message">
+        <sequence>
+            <element name="text" type="string" />
+            <element name="timestamp" type="string" />
+        </sequence>
+    </complexType>
+
+</schema>
