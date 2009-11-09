@@ -28,8 +28,7 @@ public class Main {
             
             System.out.println("Unmarshalling message from file...");
             Unmarshaller um = jc.createUnmarshaller();
-            element = (JAXBElement<Message>) um.unmarshal(FILE);
-            message = element.getValue();
+            message = ((JAXBElement<Message>) um.unmarshal(FILE)).getValue();
             String timestamp = message.getTimestamp();
             System.out.println("Text: " + message.getText());
             System.out.println("Old timestamp: " + timestamp);
