@@ -16,11 +16,11 @@ import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.geometry.ColorCube;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-public class Hello3D extends Applet {
+public class SpinningCube extends Applet {
 
     private static final long serialVersionUID = 1L;
 
-    public Hello3D() {
+    public SpinningCube() {
         setLayout(new BorderLayout());
         
         GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
@@ -58,7 +58,7 @@ public class Hello3D extends Applet {
     }
 
     public static void main(String[] args) {
-        new MainFrame(new Hello3D(), 400, 400);
+        new MainFrame(new SpinningCube(), 400, 400);
     }
 
 }
