@@ -41,6 +41,8 @@ public class FileStoreTest {
             fileStore.start();
             fileStore.store(1, new File(RESOURCES_DIR, "foo.txt"));
             fileStore.store(2, new File(RESOURCES_DIR, "bar.txt"));
+            fileStore.store(1, new File(RESOURCES_DIR, "cafe.txt"));
+            fileStore.store(1, new File(RESOURCES_DIR, "foo.txt"));
             fileStore.shutdown();
         } catch (FileStoreException e) {
             Assert.fail(e.getMessage());

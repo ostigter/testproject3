@@ -226,26 +226,18 @@ public class FileStore {
     public void store(int id, File file) throws FileStoreException {
         checkIsRunning();
         
-        int offset = 0;
-        int length = (int) file.length();
+        // Delete (overwrite) any previous file.
+        delete(id);
         
-        try {
-            FileEntry entry = entries.get(id);
-            if (entry == null) {
-                // New file.
-                entry = new FileEntry(id);
-            } else {
-                // Existing file; delete (overwrite).
-                dataFile.seek(entry.getOffset());
-                dataFile.writeInt(-1);
-            }
-            
-            offset = findFreePosition(length);
-            
-            entry.setOffset(offset);
-            entry.setLength(length);
-            entries.put(id, entry);
+        int length = (int) file.length();
+        int offset = findFreePosition(length);
+        
+        FileEntry entry = new FileEntry(id);
+        entry.setOffset(offset);
+        entry.setLength(length);
+        entries.put(id, entry);
 
+        try {
             dataFile.seek(offset);
             dataFile.writeInt(id);
             dataFile.writeInt(length);
@@ -344,7 +336,6 @@ public class FileStore {
                 dataFile.seek(entry.getOffset());
                 dataFile.writeInt(-1);
                 entries.remove(id);
-                LOG.debug("Deleted file with ID " + id);
             } catch (IOException e) {
                 LOG.error(String.format("Error making file %d as deleted", id), e);
             }
@@ -394,19 +385,16 @@ public class FileStore {
      */
     private int findFreePosition(int length) {
         int offset = 0;
-        int free = 0;
         for (FileEntry entry : entries.values()) {
-            if (entry.getId() == -1) {
-                // Deleted file.
-                free += entry.getLength();
-                if (free >= length) {
-                    // Found a suitable spot!
-                    return offset;
-                }
+            // Look for free space between entries.
+            long free = entry.getOffset() - offset;
+            if (free >= length) {
+                // Found a suitable spot!
+                break;
             } else {
-                free = 0;
+                // Proceed to next entry.
+                offset = entry.getOffset() + HEADER_LENGTH + entry.getLength();
             }
-            offset += HEADER_LENGTH + entry.getLength();
         }
         return offset;
     }
