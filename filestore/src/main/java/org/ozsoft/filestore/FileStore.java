@@ -14,20 +14,21 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * File system based database for storing files.
- *
- * Files are logically stored, retrieved and deleted based on an integer ID.
- *
- * The file contents are stored in a binary file 'data.dbx'.
- *
- * All database files are stored in a configurable directory (by default
- * 'data'). If this directory does not exists, it will be created.
- *
- * The positioning algorithm for storing a file is simple; it inserts the file
- * at the first free position it fits in, or it appends the file at the end.
  * 
- * For performance reasons, this class offers no synchronization or locking,
- * and is thus NOT thread-safe.
- *
+ * Files are logically stored, retrieved and deleted based on an integer ID.
+ * 
+ * The file contents are stored in a binary file (by default "data.dbx") in a
+ * configurable directory (by default "data"). If this directory does not
+ * exists, it will be created.
+ * 
+ * When storing a file, a previous file with the same ID will be overwritten.
+ * 
+ * The positioning algorithm for storing a file is simple; it inserts the file
+ * at the first free position it fits in, otherwise it appends it at the end.
+ * 
+ * For performance reasons, this class offers no synchronization or locking, and
+ * is thus NOT thread-safe.
+ * 
  * @author Oscar Stigter
  */
 public class FileStore {
@@ -50,14 +51,14 @@ public class FileStore {
     /** Document entries mapped by the their ID. */
     private final Map<Integer, FileEntry> entries;
     
-    /** Indicates whether the FileStore is running. */
-    private boolean isRunning = false;
-    
     /** Data directory. */
     private File dataDir = new File(DEFAULT_DATA_DIR);
     
     /** Data file with the file contents. */ 
     private RandomAccessFile dataFile;
+    
+    /** Indicates whether the FileStore is running. */
+    private boolean isRunning = false;
     
     /**
      * Constructor.
@@ -207,7 +208,6 @@ public class FileStore {
      *              if the database is not running
      */
     public boolean exists(int id) {
-        checkIsRunning();
         return entries.containsKey(id);
     }
     
@@ -217,15 +217,11 @@ public class FileStore {
      * @param   id    the file ID
      * @param   file  the file with the file's content
      * 
-     * @throws  IllegalStateException
-     *              if the database is not running
      * @throws  FileStoreException
      *              if the file could not be read, or the file content
      *              could not be written
      */
     public void store(int id, File file) throws FileStoreException {
-        checkIsRunning();
-        
         // Delete (overwrite) any previous file.
         delete(id);
         
@@ -263,17 +259,11 @@ public class FileStore {
      * 
      * @return  the file content
      * 
-     * @throws  IllegalStateException
-     *              if the database is not running
      * @throws  FileStoreException
      *              if the file could not be found, or the content could
      *              not be read
      */
     public InputStream retrieve(int id) throws FileStoreException {
-        checkIsRunning();
-        
-        LOG.debug("Retrieving file with ID " + id);
-        
         InputStream is = null;
         
         FileEntry entry = entries.get(id);
@@ -286,9 +276,7 @@ public class FileStore {
                 throw new FileStoreException(msg, e);
             }
         } else {
-            String msg = String.format("File with ID %d not found", id);
-            LOG.error(msg);
-            throw new FileStoreException(msg);
+            throw new FileStoreException(String.format("File with ID %d not found", id));
         }
         
         return is;
@@ -302,20 +290,13 @@ public class FileStore {
      * @param  id  the file ID
      * 
      * @return  the file length in bytes
-     * 
-     * @throws  IllegalStateException
-     *              if the database is not running
      */
     public int getLength(int id) {
-        checkIsRunning();
-        
         int length = 0;
-        
         FileEntry entry = entries.get(id);
         if (entry != null) {
             length = entry.getLength();
         }
-        
         return length;
     }
     
@@ -323,18 +304,15 @@ public class FileStore {
      * Deletes a file.
      * 
      * @param   id  the file ID
-     * 
-     * @throws  IllegalStateException
-     *              if the database is not running
      */
     public void delete(int id) throws FileStoreException {
-        checkIsRunning();
-        
         FileEntry entry = entries.get(id);
         if (entry != null) {
             try {
+                // Mark file as deleted.
                 dataFile.seek(entry.getOffset());
                 dataFile.writeInt(-1);
+                // Remove file entry.
                 entries.remove(id);
             } catch (IOException e) {
                 LOG.error(String.format("Error making file %d as deleted", id), e);
@@ -344,13 +322,8 @@ public class FileStore {
     
     /**
      * Logs a message showing the disk size usage.
-     * 
-     * @throws  IllegalStateException
-     *              if the database is not running
      */
     public void printSizeInfo() {
-        checkIsRunning();
-        
         long stored = getStoredSpace();
         long used = getUsedSpace();
         long wasted = stored - used;
@@ -408,17 +381,19 @@ public class FileStore {
     private void readIndices() throws IOException {
         entries.clear();
         long fileLength = dataFile.length();
-        long pos = 0L;
-        while (pos < fileLength) {
-            dataFile.seek(pos);
+        int offset = 0;
+        dataFile.seek(offset);
+        while (offset < fileLength) {
             int id = dataFile.readInt();
-            int offset = dataFile.readInt();
             int length = dataFile.readInt();
-            FileEntry entry = new FileEntry(id);
-            entry.setOffset(offset);
-            entry.setLength(length);
-            entries.put(id, entry);
-            pos += length;
+            if (id != -1) {
+                FileEntry entry = new FileEntry(id);
+                entry.setOffset(offset);
+                entry.setLength(length);
+                entries.put(id, entry);
+            }
+            offset += HEADER_LENGTH + length;
+            dataFile.skipBytes(length);
         }
     }
     
