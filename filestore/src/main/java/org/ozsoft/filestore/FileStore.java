@@ -388,7 +388,7 @@ public class FileStore {
         for (FileEntry entry : entries.values()) {
             // Look for free space between entries.
             long free = entry.getOffset() - offset;
-            if (free >= length) {
+            if (free >= (HEADER_LENGTH + length)) {
                 // Found a suitable spot!
                 break;
             } else {
