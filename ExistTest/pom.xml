@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.example.exist</groupId>
+	<artifactId>ExistTest</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>ExistTest</name>
+	<description>Test application with the eXist XML:DB API</description>
+	
+	<properties>
+		<exist-version>1.4.0</exist-version>
+		<log4j-version>1.2.14</log4j-version>
+		<junit-version>4.7</junit-version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>exist</groupId>
+			<artifactId>exist</artifactId>
+			<version>${exist-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>xmldb</groupId>
+			<artifactId>xmldb</artifactId>
+			<version>${exist-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>xmlrpc</groupId>
+			<artifactId>xmlrpc-client</artifactId>
+			<version>3.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+                    <compilerVersion>6</compilerVersion>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
