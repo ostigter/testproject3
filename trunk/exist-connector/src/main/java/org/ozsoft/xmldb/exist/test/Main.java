@@ -11,25 +11,38 @@ import org.ozsoft.xmldb.XmldbException;
 import org.ozsoft.xmldb.exist.ExistRestConnector;
 
 /**
- * Test driver for the ExistConnector.
+ * Test driver to demonstrate the ExistRestConnector.
  * 
- * Expects an eXist database running  
+ * Expects a running eXist instance on the configured host and port.
+ * 
+ * Creates and deletes the collections '/db/data' and '/db/modules'. 
  * 
  * @author Oscar Stigter
  */
 public class Main {
     
+    /** Hostname of the machine running the eXist instance. */
     private static final String HOST = "localhost";
     
+    /** The port eXist is running on. */
     private static final int PORT = 8080;
     
+    /** Directory with the test resources. */
     private static final File RESOURCES_DIR = new File("src/test/resources");
 
+    /** Logger. */
     private static final Logger LOGGER = Logger.getLogger(Main.class);
     
+    /**
+     * Application's entry point.
+     * 
+     * @param args
+     *            The command line arguments (not used).
+     */
     public static void main(String[] args) {
 	String uri = null;
 	Document doc = null;
+	byte[] content = null;
 	String query = null;
 	String result = null;
 	
@@ -55,8 +68,8 @@ public class Main {
         	
         	LOGGER.info("Retrieving the raw content of a resource");
         	uri = "/db/data/foo/foo-001.xml";
-        	result = connector.retrieveResource(uri);
-        	LOGGER.info("Resource content:\n" + result);
+        	content = connector.retrieveResource(uri);
+        	LOGGER.info("Resource content:\n" + new String(content));
         	
         	LOGGER.info("Retrieving the content of an XML document");
         	uri = "/db/data/foo/foo-001.xml";

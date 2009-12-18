@@ -16,6 +16,9 @@ public interface XmldbConnector {
     /**
      * Retrieves a resource.
      * 
+     * Use this method for non-XML resources (e.g. plain text or binary).
+     * For XML resources, use the retrieveXmlDocument method.
+     * 
      * @param uri
      *            The resource URI.
      * 
@@ -24,7 +27,7 @@ public interface XmldbConnector {
      * @throws XmldbException
      *             If the resource could not be found or read.
      */
-    String retrieveResource(String uri) throws XmldbException;
+    byte[] retrieveResource(String uri) throws XmldbException;
     
     /**
      * Retrieves an XML document.
