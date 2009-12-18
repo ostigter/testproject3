@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 import org.ozsoft.xmldb.exist.ExistRestConnector;
 
@@ -34,7 +35,7 @@ public class Main {
 	
 	LOGGER.info("Started");
 	
-	ExistRestConnector connector = new ExistRestConnector(HOST, PORT);
+	XmldbConnector connector = new ExistRestConnector(HOST, PORT);
 	
 	try {
 	    
