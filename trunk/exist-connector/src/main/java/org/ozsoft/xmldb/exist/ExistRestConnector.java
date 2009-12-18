@@ -75,7 +75,8 @@ public class ExistRestConnector implements XmldbConnector {
 	    LOGGER.trace("HTTP status: " + statusCode);
 	    content = getMethod.getResponseBodyAsString();
 	} catch (IOException e) {
-	    LOGGER.error("Could not retrieve document", e);
+	    String msg = String.format("Could not retrieve resource '%s'", uri);
+	    throw new XmldbException(msg, e);
 	}
 	return content;
     }
@@ -91,10 +92,10 @@ public class ExistRestConnector implements XmldbConnector {
 	try {
 	    doc = DocumentHelper.parseText(content);
 	} catch (DocumentException e) {
-	    throw new XmldbException("Could not create XML document from conent", e);
+	    String msg = String.format("Could not create XML document from content of resource '%s'", uri);
+	    throw new XmldbException(msg, e);
 	}
 	return doc;
-	
     }
     
     /*
@@ -107,7 +108,8 @@ public class ExistRestConnector implements XmldbConnector {
 	    InputStream is = new FileInputStream(file);
 	    storeResource(uri, is);
 	} catch (IOException e) {
-	    LOGGER.error("Could not read file", e);
+	    String msg = String.format("Could not store resource '%s'", uri);
+	    throw new XmldbException(msg, e);
 	}
     }
     
@@ -145,7 +147,8 @@ public class ExistRestConnector implements XmldbConnector {
 	    int statusCode = httpClient.executeMethod(putMethod);
 	    LOGGER.trace("HTTP status: " + statusCode);
 	} catch (Exception e) {
-	    LOGGER.error("Could not store resource", e);
+	    String msg = String.format("Could not store resource '%s'", uri);
+	    throw new XmldbException(msg, e);
 	}
     }
     
@@ -161,7 +164,8 @@ public class ExistRestConnector implements XmldbConnector {
 	    int statusCode = httpClient.executeMethod(deleteMethod);
 	    LOGGER.trace("HTTP status: " + statusCode);
 	} catch (Exception e) {
-	    LOGGER.error("Could not delete resource", e);
+	    String msg = String.format("Could not delete resource '%s'", uri);
+	    throw new XmldbException(msg, e);
 	}
     }
 
@@ -208,18 +212,20 @@ public class ExistRestConnector implements XmldbConnector {
 	    }
 	    reader.close();
 	    response = sb2.toString();
-//	    LOGGER.debug("POST response:\n" + response);
+	    LOGGER.trace("POST response:\n" + response);
 	} catch (Exception e) {
-	    LOGGER.trace("Error while querying database", e);
+	    throw new XmldbException("Error while executing query", e);
 	} finally {
 	    if (bais != null) {
 		try {
 		    bais.close();
 		} catch (IOException e) {
-		    LOGGER.error("Could not close stream", e);
+		    LOGGER.warn("Could not close stream", e);
 		}
 	    }
-	    postMethod.releaseConnection();
+	    if (postMethod != null) {
+		postMethod.releaseConnection();
+	    }
 	}
 	return response;
     }
@@ -246,7 +252,8 @@ public class ExistRestConnector implements XmldbConnector {
 	    LOGGER.trace("HTTP status: " + statusCode);
 	    content = getMethod.getResponseBodyAsString();
 	} catch (IOException e) {
-	    LOGGER.error("Could not retrieve document", e);
+	    String msg = String.format("Error executing XQuery module '%s'", uri);
+	    throw new XmldbException(msg, e);
 	}
 	return content;
     }
@@ -273,7 +280,6 @@ public class ExistRestConnector implements XmldbConnector {
 	String query = String.format(
 		"import module namespace tns=\"%s\" at \"xmldb:exist://%s\"; tns:%s(%s)",
 		moduleNamespace, moduleUri, functionName, paramString);
-	LOGGER.trace("Query:\n" + query);
 	return executeQuery(query);
     }
     
