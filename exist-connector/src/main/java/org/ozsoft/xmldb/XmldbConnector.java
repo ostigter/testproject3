@@ -1,4 +1,4 @@
-package org.example.xmldb;
+package org.ozsoft.xmldb;
 
 import java.io.File;
 import java.io.InputStream;

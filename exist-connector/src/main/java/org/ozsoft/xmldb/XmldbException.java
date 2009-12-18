@@ -1,4 +1,4 @@
-package org.example.xmldb;
+package org.ozsoft.xmldb;
 
 public class XmldbException extends Exception {
     

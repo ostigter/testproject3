@@ -8,15 +8,15 @@
         </layout>
     </appender>
 
-    <logger name="org.example.xmldb">
+    <logger name="org.ozsoft.xmldb">
         <level value="DEBUG" />
     </logger>
 
-    <logger name="org.example.xmldb.exist">
+    <logger name="org.ozsoft.xmldb.exist">
         <level value="DEBUG" />
     </logger>
 
-    <logger name="org.example.xmldb.exist.test">
+    <logger name="org.ozsoft.xmldb.exist.test">
         <level value="DEBUG" />
     </logger>
 
