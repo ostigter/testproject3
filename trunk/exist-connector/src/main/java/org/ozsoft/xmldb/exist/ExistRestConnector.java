@@ -47,9 +47,9 @@ public class ExistRestConnector implements XmldbConnector {
      * Constructor.
      * 
      * @param host
-     *            The host.
+     *            The host running an eXist instance.
      * @param port
-     *            The port.
+     *            The port eXist is running on.
      */
     public ExistRestConnector(String host, int port) {
 	if (host == null || host.length() == 0) {
