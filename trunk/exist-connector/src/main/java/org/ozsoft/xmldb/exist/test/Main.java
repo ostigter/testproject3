@@ -1,4 +1,4 @@
-package org.example.xmldb.exist.test;
+package org.ozsoft.xmldb.exist.test;
 
 import java.io.File;
 import java.util.HashMap;
@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.example.xmldb.XmldbException;
-import org.example.xmldb.exist.ExistRestConnector;
+import org.ozsoft.xmldb.XmldbException;
+import org.ozsoft.xmldb.exist.ExistRestConnector;
 
 /**
  * Test driver for the ExistConnector.

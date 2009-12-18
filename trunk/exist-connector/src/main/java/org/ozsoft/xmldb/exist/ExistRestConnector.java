@@ -1,4 +1,4 @@
-package org.example.xmldb.exist;
+package org.ozsoft.xmldb.exist;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
-import org.example.xmldb.XmldbConnector;
-import org.example.xmldb.XmldbException;
+import org.ozsoft.xmldb.XmldbConnector;
+import org.ozsoft.xmldb.XmldbException;
 
 /**
  * eXist connector using the REST API.
