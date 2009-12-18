@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
-import org.ozsoft.xmldb.exist.ExistRestConnector;
+import org.ozsoft.xmldb.exist.ExistConnector;
 
 /**
  * Test driver to demonstrate the ExistRestConnector.
@@ -48,7 +48,7 @@ public class Main {
 	
 	LOGGER.info("Started");
 	
-	XmldbConnector connector = new ExistRestConnector(HOST, PORT);
+	XmldbConnector connector = new ExistConnector(HOST, PORT);
 	
 	try {
 	    

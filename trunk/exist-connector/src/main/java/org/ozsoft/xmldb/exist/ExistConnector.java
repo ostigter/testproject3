@@ -27,11 +27,13 @@ import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 
 /**
- * eXist connector using the REST API.
+ * eXist XML database connector.
+ * 
+ * Uses eXist's REST interface with the Apache Commons HttpClient library.
  * 
  * @author Oscar Stigter
  */
-public class ExistRestConnector implements XmldbConnector {
+public class ExistConnector implements XmldbConnector {
     
     private static final String PARAMETER_STRING_DELIMITER = "\"";
 
@@ -39,7 +41,7 @@ public class ExistRestConnector implements XmldbConnector {
 
     private static final int BUFFER_SIZE = 8192;
     
-    private static final Logger LOGGER = Logger.getLogger(ExistRestConnector.class);
+    private static final Logger LOGGER = Logger.getLogger(ExistConnector.class);
     
     private final String servletUri;
     
@@ -51,7 +53,7 @@ public class ExistRestConnector implements XmldbConnector {
      * @param port
      *            The port eXist is running on.
      */
-    public ExistRestConnector(String host, int port) {
+    public ExistConnector(String host, int port) {
 	if (host == null || host.length() == 0) {
 	    throw new IllegalArgumentException("Null or empty host");
 	}
