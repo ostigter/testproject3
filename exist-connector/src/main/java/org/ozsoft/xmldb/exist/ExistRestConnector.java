@@ -1,6 +1,7 @@
 package org.ozsoft.xmldb.exist;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,8 +22,7 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
+import org.dom4j.io.SAXReader;
 import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 
@@ -66,14 +66,22 @@ public class ExistRestConnector implements XmldbConnector {
      * @see org.example.exist.XmldbConnector#retrieveResource(java.lang.String)
      */
     @Override
-    public String retrieveResource(String uri) throws XmldbException {
+    public byte[] retrieveResource(String uri) throws XmldbException {
 	HttpClient httpClient = new HttpClient();
 	GetMethod getMethod = new GetMethod(servletUri + uri);
-	String content = null;
+	byte[] content = null;
 	try {
 	    int statusCode = httpClient.executeMethod(getMethod);
 	    LOGGER.trace("HTTP status: " + statusCode);
-	    content = getMethod.getResponseBodyAsString();
+	    InputStream is = getMethod.getResponseBodyAsStream();
+	    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    byte[] buffer = new byte[BUFFER_SIZE];
+	    int length = 0;
+	    while ((length = is.read(buffer)) > 0) {
+		baos.write(buffer, 0, length);
+	    }
+	    content = baos.toByteArray();
+	    baos.close();
 	} catch (IOException e) {
 	    String msg = String.format("Could not retrieve resource '%s'", uri);
 	    throw new XmldbException(msg, e);
@@ -87,11 +95,16 @@ public class ExistRestConnector implements XmldbConnector {
      */
     @Override
     public Document retrieveXmlDocument(String uri) throws XmldbException {
-	String content = retrieveResource(uri);
+	HttpClient httpClient = new HttpClient();
+	GetMethod getMethod = new GetMethod(servletUri + uri);
 	Document doc = null;
 	try {
-	    doc = DocumentHelper.parseText(content);
-	} catch (DocumentException e) {
+	    int statusCode = httpClient.executeMethod(getMethod);
+	    LOGGER.trace("HTTP status: " + statusCode);
+	    InputStream is = getMethod.getResponseBodyAsStream();
+	    SAXReader reader = new SAXReader();
+	    doc = reader.read(is);
+	} catch (Exception e) {
 	    String msg = String.format("Could not create XML document from content of resource '%s'", uri);
 	    throw new XmldbException(msg, e);
 	}
@@ -246,16 +259,28 @@ public class ExistRestConnector implements XmldbConnector {
         	}
         	getMethod.setQueryString(nameValuePairs);
 	}
-	String content = null;
+	String result = null;
 	try {
+	    // Execute query.
 	    int statusCode = httpClient.executeMethod(getMethod);
 	    LOGGER.trace("HTTP status: " + statusCode);
-	    content = getMethod.getResponseBodyAsString();
+	    
+	    // Read response body.
+	    Reader reader = new InputStreamReader(getMethod.getResponseBodyAsStream());
+	    StringBuilder sb2 = new StringBuilder();
+	    char[] buffer = new char[BUFFER_SIZE];
+	    int read = 0;
+	    while ((read = reader.read(buffer)) > 0) {
+		sb2.append(buffer, 0, read);
+	    }
+	    reader.close();
+	    result = sb2.toString();
+	    LOGGER.trace("Query result:\n" + result);
 	} catch (IOException e) {
 	    String msg = String.format("Error executing XQuery module '%s'", uri);
 	    throw new XmldbException(msg, e);
 	}
-	return content;
+	return result;
     }
     
     /*
