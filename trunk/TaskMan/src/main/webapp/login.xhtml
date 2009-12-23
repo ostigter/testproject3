@@ -1,31 +1,25 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-        xmlns:c="http://java.sun.com/jsf/core"
-        xmlns:h="http://java.sun.com/jsf/html">
-	<h:head>
-		<title>Status</title>
-		<link rel="stylesheet" type="text/css" href="css/main.css" />
-	</h:head>
-	<h:body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:ui="http://java.sun.com/jsf/facelets"
+	    template="/templates/main.xhtml">
+	<ui:define name="title">Login</ui:define>
+	<ui:define name="content">
 		<h:form>
-			<fieldset>
+			<fieldset id="loginPanel">
 	            <legend>Please log in</legend>
-				<p>
-       				<h:messages errorClass="errorMessage" />
-     			</p>
-     			<table>
-	               <tr>
-	                   <td>Username:</td>
-                       <td><h:inputText value="#{securityBean.username}" /></td>
-	               </tr>
-                   <tr>
-                       <td>Password:</td>
-                       <td><h:inputSecret value="#{securityBean.password}" /></td>
-                   </tr>
-	            </table>
+      			<h:messages errorClass="errorMessage" />
+      			<h:panelGrid columns="2">
+					<h:outputLabel value="Username:" for="username" />
+					<h:inputText id="username" value="#{securityBean.username}" required="true" length="15" maxlength="15" />      			
+					<h:outputLabel value="Password:" for="password" />
+					<h:inputSecret id="password" value="#{securityBean.password}" required="true" length="15" maxlength="15" />      			
+      			</h:panelGrid>
 	            <h:commandButton value="Login" action="#{securityBean.doLogin}" />
+	            <p>
+	            	If you do not have an account yet, <a href="newAccount.jsf">create a new account</a>.
+            	</p>
 			</fieldset>
 		</h:form>
-	</h:body>
-</html>
+	</ui:define>
+</ui:composition>
