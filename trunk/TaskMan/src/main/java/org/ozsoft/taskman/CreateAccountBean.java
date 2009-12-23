@@ -9,13 +9,15 @@ import javax.faces.context.FacesContext;
 
 @ManagedBean
 @SessionScoped
-public class SecurityBean implements Serializable {
+public class CreateAccountBean implements Serializable {
     
-    private static final long serialVersionUID = -8153487303544698528L;
+    private static final long serialVersionUID = -1806089935280052105L;
 
     private String username;
 
     private String password;
+    
+    private String passwordAgain;
     
     public String getUsername() {
         return username;
@@ -33,15 +35,26 @@ public class SecurityBean implements Serializable {
         this.password = password;
     }
 
-    public String doLogin() {
-        if (username.equals("oscar") && password.equals("appel")) {
-            return "home.xhtml";
-        } else {
+    public String getPasswordAgain() {
+	return passwordAgain;
+    }
+
+    public void setPasswordAgain(String passwordAgain) {
+	this.passwordAgain = passwordAgain;
+    }
+
+    public String doCreateAccount() {
+	if (!password.equals(passwordAgain)) {
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-        	"Invalid username/password combination", null));
+        	"Both passwords are not identical.", null));
             return null;
-        }
+	}
+	return "login.jsf";
+    }
+    
+    public String doCancel() {
+	return "welcome.jsf";
     }
     
 }
