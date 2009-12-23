@@ -5,7 +5,11 @@ body {
 .errorMessage {
 	color:       #ff0000;
 	font-weight: bold;
-	font-size:   14pt;
+	font-size:   120%;
+}
+
+img {
+	border-style: none;
 }
 
 #header {
@@ -22,5 +26,5 @@ body {
 }
 
 #loginPanel {
-	width: 400px;
+	width: 400%;
 }
