@@ -7,3 +7,16 @@ body {
 	font-weight: bold;
 	font-size:   14pt;
 }
+
+#header {
+	width: 100%;
+	float: left;
+}
+
+#logo {
+	float: left;
+}
+
+#genericLinks {
+	float: right;
+}
