@@ -9,7 +9,7 @@
     <packaging>war</packaging>
 
 	<name>TaskMan</name>
-	<description>Web application to manage tasks.</description>
+	<description>Example web application with JSF 2.0 to manage tasks</description>
 
     <developers>
         <developer>
