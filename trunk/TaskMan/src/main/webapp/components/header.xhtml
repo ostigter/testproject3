@@ -2,20 +2,19 @@
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:h="http://java.sun.com/jsf/html"
 	    xmlns:ui="http://java.sun.com/jsf/facelets">
-	<h:panelGrid columns="2">
-		<div id="logo">
-			<h:graphicImage value="#{resource['images:notepad.jpg']}" />
-		</div>
-		<div id="loginLink" rendered="#{securityBean.username == null}">
-			<a href="login.jsf" />
-		</div>
-		<!--
-		<div id="userLink" rendered="#{securityBean.username != null}">
+	<div id="logo">
+		<h:graphicImage value="#{resource['images:notepad.jpg']}" />
+	</div>
+	<h1>TaskMan</h1>
+	<div id="genericLinks">
+		<h:panelGroup rendered="${securityBean.username == null}">
+			<a href="login.jsf">Login</a>
+		</h:panelGroup>
+		<h:panelGroup rendered="${securityBean.username != null}">
 			User:
 			<h:outputLink value="editUser.jsf">
 				<h:outputText value="#{securityBean.username}" />
 			</h:outputLink>
-		</div>
-		-->
-	</h:panelGrid>
+		</h:panelGroup>
+	</div>
 </ui:composition>
