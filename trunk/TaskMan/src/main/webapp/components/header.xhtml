@@ -4,7 +4,7 @@
 	    xmlns:ui="http://java.sun.com/jsf/facelets">
 	<h:panelGrid columns="2">
 		<div id="logo">
-			<img src="images/notepad.jpg" />
+			<h:graphicImage value="#{resource['images:notepad.jpg']}" />
 		</div>
 		<div id="loginLink" rendered="#{securityBean.username == null}">
 			<a href="login.jsf" />
