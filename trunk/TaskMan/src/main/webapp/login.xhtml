@@ -11,9 +11,11 @@
       			<h:messages errorClass="errorMessage" />
       			<h:panelGrid columns="2">
 					<h:outputLabel value="Username:" for="username" />
-					<h:inputText id="username" value="#{securityBean.username}" required="true" length="15" maxlength="15" />      			
+					<h:inputText id="username" value="#{securityBean.username}"
+							required="true" maxlength="15" style="width: 150px;" />      			
 					<h:outputLabel value="Password:" for="password" />
-					<h:inputSecret id="password" value="#{securityBean.password}" required="true" length="15" maxlength="15" />      			
+					<h:inputSecret id="password" value="#{securityBean.password}"
+							required="true" maxlength="15" style="width: 150px;" />      			
       			</h:panelGrid>
 	            <h:commandButton value="Login" action="#{securityBean.doLogin}" />
 	            <p>
