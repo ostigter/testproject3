@@ -2,6 +2,10 @@ body {
 	background-color: #ffffff
 }
 
+img {
+	border-style: none;
+}
+
 .infoMessage {
 	color: 		 green;
 	font-weight: bold;
@@ -12,10 +16,6 @@ body {
 	color:       #ff0000;
 	font-weight: bold;
 	font-size:   120%;
-}
-
-img {
-	border-style: none;
 }
 
 #header {
