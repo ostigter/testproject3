@@ -2,6 +2,12 @@ body {
 	background-color: #ffffff
 }
 
+.infoMessage {
+	color: 		 green;
+	font-weight: bold;
+	font-size:   120%;
+}
+
 .errorMessage {
 	color:       #ff0000;
 	font-weight: bold;
