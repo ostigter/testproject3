@@ -11,13 +11,13 @@
       			<h:messages infoClass="infoMessage" errorClass="errorMessage" />
       			<h:panelGrid columns="2">
 					<h:outputLabel value="Username:" for="username" />
-					<h:inputText id="username" value="#{securityBean.username}" required="true"
+					<h:inputText id="username" value="#{userBean.username}" required="true"
 							requiredMessage="Please enter your username" maxlength="15" style="width: 150px;" />      			
 					<h:outputLabel value="Password:" for="password" />
-					<h:inputSecret id="password" value="#{securityBean.password}" required="true"
+					<h:inputSecret id="password" value="#{userBean.password}" required="true"
 							requiredMessage="Please enter your password"  maxlength="15" style="width: 150px;" />      			
       			</h:panelGrid>
-	            <h:commandButton value="Login" action="#{securityBean.doLogIn}" />
+	            <h:commandButton value="Login" action="#{userBean.doLogIn}" />
 	            <p>
 	            	If you do not have an account yet, <a href="createAccount.jsf">create a new account</a>.
             	</p>
