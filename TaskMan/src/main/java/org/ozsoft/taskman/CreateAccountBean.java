@@ -4,14 +4,18 @@ import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class CreateAccountBean implements Serializable {
     
     private static final long serialVersionUID = -1806089935280052105L;
+    
+    @ManagedProperty(value = "#{securityBean}")
+    private SecurityBean securityBean;
 
     private String username;
 
@@ -19,6 +23,14 @@ public class CreateAccountBean implements Serializable {
     
     private String passwordAgain;
     
+    public SecurityBean getSecurityBean() {
+	return securityBean;
+    }
+    
+    public void setSecurityBean(SecurityBean securityBean) {
+	this.securityBean = securityBean;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -44,17 +56,24 @@ public class CreateAccountBean implements Serializable {
     }
 
     public String doCreateAccount() {
+	FacesContext fc = FacesContext.getCurrentInstance();
+	
 	if (!password.equals(passwordAgain)) {
-            FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
         	"Both passwords are not identical.", null));
             return null;
 	}
-	return "login.jsf";
+	
+	securityBean.createAccount(username, password);
+	
+        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+        	"The new account has been created successfully.", null));
+
+	return "home.jsf";
     }
     
     public String doCancel() {
 	return "welcome.jsf";
     }
-    
+
 }

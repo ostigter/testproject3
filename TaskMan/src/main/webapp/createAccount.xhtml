@@ -17,7 +17,7 @@
 							required="true" requiredMessage="Password is required." maxlength="12" style="width: 150px;" />      			
 					<h:outputLabel value="Pasword (again):" for="passwordAgain" />
 					<h:inputSecret id="passwordAgain" value="#{createAccountBean.passwordAgain}"
-							required="true" requiredMessage="Please enter the password again." maxlength="12" style="width: 150px;" />      			
+							required="true" requiredMessage="Please enter the password twice." maxlength="12" style="width: 150px;" />
       			</h:panelGrid>
 	            <h:commandButton value="Create account" action="#{createAccountBean.doCreateAccount}" />
 	            <h:button value="Cancel" action="#{createAccountBean.cancel}" />

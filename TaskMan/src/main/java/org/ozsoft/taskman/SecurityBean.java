@@ -33,15 +33,33 @@ public class SecurityBean implements Serializable {
         this.password = password;
     }
 
-    public String doLogin() {
-        if (username.equals("oscar") && password.equals("appel")) {
-            return "home.xhtml";
-        } else {
+    public String doLogIn() {
+	// Check credentials.
+        if (!username.equals("oscar") && password.equals("appel")) {
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
         	"Invalid username/password combination", null));
+            clearUser();
             return null;
         }
+
+        // Logged in successfully.
+        return "welcome.xhtml";
+    }
+    
+    public String doLogOut() {
+	clearUser();
+	return "login.jsf";
+    }
+    
+    public void createAccount(String username, String password) {
+	this.username = username;
+	this.password = password;
+    }
+    
+    private void clearUser() {
+	username = null;
+	password = null;
     }
     
 }

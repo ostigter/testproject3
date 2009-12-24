@@ -13,10 +13,14 @@
 			<a href="login.jsf">Login</a>
 		</h:panelGroup>
 		<h:panelGroup rendered="${securityBean.username != null}">
-			User:
-			<h:outputLink value="editUser.jsf">
-				<h:outputText value="#{securityBean.username}" />
-			</h:outputLink>
+			<h:form>
+				Welcome,
+				<h:outputLink value="editAccount.jsf">
+					<h:outputText value="#{securityBean.username}" />
+				</h:outputLink>
+				|
+				<h:commandLink value="Log out" action="#{securityBean.doLogOut}" />
+			</h:form>
 		</h:panelGroup>
 	</div>
 </ui:composition>
