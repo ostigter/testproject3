@@ -7,6 +7,11 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+/**
+ * Backing bean handling authentication, authorization and account management.
+ * 
+ * @author Oscar Stigter
+ */
 @ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {
