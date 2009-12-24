@@ -10,17 +10,16 @@
       			<h:messages errorClass="errorMessage" />
       			<h:panelGrid columns="2">
 					<h:outputLabel value="Username:" for="username" />
-					<h:inputText id="username" value="#{createAccountBean.username}"
+					<h:inputText id="username" value="#{userBean.username}"
 							required="true" requiredMessage="Username is required." maxlength="12" style="width: 150px;" />
 					<h:outputLabel value="Password:" for="password" />
-					<h:inputSecret id="password" value="#{createAccountBean.password}"
+					<h:inputSecret id="password" value="#{userBean.password}"
 							required="true" requiredMessage="Password is required." maxlength="12" style="width: 150px;" />      			
 					<h:outputLabel value="Pasword (again):" for="passwordAgain" />
-					<h:inputSecret id="passwordAgain" value="#{createAccountBean.passwordAgain}"
+					<h:inputSecret id="passwordAgain" value="#{userBean.passwordAgain}"
 							required="true" requiredMessage="Please enter the password twice." maxlength="12" style="width: 150px;" />
       			</h:panelGrid>
-	            <h:commandButton value="Create account" action="#{createAccountBean.doCreateAccount}" />
-	            <h:button value="Cancel" action="#{createAccountBean.cancel}" />
+	            <h:commandButton value="Create account" action="#{userBean.doCreateAccount}" />
 			</fieldset>
 		</h:form>
 	</ui:define>

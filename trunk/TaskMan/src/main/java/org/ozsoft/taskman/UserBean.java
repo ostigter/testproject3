@@ -4,18 +4,14 @@ import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 @ManagedBean
-@RequestScoped
-public class CreateAccountBean implements Serializable {
+@SessionScoped
+public class UserBean implements Serializable {
     
-    private static final long serialVersionUID = -1806089935280052105L;
-    
-    @ManagedProperty(value = "#{securityBean}")
-    private SecurityBean securityBean;
+    private static final long serialVersionUID = -8153487303544698528L;
 
     private String username;
 
@@ -23,14 +19,6 @@ public class CreateAccountBean implements Serializable {
     
     private String passwordAgain;
     
-    public SecurityBean getSecurityBean() {
-	return securityBean;
-    }
-    
-    public void setSecurityBean(SecurityBean securityBean) {
-	this.securityBean = securityBean;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -64,7 +52,7 @@ public class CreateAccountBean implements Serializable {
             return null;
 	}
 	
-	securityBean.createAccount(username, password);
+	createAccount(username, password);
 	
         fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
         	"The new account has been created successfully.", null));
@@ -72,8 +60,33 @@ public class CreateAccountBean implements Serializable {
 	return "home.jsf";
     }
     
-    public String doCancel() {
-	return "welcome.jsf";
-    }
+    public String doLogIn() {
+	// Check credentials.
+        if (!(username.equals("oscar") && password.equals("appel"))) {
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+        	"Invalid username/password combination", null));
+            clearUser();
+            return null;
+        }
 
+        // Logged in successfully.
+        return "home.xhtml";
+    }
+    
+    public String doLogOut() {
+	clearUser();
+	return "home.jsf";
+    }
+    
+    private void createAccount(String username, String password) {
+	this.username = username;
+	this.password = password;
+    }
+    
+    private void clearUser() {
+	username = null;
+	password = null;
+    }
+    
 }

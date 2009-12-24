@@ -9,17 +9,17 @@
 	</div>
 	<h1>TaskMan</h1>
 	<div id="genericLinks">
-		<h:panelGroup rendered="${securityBean.username == null}">
+		<h:panelGroup rendered="${userBean.username == null}">
 			<a href="login.jsf">Login</a>
 		</h:panelGroup>
-		<h:panelGroup rendered="${securityBean.username != null}">
+		<h:panelGroup rendered="${userBean.username != null}">
 			<h:form>
 				Welcome,
 				<h:outputLink value="editAccount.jsf">
-					<h:outputText value="#{securityBean.username}" />
+					<h:outputText value="#{userBean.username}" />
 				</h:outputLink>
 				|
-				<h:commandLink value="Log out" action="#{securityBean.doLogOut}" />
+				<h:commandLink value="Log out" action="#{userBean.doLogOut}" />
 			</h:form>
 		</h:panelGroup>
 	</div>
