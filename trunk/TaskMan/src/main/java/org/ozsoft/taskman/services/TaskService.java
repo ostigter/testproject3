@@ -11,10 +11,40 @@ import org.ozsoft.taskman.domain.Task;
  */
 public interface TaskService {
     
-    Task createTask();
+    /**
+     * Creates a task.
+     * 
+     * @param task
+     *            The task.
+     */
+    void create(Task task);
     
-    void saveTask(Task task);
-
-    List<Task> getTasks(long owner);
+    /**
+     * Retrieves a task by its ID.
+     * 
+     * @param taskId
+     *            The task's ID.
+     * 
+     * @return The task.
+     */
+    Task retrieveById(long taskId);
+    
+    /**
+     * Retrieves the tasks of a specific user.
+     * 
+     * @param userId
+     *            The user's ID.
+     * 
+     * @return The tasks.
+     */
+    List<Task> retrieveByUser(long userId);
+    
+    /**
+     * Updates a task.
+     * 
+     * @param task
+     *            The task.
+     */
+    void update(Task task);
     
 }
