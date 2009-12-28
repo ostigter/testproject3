@@ -8,7 +8,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 /**
- * Backing bean handling authentication, authorization and account management.
+ * Backing bean handling user authentication, authorization and account management.
  * 
  * @author Oscar Stigter
  */

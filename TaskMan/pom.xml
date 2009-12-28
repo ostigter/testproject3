@@ -46,7 +46,7 @@
 
 	<dependencies>
 
-		<!-- JSF 2.0 -->
+		<!-- JSF -->
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-api</artifactId>
@@ -60,30 +60,67 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<!-- JPA -->
+		<!-- ORM -->
 		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate</artifactId>
-			<version>3.0.5</version>
-		</dependency>
+	      <groupId>javax.persistence</groupId>
+	      <artifactId>persistence-api</artifactId>
+	      <version>1.0</version>
+			<scope>compile</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.hibernate</groupId>
+	      <artifactId>hibernate-entitymanager</artifactId>
+	      <version>3.4.0.GA</version>
+			<scope>compile</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>c3p0</groupId>
+	      <artifactId>c3p0</artifactId>
+	      <version>0.9.1.2</version>
+		  <scope>compile</scope>
+	    </dependency>
 
-		<!-- log4j -->
+		<!-- database -->
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.10</version>
+			<scope>compile</scope>
+		</dependency>
+		<!--
+		<dependency>
+		    <groupId>mysql</groupId>
+		    <artifactId>mysql-connector-java</artifactId>
+		    <version>5.1.10</version>
+			<scope>compile</scope>
+		</dependency>
+		-->
+
+		<!-- logging -->
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
 		</dependency>
+	    <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+	      	<version>1.4.2</version>
+			<scope>compile</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>slf4j-log4j12</artifactId>
+	      <version>1.4.2</version>
+		  <scope>compile</scope>
+	    </dependency>
 
-		<!-- test -->
+		<!-- testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
+		  <scope>test</scope>
 		</dependency>
 	</dependencies>
 

@@ -1,19 +1,17 @@
 package org.ozsoft.taskman.services;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 
-import org.ozsoft.taskman.domain.Task;
+import org.ozsoft.taskman.domain.User;
 
 /**
- * Task service implementation.
+ * User service implementation.
  * 
  * @author Oscar Stigter
  */
-public class TaskServiceImpl implements TaskService {
+public class UserServiceImpl implements UserService {
     
     /** Entity manager. */
     private final EntityManager em;
@@ -21,55 +19,63 @@ public class TaskServiceImpl implements TaskService {
     /**
      * Constructor.
      */
-    public TaskServiceImpl() {
+    public UserServiceImpl() {
 	em = PersistenceService.getEntityManager();
     }
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.taskman.services.TaskService#create(org.ozsoft.taskman.domain.Task)
+     * @see org.ozsoft.taskman.services.UserService#create(org.ozsoft.taskman.domain.User)
      */
     @Override
-    public void create(Task task) {
+    public void create(User user) {
 	EntityTransaction tx = em.getTransaction();
 	tx.begin();
 	try {
-	    em.persist(task);
+	    em.persist(user);
 	    tx.commit();
 	} catch (PersistenceException e) {
 	    tx.rollback();
 	    throw e;
 	}
     }
-    
+
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.taskman.services.TaskService#retrieveById(long)
+     * @see org.ozsoft.taskman.services.UserService#retrieve(long)
      */
     @Override
-    public Task retrieveById(long id) {
-	return em.find(Task.class, id);
+    public User retrieve(long id) {
+	return (User) em.find(User.class, id);
     }
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.taskman.services.TaskService#retrieveByUser(long)
+     * @see org.ozsoft.taskman.services.UserService#update(org.ozsoft.taskman.domain.User)
      */
     @Override
-    public List<Task> retrieveByUser(long userId) {
-	return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.taskman.services.TaskService#update(org.ozsoft.taskman.domain.Task)
-     */
-    @Override
-    public void update(Task task) {
+    public void update(User user) {
 	EntityTransaction tx = em.getTransaction();
 	tx.begin();
 	try {
-	    em.merge(task);
+	    em.merge(user);
+	    tx.commit();
+	} catch (PersistenceException e) {
+	    tx.rollback();
+	    throw e;
+	}
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.taskman.services.UserService#delete(org.ozsoft.taskman.domain.User)
+     */
+    @Override
+    public void delete(User user) {
+	EntityTransaction tx = em.getTransaction();
+	tx.begin();
+	try {
+	    em.remove(user);
 	    tx.commit();
 	} catch (PersistenceException e) {
 	    tx.rollback();
