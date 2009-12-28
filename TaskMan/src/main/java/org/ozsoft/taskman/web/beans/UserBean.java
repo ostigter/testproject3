@@ -1,4 +1,4 @@
-package org.ozsoft.taskman;
+package org.ozsoft.taskman.web.beans;
 
 import java.io.Serializable;
 
