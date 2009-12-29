@@ -7,6 +7,9 @@
 
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 
+		<class>org.ozsoft.taskman.domain.User</class>
+		<class>org.ozsoft.taskman.domain.Task</class>
+
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="validate" />
 
