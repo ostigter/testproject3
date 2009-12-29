@@ -3,11 +3,9 @@ package org.ozsoft.taskman.domain;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 /**
  * Task entity.
@@ -26,8 +24,8 @@ public class Task {
     @Column(nullable = false)
     private String summary;
     
-    @OneToOne(fetch = FetchType.LAZY)
-    private User user;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private User user;
     
     @Basic
     @Column(nullable = false)
@@ -49,13 +47,13 @@ public class Task {
 	this.summary = summary;
     }
 
-    public User getUser() {
-	return user;
-    }
-    
-    public void setUser(User user) {
-	this.user = user;
-    }
+//    public User getUser() {
+//	return user;
+//    }
+//    
+//    public void setUser(User user) {
+//	this.user = user;
+//    }
     
     public Status getStatus() {
 	return status;

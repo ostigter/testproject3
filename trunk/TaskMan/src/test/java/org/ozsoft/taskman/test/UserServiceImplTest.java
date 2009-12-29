@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.ozsoft.taskman.domain.Status;
 import org.ozsoft.taskman.domain.Task;
 import org.ozsoft.taskman.domain.User;
+import org.ozsoft.taskman.services.TaskService;
+import org.ozsoft.taskman.services.TaskServiceImpl;
 import org.ozsoft.taskman.services.UserService;
 import org.ozsoft.taskman.services.UserServiceImpl;
 
@@ -22,6 +24,7 @@ public class UserServiceImplTest {
     @Test
     public void testBasicPersistence() throws Exception {
 	UserService userService = new UserServiceImpl();
+//	TaskService taskService = new TaskServiceImpl();
 	
 	User user = new User();
 	user.setUsername("alice");
@@ -42,12 +45,12 @@ public class UserServiceImplTest {
 //	taskService.create(task);
 //	long taskId = task.getId();
 
-//	// Add task to user.
-//	Set<Task> tasks = user.getTasks();
-//	Assert.assertNull(tasks);
-//	tasks = new HashSet<Task>();
-//	tasks.add(task);
-//	user.setTasks(tasks);
+	// Add task to user.
+	Set<Task> tasks = user.getTasks();
+	Assert.assertNull(tasks);
+	tasks = new HashSet<Task>();
+	tasks.add(task);
+	user.setTasks(tasks);
 
 	user.setPassword("guessme");
 	userService.update(user);
