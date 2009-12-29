@@ -1,11 +1,16 @@
 package org.ozsoft.taskman.domain;
 
+import java.util.Set;
+
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 /**
  * User entity.
@@ -27,8 +32,8 @@ public class User {
     @Column(nullable = false)
     private String password;
     
-//    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Set<Task> tasks;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Task> tasks;
     
     public long getId() {
 	return id;
@@ -54,12 +59,12 @@ public class User {
 	this.password = password;
     }
     
-//    public Set<Task> getTasks() {
-//	return tasks;
-//    }
-//    
-//    public void setTasks(Set<Task> tasks) {
-//	this.tasks = tasks;
-//    }
+    public Set<Task> getTasks() {
+	return tasks;
+    }
+    
+    public void setTasks(Set<Task> tasks) {
+	this.tasks = tasks;
+    }
 
 }
