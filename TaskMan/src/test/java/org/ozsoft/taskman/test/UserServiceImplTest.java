@@ -55,7 +55,7 @@ public class UserServiceImplTest {
 	Assert.assertNotNull(tasks);
 	Assert.assertEquals(1, tasks.size());
 	task = tasks.toArray(new Task[0])[0];
-	Assert.assertEquals("Moving the lawn", task.getSummary());
+	Assert.assertEquals("Mowing the lawn", task.getSummary());
 	Assert.assertEquals(Status.OPEN, task.getStatus());
 	
 	// Delete user.
