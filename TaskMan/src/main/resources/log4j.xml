@@ -12,8 +12,12 @@
         <level value="DEBUG"/>
     </logger>
 
+    <logger name="org.ozsosft.taskman.test">
+        <level value="DEBUG"/>
+    </logger>
+
     <logger name="org.hibernate">
-        <level value="WARN"/>
+        <level value="INFO"/>
     </logger>
 
     <root>

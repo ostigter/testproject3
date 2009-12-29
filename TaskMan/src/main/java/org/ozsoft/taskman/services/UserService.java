@@ -42,4 +42,16 @@ public interface UserService {
      */
     void delete(User user);
     
+    /**
+     * Checks the credentials of a user.
+     * 
+     * @param username
+     *            The username.
+     * @param password
+     *            The password.
+     * 
+     * @return True if valid, otherwise false.
+     */
+    boolean checkCredentials(String username, String password);
+    
 }

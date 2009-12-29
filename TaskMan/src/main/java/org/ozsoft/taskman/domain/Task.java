@@ -23,7 +23,8 @@ public class Task {
     @Basic
     @Column(nullable = false)
     private String summary;
-    
+
+    // ### Does not work with JPA 1.0 ###
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    private User user;
     

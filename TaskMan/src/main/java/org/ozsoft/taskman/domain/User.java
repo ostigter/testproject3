@@ -1,5 +1,6 @@
 package org.ozsoft.taskman.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Basic;
@@ -65,6 +66,13 @@ public class User {
     
     public void setTasks(Set<Task> tasks) {
 	this.tasks = tasks;
+    }
+    
+    public void addTask(Task task) {
+	if (tasks == null) {
+	    tasks = new HashSet<Task>();
+	}
+	tasks.add(task);
     }
 
 }
