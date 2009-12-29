@@ -1,8 +1,14 @@
 package org.ozsoft.taskman.services;
 
+import java.io.Serializable;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+import javax.persistence.Query;
 
 import org.ozsoft.taskman.domain.User;
 
@@ -11,7 +17,12 @@ import org.ozsoft.taskman.domain.User;
  * 
  * @author Oscar Stigter
  */
-public class UserServiceImpl implements UserService {
+@ManagedBean(name = "userService", eager = true)
+@ApplicationScoped
+public class UserServiceImpl implements UserService, Serializable  {
+    
+    /** Serial version UID. */
+    private static final long serialVersionUID = 7545691791555180066L;
     
     /** Entity manager. */
     private final EntityManager em;
@@ -81,6 +92,28 @@ public class UserServiceImpl implements UserService {
 	    tx.rollback();
 	    throw e;
 	}
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.taskman.services.UserService#checkCredentials(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean checkCredentials(String username, String password) {
+	boolean valid = false;
+	Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
+	query.setParameter("username", username);
+	try {
+	    User user = (User) query.getSingleResult();
+	    if (user != null) {
+		if (user.getPassword().equals(password)) {
+		    valid = true;
+		}
+	    }
+	} catch (NoResultException e) {
+	    valid = false;
+	}
+	return valid;
     }
 
 }

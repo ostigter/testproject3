@@ -59,6 +59,11 @@
 			<version>2.0.0-b21</version>
 			<scope>compile</scope>
 		</dependency>
+    	<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency> 
 
 		<!-- ORM -->
 		<dependency>
@@ -82,19 +87,11 @@
 
 		<!-- database -->
 		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
-			<scope>compile</scope>
-		</dependency>
-		<!--
-		<dependency>
 		    <groupId>mysql</groupId>
 		    <artifactId>mysql-connector-java</artifactId>
 		    <version>5.1.10</version>
 			<scope>compile</scope>
 		</dependency>
-		-->
 
 		<!-- logging -->
 		<dependency>
@@ -121,6 +118,12 @@
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
 		  <scope>test</scope>
+	    </dependency>
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.10</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
