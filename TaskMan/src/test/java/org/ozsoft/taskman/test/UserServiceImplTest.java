@@ -1,6 +1,6 @@
 package org.ozsoft.taskman.test;
 
-import java.util.Set;
+import java.util.List;
 
 import junit.framework.Assert;
 
@@ -23,16 +23,16 @@ public class UserServiceImplTest {
 	UserService userService = new UserServiceImpl();
 	
 	// Create user.
+	String username = "alice";
 	User user = new User();
-	user.setUsername("alice");
+	user.setUsername(username);
 	user.setPassword("secret");
 	userService.create(user);
-	long id = user.getId();
 	
 	// Retrieve user.
-	user = userService.retrieve(id);
+	user = userService.retrieve(username);
 	Assert.assertNotNull(user);
-	Assert.assertEquals("alice", user.getUsername());
+	Assert.assertEquals(username, user.getUsername());
 	Assert.assertEquals("secret", user.getPassword());
 	Assert.assertNull(user.getTasks());
 	
@@ -47,11 +47,11 @@ public class UserServiceImplTest {
 	userService.update(user);
 	
 	// Retrieve user.
-	user = userService.retrieve(id);
+	user = userService.retrieve(username);
 	Assert.assertNotNull(user);
-	Assert.assertEquals("alice", user.getUsername());
+	Assert.assertEquals(username, user.getUsername());
 	Assert.assertEquals("guessme", user.getPassword());
-	Set<Task> tasks = user.getTasks();
+	List<Task> tasks = user.getTasks();
 	Assert.assertNotNull(tasks);
 	Assert.assertEquals(1, tasks.size());
 	task = tasks.toArray(new Task[0])[0];

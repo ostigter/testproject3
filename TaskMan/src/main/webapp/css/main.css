@@ -1,9 +1,46 @@
 body {
-	background-color: #ffffff
+	background-color: #ffffff;
+	color:            #000000;
 }
 
 img {
 	border-style: none;
+}
+
+table.boxed {
+	width:  100%;
+	border: 1px solid #000000;
+	margin: 10px 0 10px 0;
+}		
+
+th {
+	background-color: #c0c0ff;
+	color:            #000000;
+}
+
+tr.odd {
+	background-color: #ffffff;
+	color:            #000000;
+}
+
+tr.even {
+	background-color: #ffffa0;
+	color:      	  #000000;
+}
+
+td.taskId {
+	background-color: #ff0000;
+	text-alignment:   center;
+}
+
+td.taskSummary {
+	background-color: #ff0000;
+	text-alignment:   center;
+}
+
+td.taskStatus {
+	background-color: #ff0000;
+	text-alignment:   center;
 }
 
 .infoMessage {

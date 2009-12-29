@@ -1,7 +1,7 @@
 package org.ozsoft.taskman.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -34,7 +34,7 @@ public class User {
     private String password;
     
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Task> tasks;
+    private List<Task> tasks;
     
     public long getId() {
 	return id;
@@ -60,19 +60,38 @@ public class User {
 	this.password = password;
     }
     
-    public Set<Task> getTasks() {
+    public List<Task> getTasks() {
 	return tasks;
     }
     
-    public void setTasks(Set<Task> tasks) {
+    public void setTasks(List<Task> tasks) {
 	this.tasks = tasks;
     }
     
     public void addTask(Task task) {
 	if (tasks == null) {
-	    tasks = new HashSet<Task>();
+	    tasks = new ArrayList<Task>();
 	}
 	tasks.add(task);
     }
+    
+    @Override
+    public int hashCode() {
+	return username.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+	if (obj instanceof User) {
+	    return ((User) obj).username.equals(username);
+	} else {
+	    return false;
+	}
+    }
 
+    @Override
+    public String toString() {
+	return username;
+    }
+    
 }

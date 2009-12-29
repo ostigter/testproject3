@@ -18,14 +18,14 @@ public interface UserService {
     void create(User user);
 
     /**
-     * Retrieves a user by her ID.
+     * Retrieves a user by her username.
      * 
-     * @param id
-     *            The user ID.
+     * @param username
+     *            The username.
      * 
      * @return The user.
      */
-    User retrieve(long id);
+    User retrieve(String username);
     
     /**
      * Updates a user.

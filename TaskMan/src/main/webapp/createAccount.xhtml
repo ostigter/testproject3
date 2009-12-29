@@ -19,7 +19,8 @@
 					<h:inputSecret id="passwordAgain" value="#{userBean.passwordAgain}"
 							required="true" requiredMessage="Please enter the password twice." maxlength="12" style="width: 150px;" />
       			</h:panelGrid>
-	            <h:commandButton value="Create account" action="#{userBean.doCreateAccount}" />
+	            <h:commandButton value="Create" action="#{userBean.doCreateAccount}" />
+				<h:commandButton value="Cancel" action="login.jsf" immediate="true" />
 			</fieldset>
 		</h:form>
 	</ui:define>
