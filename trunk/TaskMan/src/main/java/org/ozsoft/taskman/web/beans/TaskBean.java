@@ -8,7 +8,6 @@ import javax.faces.bean.SessionScoped;
 
 import org.ozsoft.taskman.domain.Status;
 import org.ozsoft.taskman.domain.Task;
-import org.ozsoft.taskman.domain.User;
 
 /**
  * Backing bean handling task management.
@@ -26,6 +25,10 @@ public class TaskBean implements Serializable {
     
     private String summary;
     
+    public void setUserBean(UserBean userBean) {
+	this.userBean = userBean;
+    }
+    
     public String getSummary() {
 	return summary;
     }
@@ -38,12 +41,7 @@ public class TaskBean implements Serializable {
 	Task task = new Task();
 	task.setSummary(summary);
 	task.setStatus(Status.OPEN);
-	
-	User user = userBean.getUser();
-	if (user != null) {
-	    user.addTask(task);
-	}
-	
+	userBean.createTask(task);
         return "list.xhtml";
     }
     

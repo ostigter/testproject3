@@ -8,6 +8,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import org.ozsoft.taskman.domain.Task;
 import org.ozsoft.taskman.domain.User;
 import org.ozsoft.taskman.services.UserService;
 
@@ -66,27 +67,26 @@ public class UserBean implements Serializable {
     }
     
     public String doCreateAccount() {
+	String action = null;
 	FacesContext fc = FacesContext.getCurrentInstance();
-	
-	if (!password.equals(passwordAgain)) {
+	if (password.equals(passwordAgain)) {
+	    prepareUser();
+	    userService.create(user);
+	    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+		    "The new account has been created successfully.", null));
+	    action = "home.jsf";
+	} else {
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-        	"Both passwords are not identical.", null));
-            return null;
+            	"Both passwords are not identical.", null));
 	}
-	
-	setUser();
-	userService.create(user);
-        fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-        	"The new account has been created successfully.", null));
-
-	return "home.jsf";
+	return action;
     }
     
     public String doLogIn() {
 	String action = null;
-        if (userService.checkCredentials(username, password)) {
-            setUser();
-            action = "home.jsf";
+	user = userService.retrieve(username);
+	if (user != null && user.getPassword().equals(password)) {
+            action = "list.jsf";
         } else {
             FacesContext fc = FacesContext.getCurrentInstance();
             fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -104,8 +104,16 @@ public class UserBean implements Serializable {
     public User getUser() {
 	return user;
     }
+    
+    public void createTask(Task task) {
+	if (user == null) {
+	    throw new IllegalStateException("No logged in user");
+	}
+	user.addTask(task);
+	userService.update(user);
+    }
 
-    private void setUser() {
+    private void prepareUser() {
         user = new User();
         user.setUsername(username);
         user.setPassword(password);

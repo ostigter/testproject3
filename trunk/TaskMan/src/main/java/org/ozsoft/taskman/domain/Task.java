@@ -4,7 +4,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -16,18 +15,14 @@ import javax.persistence.Id;
 public class Task {
     
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue
     @Column(name = "user_id")
     private long id;
     
     @Basic
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String summary;
 
-    // ### Does not work with JPA 1.0 ###
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private User user;
-    
     @Basic
     @Column(nullable = false)
     private Status status;
@@ -48,20 +43,31 @@ public class Task {
 	this.summary = summary;
     }
 
-//    public User getUser() {
-//	return user;
-//    }
-//    
-//    public void setUser(User user) {
-//	this.user = user;
-//    }
-    
     public Status getStatus() {
 	return status;
     }
     
     public void setStatus(Status status) {
 	this.status = status;
+    }
+    
+    @Override
+    public int hashCode() {
+	return Long.valueOf(id).hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+	if (obj instanceof Task) {
+	    return (((Task) obj).id == id);
+	} else {
+	    return false;
+	}
+    }
+
+    @Override
+    public String toString() {
+	return summary;
     }
 
 }

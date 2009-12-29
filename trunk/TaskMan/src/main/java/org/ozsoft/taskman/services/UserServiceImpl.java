@@ -53,11 +53,19 @@ public class UserServiceImpl implements UserService, Serializable  {
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.taskman.services.UserService#retrieve(long)
+     * @see org.ozsoft.taskman.services.UserService#retrieve(java.lang.String)
      */
     @Override
-    public User retrieve(long id) {
-	return (User) em.find(User.class, id);
+    public User retrieve(String username) {
+	User user = null;
+	Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
+	query.setParameter("username", username);
+	try {
+	    user = (User) query.getSingleResult();
+	} catch (NoResultException e) {
+	    // Ignore.
+	}
+	return user;
     }
 
     /*
@@ -101,17 +109,9 @@ public class UserServiceImpl implements UserService, Serializable  {
     @Override
     public boolean checkCredentials(String username, String password) {
 	boolean valid = false;
-	Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
-	query.setParameter("username", username);
-	try {
-	    User user = (User) query.getSingleResult();
-	    if (user != null) {
-		if (user.getPassword().equals(password)) {
-		    valid = true;
-		}
-	    }
-	} catch (NoResultException e) {
-	    valid = false;
+	User user = retrieve(username);
+	if (user != null && user.getPassword().equals(password)) {
+	    valid = true;
 	}
 	return valid;
     }
