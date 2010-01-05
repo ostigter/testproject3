@@ -22,7 +22,10 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.ozsoft.xmldb.Collection;
+import org.ozsoft.xmldb.Resource;
 import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 
@@ -182,6 +185,30 @@ public class ExistConnector implements XmldbConnector {
 	    String msg = String.format("Could not delete resource '%s'", uri);
 	    throw new XmldbException(msg, e);
 	}
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.xmldb.XmldbConnector#retrieveCollection(java.lang.String)
+     */
+    @Override
+    public Collection retrieveCollection(String uri) throws XmldbException {
+	Collection col = null;
+	Element result = retrieveXmlDocument(uri).getRootElement();
+	if (result.getName().equals("result")) {
+	    Element el = result.element("collection");
+	    if (el != null) {
+		String name = el.attributeValue("name");
+		col = new Collection(name); 
+		for (Object child : el.elements()) {
+		    el = (Element) child;
+		    name = el.attributeValue("name");
+		    Resource res = new Resource(name);
+		    col.addResource(res);
+		}
+	    }
+	}
+	return col;
     }
 
     /*

@@ -14,6 +14,19 @@ import org.dom4j.Document;
 public interface XmldbConnector {
     
     /**
+     * Retrieves a collection.
+     * 
+     * @param uri
+     *            The collection URI.
+     * 
+     * @return The collection.
+     * 
+     * @throws XmldbException
+     *             If the collection could not be found or retrieved.
+     */
+    Collection retrieveCollection(String uri) throws XmldbException;
+    
+    /**
      * Retrieves a resource.
      * 
      * Use this method for non-XML resources (e.g. plain text or binary).
