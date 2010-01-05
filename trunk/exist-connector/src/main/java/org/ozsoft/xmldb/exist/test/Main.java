@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.ozsoft.xmldb.Collection;
+import org.ozsoft.xmldb.Resource;
 import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 import org.ozsoft.xmldb.exist.ExistConnector;
@@ -42,6 +44,7 @@ public class Main {
     public static void main(String[] args) {
 	String uri = null;
 	Document doc = null;
+	Collection col = null;
 	byte[] content = null;
 	String query = null;
 	String result = null;
@@ -65,6 +68,18 @@ public class Main {
         	connector.storeResource(uri, new File(RESOURCES_DIR, uri));
         	uri = "/db/modules/greeter2.xql";
         	connector.storeResource(uri, new File(RESOURCES_DIR, uri));
+        	
+        	LOGGER.info("Listing the collection '/db/data':");
+        	col = connector.retrieveCollection("/db/data");
+        	for (Resource resource : col.getResources()) {
+        	    LOGGER.info("  " + resource.getName());
+        	}
+        	
+        	LOGGER.info("Listing the collection '/db/data/foo':");
+        	col = connector.retrieveCollection("/db/data/foo");
+        	for (Resource resource : col.getResources()) {
+        	    LOGGER.info("  " + resource.getName());
+        	}
         	
         	LOGGER.info("Retrieving the raw content of a resource");
         	uri = "/db/data/foo/foo-001.xml";
