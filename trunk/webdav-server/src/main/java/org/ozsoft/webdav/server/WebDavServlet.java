@@ -33,7 +33,7 @@ import org.ozsoft.webdav.WebDavStatus;
 /**
  * HTTP servlet handling WebDAV requests.
  * 
- * Only basic WebDAV level 1 operations are supported.
+ * Only WebDAV level 1 operations are supported.
  * 
  * @author Oscar Stigter
  */
@@ -42,11 +42,11 @@ public class WebDavServlet extends HttpServlet {
 	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
 
-	/** ISO date format. */
+	/** Creation date format. */
 	private static final DateFormat CREATION_DATE_FORMAT =
 			new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
-	/** Internet date format. */
+	/** Last modification date format. */
 	private static final DateFormat LASTMODIFIED_DATE_FORMAT =
 			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
@@ -145,7 +145,6 @@ public class WebDavServlet extends HttpServlet {
 	 *            The response.
 	 */
 	@SuppressWarnings("unchecked")
-	// dom4j
 	private void doPropfind(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String uri = getUriFromRequest(request);
@@ -173,8 +172,7 @@ public class WebDavServlet extends HttpServlet {
 							for (Object obj : typeElement.elements()) {
 								if (obj instanceof Element) {
 									Element el = (Element) obj;
-									// TODO: Handle request for non-WebDAV
-									// properties.
+									// TODO: Handle request for non-WebDAV properties.
 									if (el.getNamespaceURI().equals(
 											WebDavConstants.DAV_NS)) {
 										propNames.add(el.getName());
@@ -185,8 +183,7 @@ public class WebDavServlet extends HttpServlet {
 								}
 							}
 							if (propNames.size() == 0) {
-								// TODO: Invalid request; no (WebDAV) properties
-								// specified.
+								// TODO: Invalid request; no (WebDAV) properties specified.
 							} else {
 								doPropfindProp(uri, depth, propNames, responses);
 							}
@@ -197,12 +194,10 @@ public class WebDavServlet extends HttpServlet {
 							// Request for all property names.
 							doPropfindPropname(uri, depth, responses);
 						} else {
-							// TODO: Invalid request; invalid child element of
-							// 'propfind' element.
+							// TODO: Invalid request; invalid child element of 'propfind' element.
 						}
 					} else {
-						// TODO: Invalid request; 'propfind' element has invalid
-						// number of child elements.
+						// TODO: Invalid request; 'propfind' element has invalid number of child elements.
 					}
 				} else {
 					// TODO: Invalid request; no 'propfind' element.
@@ -248,9 +243,9 @@ public class WebDavServlet extends HttpServlet {
 			response.getWriter().write(responseBody);
 		} catch (DocumentException e) {
 			// TODO: Invalid XML request body.
-			LOG.error("Could not parse request", e);
+			LOG.error("Could not parse PROPFIND request", e);
 		} catch (WebDavException e) {
-			LOG.error(e);
+			LOG.error(String.format("Error listing collection '%s'", uri), e);
 		}
 
 		// Response status and headers.
@@ -373,9 +368,8 @@ public class WebDavServlet extends HttpServlet {
 	 * @param responses
 	 *            The property responses.
 	 */
-	private void doPropfindAllprop(String uri, Depth depth,
-			List<WebDavResponse> responses) throws ServletException,
-			IOException, WebDavException {
+	private void doPropfindAllprop(String uri, Depth depth, List<WebDavResponse> responses)
+			throws ServletException, IOException, WebDavException {
 		List<String> propNames = new ArrayList<String>();
 		propNames.add(WebDavConstants.DISPLAYNAME);
 		propNames.add(WebDavConstants.RESOURCETYPE);
@@ -395,9 +389,8 @@ public class WebDavServlet extends HttpServlet {
 	 * @param responses
 	 *            The property responses.
 	 */
-	private void doPropfindPropname(String uri, Depth depth,
-			List<WebDavResponse> responses) throws ServletException,
-			IOException {
+	private void doPropfindPropname(String uri, Depth depth, List<WebDavResponse> responses)
+			throws ServletException, IOException {
 		// TODO
 	}
 
@@ -473,10 +466,10 @@ public class WebDavServlet extends HttpServlet {
 				response.setStatus(WebDavStatus.NOT_FOUND.getCode());
 			}
 		} catch (WebDavException e) {
+			LOG.error(String.format("Error retrieving resource '%s'", uri), e);
 			response.setContentType("text/plain");
 			Writer writer = response.getWriter();
-			writer.write(String.format(
-					"Error while retrieving resource '%s': %s\n", uri, e));
+			writer.write(String.format("Error while retrieving resource '%s': %s\n", uri, e));
 		}
 	}
 
@@ -503,8 +496,8 @@ public class WebDavServlet extends HttpServlet {
 			backend.setContent(uri, content, contentType, encoding);
 			response.setStatus(WebDavStatus.OK.getCode());
 		} catch (WebDavException e) {
-			response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e
-					.getMessage());
+			LOG.error(String.format("Error storing resource '%s'", uri), e);
+			response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e.getMessage());
 		}
 	}
 
@@ -525,8 +518,8 @@ public class WebDavServlet extends HttpServlet {
 			backend.delete(uri);
 			response.setStatus(WebDavStatus.OK.getCode());
 		} catch (WebDavException e) {
-			response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e
-					.getMessage());
+			LOG.error(String.format("Error deleting resource '%s'", uri), e);
+			response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e.getMessage());
 		}
 	}
 
@@ -559,10 +552,10 @@ public class WebDavServlet extends HttpServlet {
 		LOG.debug("MKCOL " + uri);
 		try {
 			backend.createCollection(uri);
-			response.setStatus(WebDavStatus.OK.getCode());
+			response.setStatus(WebDavStatus.CREATED.getCode());
 		} catch (WebDavException e) {
-			response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e
-					.getMessage());
+			LOG.error(String.format("Error creating collection '%s'", uri), e);
+			response.sendError(WebDavStatus.INVALID_REQUEST.getCode(), e.getMessage());
 		}
 	}
 

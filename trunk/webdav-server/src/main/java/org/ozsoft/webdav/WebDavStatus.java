@@ -10,6 +10,9 @@ public enum WebDavStatus {
     /** OK. */
     OK(200, "OK"),
     
+    /** OK. */
+    CREATED(201, "Created"),
+    
     /** WebDAV multistatus. */
     MULTI_STATUS(207, "MultiStatus"),
     
