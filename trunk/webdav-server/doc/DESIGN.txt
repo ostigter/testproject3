@@ -263,3 +263,161 @@ Response:
 			</propstat>
 		</response>
 	</multistatus>
+
+	
+Windows XP Explorer WebDAV client
+---------------------------------
+
+Request:
+  PROPFIND /exist/webdav/db
+
+Response:
+	<?xml version="1.0" encoding="UTF-8"?>
+	<D:multistatus xmlns:D="DAV:">
+	    <D:response>
+	        <D:href>/exist/webdav/db</D:href>
+	        <D:propstat>
+	            <D:prop>
+	                <D:displayname>db</D:displayname>
+	                <D:resourcetype>
+	                    <D:collection />
+	                </D:resourcetype>
+	                <D:creationdate>2009-12-08T14:33:31Z</D:creationdate>
+	                <D:getlastmodified>Tue, 08 Dec 2009 14:33:31 GMT</D:getlastmodified>
+	            </D:prop>
+	            <D:status>HTTP/1.1 200 OK</D:status>
+	        </D:propstat>
+	    </D:response>
+	</D:multistatus>
+ 
+ 
+Request:
+	PROPFIND /exist/webdav/db/indicenter
+	
+	<?xml version="1.0" encoding="UTF-8" ?>
+	<a:propfind xmlns:a="DAV:" xmlns:b="urn:schemas-microsoft-com:datatypes">
+		<a:prop>
+			<a:name/>
+			<a:parentname/>
+			<a:href/>
+			<a:ishidden/>
+			<a:isreadonly/>
+			<a:getcontenttype/>
+			<a:contentclass/>
+			<a:getcontentlanguage/>
+			<a:creationdate/>
+			<a:lastaccessed/>
+			<a:getlastmodified/>
+			<a:getcontentlength/>
+			<a:iscollection/>
+			<a:isstructureddocument/>
+			<a:defaultdocument/>
+			<a:displayname/>
+			<a:isroot/>
+			<a:resourcetype/>
+		</a:prop>
+	</a:propfind>
+
+Response:
+	<?xml version="1.0" encoding="UTF-8"?>
+	<D:multistatus xmlns:D="DAV:">
+	    <D:response>
+	        <D:href>/exist/webdav/db/indicenter</D:href>
+	        <D:propstat>
+	            <D:prop>
+	                <D:displayname>indicenter</D:displayname>
+	                <D:resourcetype>
+	                    <D:collection/>
+	                </D:resourcetype>
+	                <D:creationdate>2009-12-24T14:30:51Z</D:creationdate>
+	                <D:getlastmodified>Thu, 24 Dec 2009 14:30:51 GMT</D:getlastmodified>
+	            </D:prop>
+	            <D:status>HTTP/1.1 200 OK</D:status>
+	        </D:propstat>
+	        <D:propstat>
+	            <D:prop>
+	                <D:isroot/>
+	                <D:lastaccessed/>
+	                <D:getcontentlength/>
+	                <D:parentname/>
+	                <D:ishidden/>
+	                <D:href/>
+	                <D:isreadonly/>
+	                <D:iscollection/>
+	                <D:getcontentlanguage/>
+	                <D:defaultdocument/>
+	                <D:contentclass/>
+	                <D:getcontenttype/>
+	                <D:isstructureddocument/>
+	                <D:name/>
+	            </D:prop>
+	            <D:status>HTTP/1.1 404 Not Found</D:status>
+	        </D:propstat>
+	    </D:response>
+	    <D:response>
+	        <D:href>/exist/webdav/db/indicenter/Twinscan</D:href>
+	        <D:propstat>
+	            <D:prop>
+	                <D:displayname>Twinscan</D:displayname>
+	                <D:resourcetype>
+	                    <D:collection/>
+	                </D:resourcetype>
+	                <D:creationdate>2009-12-24T14:30:51Z</D:creationdate>
+	                <D:getlastmodified>Thu, 24 Dec 2009 14:30:51 GMT</D:getlastmodified>
+	            </D:prop>
+	            <D:status>HTTP/1.1 200 OK</D:status>
+	        </D:propstat>
+	        <D:propstat>
+	            <D:prop>
+	                <D:isroot/>
+	                <D:lastaccessed/>
+	                <D:getcontentlength/>
+	                <D:parentname/>
+	                <D:ishidden/>
+	                <D:href/>
+	                <D:isreadonly/>
+	                <D:iscollection/>
+	                <D:getcontentlanguage/>
+	                <D:defaultdocument/>
+	                <D:contentclass/>
+	                <D:getcontenttype/>
+	                <D:isstructureddocument/>
+	                <D:name/>
+	            </D:prop>
+	            <D:status>HTTP/1.1 404 Not Found</D:status>
+	        </D:propstat>
+	    </D:response>
+	    <D:response>
+	        <D:href>/exist/webdav/db/indicenter/Yieldstar</D:href>
+	        <D:propstat>
+	            <D:prop>
+	                <D:displayname>Yieldstar</D:displayname>
+	                <D:resourcetype>
+	                    <D:collection/>
+	                </D:resourcetype>
+	                <D:creationdate>2009-12-24T14:30:57Z</D:creationdate>
+	                <D:getlastmodified>Thu, 24 Dec 2009 14:30:57 GMT</D:getlastmodified>
+	            </D:prop>
+	            <D:status>HTTP/1.1 200 OK</D:status>
+	        </D:propstat>
+	        <D:propstat>
+	            <D:prop>
+	                <D:isroot/>
+	                <D:lastaccessed/>
+	                <D:getcontentlength/>
+	                <D:parentname/>
+	                <D:ishidden/>
+	                <D:href/>
+	                <D:isreadonly/>
+	                <D:iscollection/>
+	                <D:getcontentlanguage/>
+	                <D:defaultdocument/>
+	                <D:contentclass/>
+	                <D:getcontenttype/>
+	                <D:isstructureddocument/>
+	                <D:name/>
+	            </D:prop>
+	            <D:status>HTTP/1.1 404 Not Found</D:status>
+	        </D:propstat>
+	    </D:response>
+	</D:multistatus>
