@@ -2,12 +2,25 @@
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:h="http://java.sun.com/jsf/html"
 	    xmlns:ui="http://java.sun.com/jsf/facelets"
+	    xmlns:c="http://java.sun.com/jsp/jstl/core"
 	    template="/templates/main.xhtml">
 	<ui:define name="title">Home</ui:define>
 	<ui:define name="content">
 		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
-		<p>
-			Welcome to TaskMan, a simple task manager with JSF 2.0!
-		</p>
+		<c:choose>
+			<c:when test="#{userBean.user == null}">
+				<p>
+					Welcome to TaskMan, a simple task manager with JSF 2.0!
+				</p>
+				<p>
+					Pease log in to manage your tasks.
+				</p>
+			</c:when>
+			<c:otherwise>
+				<p>
+					Welcome, #{userBean.username}!
+				</p>
+			</c:otherwise>
+		</c:choose>
 	</ui:define>
 </ui:composition>

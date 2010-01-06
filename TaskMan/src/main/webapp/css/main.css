@@ -9,7 +9,6 @@ img {
 
 table.boxed {
 	width:  100%;
-	border: 1px solid #000000;
 	margin: 10px 0 10px 0;
 }		
 
@@ -29,18 +28,16 @@ tr.even {
 }
 
 td.taskId {
-	background-color: #ff0000;
-	text-alignment:   center;
+	width:      75px;
+	text-align: center;
 }
 
 td.taskSummary {
-	background-color: #ff0000;
-	text-alignment:   center;
 }
 
 td.taskStatus {
-	background-color: #ff0000;
-	text-alignment:   center;
+	width:      100px;
+	text-align: center;
 }
 
 .infoMessage {
