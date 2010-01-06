@@ -17,32 +17,32 @@ import org.ozsoft.taskman.domain.Task;
 @ManagedBean
 @SessionScoped
 public class TaskBean implements Serializable {
-    
-    private static final long serialVersionUID = -6860027446038205685L;
-    
-    @ManagedProperty(value = "#{userBean}")
-    private UserBean userBean;
-    
-    private String summary;
-    
-    public void setUserBean(UserBean userBean) {
-	this.userBean = userBean;
-    }
-    
-    public String getSummary() {
-	return summary;
-    }
-    
-    public void setSummary(String summary) {
-	this.summary = summary;
-    }
-    
-    public String doCreateTask() {
-	Task task = new Task();
-	task.setSummary(summary);
-	task.setStatus(Status.OPEN);
-	userBean.createTask(task);
-        return "list.xhtml";
-    }
-    
+
+	private static final long serialVersionUID = -6860027446038205685L;
+
+	@ManagedProperty(value = "#{userBean}")
+	private UserBean userBean;
+
+	private String summary;
+
+	public void setUserBean(UserBean userBean) {
+		this.userBean = userBean;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String doCreateTask() {
+		Task task = new Task();
+		task.setSummary(summary);
+		task.setStatus(Status.OPEN);
+		userBean.createTask(task);
+		return "list.xhtml";
+	}
+
 }

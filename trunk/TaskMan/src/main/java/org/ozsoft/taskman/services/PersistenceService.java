@@ -10,30 +10,30 @@ import javax.persistence.Persistence;
  * @author Oscar Stigter
  */
 public class PersistenceService {
-    
-    /** Persistency unit name. */
-    private static final String PU_NAME = "taskman";
-    
-    /** Entity manager. */
-    private static final EntityManager entityManager;
-    
-    /**
-     * Static initializer.
-     * 
-     * Creates the entity manager.
-     */
-    static {
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
-	entityManager = emf.createEntityManager();
-    }
-    
-    /**
-     * Returns the entity manager.
-     * 
-     * @return The entity manager.
-     */
-    public static EntityManager getEntityManager() {
-	return entityManager;
-    }
+
+	/** Persistency unit name. */
+	private static final String PU_NAME = "taskman";
+
+	/** Entity manager. */
+	private static final EntityManager entityManager;
+
+	/**
+	 * Static initializer.
+	 * 
+	 * Creates the entity manager.
+	 */
+	static {
+		EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
+		entityManager = emf.createEntityManager();
+	}
+
+	/**
+	 * Returns the entity manager.
+	 * 
+	 * @return The entity manager.
+	 */
+	public static EntityManager getEntityManager() {
+		return entityManager;
+	}
 
 }

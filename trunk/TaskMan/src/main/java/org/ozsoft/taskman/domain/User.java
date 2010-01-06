@@ -20,78 +20,78 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class User {
-    
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    private long id;
-    
-    @Basic
-    @Column(nullable = false, unique = true)
-    private String username;
-    
-    @Basic
-    @Column(nullable = false)
-    private String password;
-    
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Task> tasks;
-    
-    public long getId() {
-	return id;
-    }
 
-    public void setId(long id) {
-	this.id = id;
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
 
-    public String getUsername() {
-	return username;
-    }
+	@Basic
+	@Column(nullable = false, unique = true)
+	private String username;
 
-    public void setUsername(String username) {
-	this.username = username;
-    }
+	@Basic
+	@Column(nullable = false)
+	private String password;
 
-    public String getPassword() {
-	return password;
-    }
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Task> tasks;
 
-    public void setPassword(String password) {
-	this.password = password;
-    }
-    
-    public List<Task> getTasks() {
-	return tasks;
-    }
-    
-    public void setTasks(List<Task> tasks) {
-	this.tasks = tasks;
-    }
-    
-    public void addTask(Task task) {
-	if (tasks == null) {
-	    tasks = new ArrayList<Task>();
+	public long getId() {
+		return id;
 	}
-	tasks.add(task);
-    }
-    
-    @Override
-    public int hashCode() {
-	return username.hashCode();
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-	if (obj instanceof User) {
-	    return ((User) obj).username.equals(username);
-	} else {
-	    return false;
-	}
-    }
 
-    @Override
-    public String toString() {
-	return username;
-    }
-    
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public void addTask(Task task) {
+		if (tasks == null) {
+			tasks = new ArrayList<Task>();
+		}
+		tasks.add(task);
+	}
+
+	@Override
+	public int hashCode() {
+		return username.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof User) {
+			return ((User) obj).username.equals(username);
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public String toString() {
+		return username;
+	}
+
 }
