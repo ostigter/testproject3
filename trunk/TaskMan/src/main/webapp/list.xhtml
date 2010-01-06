@@ -8,7 +8,8 @@
 		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
 		<h:form>
 			<h:commandButton value="Create Task" action="createTask.jsf" />
-			<h:dataTable value="#{userBean.user.tasks}" var="task" styleClass="boxed" rowClasses="odd, even">
+			<h:dataTable value="#{userBean.user.tasks}" var="task" rules="all"
+					styleClass="boxed" rowClasses="odd, even" columnClasses="taskId, taskSummary, taskStatus">
 				<h:column>
 					<f:facet name="header">ID</f:facet>
 					<h:outputLink value="editTask.jsf">
