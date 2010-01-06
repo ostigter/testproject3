@@ -15,8 +15,6 @@ header
 body
 method
 	OPTIONS
-	PROPFIND
-	PROPPATCH
 	HEAD
 	GET
 	PUT
@@ -25,6 +23,8 @@ method
 	MKCOL
 	COPY
 	MOVE
+	PROPFIND
+	PROPPATCH
 	LOCK
 	UNLOCK
 
@@ -41,10 +41,10 @@ PROPFIND
 WebDAV properties:
 	displayname
 	resourcetype
-	creationdate
-	getlastmodified
 	getcontenttype
 	getcontentlength
+	creationdate
+	getlastmodified
 	getetag
 
 Request:
@@ -83,10 +83,10 @@ Request:
 		<prop>
 			<displayname />
 			<resourcetype />
-			<creationdate />
-			<getlastmodified />
 			<getcontenttype />
 			<getcontentlength />
+			<creationdate />
+			<getlastmodified />
 			<getetag />
 		</prop>
 	</propfind>
@@ -290,10 +290,8 @@ Response:
 	    </D:response>
 	</D:multistatus>
  
- 
 Request:
 	PROPFIND /exist/webdav/db/indicenter
-	
 	<?xml version="1.0" encoding="UTF-8" ?>
 	<a:propfind xmlns:a="DAV:" xmlns:b="urn:schemas-microsoft-com:datatypes">
 		<a:prop>
