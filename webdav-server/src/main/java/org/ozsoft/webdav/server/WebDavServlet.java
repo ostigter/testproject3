@@ -130,10 +130,15 @@ public class WebDavServlet extends HttpServlet {
 	@Override
 	protected void doOptions(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		LOG.debug("OPTIONS");
-		response.setStatus(WebDavStatus.OK.getCode());
-		response.addHeader("Allow", "OPTIONS, HEAD, GET, PUT, DELETE, POST, PROPFIND, MKCOL");
-		response.addHeader("DAV", "1");
+		String uri = getUriFromRequest(request);
+		LOG.debug("OPTIONS " + uri);
+		if (backend.exists(uri)) {
+			response.setStatus(WebDavStatus.OK.getCode());
+			response.addHeader("Allow", "OPTIONS, HEAD, GET, PUT, DELETE, POST, PROPFIND, MKCOL");
+			response.addHeader("DAV", "1");
+		} else {
+			response.setStatus(WebDavStatus.NOT_FOUND.getCode());
+		}
 	}
 
 	/**
