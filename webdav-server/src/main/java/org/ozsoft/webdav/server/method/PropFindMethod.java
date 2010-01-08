@@ -1,12 +1,9 @@
 package org.ozsoft.webdav.server.method;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,14 +32,6 @@ public class PropFindMethod extends AbstractMethod {
 	/** Method name. */
 	private static final String NAME = "PROPFIND";
 	
-	/** Creation date format. */
-	private static final DateFormat CREATION_DATE_FORMAT =
-			new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-
-	/** Last modification date format. */
-	private static final DateFormat LASTMODIFIED_DATE_FORMAT =
-			new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
-
 	/** Logger. */
 	private static final Logger LOG = Logger.getLogger(PropFindMethod.class);
 
@@ -256,12 +245,12 @@ public class PropFindMethod extends AbstractMethod {
 				} else if (propName.equals(WebDavConstants.CREATIONDATE)) {
 					// Creation date in ISO date format.
 					Date date = backend.getCreated(uri);
-					propStat.setValue(CREATION_DATE_FORMAT.format(date));
+					propStat.setValue(WebDavConstants.CREATION_DATE_FORMAT.format(date));
 					propStat.setStatus(WebDavStatus.OK);
 				} else if (propName.equals(WebDavConstants.GETLASTMODIFIED)) {
 					// Last modification date in internet date format.
 					Date date = backend.getModified(uri);
-					propStat.setValue(LASTMODIFIED_DATE_FORMAT.format(date));
+					propStat.setValue(WebDavConstants.LASTMODIFIED_DATE_FORMAT.format(date));
 					propStat.setStatus(WebDavStatus.OK);
 				} else {
 					// Unknown property.
