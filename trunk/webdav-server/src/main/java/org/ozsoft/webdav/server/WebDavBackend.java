@@ -166,6 +166,22 @@ public interface WebDavBackend {
 	 */
 	void delete(String uri) throws WebDavException;
 	
+	/**
+	 * Copies a resource.
+	 * 
+	 * @param uri
+	 *            The resource source URI.
+	 * @param destination
+	 *            The resource destination URI.
+	 * @param overwrite
+	 *            Whether an existing destination resource should be
+	 *            overwritten.
+	 * @throws WebDavException
+	 *             If the resource does not exist, the user has insufficient
+	 *             privileges, or the resource could not be copied.
+	 */
+	void copy(String uri, String destination, boolean overwrite) throws WebDavException;
+	
     /**
      * Moves a resource.
      * 
@@ -173,11 +189,14 @@ public interface WebDavBackend {
      *            The resource source URI.
      * @param destination
      *            The resource destination URI.
+	 * @param overwrite
+	 *            Whether an existing destination resource should be
+	 *            overwritten.
      * 
      * @throws WebDavException
      *             If the resource does not exist, the user has insufficient
      *             privileges, or the resource could not be moved.
      */
-    void move(String uri, String destination) throws WebDavException;
+    void move(String uri, String destination, boolean overwrite) throws WebDavException;
     
 }

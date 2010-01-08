@@ -36,6 +36,7 @@ public class MethodFactory {
 		methods.put("POST", new PostMethod(servletContext, backend));
 		methods.put("PROPFIND", new PropFindMethod(servletContext, backend));
 		methods.put("MKCOL", new MkColMethod(servletContext, backend));
+		methods.put("COPY", new CopyMethod(servletContext, backend));
 		methods.put("MOVE", new MoveMethod(servletContext, backend));
 	}
 	

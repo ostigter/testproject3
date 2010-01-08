@@ -10,13 +10,13 @@ import org.apache.log4j.Logger;
 import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.server.WebDavBackend;
 
-public class MoveMethod extends AbstractMethod {
+public class CopyMethod extends AbstractMethod {
 
 	/** Method name. */
-	private static final String NAME = "MOVE";
+	private static final String NAME = "COPY";
 	
 	/** Logger. */
-	private static final Logger LOG = Logger.getLogger(MoveMethod.class);
+	private static final Logger LOG = Logger.getLogger(CopyMethod.class);
 
 	/**
 	 * Constructor.
@@ -26,7 +26,7 @@ public class MoveMethod extends AbstractMethod {
 	 * @param backend
 	 *            The WebDAV backend.
 	 */
-	public MoveMethod(String servletContext, WebDavBackend backend) {
+	public CopyMethod(String servletContext, WebDavBackend backend) {
 		super(NAME, servletContext, backend);
 	}
 
@@ -61,9 +61,9 @@ public class MoveMethod extends AbstractMethod {
 				String overwriteFlag = request.getHeader("overwrite");
 				boolean overwrite = (overwriteFlag != null && !overwriteFlag.equals("F"));
 				try {
-					backend.move(uri, destination, overwrite);
+					backend.copy(uri, destination, overwrite);
 					if (LOG.isDebugEnabled()) {
-						LOG.debug(String.format("Moved resource '%s' to '%s'", uri, destination));
+						LOG.debug(String.format("Copied resource '%s' to '%s'", uri, destination));
 					}
 					response.setStatus(HttpServletResponse.SC_OK);
 				} catch (WebDavException e) {
