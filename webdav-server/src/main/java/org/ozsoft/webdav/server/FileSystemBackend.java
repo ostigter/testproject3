@@ -318,7 +318,7 @@ public class FileSystemBackend implements WebDavBackend {
         } else {
             File destinationFile = new File(ROOT_DIR, destination);
             if (destinationFile.exists()) {
-                //TODO: Overwrite resource.
+                //TODO: Overwrite resource with MOVE.
             } else {
                 file.renameTo(destinationFile);
             }

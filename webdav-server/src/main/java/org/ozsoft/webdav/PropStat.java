@@ -3,6 +3,8 @@ package org.ozsoft.webdav;
 /**
  * A WebDAV property.
  * 
+ * Wrapper for a 'propstat' element as part of a 'multistatus' element.
+ * 
  * @author Oscar Stigter
  */
 public class PropStat {
