@@ -9,6 +9,8 @@ public class WebDavException extends Exception {
 	
 	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
+	
+	private final int statusCode;
 
 	/**
 	 * Constructor with a message only.
@@ -16,20 +18,32 @@ public class WebDavException extends Exception {
 	 * @param message
 	 *            The message.
 	 */
-	public WebDavException(String message) {
-		super(message);
+	public WebDavException(int statusCode, String message) {
+		this(statusCode, message, null);
 	}
 	
 	/**
 	 * Constructor with a message and a cause.
 	 * 
+	 * @param statusCode
+	 *            The HTTP status code.
 	 * @param message
 	 *            The message.
 	 * @param cause
 	 *            The cause (inner exception).
 	 */
-	public WebDavException(String message, Throwable cause) {
+	public WebDavException(int statusCode, String message, Throwable cause) {
 		super(message, cause);
+		this.statusCode = statusCode;
+	}
+	
+	/**
+	 * Returns the HTTP status code.
+	 * 
+	 * @return The status code.
+	 */
+	public int getStatusCode() {
+		return statusCode;
 	}
 
 }

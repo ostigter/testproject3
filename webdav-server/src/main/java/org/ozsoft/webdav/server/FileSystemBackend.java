@@ -1,5 +1,6 @@
 package org.ozsoft.webdav.server;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,10 +8,14 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.mortbay.log.Log;
 import org.ozsoft.webdav.WebDavException;
 
 /**
@@ -24,7 +29,7 @@ import org.ozsoft.webdav.WebDavException;
 public class FileSystemBackend implements WebDavBackend {
 	
 	/** Buffer size for copying streams. */
-	private static final int BUFFER_SIZE = 8192;  // 8 kB
+	private static final int BUFFER_SIZE = 8192;
 	
 	/** The filename filter. */
 	private static final FilenameFilter FILENAME_FILTER = new WebDavFilenameFilter();  
@@ -52,7 +57,7 @@ public class FileSystemBackend implements WebDavBackend {
 			throw new IllegalArgumentException("Root directory not found: " + path);
 		}
 		
-		// Define MIME types.
+		// Define supported MIME types.
 		mimeTypes = new HashMap<String, String>();
 		mimeTypes.put("txt", "text/plain");
         mimeTypes.put("xml", "text/xml");
@@ -112,18 +117,22 @@ public class FileSystemBackend implements WebDavBackend {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
+		
 		File dir = new File(ROOT_DIR, uri);
-		if (!dir.exists()) {
-			boolean created = dir.mkdirs();
-			if (!created) {
-				throw new WebDavException(String.format("Could not create collection: %s", uri));
-			}
-		} else {
-			if (dir.isFile()) {
-				throw new WebDavException(String.format("Could not create collection '%s', resource exists", uri));
+		if (dir.exists()) {
+			String message = null;
+			if (dir.isDirectory()) {
+				message = String.format("Collection '%s' already exists", uri);
 			} else {
-				throw new WebDavException(String.format("Collection already exists: %s", uri));
+				message = String.format("Non-collection resource '%s' exists", uri);
 			}
+			throwWebDavException(HttpServletResponse.SC_CONFLICT, message);
+		}
+		
+		boolean created = dir.mkdirs();
+		if (!created) {
+			throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					String.format("Error creating collection '%s'", uri));
 		}
 	}
 
@@ -136,22 +145,22 @@ public class FileSystemBackend implements WebDavBackend {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
+
 		File file = new File(ROOT_DIR, uri);
-		if (!file.exists()) {
-			try {
-				boolean created = file.createNewFile();
-				if (!created) {
-					throw new WebDavException(String.format("Could not create resource: %s", uri));
-				}
-			} catch (IOException e) {
-				throw new WebDavException(String.format("Could not create resource: %s", uri), e);
+		if (file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_CONFLICT,
+					String.format("Resource '%s' already exists", uri));
+		}
+
+		try {
+			boolean created = file.createNewFile();
+			if (!created) {
+				throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						String.format("Error creating resource '%s'", uri));
 			}
-		} else {
-			if (file.isDirectory()) {
-				throw new WebDavException(String.format("Could not create file '%s', collection exists", uri));
-			} else {
-				throw new WebDavException(String.format("File already exists: %s", uri));
-			}
+		} catch (IOException e) {
+			throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					String.format("Error creating resource '%s'", uri), e);
 		}
 	}
 
@@ -213,14 +222,16 @@ public class FileSystemBackend implements WebDavBackend {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
+		
 		File file = new File(ROOT_DIR, uri);
-		if (file.exists()) {
-			return new Date(file.lastModified());
-		} else {
-			throw new WebDavException("Resource not found: " + uri);
+		if (!file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
 		}
-	}
 
+		return new Date(file.lastModified());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.ozsoft.webdav.server.WebDavBackend#getContent(java.lang.String)
@@ -230,20 +241,23 @@ public class FileSystemBackend implements WebDavBackend {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
-		InputStream is = null;
+
 		File file = new File(ROOT_DIR, uri);
-		if (file.exists()) {
-			if (file.isFile()) {
-				try {
-					is = new FileInputStream(file);
-				} catch (IOException e) {
-					throw new WebDavException("Could not read resource: " + uri, e);
-				}
-			} else {
-				throw new WebDavException("Resource is a collection");
-			}
-		} else {
-			throw new WebDavException("Resource not found: " + uri);
+		if (!file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
+		}
+		
+		if (file.isDirectory()) {
+			throw new IllegalStateException("getContent() called on collection");
+		}
+
+		InputStream is = null;
+		try {
+			is = new BufferedInputStream(new FileInputStream(file));
+		} catch (IOException e) {
+			throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					String.format("Error reading resource '%s'", uri), e);
 		}
 		return is;
 	}
@@ -258,25 +272,29 @@ public class FileSystemBackend implements WebDavBackend {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
+
 		File file = new File(ROOT_DIR, uri);
-		if (file.exists()) {
-			if (file.isFile()) {
-				try {
-					BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(file));
-					byte[] buffer = new byte[BUFFER_SIZE];
-					int read = 0;
-					while ((read = content.read(buffer)) > 0) {
-						os.write(buffer, 0, read);
-					}
-					os.close();
-				} catch (IOException e) {
-					throw new WebDavException("Could not write resource: " + uri, e);
-				}
-			} else {
-				throw new WebDavException("Resource is a collection");
+		if (!file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
+		}
+
+		if (file.isDirectory()) {
+			throwWebDavException(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+					String.format("Cannot set the content of a collection", uri));
+		}
+
+		try {
+			OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+			byte[] buffer = new byte[BUFFER_SIZE];
+			int read = 0;
+			while ((read = content.read(buffer)) > 0) {
+				os.write(buffer, 0, read);
 			}
-		} else {
-			throw new WebDavException("Resource not found: " + uri);
+			os.close();
+		} catch (IOException e) {
+			throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					String.format("Error writing resource '%s'", uri), e);
 		}
 	}
 
@@ -289,43 +307,142 @@ public class FileSystemBackend implements WebDavBackend {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
+
 		File file = new File(ROOT_DIR, uri);
-		if (file.exists()) {
-			boolean deleted = file.delete();
-			if (!deleted) {
-				throw new WebDavException("Could not delete resource: " + uri);
-			}
-		} else {
-			throw new WebDavException("Resource not found: " + uri);
+		if (!file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
+		}
+
+		boolean deleted = file.delete();
+		if (!deleted) {
+			throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					String.format("Error deleting resource '%s'", uri));
 		}
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.ozsoft.webdav.server.WebDavBackend#move(java.lang.String, java.lang.String)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#copy(java.lang.String, java.lang.String, boolean)
 	 */
 	@Override
-	public void move(String uri, String destination) throws WebDavException {
+	public void copy(String uri, String destination, boolean overwrite) throws WebDavException {
+        if (uri == null || uri.length() == 0) {
+            throw new IllegalArgumentException("Null or empty uri");
+        }
+
+        if (destination == null || destination.length() == 0) {
+            throw new IllegalArgumentException("Null or empty destination");
+        }
+        
+        File sourceFile = new File(ROOT_DIR, uri);
+		if (!sourceFile.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
+		}
+        
+        File destinationFile = new File(ROOT_DIR, destination);
+        if (destinationFile.exists() && !overwrite) {
+            throwWebDavException(HttpServletResponse.SC_PRECONDITION_FAILED,
+            		String.format("Destination resource '%s' exists (no overwrite)", destination));
+        }
+        
+        //TODO: Copy collections.
+        
+    	try {
+    		//TODO: Improve I/O error handling.
+            InputStream is = new BufferedInputStream(new FileInputStream(sourceFile));
+            OutputStream os = new BufferedOutputStream(new FileOutputStream(destinationFile));
+            byte[] buffer = new byte[BUFFER_SIZE];
+            int length = 0;
+            while ((length = is.read(buffer)) > 0) {
+            	os.write(buffer, 0, length);
+            }
+            os.close();
+            is.close();
+    	} catch (IOException e) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            		String.format("Error copying resource '%s' to '%s'", uri, destination), e);
+    	}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#move(java.lang.String, java.lang.String, boolean)
+	 */
+	@Override
+	public void move(String uri, String destination, boolean overwrite) throws WebDavException {
         if (uri == null || uri.length() == 0) {
             throw new IllegalArgumentException("Null or empty uri");
         }
         if (destination == null || destination.length() == 0) {
             throw new IllegalArgumentException("Null or empty destination");
         }
-        File file = new File(ROOT_DIR, uri);
-        if (!file.exists()) {
-            throw new WebDavException("Resource not found: " + uri);
+        
+        File sourceFile = new File(ROOT_DIR, uri);
+		if (!sourceFile.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
+		}
+
+		//TODO: Move collections.
+		
+		File destinationFile = new File(ROOT_DIR, destination);
+        if (!destinationFile.exists()) {
+        	sourceFile.renameTo(destinationFile);
         } else {
-            File destinationFile = new File(ROOT_DIR, destination);
-            if (destinationFile.exists()) {
-                //TODO: Overwrite resource with MOVE.
-            } else {
-                file.renameTo(destinationFile);
-            }
+        	if (!overwrite) {
+                throwWebDavException(HttpServletResponse.SC_PRECONDITION_FAILED,
+                		String.format("Destination resource '%s' exists (no overwrite)", destination));
+        	}
+    		boolean deleted = destinationFile.delete();
+    		if (!deleted) {
+                throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                		String.format("Error deleting existing destination resource '%s'", destination));
+    		}
+        }
+        
+        if (!destinationFile.exists()) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+            		String.format("Error moving resource '%s' to '%s'", uri, destination));
         }
 	}
 	
-	
+	/**
+	 * Throws a WebDAV exception.
+	 * 
+	 * @param statusCode
+	 *            The HTTP status code.
+	 * @param message
+	 *            The message.
+	 * 
+	 * @throws WebDavException
+	 *             The exception.
+	 */
+	private void throwWebDavException(int statusCode, String message) throws WebDavException {
+		throwWebDavException(statusCode, message, null);
+	}
+
+	/**
+	 * Throws a WebDAV exception with a nested exception as the cause.
+	 * 
+	 * @param statusCode
+	 *            The HTTP status code.
+	 * @param message
+	 *            The message.
+	 * @param t
+	 *            The cause (nested exception).
+	 * 
+	 * @throws WebDavException
+	 *             The exception.
+	 */
+	private void throwWebDavException(int statusCode, String message, Throwable t) throws WebDavException {
+		if (Log.isDebugEnabled()) {
+			Log.debug(message);
+		}
+		throw new WebDavException(statusCode, message, t);
+	}
+
     /**
      * Filename filter that filters out certain files and directories that
      * should not be listed.

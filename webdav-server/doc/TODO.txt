@@ -1,0 +1,28 @@
+TODO
+====
+
+
+High priority
+-------------
+
+* Properties model 
+* Options per resource
+* Properties per resource
+
+
+Medium priority
+---------------
+
+* Copy collections
+* Move collections
+* PROPFIND method (full WebDAV level 1 compliancy) 
+* DELETE method (full WebDAV level 1 compliancy)
+* COPY method (full WebDAV level 1 compliancy)
+* MOVE method (full WebDAV level 1 compliancy)
+
+
+Low priority
+------------
+
+* Locking support (WebDAV level 2 compliancy)
+* Versioning support (Delta-V compliancy)
