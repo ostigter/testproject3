@@ -27,7 +27,7 @@ public class DeleteMethod extends AbstractMethod {
 	 * @param backend
 	 *            The WebDAV backend.
 	 */
-	public DeleteMethod(String name, String servletContext, WebDavBackend backend) {
+	public DeleteMethod(String servletContext, WebDavBackend backend) {
 		super(NAME, servletContext, backend);
 	}
 

@@ -27,7 +27,7 @@ public class MoveMethod extends AbstractMethod {
 	 * @param backend
 	 *            The WebDAV backend.
 	 */
-	public MoveMethod(String name, String servletContext, WebDavBackend backend) {
+	public MoveMethod(String servletContext, WebDavBackend backend) {
 		super(NAME, servletContext, backend);
 	}
 

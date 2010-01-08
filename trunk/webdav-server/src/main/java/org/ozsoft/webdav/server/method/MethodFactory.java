@@ -31,7 +31,12 @@ public class MethodFactory {
 		methods.put("OPTIONS", new OptionsMethod(servletContext, backend));
 		methods.put("HEAD", new HeadMethod(servletContext, backend));
 		methods.put("GET", new GetMethod(servletContext, backend));
+		methods.put("PUT", new PutMethod(servletContext, backend));
+		methods.put("DELETE", new DeleteMethod(servletContext, backend));
+		methods.put("POST", new PostMethod(servletContext, backend));
 		methods.put("PROPFIND", new PropFindMethod(servletContext, backend));
+		methods.put("MKCOL", new MkColMethod(servletContext, backend));
+		methods.put("MOVE", new MoveMethod(servletContext, backend));
 	}
 	
 	/**
@@ -50,5 +55,5 @@ public class MethodFactory {
 			return UNSUPPORTED_METHOD;
 		}
 	}
-
+	
 }

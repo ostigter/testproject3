@@ -28,7 +28,7 @@ public class PutMethod extends AbstractMethod {
 	 * @param backend
 	 *            The WebDAV backend.
 	 */
-	public PutMethod(String name, String servletContext, WebDavBackend backend) {
+	public PutMethod(String servletContext, WebDavBackend backend) {
 		super(NAME, servletContext, backend);
 	}
 
