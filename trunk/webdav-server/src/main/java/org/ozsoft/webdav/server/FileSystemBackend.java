@@ -15,7 +15,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.mortbay.log.Log;
+import org.apache.log4j.Logger;
 import org.ozsoft.webdav.WebDavException;
 
 /**
@@ -28,6 +28,9 @@ import org.ozsoft.webdav.WebDavException;
  */
 public class FileSystemBackend implements WebDavBackend {
 	
+    /** Log. */
+    private static final Logger LOG = Logger.getLogger(FileSystemBackend.class);
+    
 	/** Buffer size for copying streams. */
 	private static final int BUFFER_SIZE = 8192;
 	
@@ -437,8 +440,8 @@ public class FileSystemBackend implements WebDavBackend {
 	 *             The exception.
 	 */
 	private void throwWebDavException(int statusCode, String message, Throwable t) throws WebDavException {
-		if (Log.isDebugEnabled()) {
-			Log.debug(message);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug(message);
 		}
 		throw new WebDavException(statusCode, message, t);
 	}

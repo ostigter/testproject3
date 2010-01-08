@@ -78,10 +78,13 @@ public interface WebDavBackend {
      * 
      * @param uri
      *            The resource URI.
+     *            
+     * @throws WebDavException
+     *             If the resource does not exist.
      * 
      * @return The content type.
      */
-    String getContentType(String uri);
+    String getContentType(String uri) throws WebDavException;
     
 	/**
 	 * Returns the content length of the resource.
@@ -92,8 +95,11 @@ public interface WebDavBackend {
 	 *            The resource URI.
 	 * 
 	 * @return The content length in bytes.
+     *            
+     * @throws WebDavException
+     *             If the resource does not exist.
 	 */
-	long getContentLength(String uri);
+	long getContentLength(String uri) throws WebDavException;
 	
 	/**
 	 * Returns the content of a resource.

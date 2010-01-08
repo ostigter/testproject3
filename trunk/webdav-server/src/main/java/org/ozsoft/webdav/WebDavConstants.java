@@ -1,5 +1,9 @@
 package org.ozsoft.webdav;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 /**
  * Generic WebDAV constants.
  * 
@@ -22,7 +26,7 @@ public interface WebDavConstants {
 	String RESOURCETYPE = "resourcetype";
 	
     /** Resource type for a non-collection resource. */
-    String RESOURCE = "<resource />";
+    String RESOURCE = "";
     
     /** Resource type for a collection. */
     String COLLECTION = "<collection />";
@@ -42,4 +46,12 @@ public interface WebDavConstants {
     /** The etag property. */
     String GETETAG = "getetag";
     
+    /** Creation date format. */
+    DateFormat CREATION_DATE_FORMAT =
+            new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+
+    /** Last modification date format. */
+    DateFormat LASTMODIFIED_DATE_FORMAT =
+            new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
+
 }
