@@ -27,7 +27,7 @@ public class MkColMethod extends AbstractMethod {
 	 * @param backend
 	 *            The WebDAV backend.
 	 */
-	public MkColMethod(String name, String servletContext, WebDavBackend backend) {
+	public MkColMethod(String servletContext, WebDavBackend backend) {
 		super(NAME, servletContext, backend);
 	}
 

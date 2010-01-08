@@ -21,7 +21,7 @@ public class PostMethod extends AbstractMethod {
 	 * @param backend
 	 *            The WebDAV backend.
 	 */
-	public PostMethod(String name, String servletContext, WebDavBackend backend) {
+	public PostMethod(String servletContext, WebDavBackend backend) {
 		super(NAME, servletContext, backend);
 	}
 
