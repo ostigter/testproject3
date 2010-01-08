@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * A WebDAV property response.
  * 
- * Wrapper for a 'response' element as part of a a 'multistatus' element.
+ * Wrapper for a 'response' element as part of a 'multistatus' element.
  * 
  * @author Oscar Stigter
  */
