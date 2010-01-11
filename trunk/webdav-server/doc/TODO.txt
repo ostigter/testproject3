@@ -8,6 +8,7 @@ High priority
 * Properties model 
 * Options per resource
 * Properties per resource
+* In-memory test backend
 
 
 Medium priority
