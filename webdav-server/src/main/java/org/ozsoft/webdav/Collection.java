@@ -7,8 +7,10 @@ public class Collection extends Resource {
     
     private final List<Resource> resources;
 
-    public Collection() {
+    public Collection(String name) {
+    	super(name);
         resources = new LinkedList<Resource>();
+        setProperty(WebDavConstants.RESOURCETYPE, WebDavConstants.COLLECTION);
     }
     
     public List<Resource> getResources() {

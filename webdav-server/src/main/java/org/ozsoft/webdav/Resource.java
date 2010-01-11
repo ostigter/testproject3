@@ -1,5 +1,6 @@
 package org.ozsoft.webdav;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,8 +15,15 @@ public class Resource {
     
     private final Map<String, PropStat> properties;
     
-    public Resource() {
+    public Resource(String name) {
         properties = new HashMap<String, PropStat>();
+        setProperty(WebDavConstants.DISPLAYNAME, name);
+        setProperty(WebDavConstants.RESOURCETYPE, WebDavConstants.RESOURCE);
+        Date date = new Date();
+        String created = WebDavConstants.CREATION_DATE_FORMAT.format(date);
+        setProperty(WebDavConstants.CREATIONDATE, created);
+        String modified = WebDavConstants.LASTMODIFIED_DATE_FORMAT.format(date);
+        setProperty(WebDavConstants.GETLASTMODIFIED, modified);
     }
     
     public Set<String> getPropertyNames() {

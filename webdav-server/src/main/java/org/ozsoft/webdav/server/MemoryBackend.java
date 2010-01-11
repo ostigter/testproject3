@@ -36,8 +36,17 @@ public class MemoryBackend implements WebDavBackend {
      */
     public MemoryBackend() {
         resources = new HashMap<String, Resource>();
-        Collection rootCol = new Collection();
+        Collection rootCol = new Collection("/");
         resources.put("/", rootCol);
+        Resource res = new Resource("README.txt");
+        rootCol.addResource(res);
+        resources.put("/README.txt", res);
+        Collection dataCol = new Collection("data");
+        rootCol.addResource(dataCol);
+        resources.put("/data", dataCol);
+        res = new Resource("001.xml");
+        dataCol.addResource(res);
+        resources.put("/data/001.xml", res);
     }
 
     /*
@@ -78,18 +87,11 @@ public class MemoryBackend implements WebDavBackend {
             throwWebDavException(HttpServletResponse.SC_CONFLICT,
                     String.format("Parent collection '%s' does not exist", parentUri));
         }
-        Collection parentCol = (Collection) resources.get(parentUri);
-        Collection col = new Collection();
         String name = uri.substring(pos + 1);
-        col.setProperty(WebDavConstants.DISPLAYNAME, name);
-        col.setProperty(WebDavConstants.RESOURCETYPE, WebDavConstants.COLLECTION);
-        Date date = new Date();
-        String created = WebDavConstants.CREATION_DATE_FORMAT.format(date);
-        col.setProperty(WebDavConstants.CREATIONDATE, created);
-        String modified = WebDavConstants.LASTMODIFIED_DATE_FORMAT.format(date);
-        col.setProperty(WebDavConstants.GETLASTMODIFIED, modified);
-        resources.put(uri, col);
+        Collection parentCol = (Collection) resources.get(parentUri);
+        Collection col = new Collection(name);
         parentCol.addResource(col);
+        resources.put(uri, col);
     }
 
     /*
@@ -108,15 +110,8 @@ public class MemoryBackend implements WebDavBackend {
                     String.format("Parent collection '%s' does not exist", parentUri));
         }
         Collection parentCol = (Collection) resources.get(parentUri);
-        Collection col = new Collection();
         String name = uri.substring(pos + 1);
-        col.setProperty(WebDavConstants.DISPLAYNAME, name);
-        col.setProperty(WebDavConstants.RESOURCETYPE, WebDavConstants.RESOURCE);
-        Date date = new Date();
-        String created = WebDavConstants.CREATION_DATE_FORMAT.format(date);
-        col.setProperty(WebDavConstants.CREATIONDATE, created);
-        String modified = WebDavConstants.LASTMODIFIED_DATE_FORMAT.format(date);
-        col.setProperty(WebDavConstants.GETLASTMODIFIED, modified);
+        Collection col = new Collection(name);
         resources.put(uri, col);
         parentCol.addResource(col);
     }
@@ -193,8 +188,8 @@ public class MemoryBackend implements WebDavBackend {
                     String.format("Resource '%s' not found", uri));
         }
         Resource res = resources.get(uri);
-        PropStat propStat = res.getProperty(WebDavConstants.GETCONTENTTYPE);
         Date created = null;
+        PropStat propStat = res.getProperty(WebDavConstants.CREATIONDATE);
         if (propStat != null) {
             try {
                 created = WebDavConstants.CREATION_DATE_FORMAT.parse(propStat.getValue());
@@ -217,8 +212,8 @@ public class MemoryBackend implements WebDavBackend {
                     String.format("Resource '%s' not found", uri));
         }
         Resource res = resources.get(uri);
-        PropStat propStat = res.getProperty(WebDavConstants.GETCONTENTTYPE);
         Date modified = null;
+        PropStat propStat = res.getProperty(WebDavConstants.GETLASTMODIFIED);
         if (propStat != null) {
             try {
                 modified = WebDavConstants.LASTMODIFIED_DATE_FORMAT.parse(propStat.getValue());
