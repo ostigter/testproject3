@@ -10,6 +10,7 @@ public class WebDavException extends Exception {
 	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
 	
+	/** HTTP status code. */
 	private final int statusCode;
 
 	/**
