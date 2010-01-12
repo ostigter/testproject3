@@ -179,8 +179,7 @@ public class PropFindMethod extends AbstractMethod {
 			doPropfindProp(uri, propNames, responses);
 			if (backend.isCollection(uri)) {
 				if (depth != Depth.ZERO) {
-					String[] children = backend.getChildrenNames(uri);
-					for (String child : children) {
+					for (String child : backend.listCollection(uri)) {
 						String childUri = (uri.endsWith("/")) ? uri + child : uri + "/" + child;
 						if (depth == Depth.ONE) {
 							doPropfindProp(childUri, propNames, responses);

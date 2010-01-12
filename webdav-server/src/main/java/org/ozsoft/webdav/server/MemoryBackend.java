@@ -1,6 +1,7 @@
 package org.ozsoft.webdav.server;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.WebDavStatus;
 
 /**
- * In-memory WebDAV backend.
+ * In-memory backend for a WebDAV server.
  * 
  * Useful for testing and demonstration purposes.
  * 
@@ -117,23 +118,21 @@ public class MemoryBackend implements WebDavBackend {
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.webdav.server.WebDavBackend#getChildrenNames(java.lang.String)
+     * @see org.ozsoft.webdav.server.WebDavBackend#listCollection(java.lang.String)
      */
     @Override
-    public String[] getChildrenNames(String uri) throws WebDavException {
+    public List<String> listCollection(String uri) throws WebDavException {
         if (!isCollection(uri)) {
             throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
                     String.format("Collection '%s' does not exist", uri));
         }
         Collection col = (Collection) resources.get(uri);
-        List<Resource> children = col.getResources();
-        String[] names = new String[children.size()];
-        int i = 0;
-        for (Resource child : children) {
-            PropStat propStat = child.getProperty(WebDavConstants.DISPLAYNAME);
-            if (propStat != null) {
-                names[i++] = propStat.getValue();
-            }
+        List<String> names = new ArrayList<String>();
+        for (Resource resource : col.getResources()) {
+        	PropStat propStat = resource.getProperty(WebDavConstants.DISPLAYNAME);
+        	if (propStat != null) {
+        		names.add(propStat.getValue());
+        	}
         }
         return names;
     }

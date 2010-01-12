@@ -3,6 +3,7 @@ package org.ozsoft.webdav.server.method;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -55,8 +56,8 @@ public class GetMethod extends AbstractMethod {
 					Writer writer = response.getWriter();
 					writer.write(String.format(
 							"Contents of collection '%s':\n", uri));
-					String[] children = backend.getChildrenNames(uri);
-					if (children.length == 0) {
+					List<String> children = backend.listCollection(uri);
+					if (children.size() == 0) {
 						writer.write("(Empty collection)\n");
 					} else {
 						for (String child : children) {

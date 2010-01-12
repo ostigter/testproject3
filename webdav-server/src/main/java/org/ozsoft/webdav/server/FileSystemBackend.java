@@ -9,8 +9,10 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +24,7 @@ import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.WebDavStatus;
 
 /**
- * File system WebDAV backend.
+ * File system backend for a WebDAV server.
  * 
  * Serves files (resources) and directories (collections) stored in a specific
  * root directory.
@@ -99,19 +101,22 @@ public class FileSystemBackend implements WebDavBackend {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.ozsoft.webdav.server.WebDavBackend#getChildrenNames(java.lang.String)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#listCollection(java.lang.String)
 	 */
 	@Override
-	public String[] getChildrenNames(String uri) {
+	public List<String> listCollection(String uri) {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
 		File dir = new File(ROOT_DIR, uri);
-		if (dir.isDirectory()) {
-			return dir.list(FILENAME_FILTER);
-		} else {
+		if (!dir.isDirectory()) {
 			throw new IllegalStateException("Not a collection: " + uri);
 		}
+		List<String> names = new ArrayList<String>();
+		for (String name : dir.list(FILENAME_FILTER)) {
+			names.add(name);
+		}
+		return names;
 	}
 
 	/*

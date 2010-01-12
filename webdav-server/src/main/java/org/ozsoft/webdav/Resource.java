@@ -13,9 +13,18 @@ import java.util.Set;
  */
 public class Resource {
     
-    private final Map<String, PropStat> properties;
+    /**
+     * Properties.
+     */
+	private final Map<String, PropStat> properties;
     
-    public Resource(String name) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            The resource name (displayname).
+	 */
+	public Resource(String name) {
         properties = new HashMap<String, PropStat>();
         setProperty(WebDavConstants.DISPLAYNAME, name);
         setProperty(WebDavConstants.RESOURCETYPE, WebDavConstants.RESOURCE);
@@ -25,8 +34,13 @@ public class Resource {
         String modified = WebDavConstants.LASTMODIFIED_DATE_FORMAT.format(date);
         setProperty(WebDavConstants.GETLASTMODIFIED, modified);
     }
-    
-    public Set<String> getPropertyNames() {
+	
+	/**
+	 * Returns the property names.
+	 * 
+	 * @return The property names.
+	 */
+	public Set<String> getPropertyNames() {
         Set<String> names = new HashSet<String>();
         for (String name : properties.keySet()) {
             names.add(name);
@@ -34,11 +48,27 @@ public class Resource {
         return names;
     }
     
-    public PropStat getProperty(String name) {
+	/**
+	 * Returns a property status.
+	 * 
+	 * @param name
+	 *            The property name.
+	 * 
+	 * @return The property status.
+	 */
+	public PropStat getProperty(String name) {
         return properties.get(name);
     }
     
-    public void setProperty(String name, String value) {
+	/**
+	 * Sets a property.
+	 * 
+	 * @param name
+	 *            The property name.
+	 * @param value
+	 *            The property value.
+	 */
+	public void setProperty(String name, String value) {
         PropStat propStat = properties.get(name);
         if (propStat == null) {
             propStat = new PropStat(name);

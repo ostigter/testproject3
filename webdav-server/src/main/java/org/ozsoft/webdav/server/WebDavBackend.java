@@ -1,6 +1,7 @@
 package org.ozsoft.webdav.server;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.ozsoft.webdav.PropStat;
 import org.ozsoft.webdav.WebDavException;
@@ -33,7 +34,7 @@ public interface WebDavBackend {
 	boolean isCollection(String uri);
 	
 	/**
-	 * Returns the names of the resources in a specific collection.
+	 * Returns the names of the resources in a collection.
 	 * 
 	 * @param uri
 	 *            The collection URI.
@@ -43,7 +44,7 @@ public interface WebDavBackend {
 	 * @throws WebDavException
 	 *             If the collection does not exist.
 	 */
-	String[] getChildrenNames(String uri) throws WebDavException;
+	List<String> listCollection(String uri) throws WebDavException;
 	
 	/**
 	 * Creates a (non-collection) resource.
