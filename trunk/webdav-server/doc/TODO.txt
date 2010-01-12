@@ -5,17 +5,15 @@ TODO
 High priority
 -------------
 
-* Properties model 
-* Options per resource
-* Properties per resource
-* In-memory test backend
+* Properties based on resource type
+* Copy collections
+* Move collections
+* Client application (Swing)
 
 
 Medium priority
 ---------------
 
-* Copy collections
-* Move collections
 * PROPFIND method (full WebDAV level 1 compliancy) 
 * DELETE method (full WebDAV level 1 compliancy)
 * COPY method (full WebDAV level 1 compliancy)
