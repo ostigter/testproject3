@@ -16,7 +16,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.webdav.PropStat;
+import org.ozsoft.webdav.WebDavConstants;
 import org.ozsoft.webdav.WebDavException;
+import org.ozsoft.webdav.WebDavStatus;
 
 /**
  * File system WebDAV backend.
@@ -113,6 +116,34 @@ public class FileSystemBackend implements WebDavBackend {
 
 	/*
 	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#createResource(java.lang.String)
+	 */
+	@Override
+	public void createResource(String uri) throws WebDavException {
+		if (uri == null || uri.length() == 0) {
+			throw new IllegalArgumentException("Null or empty uri");
+		}
+
+		File file = new File(ROOT_DIR, uri);
+		if (file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_CONFLICT,
+					String.format("Resource '%s' already exists", uri));
+		}
+
+		try {
+			boolean created = file.createNewFile();
+			if (!created) {
+				throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						String.format("Error creating resource '%s'", uri));
+			}
+		} catch (IOException e) {
+			throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					String.format("Error creating resource '%s'", uri), e);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see org.ozsoft.webdav.server.WebDavBackend#createCollection(java.lang.String)
 	 */
 	@Override
@@ -141,68 +172,39 @@ public class FileSystemBackend implements WebDavBackend {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.ozsoft.webdav.server.WebDavBackend#createResource(java.lang.String)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getDisplayName(java.lang.String)
 	 */
 	@Override
-	public void createResource(String uri) throws WebDavException {
+	public String getDisplayName(String uri) throws WebDavException {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
-
 		File file = new File(ROOT_DIR, uri);
-		if (file.exists()) {
-			throwWebDavException(HttpServletResponse.SC_CONFLICT,
-					String.format("Resource '%s' already exists", uri));
+		if (!file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
 		}
-
-		try {
-			boolean created = file.createNewFile();
-			if (!created) {
-				throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						String.format("Error creating resource '%s'", uri));
-			}
-		} catch (IOException e) {
-			throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					String.format("Error creating resource '%s'", uri), e);
-		}
+		return file.getName();
 	}
-
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.webdav.server.WebDavBackend#getContentType(java.lang.String)
-     */
-    @Override
-    public String getContentType(String uri) {
-        String extention = "";
-        if (uri.length() > 0) {
-            int pos = uri.lastIndexOf('.');
-            if (pos != 0) {
-                extention = uri.substring(pos).toLowerCase();
-            }
-        }
-        String type = mimeTypes.get(extention);
-        if (type != null) {
-            return type;
-        } else {
-            // Unknown type; handle as binary file.
-            return "application/octet-stream";
-        }
-    }
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.ozsoft.webdav.server.WebDavBackend#getContentLength(java.lang.String)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getResourceType(java.lang.String)
 	 */
 	@Override
-	public long getContentLength(String uri) {
+	public String getResourceType(String uri) throws WebDavException {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
 		File file = new File(ROOT_DIR, uri);
-		if (file.isFile()) {
-			return file.length();
+		if (!file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
+		}
+		if (file.isDirectory()) {
+			return WebDavConstants.COLLECTION;
 		} else {
-			return 0L;
+			return WebDavConstants.RESOURCE;
 		}
 	}
 
@@ -211,30 +213,125 @@ public class FileSystemBackend implements WebDavBackend {
 	 * @see org.ozsoft.webdav.server.WebDavBackend#getCreated(java.lang.String)
 	 */
 	@Override
-	public Date getCreated(String uri) throws WebDavException {
-		// Since Java doesn't support the creation date on files, just return the modification date.
-		return getModified(uri);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.ozsoft.webdav.server.WebDavBackend#getModified(java.lang.String)
-	 */
-	@Override
-	public Date getModified(String uri) throws WebDavException {
+	public String getCreated(String uri) throws WebDavException {
 		if (uri == null || uri.length() == 0) {
 			throw new IllegalArgumentException("Null or empty uri");
 		}
-		
 		File file = new File(ROOT_DIR, uri);
 		if (!file.exists()) {
 			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
 					String.format("Resource '%s' not found", uri));
 		}
-
-		return new Date(file.lastModified());
+		// Java does not support file creation dates, so use last modification date.
+		Date date = new Date(file.lastModified());
+		return WebDavConstants.CREATION_DATE_FORMAT.format(date);
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getLastModified(java.lang.String)
+	 */
+	@Override
+	public String getLastModified(String uri) throws WebDavException {
+		if (uri == null || uri.length() == 0) {
+			throw new IllegalArgumentException("Null or empty uri");
+		}
+		File file = new File(ROOT_DIR, uri);
+		if (!file.exists()) {
+			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+					String.format("Resource '%s' not found", uri));
+		}
+		Date date = new Date(file.lastModified());
+		return WebDavConstants.LASTMODIFIED_DATE_FORMAT.format(date);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getContentType(java.lang.String)
+	 */
+	@Override
+	public String getContentType(String uri) throws WebDavException {
+		if (uri == null || uri.length() == 0) {
+			throw new IllegalArgumentException("Null or empty uri");
+		}
+        String extention = "";
+        if (uri.length() > 0) {
+            int pos = uri.lastIndexOf('.');
+            if (pos != -1) {
+                extention = uri.substring(pos).toLowerCase();
+            }
+        }
+        String type = mimeTypes.get(extention);
+        if (type != null) {
+            return type;
+        } else {
+            // Unknown type; handle as raw binary file.
+            return "application/octet-stream";
+        }
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getContentLength(java.lang.String)
+	 */
+	@Override
+	public String getContentLength(String uri) throws WebDavException {
+		if (uri == null || uri.length() == 0) {
+			throw new IllegalArgumentException("Null or empty uri");
+		}
+		File file = new File(ROOT_DIR, uri);
+		long length = 0L;
+		if (file.isFile()) {
+			length = file.length();
+		}
+		return String.valueOf(length);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getPropStat(java.lang.String, java.lang.String)
+	 */
+	@Override
+    public PropStat getPropStat(String uri, String name) throws WebDavException {
+        if (!exists(uri)) {
+            throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+                    String.format("Resource '%s' not found", uri));
+        }
+        PropStat propStat = new PropStat(name);
+		propStat.setStatus(WebDavStatus.OK);
+		String value = null;
+		if (name.equals(WebDavConstants.DISPLAYNAME)) {
+    		value = getDisplayName(uri);
+    	} else if (name.equals(WebDavConstants.RESOURCETYPE)) {
+    		value = getResourceType(uri);
+    	} else if (name.equals(WebDavConstants.CREATIONDATE)) {
+    		value = getCreated(uri);
+    	} else if (name.equals(WebDavConstants.GETLASTMODIFIED)) {
+    		value = getLastModified(uri);
+    	} else if (name.equals(WebDavConstants.GETCONTENTTYPE)) {
+    		value = getContentType(uri);
+    	} else if (name.equals(WebDavConstants.GETCONTENTLENGTH)) {
+    		value = getContentLength(uri);
+    	} else {
+    		propStat.setStatus(WebDavStatus.NOT_FOUND);
+    	}
+		propStat.setValue(value);
+    	return propStat;
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.webdav.server.WebDavBackend#setProperty(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void setProperty(String uri, String name, String value) throws WebDavException {
+        if (!exists(uri)) {
+            throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
+                    String.format("Resource '%s' not found", uri));
+        }
+        // Setting properties not supported.
+    }
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.ozsoft.webdav.server.WebDavBackend#getContent(java.lang.String)
@@ -387,7 +484,7 @@ public class FileSystemBackend implements WebDavBackend {
 			throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
 					String.format("Resource '%s' not found", uri));
 		}
-
+		
 		//TODO: Move collections.
 		
 		File destinationFile = new File(ROOT_DIR, destination);

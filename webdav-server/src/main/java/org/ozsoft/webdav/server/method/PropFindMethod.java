@@ -2,7 +2,6 @@ package org.ozsoft.webdav.server.method;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -80,8 +79,7 @@ public class PropFindMethod extends AbstractMethod {
 								if (obj instanceof Element) {
 									Element el = (Element) obj;
 									// TODO: Handle request for non-WebDAV properties.
-									if (el.getNamespaceURI().equals(
-											WebDavConstants.DAV_NS)) {
+									if (el.getNamespaceURI().equals(WebDavConstants.DAV_NS)) {
 										propNames.add(el.getName());
 									}
 								} else {
@@ -133,6 +131,9 @@ public class PropFindMethod extends AbstractMethod {
 					sb.append("</").append(propName).append(">\n");
 					sb.append("      </prop>\n");
 					WebDavStatus status = propStat.getStatus();
+					if (status == null) {
+						LOG.error("*** Null status for property: " + propName);
+					}
 					sb.append("      <status>HTTP/1.1 ").append(
 							status.getCode());
 					sb.append(' ').append(status.getName()).append(
@@ -180,13 +181,11 @@ public class PropFindMethod extends AbstractMethod {
 				if (depth != Depth.ZERO) {
 					String[] children = backend.getChildrenNames(uri);
 					for (String child : children) {
-						String childUri = (uri.endsWith("/")) ? uri + child
-								: uri + "/" + child;
+						String childUri = (uri.endsWith("/")) ? uri + child : uri + "/" + child;
 						if (depth == Depth.ONE) {
 							doPropfindProp(childUri, propNames, responses);
 						} else {
-							doPropfindProp(childUri, depth, propNames,
-									responses);
+							doPropfindProp(childUri, depth, propNames, responses);
 						}
 					}
 				}
@@ -209,58 +208,18 @@ public class PropFindMethod extends AbstractMethod {
 	private void doPropfindProp(String uri, List<String> propNames,
 			List<WebDavResponse> responses) throws ServletException,
 			IOException, WebDavException {
-		if (backend.exists(uri)) {
+		if (!backend.exists(uri)) {
+			String msg = String.format("Resource '%s' not found", uri);
+			if (LOG.isDebugEnabled()) {
+				LOG.debug(msg);
+			}
+			throw new WebDavException(HttpServletResponse.SC_NOT_FOUND, msg);
+		} else {
 			WebDavResponse response = new WebDavResponse(uri);
-			for (String propName : propNames) {
-				PropStat propStat = new PropStat(propName);
-				if (propName.equals(WebDavConstants.DISPLAYNAME)) {
-					// Display name.
-					propStat.setValue(getResourceName(uri));
-					propStat.setStatus(WebDavStatus.OK);
-				} else if (propName.equals(WebDavConstants.RESOURCETYPE)) {
-					// Resource type.
-					if (backend.isCollection(uri)) {
-						propStat.setValue(WebDavConstants.COLLECTION);
-					} else {
-						propStat.setValue("");
-					}
-					propStat.setStatus(WebDavStatus.OK);
-				} else if (propName.equals(WebDavConstants.CONTENT_TYPE)) {
-					// Content type.
-					if (!backend.isCollection(uri)) {
-						propStat.setValue(backend.getContentType(uri));
-						propStat.setStatus(WebDavStatus.OK);
-					} else {
-						propStat.setStatus(WebDavStatus.NOT_FOUND);
-					}
-				} else if (propName.equals(WebDavConstants.GETCONTENTLENGTH)) {
-					// Content length.
-					if (!backend.isCollection(uri)) {
-						propStat.setValue(String.valueOf(backend
-								.getContentLength(uri)));
-						propStat.setStatus(WebDavStatus.OK);
-					} else {
-						propStat.setStatus(WebDavStatus.NOT_FOUND);
-					}
-				} else if (propName.equals(WebDavConstants.CREATIONDATE)) {
-					// Creation date in ISO date format.
-					Date date = backend.getCreated(uri);
-					propStat.setValue(WebDavConstants.CREATION_DATE_FORMAT.format(date));
-					propStat.setStatus(WebDavStatus.OK);
-				} else if (propName.equals(WebDavConstants.GETLASTMODIFIED)) {
-					// Last modification date in internet date format.
-					Date date = backend.getModified(uri);
-					propStat.setValue(WebDavConstants.LASTMODIFIED_DATE_FORMAT.format(date));
-					propStat.setStatus(WebDavStatus.OK);
-				} else {
-					// Unknown property.
-					propStat.setStatus(WebDavStatus.NOT_FOUND);
-				}
-				response.addPropStat(propStat);
+			for (String name : propNames) {
+				response.addPropStat(backend.getPropStat(uri, name));
 			}
 			responses.add(response);
-		} else {
-			// TODO: Resource not found.
 		}
 	}
 

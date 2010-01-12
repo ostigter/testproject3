@@ -27,8 +27,8 @@ public class WebDavServer {
 	/** The servlet context. */
 	private static final String CONTEXT = "/webdav";
 	
-//	/** Root directory of the file system backend. */
-//	private static final String ROOT_DIR = "data";
+	/** Root directory of the file system backend. */
+	private static final String ROOT_DIR = "data";
 
 	/**
 	 * The application's entry point.
@@ -39,8 +39,8 @@ public class WebDavServer {
 	public static void main(String[] args) {
 		Server server = new Server(PORT);
 		ServletHandler handler = new ServletHandler();
-//		WebDavBackend backend = new FileSystemBackend(ROOT_DIR);
-		WebDavBackend backend = new MemoryBackend();
+		WebDavBackend backend = new FileSystemBackend(ROOT_DIR);
+//		WebDavBackend backend = new MemoryBackend();
 		Servlet servlet = new WebDavServlet(CONTEXT, backend);
 		handler.addServletWithMapping(new ServletHolder(servlet), CONTEXT + "/*");
 		server.setHandler(handler);

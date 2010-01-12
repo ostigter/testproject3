@@ -66,7 +66,7 @@ public class GetMethod extends AbstractMethod {
 				} else {
 					String type = backend.getContentType(uri);
 					response.setContentType(type);
-					long length = backend.getContentLength(uri);
+					long length = Long.parseLong(backend.getContentLength(uri));
 					response.setContentLength((int) length);
 					if (length > 0) {
 						InputStream is = backend.getContent(uri);

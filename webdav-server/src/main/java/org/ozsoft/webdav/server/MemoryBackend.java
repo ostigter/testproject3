@@ -1,8 +1,6 @@
 package org.ozsoft.webdav.server;
 
 import java.io.InputStream;
-import java.text.ParseException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +13,7 @@ import org.ozsoft.webdav.PropStat;
 import org.ozsoft.webdav.Resource;
 import org.ozsoft.webdav.WebDavConstants;
 import org.ozsoft.webdav.WebDavException;
+import org.ozsoft.webdav.WebDavStatus;
 
 /**
  * In-memory WebDAV backend.
@@ -138,114 +137,169 @@ public class MemoryBackend implements WebDavBackend {
         }
         return names;
     }
+    
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getDisplayName(java.lang.String)
+	 */
+    @Override
+	public String getDisplayName(String uri) throws WebDavException {
+    	PropStat propStat = getPropStat(uri, WebDavConstants.DISPLAYNAME);
+    	if (propStat == null) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    String.format("No 'displayname' property for resource '%s'", uri));
+    	}
+		return propStat.getValue();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getResourceType(java.lang.String)
+	 */
+    @Override
+	public String getResourceType(String uri) throws WebDavException {
+    	PropStat propStat = getPropStat(uri, WebDavConstants.RESOURCETYPE);
+    	if (propStat == null) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    String.format("No 'resourcetype' property for resource '%s'", uri));
+    	}
+		return propStat.getValue();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getCreated(java.lang.String)
+	 */
+    @Override
+	public String getCreated(String uri) throws WebDavException {
+    	PropStat propStat = getPropStat(uri, WebDavConstants.CREATIONDATE);
+    	if (propStat == null) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    String.format("No 'creationdate' property for resource '%s'", uri));
+    	}
+		return propStat.getValue();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getLastModified(java.lang.String)
+	 */
+    @Override
+	public String getLastModified(String uri) throws WebDavException {
+    	PropStat propStat = getPropStat(uri, WebDavConstants.GETLASTMODIFIED);
+    	if (propStat == null) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    String.format("No 'getlastmodified' property for resource '%s'", uri));
+    	}
+		return propStat.getValue();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.ozsoft.webdav.server.WebDavBackend#getContentType(java.lang.String)
+	 */
+    @Override
+	public String getContentType(String uri) throws WebDavException {
+    	PropStat propStat = getPropStat(uri, WebDavConstants.GETCONTENTTYPE);
+    	if (propStat == null) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    String.format("No 'getcontenttype' property for resource '%s'", uri));
+    	}
+		return propStat.getValue();
+	}
 
     /*
      * (non-Javadoc)
      * @see org.ozsoft.webdav.server.WebDavBackend#getContentLength(java.lang.String)
      */
     @Override
-    public long getContentLength(String uri) throws WebDavException {
-        if (!exists(uri)) {
-            throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
-                    String.format("Resource '%s' not found", uri));
-        }
-        Resource res = resources.get(uri);
-        PropStat propStat = res.getProperty(WebDavConstants.GETCONTENTLENGTH);
-        long contentLength = 0L;
-        if (propStat != null) {
-            contentLength = Long.parseLong(propStat.getValue());
-        }
-        return contentLength;
-    }
+	public String getContentLength(String uri) throws WebDavException {
+    	PropStat propStat = getPropStat(uri, WebDavConstants.GETCONTENTLENGTH);
+    	if (propStat == null) {
+            throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    String.format("No 'getcontentlength' property for resource '%s'", uri));
+    	}
+		return propStat.getValue();
+	}
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.webdav.server.WebDavBackend#getContentType(java.lang.String)
+     * @see org.ozsoft.webdav.server.WebDavBackend#getPropStat(java.lang.String, java.lang.String)
      */
     @Override
-    public String getContentType(String uri) throws WebDavException {
+    public PropStat getPropStat(String uri, String name) throws WebDavException {
         if (!exists(uri)) {
             throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
                     String.format("Resource '%s' not found", uri));
         }
         Resource res = resources.get(uri);
-        PropStat propStat = res.getProperty(WebDavConstants.GETCONTENTTYPE);
-        String contentType = null;
-        if (propStat != null) {
-            contentType = propStat.getValue();
-        }
-        return contentType;
+    	PropStat propStat = res.getProperty(name);
+    	if (propStat == null) {
+    		propStat = new PropStat(name);
+    		propStat.setStatus(WebDavStatus.NOT_FOUND);
+    	}
+    	return propStat;
     }
-
+    
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.webdav.server.WebDavBackend#getCreated(java.lang.String)
+     * @see org.ozsoft.webdav.server.WebDavBackend#setProperty(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public Date getCreated(String uri) throws WebDavException {
+    public void setProperty(String uri, String name, String value) throws WebDavException {
         if (!exists(uri)) {
             throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
                     String.format("Resource '%s' not found", uri));
         }
         Resource res = resources.get(uri);
-        Date created = null;
-        PropStat propStat = res.getProperty(WebDavConstants.CREATIONDATE);
-        if (propStat != null) {
-            try {
-                created = WebDavConstants.CREATION_DATE_FORMAT.parse(propStat.getValue());
-            } catch (ParseException e) {
-                throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        String.format("Error parsing creation date for resource '%s'", uri));
-            }
-        }
-        return created;
+    	res.setProperty(name, value);
     }
-
+    
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.webdav.server.WebDavBackend#getModified(java.lang.String)
+     * @see org.ozsoft.webdav.server.WebDavBackend#getContent(java.lang.String)
      */
-    @Override
-    public Date getModified(String uri) throws WebDavException {
-        if (!exists(uri)) {
-            throwWebDavException(HttpServletResponse.SC_NOT_FOUND,
-                    String.format("Resource '%s' not found", uri));
-        }
-        Resource res = resources.get(uri);
-        Date modified = null;
-        PropStat propStat = res.getProperty(WebDavConstants.GETLASTMODIFIED);
-        if (propStat != null) {
-            try {
-                modified = WebDavConstants.LASTMODIFIED_DATE_FORMAT.parse(propStat.getValue());
-            } catch (ParseException e) {
-                throwWebDavException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        String.format("Error parsing last modification date for resource '%s'", uri));
-            }
-        }
-        return modified;
-    }
-
     @Override
     public InputStream getContent(String uri) throws WebDavException {
+    	// Retrieving resource content not supported.
         return null;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.webdav.server.WebDavBackend#setContent(java.lang.String, java.io.InputStream, java.lang.String, java.lang.String)
+     */
     @Override
     public void setContent(String uri, InputStream content, String contentType,
             String encoding) throws WebDavException {
+    	// Setting resource content not supported.
     }
 
-    @Override
-    public void copy(String uri, String destination, boolean overwrite) throws WebDavException {
-    }
-
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.webdav.server.WebDavBackend#delete(java.lang.String)
+     */
     @Override
     public void delete(String uri) throws WebDavException {
+    	//TODO: Delete resource.
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.webdav.server.WebDavBackend#copy(java.lang.String, java.lang.String, boolean)
+     */
     @Override
-    public void move(String uri, String destination, boolean overwrite)
-            throws WebDavException {
+    public void copy(String uri, String destination, boolean overwrite) throws WebDavException {
+    	//TODO: Copy resource.
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.webdav.server.WebDavBackend#move(java.lang.String, java.lang.String, boolean)
+     */
+    @Override
+    public void move(String uri, String destination, boolean overwrite) throws WebDavException {
+    	//TODO: Move resource.
     }
 
     /**
