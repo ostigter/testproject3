@@ -42,6 +42,7 @@ public class Resource {
         PropStat propStat = properties.get(name);
         if (propStat == null) {
             propStat = new PropStat(name);
+            propStat.setStatus(WebDavStatus.OK);
             properties.put(name, propStat);
         }
         propStat.setValue(value);

@@ -1,8 +1,8 @@
 package org.ozsoft.webdav.server;
 
 import java.io.InputStream;
-import java.util.Date;
 
+import org.ozsoft.webdav.PropStat;
 import org.ozsoft.webdav.WebDavException;
 
 /**
@@ -46,7 +46,20 @@ public interface WebDavBackend {
 	String[] getChildrenNames(String uri) throws WebDavException;
 	
 	/**
-	 * Creates a collection.
+	 * Creates a (non-collection) resource.
+	 * 
+	 * @param uri
+	 *            The resource URI.
+	 * 
+	 * @throws WebDavException
+	 *             If the resource already exists, the parent collection does
+	 *             not exist, the user has insufficient privileges, or the
+	 *             resource could not be created.
+	 */
+	void createResource(String uri) throws WebDavException;
+	
+	/**
+	 * Creates a collection resource.
 	 * 
 	 * All intermediate collection must already exist.
 	 * 
@@ -61,17 +74,56 @@ public interface WebDavBackend {
 	void createCollection(String uri) throws WebDavException;
 	
 	/**
-	 * Creates a (non-collection) resource.
+	 * Returns a resource's display name.
 	 * 
 	 * @param uri
 	 *            The resource URI.
 	 * 
+	 * @return The display name.
+	 * 
 	 * @throws WebDavException
-	 *             If the resource already exists, the parent collection does
-	 *             not exist, the user has insufficient privileges, or the
-	 *             resource could not be created.
+	 *             If the resource does not exist.
 	 */
-	void createResource(String uri) throws WebDavException;
+	String getDisplayName(String uri) throws WebDavException;
+	
+	/**
+	 * Returns the resource type.
+	 * 
+	 * @param uri
+	 *            The resource URI.
+	 * 
+	 * @return The resource type (collection or resource).
+	 * 
+	 * @throws WebDavException
+	 *             If the resource does not exist.
+	 */
+	String getResourceType(String uri) throws WebDavException;
+	
+	/**
+	 * Returns a resource's creation date.
+	 * 
+	 * @param uri
+	 *            The resource URI.
+	 * 
+	 * @return The creation date.
+	 * 
+	 * @throws WebDavException
+	 *             If the resource does not exist.
+	 */
+	String getCreated(String uri) throws WebDavException;
+
+	/**
+	 * Returns a resource's last modification date.
+	 * 
+	 * @param uri
+	 *            The resource URI.
+	 * 
+	 * @return The modification date.
+	 * 
+	 * @throws WebDavException
+	 *             If the resource does not exist.
+	 */
+	String getLastModified(String uri) throws WebDavException;
 	
     /**
      * Returns the content type of a resource.
@@ -99,7 +151,37 @@ public interface WebDavBackend {
      * @throws WebDavException
      *             If the resource does not exist.
 	 */
-	long getContentLength(String uri) throws WebDavException;
+	String getContentLength(String uri) throws WebDavException;
+	
+	/**
+	 * Returns a (custom) property status.
+	 * 
+	 * @param uri
+	 *            The resource URI.
+	 * @param name
+	 *            The property name.
+	 * 
+	 * @return The property status.
+	 * 
+	 * @throws WebDavException
+	 *             If the resource does not exists.
+	 */
+	PropStat getPropStat(String uri, String name) throws WebDavException;
+	
+	/**
+	 * Sets a (custom) property.
+	 * 
+	 * @param uri
+	 *            The resource URI.
+	 * @param name
+	 *            The property name.
+	 * @param value
+	 *            The property value.
+	 * 
+	 * @throws WebDavException
+	 *             If the resource does not exist.
+	 */
+	void setProperty(String uri, String name, String value) throws WebDavException;
 	
 	/**
 	 * Returns the content of a resource.
@@ -133,32 +215,6 @@ public interface WebDavBackend {
 	 *             not be written.
 	 */
 	void setContent(String uri, InputStream content, String contentType, String encoding) throws WebDavException;
-	
-	/**
-	 * Returns the creation date of a resource.
-	 * 
-	 * @param uri
-	 *            The resource URI.
-	 * 
-	 * @return The creation date.
-	 * 
-	 * @throws WebDavException
-	 *             If the resource does not exist.
-	 */
-	Date getCreated(String uri) throws WebDavException;
-
-	/**
-	 * Returns the modification date of a resource.
-	 * 
-	 * @param uri
-	 *            The resource URI.
-	 * 
-	 * @return The modification date.
-	 * 
-	 * @throws WebDavException
-	 *             If the resource does not exist.
-	 */
-	Date getModified(String uri) throws WebDavException;
 	
 	/**
 	 * Deletes a resource.
