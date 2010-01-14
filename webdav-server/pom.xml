@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
     <name>webdav-server</name>
-    <description>A standalone webdav server</description>
+    <description>Standalone WebDAV server</description>
 
 	<developers>
 		<developer>
