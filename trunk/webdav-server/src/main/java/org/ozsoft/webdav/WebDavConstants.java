@@ -11,39 +11,40 @@ import java.util.Locale;
  */
 public interface WebDavConstants {
 
-    /** The XML declaration. */
+    /** Standard XML declaration. */
     String XML_DECLARATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
     
-    String CONTENT_TYPE = "text/xml;charset=UTF-8";
+    /** XML content type (MIME type). */ 
+    String XML_CONTENT_TYPE = "text/xml;charset=UTF-8";
     
-    /** The WebDAV namespace URI. */
+    /** Official WebDAV namespace URI. */
 	String DAV_NS = "DAV:";
 	
-    /** The display name property. */
+    /** Display name property. */
     String DISPLAYNAME = "displayname";
     
-	/** The resource type property. */
+	/** Resource type property. */
 	String RESOURCETYPE = "resourcetype";
 	
-    /** Resource type for a non-collection resource. */
+    /** Resource type property value for a non-collection resource. */
     String RESOURCE = "";
     
-    /** Resource type for a collection. */
+    /** Resource type property value for a collection. */
     String COLLECTION = "<collection />";
     
-    /** The content type property. */
+    /** Content type property. */
     String GETCONTENTTYPE = "getcontenttype";
 	        
-    /** The content length property. */
+    /** Content length property. */
     String GETCONTENTLENGTH = "getcontentlength";
     
-    /** The creation date property. */
+    /** Creation date property. */
     String CREATIONDATE = "creationdate";
     
-    /** The modification date property. */
+    /** Modification date property. */
     String GETLASTMODIFIED = "getlastmodified";
     
-    /** The etag property. */
+    /** Etag property. */
     String GETETAG = "getetag";
     
     /** Creation date format. */
