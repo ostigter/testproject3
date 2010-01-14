@@ -12,6 +12,11 @@ import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.WebDavStatus;
 import org.ozsoft.webdav.server.WebDavBackend;
 
+/**
+ * HTTP PUT method for creating or updating a resource.
+ * 
+ * @author Oscar Stigter
+ */
 public class PutMethod extends AbstractMethod {
 
 	/** Method name. */

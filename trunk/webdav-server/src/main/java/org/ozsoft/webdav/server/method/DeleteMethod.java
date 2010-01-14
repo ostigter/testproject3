@@ -11,6 +11,11 @@ import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.WebDavStatus;
 import org.ozsoft.webdav.server.WebDavBackend;
 
+/**
+ * HTTP DELETE method for deleting a resource.
+ * 
+ * @author Oscar Stigter
+ */
 public class DeleteMethod extends AbstractMethod {
 
 	/** Method name. */

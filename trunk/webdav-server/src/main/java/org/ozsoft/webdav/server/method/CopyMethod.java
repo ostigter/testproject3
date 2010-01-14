@@ -10,6 +10,14 @@ import org.apache.log4j.Logger;
 import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.server.WebDavBackend;
 
+/**
+ * WebDAV COPY method for copying a resource.
+ * 
+ * The resource is copied recursively, including all properties and child
+ * resources (in case of a collection).
+ * 
+ * @author Oscar Stigter
+ */
 public class CopyMethod extends AbstractMethod {
 
 	/** Method name. */

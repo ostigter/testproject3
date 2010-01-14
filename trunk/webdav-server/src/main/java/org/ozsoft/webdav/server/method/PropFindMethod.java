@@ -22,7 +22,8 @@ import org.ozsoft.webdav.WebDavStatus;
 import org.ozsoft.webdav.server.WebDavBackend;
 
 /**
- * WebDAV PROPFIND method.
+ * WebDAV PROPFIND method for retrieving the properties from a resource and
+ * listing a collection.
  * 
  * @author Oscar Stigter
  */

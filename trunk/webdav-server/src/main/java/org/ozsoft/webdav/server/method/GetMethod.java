@@ -16,7 +16,7 @@ import org.ozsoft.webdav.WebDavStatus;
 import org.ozsoft.webdav.server.WebDavBackend;
 
 /**
- * HTTP GET method.
+ * HTTP GET method for retrieving a resource.
  * 
  * @author Oscar Stigter
  */

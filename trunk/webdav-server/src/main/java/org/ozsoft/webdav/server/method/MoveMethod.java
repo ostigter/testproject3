@@ -10,6 +10,11 @@ import org.apache.log4j.Logger;
 import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.server.WebDavBackend;
 
+/**
+ * WebDAV MOVE method for moving or renaming a resource.
+ * 
+ * @author Oscar Stigter
+ */
 public class MoveMethod extends AbstractMethod {
 
 	/** Method name. */

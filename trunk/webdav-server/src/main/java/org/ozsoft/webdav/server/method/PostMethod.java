@@ -8,6 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ozsoft.webdav.server.WebDavBackend;
 
+/**
+ * HTTP POST method.
+ * 
+ * This method has no meaning in a WebDAV context.
+ * 
+ * @author Oscar Stigter
+ */
 public class PostMethod extends AbstractMethod {
 
 	/** Method name. */

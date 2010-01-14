@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.ozsoft.webdav.server.WebDavBackend;
 
 /**
- * Unsupported HTTP method.
+ * Method handler for an unsupported (unknown) method.
  * 
  * @author Oscar Stigter
  */
