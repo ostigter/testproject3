@@ -158,7 +158,7 @@ public class PropFindMethod extends AbstractMethod {
 
 		// Response status and headers.
 		response.setStatus(WebDavStatus.MULTI_STATUS.getCode());
-		response.setContentType(WebDavConstants.CONTENT_TYPE);
+		response.setContentType(WebDavConstants.XML_CONTENT_TYPE);
 	}
 
 	/**
