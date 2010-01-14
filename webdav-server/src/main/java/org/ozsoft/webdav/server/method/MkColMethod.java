@@ -11,6 +11,11 @@ import org.ozsoft.webdav.WebDavException;
 import org.ozsoft.webdav.WebDavStatus;
 import org.ozsoft.webdav.server.WebDavBackend;
 
+/**
+ * WebDAV MKCOL method for creating a collection.
+ *  
+ * @author Oscar Stigter
+ */
 public class MkColMethod extends AbstractMethod {
 
 	/** Method name. */

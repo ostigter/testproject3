@@ -5,6 +5,7 @@ TODO
 High priority
 -------------
 
+* PROPPATCH method (basic)
 * Properties based on resource type
 * Copy collections
 * Move collections
