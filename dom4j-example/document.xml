@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TestReport xmlns="http://www.example.org/TestReport">
+    <Header xmlns="http://www.example.org/Generic">
+        <Id>001</Id>
+        <Type>TestReport</Type>
+    </Header>
+    <Body>
+        <Date>2010-01-15T12:00:00.000+01</Date>
+        <Result>Passed</Result>
+    </Body>
+</TestReport>
