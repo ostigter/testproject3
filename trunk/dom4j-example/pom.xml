@@ -1,0 +1,66 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.example.dom4j</groupId>
+	<artifactId>dom4j-example</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+    <name>dom4j-example</name>
+    <description>Example application with dom4j</description>
+
+	<developers>
+		<developer>
+			<name>Oscar Stigter</name>
+			<email>oscar.stigter@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<properties>
+		<dom4j-version>1.6.1</dom4j-version>
+		<jaxen-version>1.1.1</jaxen-version>
+		<log4j-version>1.2.14</log4j-version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>${dom4j-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>${jaxen-version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j-version}</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<compilerVersion>6</compilerVersion>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
