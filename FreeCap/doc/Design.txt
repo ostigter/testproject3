@@ -1,0 +1,88 @@
+FreeCap design
+==============
+
+
+Concepts
+--------
+
+city
+population
+wealth
+unemployment
+local suppliers
+product
+price
+quality
+brand
+company
+cash
+bank
+loan
+interest rate
+duration
+down payment
+enterprise
+farm
+	forest (wood)
+	quarry (stone)
+	ore mine (ore)
+	oil drill (oil)
+	wheat field (wheat)
+	cotton field (cotton)
+	cow farm (milk, cows)
+factory
+	flourmill (1 wheat -> 1 flour)
+	bakery (1 flour -> 1 bread)
+	woodmill (1 wood -> 1 planks)
+	carpentry (5 planks -> 1 furnature)
+	cottonmill (1 cotton -> 1 thread)
+	clothing workshop (10 thread -> 1 clothes) 
+	beef workshop (1 cow -> 50 beef)
+	dairy workshop (1 milk -> 1 yoghurt/butter/cheese)
+store
+	grocery (bread, milk, yoghurt, butter, cheese, beef)
+
+	
+New York
+	population: 10,000
+	companies:
+		Woodland Inc., Forest, 1000 acres  50 workers, $500.00 per tonne, quality 2.5
+		Forest Land, Forest, 100 acres, 10 workers, $450.00 per tonne, quality 1.0
+
+		
+Wheat farm
+	Location: Smallville
+	Size: 100 acres
+	Yield: 100,000 wheat per year
+	Employees:
+		10 x $50.00 = $500.00 salary per week
+		Qualification: 1.0
+	Technology level: 1.0
+	Quality: 1.0
+	
+	Revenue: 100,000 x $1.00 = $100,000 per year =  $1923.08 per week
+	Fixed costs: 								    -$1000.00
+	Salaries:    									 -$500.00
+													---------
+	Profit											  $423.08 (22.0 %)
+
+Fourmill
+	Location: Smallville
+	Size: 500 square feet
+	Produces: 100 flour per week
+	Employees:
+		10 x $50.00 = $500.00 salary per week
+		Qualification: 1.0
+	Technology level: 1.0
+	Supplier: GreenLand Corp., 1000 units wheat x $1.00 = $1000.00 per week, quality 1.0
+	Quality: 1.0
+
+	Revenue: 1000 x $2.00 =             $2000.00
+	
+	Fixed costs               $200.00
+	Material costs:          $1000.00
+	Salaries:    			  $500.00
+							 --------
+	Total costs:                        $1700.00
+									    --------
+	Profit								 $300.00 (15.0%)
