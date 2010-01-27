@@ -8,6 +8,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import org.apache.log4j.Logger;
 import org.ozsoft.taskman.domain.Task;
 import org.ozsoft.taskman.domain.User;
 import org.ozsoft.taskman.services.UserService;
@@ -21,18 +22,27 @@ import org.ozsoft.taskman.services.UserService;
 @ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {
+	
+	/** Log. */
+	private static final Logger LOG = Logger.getLogger(UserBean.class);
 
+	/** Serial version UID. */
 	private static final long serialVersionUID = -8153487303544698528L;
 
+	/** User service. */
 	@ManagedProperty(value = "#{userService}")
 	private UserService userService;
 
+	/** Logged in user. */
 	private User user;
 
+	/** Username. */
 	private String username;
 
+	/** Password. */
 	private String password;
 
+	/** Password (again). */
 	private String passwordAgain;
 
 	public UserService getUserService() {
@@ -85,10 +95,12 @@ public class UserBean implements Serializable {
 
 	public String doLogIn() {
 		String action = null;
-		user = userService.retrieve(username);
-		if (user != null && user.getPassword().equals(password)) {
+		if (userService.checkCredentials(username, password)) {
+			user = userService.retrieve(username);
+//			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
 			action = "list.jsf";
 		} else {
+			LOG.debug(String.format("Failed login attempt for user '%s'", username));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Invalid username/password combination", null));
@@ -98,6 +110,7 @@ public class UserBean implements Serializable {
 	}
 
 	public String doLogOut() {
+//		LOG.debug(String.format("Logged out user '%s'", username));
 		clearUser();
 		return "home.jsf";
 	}

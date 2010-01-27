@@ -4,6 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.apache.log4j.Logger;
+
 /**
  * Singleton with the ORM entity manager.
  * 
@@ -16,6 +18,9 @@ public class PersistenceService {
 
 	/** Entity manager. */
 	private static final EntityManager entityManager;
+	
+	/** Log. */
+	private static final Logger LOG = Logger.getLogger(PersistenceService.class);
 
 	/**
 	 * Static initializer.
@@ -23,6 +28,7 @@ public class PersistenceService {
 	 * Creates the entity manager.
 	 */
 	static {
+		LOG.debug("Initializing");
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
 		entityManager = emf.createEntityManager();
 	}

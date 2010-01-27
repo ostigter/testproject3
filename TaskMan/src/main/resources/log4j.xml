@@ -8,11 +8,11 @@
         </layout>
     </appender>
 
-    <logger name="org.ozsosft.taskman">
+    <logger name="org.ozsoft.taskman">
         <level value="DEBUG"/>
     </logger>
 
-    <logger name="org.ozsosft.taskman.test">
+    <logger name="org.ozsoft.taskman.test">
         <level value="DEBUG"/>
     </logger>
 
