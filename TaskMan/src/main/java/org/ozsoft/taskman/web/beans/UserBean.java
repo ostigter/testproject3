@@ -7,6 +7,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.ozsoft.taskman.domain.Task;
@@ -97,6 +98,7 @@ public class UserBean implements Serializable {
 		String action = null;
 		if (userService.checkCredentials(username, password)) {
 			user = userService.retrieve(username);
+			getSession(true).setAttribute("username", username);
 //			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
 			action = "list.jsf";
 		} else {
@@ -137,6 +139,12 @@ public class UserBean implements Serializable {
 		user = null;
 		username = null;
 		password = null;
+		getSession(false).invalidate();
+	}
+	
+	private HttpSession getSession(boolean create) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		return (HttpSession) facesContext.getExternalContext().getSession(create);
 	}
 
 }
