@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
 import org.ozsoft.taskman.domain.User;
 
 /**
@@ -20,6 +21,9 @@ import org.ozsoft.taskman.domain.User;
 @ManagedBean(name = "userService", eager = true)
 @ApplicationScoped
 public class UserServiceImpl implements UserService, Serializable {
+
+	/** Log. */
+	private static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
 	/** Serial version UID. */
 	private static final long serialVersionUID = 7545691791555180066L;
@@ -48,7 +52,9 @@ public class UserServiceImpl implements UserService, Serializable {
 		try {
 			em.persist(user);
 			tx.commit();
+			LOG.debug(String.format("Created user '%s'", user.getUsername()));
 		} catch (PersistenceException e) {
+			LOG.error(String.format("Error creating user '%s'", user.getUsername()), e);
 			tx.rollback();
 			throw e;
 		}
@@ -62,8 +68,7 @@ public class UserServiceImpl implements UserService, Serializable {
 	@Override
 	public User retrieve(String username) {
 		User user = null;
-		Query query = em
-				.createQuery("SELECT u FROM User u WHERE u.username = :username");
+		Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
 		query.setParameter("username", username);
 		try {
 			user = (User) query.getSingleResult();
@@ -87,7 +92,9 @@ public class UserServiceImpl implements UserService, Serializable {
 		try {
 			em.merge(user);
 			tx.commit();
+			LOG.debug(String.format("Updated user '%s'", user.getUsername()));
 		} catch (PersistenceException e) {
+			LOG.error(String.format("Error updating user '%s'", user.getUsername()), e);
 			tx.rollback();
 			throw e;
 		}
@@ -107,7 +114,9 @@ public class UserServiceImpl implements UserService, Serializable {
 		try {
 			em.remove(user);
 			tx.commit();
+			LOG.debug(String.format("Deleted user '%s'", user.getUsername()));
 		} catch (PersistenceException e) {
+			LOG.error(String.format("Error deleting user '%s'", user.getUsername()));
 			tx.rollback();
 			throw e;
 		}

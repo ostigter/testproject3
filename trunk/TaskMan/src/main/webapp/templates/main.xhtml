@@ -10,15 +10,26 @@
 	</h:head>
 	<h:body>
 		<f:view>
-			<div id="header">
-				<ui:include src="/components/header.xhtml" />
-			</div>
-			<div id="center">
-				<h2><ui:insert name="title">Content title</ui:insert></h2>
-				<ui:insert name="content">Default content</ui:insert>
-			</div>
-			<div id="footer">
-				<ui:include src="/components/footer.xhtml" />
+			<div id="container">
+				<div id="header">
+					<ui:include src="/components/header.xhtml" />
+				</div>
+				<div id="left">
+					<ul>
+						<li><a href="#">Link 1</a></li>
+						<li><a href="#">Link 2</a></li>
+						<li><a href="#">Link 3</a></li>
+						<li><a href="#">Link 4</a></li>
+						<li><a href="#">Link 5</a></li>
+					</ul>
+				</div>
+				<div id="center">
+					<h2><ui:insert name="title">Content title</ui:insert></h2>
+					<ui:insert name="content">Default content</ui:insert>
+				</div>
+				<div id="footer">
+					<ui:include src="/components/footer.xhtml" />
+				</div>
 			</div>
 		</f:view>
 	</h:body>

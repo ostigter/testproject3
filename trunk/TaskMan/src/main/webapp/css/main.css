@@ -1,66 +1,131 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+	
 body {
-	background-color: #ffffff;
-	color:            #000000;
-}
-
-img {
-	border-style: none;
-}
-
-table.boxed {
-	width:  100%;
-	margin: 10px 0 10px 0;
-}		
-
-th {
-	background-color: #c0c0ff;
-	color:            #000000;
-}
-
-tr.odd {
-	background-color: #ffffff;
-	color:            #000000;
-}
-
-tr.even {
-	background-color: #ffffa0;
-	color:      	  #000000;
-}
-
-td.taskId {
-	width:      75px;
-	text-align: center;
-}
-
-td.taskSummary {
-}
-
-td.taskStatus {
-	width:      100px;
-	text-align: center;
-}
-
-.infoMessage {
-	color: 		 green;
-	font-weight: bold;
-	font-size:   120%;
-}
-
-.errorMessage {
-	color:       #ff0000;
-	font-weight: bold;
-	font-size:   120%;
-}
-
-#header {
+	background: #c0c0ff url('../resources/images/background.gif');
 	width: 100%;
-	float: left;
+    font-family: Arial, SansSerife;
+	font-size: 14px;
+    text-align: center;
+}
+
+div#container {
+	background: #ffffff;
+	margin: 0 auto 0 auto;
+    padding: 0;
+    width:  900px;
+    text-align: left;
+}
+
+div#header {
+	border-bottom: 1px solid #c0c0ff;
+    margin: 0;
+    padding: 0;
+	width:  100%;
+	height: 132px;
 }
 
 #logo {
 	float: left;
 }
 
-#genericLinks {
+div#genericLinks {
+	margin: 10px;
 	float: right;
+}
+
+div#left {
+	padding: 10px;
+	width:  150px;
+    float: left;
+}
+
+div#left ul {
+    list-style: none;
+}
+
+div#center {
+	border-left: 1px solid #c0c0ff;
+	background-color: #ffffff;
+	padding: 10px;
+    float: left;
+}
+
+div#footer {
+	border-top: 1px solid #c0c0ff;
+	padding: 10px;
+	width:  100%;
+    clear: both;
+}
+
+.padded {
+	margin: 10px;
+}
+
+img {
+	border-style: none;
+}
+
+th {
+	background: #c0c0ff;
+	color: #000000;
+	margin: 0;
+	padding: 0;
+	padding-bottom: 30px;
+}
+
+table.boxed {
+	width: 100%;
+}
+
+th.taskId {
+	width: 50px;
+	text-align: center;
+}
+
+td.taskId {
+	width: 50px;
+	text-align: center;
+}
+
+th.taskSummary {
+}
+
+td.taskSummary {
+}
+
+th.taskStatus {
+	width: 100px;
+	text-align: center;
+}
+
+td.taskStatus {
+	width: 100px;
+	text-align: center;
+}
+
+tr.odd {
+	background: #f0f0ff;
+	color: #000000;
+}
+
+tr.even {
+	background: #e0e0ff;
+	color: #000000;
+}
+
+/* JSF info messages */
+.infoMessage {
+	color: 		 green;
+	font-weight: bold;
+	font-size:   120%;
+}
+
+/* JSF error messages */
+.errorMessage {
+	color:       #ff0000;
+	font-weight: bold;
+	font-size:   120%;
 }
