@@ -9,17 +9,11 @@
 		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
 		<c:choose>
 			<c:when test="#{userBean.user == null}">
-				<p>
-					Welcome to TaskMan, a simple task manager with JSF 2.0!
-				</p>
-				<p>
-					Pease log in to manage your tasks.
-				</p>
+				<p>Welcome to TaskMan, a simple task manager with JSF 2.0!</p>
+				<p>Pease log in to manage your tasks.</p>
 			</c:when>
 			<c:otherwise>
-				<p>
-					Welcome, #{userBean.username}!
-				</p>
+				<p>Welcome, #{userBean.username}!</p>
 			</c:otherwise>
 		</c:choose>
 	</ui:define>

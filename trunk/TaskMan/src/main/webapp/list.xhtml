@@ -6,11 +6,17 @@
 	<ui:define name="title">Tasks</ui:define>
 	<ui:define name="content">
 		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
-		<h:form>
+		<h:form id="form">
 			<h:commandButton class="padded" value="Create Task" action="createTask.jsf" /><br />
-			<div class="padding">
-				<h:dataTable rendered="#{not empty userBean.user.tasks}"
-						value="#{userBean.user.tasks}" var="task"
+			<div class="padded">
+				<h:selectBooleanCheckbox value="#{userBean.showCompleted}">
+					<f:ajax execute="@form" render="form" />
+				</h:selectBooleanCheckbox>
+				Show completed tasks
+			</div>
+			<div class="padded">
+				<h:dataTable rendered="#{not empty userBean.tasks}"
+						value="#{userBean.tasks}" var="task"
 						rules="all" styleClass="boxed"
 						headerClass="taskId taskSummary taskStatus"
 						columnClasses="taskId, taskSummary, taskStatus"
@@ -30,7 +36,7 @@
 						<h:outputText value="#{task.status.name}" />
 					</h:column>
 				</h:dataTable>
-				<h:outputText value="No tasks to display." rendered="#{empty userBean.user.tasks}" />
+				<h:outputText style="width: 100%; background: #c0c0ff;" value="No tasks to display." rendered="#{empty userBean.tasks}" />
 			</div>
 		</h:form>
 	</ui:define>

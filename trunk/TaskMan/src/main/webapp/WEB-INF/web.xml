@@ -23,7 +23,7 @@
 		</init-param>
 		<init-param>
 			<param-name>allowedPaths</param-name>
-			<param-value>/home.jsf;/index.html;/css/;/javax.faces.resource/</param-value>
+			<param-value>/index.html;/home.jsf;/createAccount.jsf;/css/;/javax.faces.resource/</param-value>
 		</init-param>
 	</filter>
 	<filter-mapping>

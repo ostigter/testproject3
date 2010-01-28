@@ -1,6 +1,8 @@
 package org.ozsoft.taskman.web.beans;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -10,6 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.taskman.domain.Status;
 import org.ozsoft.taskman.domain.Task;
 import org.ozsoft.taskman.domain.User;
 import org.ozsoft.taskman.services.UserService;
@@ -45,6 +48,9 @@ public class UserBean implements Serializable {
 
 	/** Password (again). */
 	private String passwordAgain;
+	
+	/** Whether to show completed tasks. */
+	private boolean showCompleted;
 
 	public UserService getUserService() {
 		return userService;
@@ -77,6 +83,27 @@ public class UserBean implements Serializable {
 	public void setPasswordAgain(String passwordAgain) {
 		this.passwordAgain = passwordAgain;
 	}
+	
+	public boolean getShowCompleted() {
+		return showCompleted;
+	}
+	
+	public void setShowCompleted(boolean showCompleted) {
+		this.showCompleted = showCompleted;
+	}
+	
+	public List<Task> getTasks() {
+		List<Task> filteredTasks = new LinkedList<Task>();
+		List<Task> tasks = user.getTasks();
+		if (tasks != null && tasks.size() > 0) {
+			for (Task task : user.getTasks()) {
+				if (showCompleted || task.getStatus() != Status.COMPLETED) {
+					filteredTasks.add(task);
+				}
+			}
+		}
+		return filteredTasks;
+	}
 
 	public String doCreateAccount() {
 		String action = null;
@@ -86,7 +113,7 @@ public class UserBean implements Serializable {
 			userService.create(user);
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"The new account has been created successfully.", null));
-			action = "home.jsf";
+			action = doLogIn();
 		} else {
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Both passwords are not identical.", null));
@@ -100,7 +127,7 @@ public class UserBean implements Serializable {
 			user = userService.retrieve(username);
 			getSession(true).setAttribute("username", username);
 //			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
-			action = "list.jsf";
+			action = "home.jsf";
 		} else {
 			LOG.debug(String.format("Failed login attempt for user '%s'", username));
 			FacesContext fc = FacesContext.getCurrentInstance();
