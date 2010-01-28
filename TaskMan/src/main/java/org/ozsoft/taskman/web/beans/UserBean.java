@@ -129,6 +129,13 @@ public class UserBean implements Serializable {
 		userService.update(user);
 	}
 
+	public void editTask(Task task) {
+		if (user == null) {
+			throw new IllegalStateException("No logged in user");
+		}
+		userService.update(user);
+	}
+
 	private void prepareUser() {
 		user = new User();
 		user.setUsername(username);

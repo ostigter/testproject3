@@ -1,0 +1,29 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:ui="http://java.sun.com/jsf/facelets"
+	    template="/templates/main.xhtml">
+	<ui:define name="title">Edit Task</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<fieldset id="editTaskPanel">
+      			<h:messages errorClass="errorMessage" />
+      			<h:panelGrid columns="2">
+					<h:outputLabel value="ID:" for="id" />
+					<h:inputText id="id" value="#{editTaskBean.task.id}" style="width: 50px;" disabled="true" />
+					<h:outputLabel value="Summary:" for="summary" />
+					<h:inputText id="summary" value="#{editTaskBean.task.summary}"
+							required="true" requiredMessage="Summary is required" style="width: 300px;" />
+					<h:outputLabel value="Status:" for="status" />
+					<h:selectOneMenu id="status" value="#{editTaskBean.task.status}" style="width: 100px;">
+						<f:selectItem itemLabel="Open" itemValue="OPEN" />
+						<f:selectItem itemLabel="In Progress" itemValue="IN_PROGRESS" />
+						<f:selectItem itemLabel="Completed" itemValue="COMPLETED" />
+					</h:selectOneMenu>
+      			</h:panelGrid>
+	            <h:commandButton value="Save" action="#{editTaskBean.editTask}" />
+				<h:commandButton value="Cancel" action="list.jsf" immediate="true" />
+			</fieldset>
+		</h:form>
+	</ui:define>
+</ui:composition>
