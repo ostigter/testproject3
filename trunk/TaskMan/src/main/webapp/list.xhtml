@@ -17,9 +17,9 @@
 						rowClasses="odd, even">
 					<h:column>
 						<f:facet name="header">ID</f:facet>
-						<h:outputLink value="editTask.jsf">
-							<h:outputText value="#{task.id}" />
-						</h:outputLink>
+						<h:commandLink value="#{task.id}" action="editTask.jsf">
+							<f:setPropertyActionListener target="#{editTaskBean.task}" value="${task}" />
+						</h:commandLink>
 					</h:column>
 					<h:column>
 						<f:facet name="header">Summary</f:facet>
