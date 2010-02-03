@@ -86,3 +86,78 @@ Fourmill
 	Total costs:                        $1700.00
 									    --------
 	Profit								 $300.00 (15.0%)
+
+	
+Market
+    Wheat
+        Quality     Price       Stock
+        1          $1.00       10,000
+        2          $1.50        5,000
+        5          $4.75        1,000
+        10         $9.95          500
+
+    Flour
+        Quality     Price       Stock
+        10          $1.50       10,000
+        20          $3.50        5,000
+        80          $7.10        1,000
+    Bread
+        Quality     Price       Stock
+        10          $1.95        5,000
+        20          $5.00        2,000
+        80          $9.95          500
+
+    Local suppliers
+        Avg. quality    Avg. price
+        30              $2.25
+
+New York
+Population: 12,000,000
+Wealth:          
+
+Enterprise
+    Wheat farm
+        Size: 100 acres
+        Technology level: 1
+        Production: 1,000 units per week
+        Fixed costs: $1,000 per week
+        Number of employees: 5
+        Avg. salary: $200
+        Avg. qualification: 1.00
+        Quality: 1
+        Inventory
+            Product     Quality     Cost price  Sales price     Stock
+            Wheat       1           $0.15       $0.25           5,000
+            Wheat       3           $0.75       -                 100
+
+    Flourmill
+        Size: 1,000 square feet
+        Technology level: 2
+        Production: 1,000 units per week
+        Fixed costs: $1,000 per week
+        Number of employees: 5
+        Avg. salary: $250
+        Avg. qualification: 2.00
+        Quality: 2
+        Suppliers
+            Name        Product     Quality     Unit price      Volume      Total price
+            OzCorp      Wheat       1           $0.25           1,000       $250.00
+        Inventory
+            Product     Quality     Cost price  Sales price     Stock
+            Wheat       1           $0.25       $0.50           5,000
+            Flour       1           $0.35       $0.70           2,000
+            Flour       2           $0.50       $1.00             500
+
+Market
+    Product     Quality     Price       Stock
+    Wheat       1           $0.48       10,000
+    Wheat       2           $0.95        4,000
+    Flour       1           $1.00       10,000
+    Flour       2           $1.50        7,500
+    Bread       1           $1.50        5,000
+    Bread       2           $1.75        2,000
+    
+        Number of suppliers: 10
+        Supply: 5,000 (+5.0%)
+        Demand: 2,000 (-1.5%)
+        Avg. price: $0.48 (-2.0%)
