@@ -9,7 +9,7 @@ import java.util.List;
  * @author Oscar Stigter
  */
 public class Collection extends Resource {
-    
+
     /** Resources. */
     private final List<Resource> resources;
 
@@ -23,7 +23,7 @@ public class Collection extends Resource {
 	super(name);
 	resources = new ArrayList<Resource>();
     }
-    
+
     /**
      * Returns the resources.
      * 
@@ -32,7 +32,7 @@ public class Collection extends Resource {
     public List<Resource> getResources() {
 	return resources;
     }
-    
+
     /**
      * Adds a resource.
      * 

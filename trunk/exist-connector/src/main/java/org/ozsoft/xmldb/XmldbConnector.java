@@ -8,11 +8,11 @@ import org.dom4j.Document;
 
 /**
  * Connector to an XML database.
- *  
+ * 
  * @author Oscar Stigter
  */
 public interface XmldbConnector {
-    
+
     /**
      * Retrieves a collection.
      * 
@@ -25,7 +25,7 @@ public interface XmldbConnector {
      *             If the collection could not be found or retrieved.
      */
     Collection retrieveCollection(String uri) throws XmldbException;
-    
+
     /**
      * Retrieves a resource.
      * 
@@ -41,7 +41,7 @@ public interface XmldbConnector {
      *             If the resource could not be found or read.
      */
     byte[] retrieveResource(String uri) throws XmldbException;
-    
+
     /**
      * Retrieves an XML document.
      * 
@@ -54,7 +54,7 @@ public interface XmldbConnector {
      *             If the document could not be found or read.
      */
     Document retrieveXmlDocument(String uri) throws XmldbException;
-    
+
     /**
      * Stores a resource based on a file.
      * 
@@ -67,7 +67,7 @@ public interface XmldbConnector {
      *             If the file could not be read or the resource could not be stored.
      */
     void storeResource(String uri, File file) throws XmldbException;
-    
+
     /**
      * Stores an XML document.
      * 
@@ -106,7 +106,7 @@ public interface XmldbConnector {
      *             If the input stream could not be read or the resource could not be stored.
      */
     void storeResource(String uri, InputStream is) throws XmldbException;
-    
+
     /**
      * Deletes a resource.
      * 
@@ -117,7 +117,7 @@ public interface XmldbConnector {
      *             If the resource could not be deleted.
      */
     void deleteResource(String uri) throws XmldbException;
-    
+
     /**
      * Executes an ad-hoc query.
      * 
@@ -130,7 +130,7 @@ public interface XmldbConnector {
      *             If the query could not be executed.
      */
     String executeQuery(String query) throws XmldbException;
-    
+
     /**
      * Calls a stored, executable XQuery module.
      * 
@@ -145,7 +145,7 @@ public interface XmldbConnector {
      *             If the query could not be executed.
      */
     String callModule(String uri, Map<String, String> params) throws XmldbException;
-    
+
     /**
      * Calls a stored XQuery function.
      * 
@@ -162,7 +162,7 @@ public interface XmldbConnector {
      * 
      * @return The function result.
      */
-    String callFunction(String moduleNamespace, String moduleUri,
-	    String functionName, String... params) throws XmldbException;
+    String callFunction(String moduleNamespace, String moduleUri, String functionName, String... params)
+	    throws XmldbException;
 
 }
