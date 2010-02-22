@@ -138,4 +138,52 @@ public class Element extends Node {
         addNode(new Text(text));
     }
 
+    @Override
+    public String toXml() {
+        return toXml(0);
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("Element(\"%s\")", name);
+    }
+    
+    /* package */ String toXml(int indent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getIndent(indent));
+        sb.append('<').append(name);
+        if (attributes != null) {
+            for (String key : attributes.keySet()) {
+                String value = attributes.get(key).getValue();
+                sb.append(' ');
+                sb.append(key);
+                sb.append("=\"");
+                sb.append(value);
+                sb.append("\"");
+            }
+        }
+        if (nodes == null) {
+            sb.append(" /");
+        }
+        sb.append('>');
+        if (nodes != null) {
+            boolean lastIsElement = false;
+            for (Node node : nodes) {
+                if (node instanceof Element) {
+                    sb.append('\n');
+                    sb.append(node.toXml(indent + INDENT));
+                    lastIsElement = true;
+                } else {
+                    sb.append(node.toXml());
+                }
+            }
+            if (lastIsElement) {
+                sb.append('\n');
+                sb.append(getIndent(indent));
+            }
+            sb.append("</").append(name).append('>');
+        }
+        return sb.toString();
+    }
+
 }

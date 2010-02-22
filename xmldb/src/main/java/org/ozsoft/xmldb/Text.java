@@ -6,6 +6,7 @@ public class Text extends Node {
     
     public Text(String value) {
         super(null);
+        setValue(value);
     }
 
     public String getValue() {
@@ -19,6 +20,16 @@ public class Text extends Node {
     @Override
     public String getText() {
         return value;
+    }
+    
+    @Override
+    public String toXml() {
+        return value;
+    }
+
+    @Override
+    /* package */ String toXml(int indent) {
+        return getIndent(indent) + value;
     }
     
 }

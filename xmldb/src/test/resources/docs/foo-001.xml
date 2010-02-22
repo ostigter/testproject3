@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document>
     <header>
-        <id>foo-001</id>
+        <id type="string">foo-001</id>
         <type>Foo</type>
     </header>
     <body>
-        <title>Some Foo document</title>
+        <title lang="EN">Some Foo document</title>
         <author>John Doe</author>
     </body>
 </document>
