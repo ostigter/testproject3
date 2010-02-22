@@ -21,5 +21,20 @@ public class Attribute extends Node {
     public String getText() {
         return value;
     }
+    
+    @Override
+    public String toXml() {
+        return String.format("%s=\"%s\"", getName(), value);
+    }
+
+    @Override
+    public String toString() {
+        return toXml();
+    }
+    
+    @Override
+    /* package */ String toXml(int indent) {
+        return toXml();
+    }
 
 }

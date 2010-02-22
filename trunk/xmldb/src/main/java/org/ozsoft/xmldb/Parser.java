@@ -35,7 +35,7 @@ public class Parser extends DefaultHandler {
     }
     
     public Document parse(InputStream is) {
-        Document doc = new Document(null);
+        Document doc = new Document();
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);

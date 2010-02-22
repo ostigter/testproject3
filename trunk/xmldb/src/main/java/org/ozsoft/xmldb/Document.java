@@ -4,6 +4,10 @@ public class Document extends Node {
     
     private Element rootElement;
     
+    public Document() {
+        super(null);
+    }
+    
     public Document(String name) {
         super(name);
     }
@@ -28,6 +32,21 @@ public class Document extends Node {
     @Override
     public String getText() {
         return rootElement.getText();
+    }
+
+    @Override
+    public String toXml() {
+        return rootElement.toXml();
+    }
+    
+    @Override
+    /* package */ String toXml(int indent) {
+        return toXml();
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("Document(\"%s\")", name);
     }
     
 }

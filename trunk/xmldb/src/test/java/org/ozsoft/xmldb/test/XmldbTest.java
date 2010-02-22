@@ -15,12 +15,14 @@ public class XmldbTest {
     public void nodes() {
         Document doc = new Document("foo-001.xml");
         Element rootElement = doc.addRootElement("document");
+        rootElement.addAttribute("lang", "EN");
         Element headerElement = rootElement.addElement("header");
         headerElement.addElement("id", "foo-001");
         headerElement.addElement("type", "Foo");
         Element bodyElement = rootElement.addElement("body");
         bodyElement.addElement("title", "Some Foo document");
         bodyElement.addElement("author", "John Doe");
+        System.out.println(doc.toXml());
     }
     
     @Test
