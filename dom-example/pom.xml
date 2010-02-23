@@ -24,6 +24,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dom4j-version>1.6.1</dom4j-version>
+        <jdom-version>1.1</jdom-version>
         <xom-version>1.1</xom-version>
     </properties>
 
@@ -32,6 +33,12 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>${dom4j-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>${jdom-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
