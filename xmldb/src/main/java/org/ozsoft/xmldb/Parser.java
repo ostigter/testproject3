@@ -14,9 +14,16 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * Parser used to construct documents.
+ * 
+ * @author Oscar Stigter
+ */
 public class Parser extends DefaultHandler {
     
     private final Stack<Element> elements = new Stack<Element>();
+    
+    private Document doc;
     
     private Element element;
     
@@ -35,13 +42,12 @@ public class Parser extends DefaultHandler {
     }
     
     public Document parse(InputStream is) {
-        Document doc = new Document();
+        doc = new Document();
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);
             SAXParser parser = spf.newSAXParser();
             parser.parse(is, this);
-//            doc.setRootElement(elements.pop());
         } catch (ParserConfigurationException e) {
             //TODO
         } catch (SAXException e) {
@@ -54,11 +60,11 @@ public class Parser extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attr) {
-        element = new Element(qName);
+        element = new Element(localName);
         
         int count = attr.getLength();
         for (int i = 0; i < count; i++) {
-            element.addAttribute(attr.getQName(i), attr.getValue(i));
+            element.addAttribute(attr.getLocalName(i), attr.getValue(i));
         }
         
         if (elements.size() > 0) {
@@ -66,18 +72,23 @@ public class Parser extends DefaultHandler {
         }
         elements.push(element);
         
+        if (doc.getRootElement() == null) {
+            doc.setRootElement(element);
+        }
+        
         textBuffer.delete(0, textBuffer.length());
     }
 
 
     @Override
     public void endElement(String uri, String localName, String qName) {
-        if (textBuffer.length() != 0) {
+        if (textBuffer.length() > 0) {
             String value = textBuffer.toString().trim();
             if (value.length() > 0) {
                 text = new Text(textBuffer.toString());
                 elements.peek().addText(text);
             }
+            textBuffer.delete(0, textBuffer.length());
         }
         elements.pop();
     }

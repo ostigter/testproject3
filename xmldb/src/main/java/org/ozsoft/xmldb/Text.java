@@ -1,5 +1,10 @@
 package org.ozsoft.xmldb;
 
+/**
+ * A text node.
+ * 
+ * @author Oscar Stigter
+ */
 public class Text extends Node {
     
     private String value;
@@ -27,6 +32,11 @@ public class Text extends Node {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Text(\"%s\")", value);
+    }
+    
     @Override
     /* package */ String toXml(int indent) {
         return getIndent(indent) + value;

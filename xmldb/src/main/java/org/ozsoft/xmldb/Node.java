@@ -1,5 +1,10 @@
 package org.ozsoft.xmldb;
 
+/**
+ * Abstract base class for all node types.
+ * 
+ * @author Oscar Stigter
+ */
 public abstract class Node {
     
     protected static final int INDENT = 4;

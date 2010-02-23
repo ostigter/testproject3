@@ -1,5 +1,10 @@
 package org.ozsoft.xmldb;
 
+/**
+ * A document node.
+ * 
+ * @author Oscar Stigter
+ */
 public class Document extends Node {
     
     private Element rootElement;
@@ -40,13 +45,13 @@ public class Document extends Node {
     }
     
     @Override
-    /* package */ String toXml(int indent) {
-        return toXml();
+    public String toString() {
+        return String.format("Document(\"%s\")", name);
     }
     
     @Override
-    public String toString() {
-        return String.format("Document(\"%s\")", name);
+    /* package */ String toXml(int indent) {
+        return toXml();
     }
     
 }
