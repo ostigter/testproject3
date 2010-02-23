@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://www.example.org/foo">
+    <header xmlns="http://www.example.org/generic">
+        <id>foo-001</id>
+        <type>Foo</type>
+    </header>
+    <body>
+        <title>Some Foo document</title>
+        <author>John Doe</author>
+    </body>
+</document>
