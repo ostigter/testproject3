@@ -1,0 +1,73 @@
+XPath expressions
+=================
+
+foo-001.xml:
+    <?xml version="1.0" encoding="UTF-8"?>
+    <document>
+        <header>
+            <id type="string">foo-001</id>
+            <type>Foo</type>
+        </header>
+        <body>
+            <title lang="EN">Some Foo document</title>
+            <author>John Doe</author>
+        </body>
+    </document>
+
+/document                  --> Element("document")
+/*                         --> Element("document")
+/element()                 --> Element("document")
+/document/header/id        --> Element("ïd")
+/document/header/id/text() --> Text("foo-001")
+document                   --> ERROR
+
+
+/document[header/id = 'foo-001']
+//id   (retrieve all elements named 'id')
+//header
+//header/id
+/document//id
+//*
+/document/header/id/@type
+//@type
+//@*
+/header//@*
+
+
+Expression
+----------
+
+"/document/header/id"
+    --> (childElement("document"), childElement("header", childElement("id")
+
+"//id"
+    --> (anyElement("id")
+
+"//header/id"
+    --> (anyElement("header"), childElement("id")
+
+"//@type" --> "//@*[name() eq "type"]"
+    ATTRIBUTE_RECURSIVE     --> Attribute*
+    predicate
+        name()              --> String
+            equals("type")  --> Boolean
+
+
+"1"
+    Integer(1)              --> Integer(1) --> "1"
+
+"abc"
+    String("abc")           --> String("abc") --> "abc"
+
+ELEMENT(name)
+ELEMENT_RECURSIVE(name)
+ATTRIBUTE(name)
+ATTRIBUTE_RECURSIVE(name)
+FUNCTION(name, param ...)
+
+
+
+//document[@lang = 'EN']
+    ChildRecursive("document")
+    Predicate
+        Equals(Name(), String("EN")))

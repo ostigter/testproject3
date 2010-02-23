@@ -5,11 +5,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Element node.
+ * 
+ * @author Oscar Stigter
+ */
 public class Element extends Node {
     
     private Map<String, Attribute> attributes;
     
-    private List<Node> nodes;
+    private List<Node> children;
     
     /* package */ Element(String name) {
         super(name);
@@ -41,7 +46,7 @@ public class Element extends Node {
     
     public Element addElement(String name) {
         Element element = new Element(name);
-        addNode(element);
+        addChild(element);
         return element;
     }
     
@@ -51,31 +56,31 @@ public class Element extends Node {
         return element;
     }
     
-    /* package */ void addNode(Node node) {
-        if (nodes == null) {
-            nodes = new ArrayList<Node>();
+    /* package */ void addChild(Node child) {
+        if (children == null) {
+            children = new ArrayList<Node>();
         }
-        nodes.add(node);
+        children.add(child);
     }
     
     /* package */ void addElement(Element element) {
-        addNode(element);
+        addChild(element);
     }
     
     /* package */ void addText(Text text) {
-        addNode(text);
+        addChild(text);
     }
     
     public List<Node> getNodes() {
-        return nodes;
+        return children;
     }
     
     public List<Element> getElements() {
         List<Element> elements = new ArrayList<Element>();
-        if (nodes != null) {
-            for (Node node : nodes) {
-                if (node instanceof Element) {
-                    elements.add((Element) node);
+        if (children != null) {
+            for (Node child : children) {
+                if (child instanceof Element) {
+                    elements.add((Element) child);
                 }
             }
         }
@@ -83,13 +88,13 @@ public class Element extends Node {
     }
     
     public Element getElement(int index) {
-        if (nodes != null) {
+        if (children != null) {
             int i = 0;
-            for (Node node : nodes) {
-                if (node instanceof Element) {
+            for (Node child : children) {
+                if (child instanceof Element) {
                     i++;
                     if (i == index) {
-                        return (Element) node;
+                        return (Element) child;
                     }
                 }
             }
@@ -98,10 +103,10 @@ public class Element extends Node {
     }
     
     public Element getElement(String name) {
-        if (nodes != null) {
-            for (Node node : nodes) {
-                if (node instanceof Element && node.getName().equals(name)) {
-                    return (Element) node;
+        if (children != null) {
+            for (Node child : children) {
+                if (child instanceof Element && child.getName().equals(name)) {
+                    return (Element) child;
                 }
             }
         }
@@ -110,10 +115,10 @@ public class Element extends Node {
     
     public List<Element> getElements(String name) {
         List<Element> elements = new ArrayList<Element>();
-        if (nodes != null) {
-            for (Node node : nodes) {
-                if (node instanceof Element && node.getName().equals(name)) {
-                    elements.add((Element) node);
+        if (children != null) {
+            for (Node child : children) {
+                if (child instanceof Element && child.getName().equals(name)) {
+                    elements.add((Element) child);
                 }
             }
         }
@@ -123,19 +128,19 @@ public class Element extends Node {
     @Override
     public String getText() {
         StringBuilder sb = new StringBuilder();
-        if (nodes != null) {
-            for (Node node : nodes) {
-                sb.append(node.getText());
+        if (children != null) {
+            for (Node child : children) {
+                sb.append(child.getText());
             }
         }
         return sb.toString();
     }
     
     public void setText(String text) {
-        if (nodes != null) {
-            nodes.clear();
+        if (children != null) {
+            children.clear();
         }
-        addNode(new Text(text));
+        addChild(new Text(text));
     }
 
     @Override
@@ -162,19 +167,20 @@ public class Element extends Node {
                 sb.append("\"");
             }
         }
-        if (nodes == null) {
+        if (children == null) {
             sb.append(" /");
         }
         sb.append('>');
-        if (nodes != null) {
+        if (children != null) {
             boolean lastIsElement = false;
-            for (Node node : nodes) {
-                if (node instanceof Element) {
+            for (Node child : children) {
+                if (child instanceof Element) {
                     sb.append('\n');
-                    sb.append(node.toXml(indent + INDENT));
+                    sb.append(child.toXml(indent + INDENT));
                     lastIsElement = true;
                 } else {
-                    sb.append(node.toXml());
+                    sb.append(child.toXml());
+                    lastIsElement = false;
                 }
             }
             if (lastIsElement) {

@@ -1,5 +1,10 @@
 package org.ozsoft.xmldb;
 
+/**
+ * An attribute node.
+ * 
+ * @author Oscar Stigter
+ */
 public class Attribute extends Node {
     
     private String value;

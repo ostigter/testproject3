@@ -12,7 +12,7 @@ public class XmldbTest {
     private static final File DOCS_DIR = new File("src/test/resources/docs");
     
     @Test
-    public void nodes() {
+    public void manualBuild() {
         Document doc = new Document("foo-001.xml");
         Element rootElement = doc.addRootElement("document");
         rootElement.addAttribute("lang", "EN");
@@ -22,14 +22,13 @@ public class XmldbTest {
         Element bodyElement = rootElement.addElement("body");
         bodyElement.addElement("title", "Some Foo document");
         bodyElement.addElement("author", "John Doe");
-        System.out.println(doc.toXml());
     }
     
     @Test
     public void parser() {
         Parser parser = new Parser();
         Document doc = parser.parse(new File(DOCS_DIR, "foo-001.xml"));
-//        System.out.println(doc.getRootElement().getName());
+        System.out.println(doc.toXml());
     }
 
 }
