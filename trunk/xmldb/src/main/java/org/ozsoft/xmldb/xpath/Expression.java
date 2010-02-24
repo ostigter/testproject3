@@ -1,4 +1,4 @@
-package org.ozsoft.xmldb;
+package org.ozsoft.xmldb.xpath;
 
 public interface Expression {
     
