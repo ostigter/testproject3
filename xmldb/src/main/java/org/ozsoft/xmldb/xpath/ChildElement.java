@@ -1,7 +1,10 @@
-package org.ozsoft.xmldb;
+package org.ozsoft.xmldb.xpath;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.ozsoft.xmldb.Document;
+import org.ozsoft.xmldb.Element;
 
 public class ChildElement implements Expression {
     
