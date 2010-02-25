@@ -2,18 +2,18 @@ package org.ozsoft.xmldb.xpath;
 
 public enum TokenType {
     
-    CHILD,
+    CHILD_ELEMENT,
     
-    DESCENDANT,
-    
-    IDENTIFIER,
-    
-    STRING_LITERAL,
-    
-    INTEGER_LITERAL,
+    CHILD_ATTRIBUTE,
     
     BOOLEAN_LITERAL,
     
+    INTEGER_LITERAL,
+    
+    STRING_LITERAL,
+    
     FUNCTION,
 
+    QNAME,
+    
 }

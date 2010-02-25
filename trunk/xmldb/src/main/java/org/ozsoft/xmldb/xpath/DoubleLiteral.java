@@ -10,7 +10,7 @@ public class DoubleLiteral implements Expression {
 
     @Override
     public Object evaluate(Object context) {
-        return new Double(value);
+        return value;
     }
 
 }
