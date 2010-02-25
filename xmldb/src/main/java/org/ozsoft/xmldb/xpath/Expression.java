@@ -1,7 +1,7 @@
 package org.ozsoft.xmldb.xpath;
 
-public interface Expression {
+public abstract class Expression {
     
-    Object evaluate(Object context);
+    public abstract Object evaluate(Object context);
 
 }

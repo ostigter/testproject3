@@ -71,3 +71,20 @@ FUNCTION(name, param ...)
     ChildRecursive("document")
     Predicate
         Equals(Name(), String("EN")))
+
+
+/document/header/id
+    Expression
+        Child("document")
+        Child("header")
+        Child("id")
+
+/document[header/id = 'foo-001']
+    Expression
+        Child("document")
+        Predicate
+            Expression
+                Child("header")
+                Child("id")
+                Equals
+                    StringLiteral("foo-001")

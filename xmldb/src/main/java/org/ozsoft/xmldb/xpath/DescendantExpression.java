@@ -6,7 +6,7 @@ import java.util.List;
 import org.ozsoft.xmldb.Document;
 import org.ozsoft.xmldb.Element;
 
-public class ChildElement implements Expression {
+public class DescendantExpression implements Expression {
     
     @Override
     public Object evaluate(Object context) {
