@@ -27,8 +27,14 @@ public class Element extends Node {
         attributes.put(name, new Attribute(name, value));
     }
     
+    public List<Attribute> getAttributes() {
+    	List<Attribute> list = new ArrayList<Attribute>();
+    	list.addAll(attributes.values());
+    	return list;
+    }
+    
     public Attribute getAttribute(String name) {
-        return attributes.get(name);
+    	return (attributes != null) ? attributes.get(name) : null;
     }
     
     public String getAttributeValue(String name) {
@@ -71,22 +77,34 @@ public class Element extends Node {
         addChild(text);
     }
     
-    public List<Node> getNodes() {
+    public List<Node> getChildren() {
         return children;
     }
     
     public List<Element> getElements() {
-        List<Element> elements = new ArrayList<Element>();
+        List<Element> result = new ArrayList<Element>();
         if (children != null) {
             for (Node child : children) {
                 if (child instanceof Element) {
+                    result.add((Element) child);
+                }
+            }
+        }
+        return result;
+    }
+    
+    public List<Element> getElements(String name) {
+        List<Element> elements = new ArrayList<Element>();
+        if (children != null) {
+            for (Node child : children) {
+                if (child instanceof Element && child.getName().equals(name)) {
                     elements.add((Element) child);
                 }
             }
         }
         return elements;
     }
-    
+
     public Element getElement(int index) {
         if (children != null) {
             int i = 0;
@@ -113,18 +131,6 @@ public class Element extends Node {
         return null;
     }
     
-    public List<Element> getElements(String name) {
-        List<Element> elements = new ArrayList<Element>();
-        if (children != null) {
-            for (Node child : children) {
-                if (child instanceof Element && child.getName().equals(name)) {
-                    elements.add((Element) child);
-                }
-            }
-        }
-        return elements;
-    }
-
     @Override
     public String getText() {
         StringBuilder sb = new StringBuilder();
