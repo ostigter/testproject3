@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.ozsoft.xmldb.Document;
 import org.ozsoft.xmldb.Element;
+import org.ozsoft.xmldb.Node;
 
 public class ChildElementSelection extends NodeSelection {
 	
@@ -15,7 +16,7 @@ public class ChildElementSelection extends NodeSelection {
 	}
 	
 	@Override
-	public List<?> evaluate(Object context) {
+	public List<? extends Node> evaluate(Object context) {
         List<Element> elements = new ArrayList<Element>();
         if (context instanceof Document) {
             Document doc = (Document) context;
@@ -29,6 +30,11 @@ public class ChildElementSelection extends NodeSelection {
             throw new IllegalArgumentException("Invalid context (only Document or Element node)");
         }
         return elements;
+	}
+	
+	@Override
+	public String toString() {
+		return "/" + name;
 	}
 
 }

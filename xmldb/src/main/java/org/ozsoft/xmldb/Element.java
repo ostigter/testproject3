@@ -81,6 +81,10 @@ public class Element extends Node {
         return children;
     }
     
+    public Node getChild(int index) {
+    	return children.get(index);
+    }
+    
     public List<Element> getElements() {
         List<Element> result = new ArrayList<Element>();
         if (children != null) {
