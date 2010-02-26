@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.ozsoft.xmldb.Attribute;
 import org.ozsoft.xmldb.Element;
+import org.ozsoft.xmldb.Node;
 
 public class ChildAttributeSelection extends NodeSelection {
 	
@@ -15,7 +16,7 @@ public class ChildAttributeSelection extends NodeSelection {
 	}
 	
 	@Override
-	public List<?> evaluate(Object context) {
+	public List<? extends Node> evaluate(Object context) {
         if (context instanceof Element) {
             List<Attribute> attributes = new ArrayList<Attribute>();
             Element element = (Element) context;
@@ -27,6 +28,11 @@ public class ChildAttributeSelection extends NodeSelection {
         } else {
             throw new IllegalArgumentException("Invalid context (only Document or Element node)");
         }
+	}
+
+	@Override
+	public String toString() {
+		return "/@" + name;
 	}
 
 }
