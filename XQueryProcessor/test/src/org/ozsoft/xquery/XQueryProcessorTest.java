@@ -1,4 +1,4 @@
-package xquery;
+package org.ozsoft.xquery;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,9 +11,11 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.ozsoft.xquery.SaxonXQueryProcessor;
+import org.ozsoft.xquery.XQueryProcessor;
+import org.ozsoft.xquery.util.Util;
 import org.xml.sax.InputSource;
 
-import xquery.util.Util;
 
 /**
  * Test suite for the SaxonXQueryProcessor.

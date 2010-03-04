@@ -16,12 +16,12 @@
         </layout>
     </appender>
 
-    <logger name="xquery">
-        <level value="debug"/>
+    <logger name="org.ozsoft.xquery">
+        <level value="DEBUG"/>
     </logger>
 
     <root>
-        <priority value="info"/>
+        <priority value="INFO"/>
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </root>

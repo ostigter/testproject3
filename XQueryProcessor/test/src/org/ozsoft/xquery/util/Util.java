@@ -1,4 +1,4 @@
-package xquery.util;
+package org.ozsoft.xquery.util;
 
 import java.io.File;
 

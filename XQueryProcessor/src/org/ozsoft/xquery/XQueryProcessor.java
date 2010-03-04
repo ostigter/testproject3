@@ -1,4 +1,4 @@
-package xquery;
+package org.ozsoft.xquery;
 
 import java.io.IOException;
 import java.io.OutputStream;
