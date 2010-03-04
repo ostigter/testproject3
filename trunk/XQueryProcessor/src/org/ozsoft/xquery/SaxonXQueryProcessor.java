@@ -1,4 +1,4 @@
-package xquery;
+package org.ozsoft.xquery;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;

@@ -1,4 +1,4 @@
-package xquery;
+package org.ozsoft.xquery;
 
 /**
  * Exception thrown by an XQuery processor.
