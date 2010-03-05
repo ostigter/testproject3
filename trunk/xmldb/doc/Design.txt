@@ -95,4 +95,41 @@ count(/a) > 0
 Tokenizer
 ---------
 
-//TODO
+/document/header/id
+    CHILD_ELEMENT QNAME("document") CHILD_ELEMENT QNAME("header") QNAME("id")
+
+    Expression
+        ChildElementSelection("document")
+        ChildElementSelection("header")
+        ChildElementSelection("id")
+
+//id/text()
+    DESCENDANT_CHILD QNAME("id") CHILD_ELEMENT QNAME("text") LPAREN RPAREN
+
+count(//id)
+    QNAME("count") LPAREN DESCENDANT_CHILD QNAME("id" RPAREN
+    Expression
+        Function("count")
+            DescendantChildSelection("id")
+
+DescendantChildSelection("id")
+CountFunction
+
+count(//id[text() = 'foo-001'])
+    TEXT("count") LPAREN DESCENDANT TEXT("id") LBLOCK TEXT("text" LPAREN RPAREN EQ QUOT TEXT("foo-001" QUOT RBLOCK RPAREN
+    DescendantElementSelection("id")
+    Predicate
+        Equals
+            TextFunction
+            StringLiteral("foo-001")
+
+count(/document[//id/text() = 'foo-001'])
+    Expression
+        CountFunction
+            ChildElementSelection("document")
+                Predicate
+                    Equals
+                        NodeSelector
+                            ChildDescendantSelector("id")
+                        TextFunction
+                        StringLiteral("foo-001")
