@@ -1,0 +1,157 @@
+Design
+======
+
+
+Config file
+-----------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.ozsoft.org/courier">
+
+    <namespaces>
+        <namespace prefix="req" uri="http://www.example.com/request" />
+        <namespace prefix="res" uri="http://www.example.com/response" />
+    </namespaces>
+    
+    <properties>
+        <property name="resource.dir" value="file://resources" />
+        <property name="data.dir" value="/data/test" />
+        <property name="host" value="localhost" />
+        <property name="port" value="8080" />
+        <property name="asynchronous" value="false" />
+        <property name="on.error" value="continue" />
+    </properties>
+
+    <connector id="readRequestFile" class="org.ozsoft.courier.connector.FilePoller">
+        <property name="dir" value="${data.dir}/request/in" />
+        <property name="extention" value="xml" />
+        <property name="interval" value="1000" />
+        <property name="age" value="500" />
+        <sequence ref="handleRequestFile" />
+    </connector>
+    
+    <sequence id="handleRequestFile">
+        <action ref="log" />
+        <action ref="getTicketNr" />
+        <action ref="transformXSLT" />
+        <!--action ref="transformXQuery" -->
+        <action ref="writeResponseFile" />
+        <action ref="sendResponseHTTP" />
+        <action ref="sendResponseSOAP" />
+    </sequence>
+            
+    <action id="log" class="org.ozsoft.courier.action.Logger">
+        <property name="logger" value="message" />
+        <property name="message" value="true" />
+        <property name="context" value="true" />
+        <property name="level" value="DEBUG" />
+        <property name="asynchronous" value="true" />
+    </handler>
+    
+    <action id="getTicketNr" class="org.ozsoft.courier.action.PropertySetter">
+        <property name="property" value="ticketNr" />
+        <property name="expression" value="/req:Request/req:TicketNr" />
+    </action>
+    
+    <action id="transformXSLT" class="org.ozsoft.courier.action.XsltTransformer">
+        <property name="stylesheet" value="${resource.dir}/request.xsl" />
+        <property name="precompile" value="true" />
+        <property name="on.error" value="abort" />
+    </action>
+    
+    <action id="transformXQuery" class="org.ozsoft.courier.action.XQueryTransformer">
+        <property name="stylesheet" value="${resource.dir}/request.xqy" />
+        <property name="precompile" value="true" />
+        <property name="on.error" value="abort" />
+    </action>
+    
+    <action id="writeResponseFile" class="org.ozsoft.courier.action.FileWriter">
+        <property name="dir" value="response-${ticketNr}.xml" />
+        <property name="append" value="false" />
+        <property name="overwrite" value="false" />
+        <property name="asynchronous" value="true" />
+    </action>
+    
+    <action id="sendResponseFTP" class="org.ozsoft.courier.action.FtpClient">
+        <property name="host" value="${host}" />
+        <property name="port" value="23" />
+        <property name="username" value="${username}" />
+        <property name="password" value="${password}" />
+        <property name="dir" value="data/response" />
+        <property name="filename" value="response-${ticketNr}.xml" />
+        <property name="overwrite" value="true" />
+    </connector>
+
+    <action id="sendResponseHTTP" class="org.ozsoft.courier.action.HttpClient">
+        <property name="host" value="${host}" />
+        <property name="port" value="${port}" />
+        <property name="method" value="POST" />
+        <property name="username" value="${username}" />
+        <property name="password" value="${password}" />
+        <property name="timeout" value="10000" />
+        <property name="retry.count" value="3" />
+        <property name="retry.interval" value="5000" />
+        <property name="asynchronous" value="true" />
+    </action>
+
+    <action id="sendResponseSOAP" class="org.ozsoft.courier.action.SoapClient">
+        <property name="host" value="${host}" />
+        <property name="port" value="${port}" />
+        <property name="action" value="call" />
+        <property name="username" value="${username}" />
+        <property name="password" value="${password}" />
+        <property name="timeout" value="10000" />
+        <property name="retry.count" value="3" />
+        <property name="retry.interval" value="5000" />
+        <property name="asynchronous" value="true" />
+    </action>
+    
+    <connector id="tcpipServer" class="org.ozsoft.courier.connector.TcpipServer">
+        <property name="host" value="localhost" />
+        <property name="port" value="3000" />
+        <property name="start.delimiter" value="03" />
+        <property name="end.delimiter" value="04" />
+        <sequence>
+            ...
+        </sequence>
+    </connector>
+
+    <connector id="httpServer" class="org.ozsoft.courier.connector.HttpServer">
+        <property name="host" value="localhost" />
+        <property name="port" value="8081" />
+        <sequence>
+            ...
+        </sequence>
+    </connector>
+
+    <action id="convertToText" class="org.ozsoft.courier.action.TextConverter">
+        <property name="encoding" value="UTF-8" />
+    </connector>
+
+    <action id="convertToXML" class="org.ozsoft.courier.action.XmlConverter">
+        <property name="encoding" value="UTF-8" />
+        <property name="root.element.localname" value="request" />
+        <property name="root.element.namespace" value="http://www.example.org/request" />
+    </connector>
+
+    <action id="stringSplitter" class="org.ozsoft.courier.action.StringSplitter">
+        <property name="delimited" value=";" />
+        <property name="element.prefix" value="element" />
+        <property name="element1" value="messageId" />
+        <property name="element2" value="areaId" />
+        <property name="element3" value="zoneId" />
+        <property name="root.element.localname" value="request" />
+        <property name="root.element.namespace" value="http://www.example.org/request" />
+    </connector>
+
+    <action id="stringMerger" class="org.ozsoft.courier.action.StringMerger">
+        <property name="delimited" value=";" />
+        <property name="element.prefix" value="element" />
+        <property name="element1" value="messageId" />
+        <property name="element2" value="areaId" />
+        <property name="element3" value="zoneId" />
+        <property name="root.element.localname" value="request" />
+        <property name="root.element.namespace" value="http://www.example.org/request" />
+    </connector>
+
+</config>
