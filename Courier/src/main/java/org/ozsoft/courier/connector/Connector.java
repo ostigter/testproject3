@@ -1,4 +1,4 @@
-package org.ozsoft.courier.handler;
+package org.ozsoft.courier.connector;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,10 +15,10 @@ import org.w3c.dom.Node;
  * 
  * @author Oscar Stigter
  */
-public abstract class Handler implements Runnable {
+public abstract class Connector implements Runnable {
     
     /** The log. */
-    private static final Logger LOG = Logger.getLogger(Handler.class);
+    private static final Logger LOG = Logger.getLogger(Connector.class);
     
     /** The namespace resolver. */
     private final NamespaceResolver namespaceResolver;
@@ -35,7 +35,7 @@ public abstract class Handler implements Runnable {
     /**
      * Constructor.
      */
-    public Handler(NamespaceResolver namespaceResolver) {
+    public Connector(NamespaceResolver namespaceResolver) {
     	this.namespaceResolver = namespaceResolver;
         actions = new LinkedList<Action>();
     }

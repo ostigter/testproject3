@@ -1,4 +1,4 @@
-package org.ozsoft.courier.handler;
+package org.ozsoft.courier.connector;
 
 import java.io.File;
 import java.util.HashSet;
@@ -17,10 +17,10 @@ import org.w3c.dom.Node;
  * 
  * @author Oscar Stigter
  */
-public class FileHandler extends Handler implements Runnable {
+public class FilePoller extends Connector implements Runnable {
     
 	/** The log. */
-	private static final Logger LOG = Logger.getLogger(FileHandler.class);
+	private static final Logger LOG = Logger.getLogger(FilePoller.class);
     
 	/** The directory to watch for new files. */
 	private final File dir;
@@ -42,7 +42,7 @@ public class FileHandler extends Handler implements Runnable {
 	 * @param interval
 	 *            The polling interval in miliseconds.
 	 */
-    public FileHandler(String path, long interval, NamespaceResolver namespaceResolver) {
+    public FilePoller(String path, long interval, NamespaceResolver namespaceResolver) {
     	super(namespaceResolver);
         this.interval = interval;
         

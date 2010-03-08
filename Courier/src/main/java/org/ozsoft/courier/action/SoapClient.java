@@ -9,10 +9,10 @@ import org.ozsoft.courier.CourierException;
  * 
  * @author Oscar Stigter
  */
-public class SoapOutAction implements Action {
+public class SoapClient implements Action {
     
 	/** The log. */
-	private static final Logger LOG = Logger.getLogger(SoapOutAction.class);
+	private static final Logger LOG = Logger.getLogger(SoapClient.class);
     
     /** The endpoint URL. */
 	private final String url;
@@ -23,7 +23,7 @@ public class SoapOutAction implements Action {
 	 * @param url
 	 *            The endpoint URL.
 	 */
-    public SoapOutAction(String url) throws CourierException {
+    public SoapClient(String url) throws CourierException {
         this.url = url;
         LOG.debug(String.format("Configuring soap-out action with url '%s'", url));
     }

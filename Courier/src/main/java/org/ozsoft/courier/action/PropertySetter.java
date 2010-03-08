@@ -11,10 +11,10 @@ import org.w3c.dom.Node;
  * 
  * @author Oscar Stigter
  */
-public class VariableAction implements Action {
+public class PropertySetter implements Action {
 
 	/** The log. */
-	private static final Logger LOG = Logger.getLogger(VariableAction.class);
+	private static final Logger LOG = Logger.getLogger(PropertySetter.class);
 	
 	/** The variable name. */
 	private final String name;
@@ -22,7 +22,7 @@ public class VariableAction implements Action {
 	/** The expression to extract the variable value from the message. */
 	private final String expression;
 	
-	public VariableAction(String name, String expression) throws CourierException {
+	public PropertySetter(String name, String expression) throws CourierException {
 		this.name = name;
 		this.expression = expression;
 	}
