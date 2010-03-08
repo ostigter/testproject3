@@ -6,12 +6,12 @@ import java.util.Set;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.ozsoft.courier.action.FileOutAction;
+import org.ozsoft.courier.action.FileOut;
 import org.ozsoft.courier.action.LogAction;
-import org.ozsoft.courier.action.VariableAction;
-import org.ozsoft.courier.action.XsltAction;
-import org.ozsoft.courier.handler.FileHandler;
-import org.ozsoft.courier.handler.Handler;
+import org.ozsoft.courier.action.PropertySetter;
+import org.ozsoft.courier.action.XsltTransformer;
+import org.ozsoft.courier.connector.Connector;
+import org.ozsoft.courier.connector.FilePoller;
 
 /**
  * A lightweight XML message router.
@@ -27,7 +27,7 @@ public class Courier {
     private final NamespaceResolver namespaceResolver;
     
     /** The handlers. */
-    private final Set<Handler> handlers;
+    private final Set<Connector> handlers;
     
     /**
      * Constructor.
@@ -36,11 +36,11 @@ public class Courier {
         LOG.debug("Starting");
         
         namespaceResolver = new NamespaceResolver();
-        handlers = new HashSet<Handler>();
+        handlers = new HashSet<Connector>();
         
         parseConfigFile();
 
-        for (Handler handler : handlers) {
+        for (Connector handler : handlers) {
             handler.start();
         }
         
@@ -69,7 +69,7 @@ public class Courier {
      */
     public void shutdown() {
         LOG.debug("Shutting down");
-        for (Handler handler : handlers) {
+        for (Connector handler : handlers) {
             handler.stop();
         }
         LOG.info("Shut down");
@@ -90,22 +90,22 @@ public class Courier {
 	        	namespaceResolver.addNamespaceMapping("res", "http://www.example.com/response");
 	        	
 	            // Create a File handler.
-	            Handler handler = new FileHandler("data/in", 1000L, namespaceResolver);
+	            Connector handler = new FilePoller("data/in", 1000L, namespaceResolver);
 	    
 	            // Add a Log action.
 	            handler.addAction(new LogAction(Level.INFO));
 	            
 	            // Set a variable, extracting the value from the message.
-	            handler.addAction(new VariableAction("ticketNr", "//req:TicketNr/text()"));
+	            handler.addAction(new PropertySetter("ticketNr", "//req:TicketNr/text()"));
 	            
 	            // Add a XSLT transformation action. 
-	            handler.addAction(new XsltAction("resources/request.xsl"));
+	            handler.addAction(new XsltTransformer("resources/request.xsl"));
 	    
 	            // Add another Log action.
 	            handler.addAction(new LogAction(Level.INFO));
 	            
 	            // Add a FileOut action.
-	            FileOutAction fileOutAction = new FileOutAction(
+	            FileOut fileOutAction = new FileOut(
 	            		"data/hist", "concat('request-', $ticketNr, '.xml')");
 	            handler.addAction(fileOutAction);
 	            

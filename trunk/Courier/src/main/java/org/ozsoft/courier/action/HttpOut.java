@@ -25,10 +25,10 @@ import org.w3c.dom.Node;
  * 
  * @author Oscar Stigter
  */
-public class HttpOutAction implements Action {
+public class HttpOut implements Action {
     
 	/** The log. */
-	private static final Logger LOG = Logger.getLogger(HttpOutAction.class);
+	private static final Logger LOG = Logger.getLogger(HttpOut.class);
     
 	/** The transformation factory. */
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
@@ -42,7 +42,7 @@ public class HttpOutAction implements Action {
 	 * @param url
 	 *            The endpoint URL.
 	 */
-    public HttpOutAction(String url) throws CourierException {
+    public HttpOut(String url) throws CourierException {
         this.url = url;
         LOG.debug(String.format("Configuring http-out action with url '%s'", url));
     }

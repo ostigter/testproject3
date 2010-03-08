@@ -19,10 +19,10 @@ import org.ozsoft.courier.CourierException;
  * 
  * @author Oscar Stigter
  */
-public class XsltAction implements Action {
+public class XsltTransformer implements Action {
 	
     /** The log. */
-    private static final Logger LOG = Logger.getLogger(XsltAction.class);
+    private static final Logger LOG = Logger.getLogger(XsltTransformer.class);
     
 	/** The transformation factory. */
 	private static final TransformerFactory TRANSFORMER_FACTORY = TransformerFactory.newInstance();
@@ -35,7 +35,7 @@ public class XsltAction implements Action {
 	 * 
 	 * @param path  The path to the XSLT stylesheet.
 	 */
-	public XsltAction(String path) throws CourierException {
+	public XsltTransformer(String path) throws CourierException {
 		xsltFile = new File(path);
 		if (!xsltFile.isFile()) {
 			throw new CourierException(

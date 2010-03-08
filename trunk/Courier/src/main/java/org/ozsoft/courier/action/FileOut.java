@@ -19,10 +19,10 @@ import org.w3c.dom.Node;
  * 
  * @author Oscar Stigter
  */
-public class FileOutAction implements Action {
+public class FileOut implements Action {
     
 	/** The log. */
-	private static final Logger LOG = Logger.getLogger(FileOutAction.class);
+	private static final Logger LOG = Logger.getLogger(FileOut.class);
     
     /** The directory to write the file to. */
 	private final File dir;
@@ -38,7 +38,7 @@ public class FileOutAction implements Action {
 	 * @param fileNameExpr
 	 *            The XPath expression for the filename.
 	 */
-    public FileOutAction(String path, String fileNameExpr) throws CourierException {
+    public FileOut(String path, String fileNameExpr) throws CourierException {
         this.fileNameExpr = fileNameExpr;
         LOG.debug(String.format("Configuring file-out action with path '%s'", path));
         dir = new File(path);
