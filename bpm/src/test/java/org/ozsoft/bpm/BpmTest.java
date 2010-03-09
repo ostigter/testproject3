@@ -1,13 +1,10 @@
 package org.ozsoft.bpm;
 
-import nu.xom.XPathContext;
-
 import org.junit.Test;
-import org.ozsoft.bpm.expression.XPathExpression;
 import org.ozsoft.bpm.handler.LogHandler;
 import org.ozsoft.bpm.node.ActionNode;
+import org.ozsoft.bpm.node.EndNode;
 import org.ozsoft.bpm.node.Node;
-import org.ozsoft.bpm.node.PropertyNode;
 
 /**
  * Integration test suite for the BPM application.
@@ -18,21 +15,31 @@ public class BpmTest {
 	
 	@Test
 	public void bpm() {
-		ProcessDefinition def = new ProcessDefinition("Request Storage");
-		Node startNode = def.getStartNode();
+		ProcessDefinition definition = new ProcessDefinition("Request Storage");
+		Node startNode = definition.getStartNode();
 
-		// "Get TicketNr" node.
-		XPathContext xpc = new XPathContext();
-		xpc.addNamespace("req", "http://www.example.org/request");
-		XPathExpression expr = new XPathExpression("message", "/req:Request/req:TicketNr", xpc);
-		Node getTicketNrNode = new PropertyNode("Get TicketNr", "ticketNr", expr);
-		def.addNode(getTicketNrNode);
-		startNode.addTransition(getTicketNrNode);
+        // "Log" node.
+        Node logNode = new ActionNode("Log", new LogHandler());
+        definition.addNode(logNode);
+        startNode.addTransition(logNode);
+        
+//		// "Get TicketNr" node.
+//		XPathContext xpc = new XPathContext();
+//		xpc.addNamespace("req", "http://www.example.org/request");
+//		XPathExpression expr = new XPathExpression("message", "/req:Request/req:TicketNr", xpc);
+//		Node getTicketNrNode = new PropertyNode("Get TicketNr", "ticketNr", expr);
+//		definition.addNode(getTicketNrNode);
+//		logNode.addTransition(getTicketNrNode);
+        
+        // End node.
+        Node endNode = new EndNode("Finished");
+        definition.addNode(endNode);
+        logNode.addTransition(endNode);
 		
-		// "Log" node.
-		Node logNode = new ActionNode("Log", new LogHandler());
-		def.addNode(logNode);
-		getTicketNrNode.addTransition(logNode);
+		ProcessEngine engine = new ProcessEngine();
+		ProcessInstance instance = engine.createProcessInstance(definition);
+		instance.setProperty("ticketId", 123L);
+		instance.start();
 	}
 
 }

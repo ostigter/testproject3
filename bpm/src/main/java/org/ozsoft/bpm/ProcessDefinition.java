@@ -36,6 +36,10 @@ public class ProcessDefinition {
 		}
 	}
 	
+	public Node getNode(String name) {
+	    return nodes.get(name);
+	}
+	
 	@Override
 	public String toString() {
 		return name;

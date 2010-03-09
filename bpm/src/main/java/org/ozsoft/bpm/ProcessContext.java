@@ -1,17 +1,17 @@
 package org.ozsoft.bpm;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class ProcessContext {
 	
 	private final Map<String, Object> properties;
 	
-	private final ProcessInstance processInstance;
-	
+    private final ProcessInstance processInstance;
+    
 	public ProcessContext(ProcessInstance processInstance) {
-		properties = new TreeMap<String, Object>();
-		this.processInstance = processInstance;
+	    properties = new HashMap<String, Object>();
+        this.processInstance = processInstance;
 	}
 	
 	public ProcessInstance getProcessInstance() {

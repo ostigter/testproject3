@@ -9,7 +9,7 @@
     </appender>
 
     <logger name="org.ozsoft.bpm">
-        <level value="DEBUG" />
+        <level value="TRACE" />
     </logger>
 
     <root>
