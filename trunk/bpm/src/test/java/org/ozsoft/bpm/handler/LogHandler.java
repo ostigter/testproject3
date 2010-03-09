@@ -12,6 +12,7 @@ public class LogHandler implements ActionHandler {
 	@Override
 	public void performAction(ProcessContext context) throws BpmActionException {
 		LOG.info("Logging some message!");
+		context.getProcessInstance().signal();
 	}
 
 }

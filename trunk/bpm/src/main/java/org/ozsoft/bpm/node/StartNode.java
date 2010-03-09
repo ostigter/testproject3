@@ -12,7 +12,6 @@ public class StartNode extends Node {
 
 	@Override
 	public void performAction(ProcessContext context) {
-		// Empty implementation.
 	}
 	
 }
