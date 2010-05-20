@@ -15,81 +15,81 @@ import javax.persistence.Id;
  */
 @Entity
 public class User implements Serializable {
-    
-    /** Serial version UID. */
-    private static final long serialVersionUID = 7032910103293449817L;
 
-    /** ID. */
-    @Id
-    @GeneratedValue
-    @Column(name = "user_id")
-    private long id;
-    
-    /** Username. */
-    @Basic
-    @Column(nullable = false, unique = true)
-    private String username;
-    
-    /** Password. */
-    @Basic
-    @Column(nullable = false)
-    private String password;
+	/** Serial version UID. */
+	private static final long serialVersionUID = 7032910103293449817L;
 
-    /**
-     * Returns the ID.
-     * 
-     * @return The ID.
-     */
-    public long getId() {
-	return id;
-    }
+	/** ID. */
+	@Id
+	@GeneratedValue
+	@Column(name = "user_id")
+	private long id;
 
-    /**
-     * Sets the ID.
-     * 
-     * @param id
-     *            The ID.
-     */
-    public void setId(long id) {
-	this.id = id;
-    }
+	/** Username. */
+	@Basic
+	@Column(nullable = false, unique = true)
+	private String username;
 
-    /**
-     * Returns the username.
-     * 
-     * @return The username.
-     */
-    public String getUsername() {
-	return username;
-    }
+	/** Password. */
+	@Basic
+	@Column(nullable = false)
+	private String password;
 
-    /**
-     * Sets the username.
-     * 
-     * @param username
-     *            The username.
-     */
-    public void setUsername(String username) {
-	this.username = username;
-    }
+	/**
+	 * Returns the ID.
+	 * 
+	 * @return The ID.
+	 */
+	public long getId() {
+		return id;
+	}
 
-    /**
-     * Returns the password.
-     * 
-     * @return The password.
-     */
-    public String getPassword() {
-	return password;
-    }
+	/**
+	 * Sets the ID.
+	 * 
+	 * @param id
+	 *            The ID.
+	 */
+	public void setId(long id) {
+		this.id = id;
+	}
 
-    /**
-     * Sets the password.
-     * 
-     * @param password
-     *            The password.
-     */
-    public void setPassword(String password) {
-	this.password = password;
-    }
+	/**
+	 * Returns the username.
+	 * 
+	 * @return The username.
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * Sets the username.
+	 * 
+	 * @param username
+	 *            The username.
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * Returns the password.
+	 * 
+	 * @return The password.
+	 */
+	public String getPassword() {
+		return password;
+	}
+
+	/**
+	 * Sets the password.
+	 * 
+	 * @param password
+	 *            The password.
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 }
