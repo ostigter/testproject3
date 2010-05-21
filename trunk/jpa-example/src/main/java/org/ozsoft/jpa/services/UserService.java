@@ -1,13 +1,13 @@
-package org.ozsoft.jpa.dao;
+package org.ozsoft.jpa.services;
 
-import org.ozsoft.jpa.domain.User;
+import org.ozsoft.jpa.entities.User;
 
 /**
  * User DAO interface.
  * 
  * @author Oscar Stigter
  */
-public interface UserDao {
+public interface UserService {
     
     /**
      * Creates a new user.

@@ -1,4 +1,4 @@
-package org.ozsoft.jpa.domain;
+package org.ozsoft.jpa.entities;
 
 import java.io.Serializable;
 
