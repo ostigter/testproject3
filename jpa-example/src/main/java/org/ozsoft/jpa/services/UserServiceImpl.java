@@ -1,4 +1,4 @@
-package org.ozsoft.jpa.dao;
+package org.ozsoft.jpa.services;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -6,14 +6,14 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
-import org.ozsoft.jpa.domain.User;
+import org.ozsoft.jpa.entities.User;
 
 /**
  * User DAO implementation with JPA and JTA (local transactions).
  * 
  * @author Oscar Stigter
  */
-public class UserDaoImpl implements UserDao {
+public class UserServiceImpl implements UserService {
 
 	private static final String PU_NAME = "jpa-example";
 
@@ -22,7 +22,7 @@ public class UserDaoImpl implements UserDao {
 	/**
 	 * Constructor.
 	 */
-	public UserDaoImpl() {
+	public UserServiceImpl() {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
 		em = emf.createEntityManager();
 	}
