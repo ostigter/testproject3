@@ -3,7 +3,7 @@ package org.ozsoft.jpa.services;
 import org.ozsoft.jpa.entities.User;
 
 /**
- * User DAO interface.
+ * User service interface.
  * 
  * @author Oscar Stigter
  */

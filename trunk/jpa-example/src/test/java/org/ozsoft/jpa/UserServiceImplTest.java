@@ -8,7 +8,7 @@ import org.ozsoft.jpa.services.UserService;
 import org.ozsoft.jpa.services.UserServiceImpl;
 
 /**
- * Test suite for the User DAO.
+ * Test suite for the User service.
  * 
  * @author Oscar Stigter
  */

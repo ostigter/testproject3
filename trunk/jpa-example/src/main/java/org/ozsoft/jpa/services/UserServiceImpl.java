@@ -9,7 +9,7 @@ import javax.persistence.PersistenceException;
 import org.ozsoft.jpa.entities.User;
 
 /**
- * User DAO implementation with JPA and JTA (local transactions).
+ * User service implementation with JPA and JTA (local transactions).
  * 
  * @author Oscar Stigter
  */
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.ozsoft.jpa.dao.UserDao#create(org.ozsoft.jpa.domain.User)
+	 * @see org.ozsoft.jpa.service.UserDao#create(org.ozsoft.jpa.domain.User)
 	 */
 	@Override
 	public void create(User user) {
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.ozsoft.jpa.dao.UserDao#retrieve(long)
+	 * @see org.ozsoft.jpa.service.UserDao#retrieve(long)
 	 */
 	@Override
 	public User retrieve(long id) {
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.ozsoft.jpa.dao.UserDao#update(org.ozsoft.jpa.domain.User)
+	 * @see org.ozsoft.jpa.service.UserDao#update(org.ozsoft.jpa.domain.User)
 	 */
 	@Override
 	public void update(User user) {
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.ozsoft.jpa.dao.UserDao#delete(org.ozsoft.jpa.domain.User)
+	 * @see org.ozsoft.jpa.service.UserDao#delete(org.ozsoft.jpa.domain.User)
 	 */
 	@Override
 	public void delete(User user) {
