@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.ozsoft</groupId>
+    <artifactId>openjpa-derby</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <name>openjpa-derby</name>
+    <description>Example application with OpenJPA 2.0 and a Derby embedded database.</description>
+
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@gmail.com</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <derby-version>10.6.1.0</derby-version>
+        <openjpa-version>2.0.0</openjpa-version>
+        <junit-version>4.7</junit-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.openjpa</groupId>
+            <artifactId>openjpa</artifactId>
+            <version>${openjpa-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${derby-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit-version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>jpa-example</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerVersion>6</compilerVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
