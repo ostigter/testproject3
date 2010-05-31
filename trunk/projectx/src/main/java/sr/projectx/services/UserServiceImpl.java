@@ -33,17 +33,8 @@ public class UserServiceImpl implements UserService {
      * @see sr.projectx.services.UserService#create(sr.projectx.entities.User)
      */
     public void create(User user) {
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		try {
-			em.persist(user);
-			tx.commit();
-			LOG.debug(String.format("Created user '%s'", user.getUsername()));
-		} catch (PersistenceException e) {
-			LOG.error(String.format("Error creating user '%s'", user.getUsername()), e);
-			tx.rollback();
-			throw e;
-		}
+		em.persist(user);
+		LOG.debug(String.format("Created user '%s'", user.getUsername()));
 	}
 	
 	/*
@@ -78,18 +69,8 @@ public class UserServiceImpl implements UserService {
 	 */
     @Override
 	public void update(User user) {
-		String username = user.getUsername();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		try {
-			em.merge(user);
-			tx.commit();
-			LOG.debug(String.format("Updated user '%s'", username));
-		} catch (PersistenceException e) {
-			LOG.error(String.format("Error updating user '%s'", username), e);
-			tx.rollback();
-			throw e;
-		}
+		em.merge(user);
+		LOG.debug(String.format("Updated user '%s'", user.getUsername()));
 	}
 
 	/*
@@ -99,17 +80,8 @@ public class UserServiceImpl implements UserService {
     @Override
 	public void delete(User user) {
 		String username = user.getUsername();
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		try {
-			em.remove(user);
-			tx.commit();
-			LOG.debug(String.format("Deleted user '%s'", username));
-		} catch (PersistenceException e) {
-			LOG.error(String.format("Error deleting user '%s'", username));
-			tx.rollback();
-			throw e;
-		}
+		em.remove(user);
+		LOG.debug(String.format("Deleted user '%s'", username));
 	}
 
 	/*

@@ -13,7 +13,7 @@ import javax.persistence.Id;
  */
 @Entity(name = "USER")
 public class User {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "userid")
@@ -27,6 +27,10 @@ public class User {
 	
 	@Column(nullable = false)
 	private String email;
+
+	public User() {
+		// Empty implementation.
+	}
 
 	public long getId() {
 		return id;
