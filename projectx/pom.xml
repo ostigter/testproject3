@@ -16,7 +16,8 @@
             <name>Oscar Stigter</name>
             <email>oscar.stigter@gmail.com</email>
             <roles>
-                <role>Developer</role>
+                <role>architect</role>
+                <role>developer</role>
             </roles>
         </developer>
     </developers>
@@ -24,6 +25,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <log4j-version>1.2.14</log4j-version>
+        <openejb-version>3.1.2</openejb-version>
         <openjpa-version>2.0.0</openjpa-version>
         <postgresql-version>8.4-701.jdbc4</postgresql-version>
         <hsqldb-version>1.8.0.10</hsqldb-version>
@@ -35,6 +37,12 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-core</artifactId>
+            <version>${openejb-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -69,9 +77,9 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <compilerVersion>5</compilerVersion>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerVersion>6</compilerVersion>
                 </configuration>
             </plugin>
             <plugin>
