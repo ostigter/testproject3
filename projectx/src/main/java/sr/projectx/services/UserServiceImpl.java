@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 	private static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
 	/** Entity manager. */
-    @PersistenceContext(unitName = "default", type = PersistenceContextType.EXTENDED)
+    @PersistenceContext(unitName = "default")
 	private EntityManager em;
 
     /*

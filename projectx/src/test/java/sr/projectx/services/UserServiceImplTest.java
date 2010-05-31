@@ -18,15 +18,15 @@ public class UserServiceImplTest {
 
         p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
 
-        p.put("database", "new://Resource?type=DataSource");
-        p.put("database.JdbcDriver", "org.hsqldb.jdbcDriver");
-        p.put("database.JdbcUrl", "jdbc:hsqldb:mem:projectx");
-        p.put("database.JtaManaged", "true");
-
-        p.put("databaseUnmanaged", "new://Resource?type=DataSource");
-        p.put("databaseUnmanaged.JdbcDriver", "org.hsqldb.jdbcDriver");
-        p.put("databaseUnmanaged.JdbcUrl", "jdbc:hsqldb:mem:projectx");
-        p.put("databaseUnmanaged.JtaManaged", "false");
+//        p.put("database", "new://Resource?type=DataSource");
+//        p.put("database.JdbcDriver", "org.hsqldb.jdbcDriver");
+//        p.put("database.JdbcUrl", "jdbc:hsqldb:mem:projectx");
+//        p.put("database.JtaManaged", "true");
+//
+//        p.put("databaseUnmanaged", "new://Resource?type=DataSource");
+//        p.put("databaseUnmanaged.JdbcDriver", "org.hsqldb.jdbcDriver");
+//        p.put("databaseUnmanaged.JdbcUrl", "jdbc:hsqldb:mem:projectx");
+//        p.put("databaseUnmanaged.JtaManaged", "false");
 
         Context context = new InitialContext(p);
 
