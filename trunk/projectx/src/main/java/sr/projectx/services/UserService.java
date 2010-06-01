@@ -68,9 +68,4 @@ public interface UserService {
 	 */
 	boolean checkCredentials(String username, String password);
 
-    /**
-     * Closes the service, releasing all resources.
-     */
-    void close();
-
 }
