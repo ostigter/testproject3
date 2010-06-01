@@ -1,6 +1,6 @@
 package sr.projectx.services;
 
-import javax.ejb.Local;
+import javax.persistence.PersistenceException;
 
 import sr.projectx.entities.User;
 
@@ -9,16 +9,18 @@ import sr.projectx.entities.User;
  * 
  * @author Oscar Stigter
  */
-@Local
 public interface UserService {
-	
-	/**
-	 * Creates a user.
-	 * 
-	 * @param user
-	 *            The user.
-	 */
-	void create(User user);
+
+    /**
+     * Creates a user.
+     * 
+     * @param user
+     *            The user.
+     * 
+     * @throws PersistenceException
+     *             If the user could not be created.
+     */
+	void create(User user) throws PersistenceException;
 
 	/**
 	 * Retrieves a user by ID.
@@ -45,16 +47,22 @@ public interface UserService {
 	 * 
 	 * @param user
 	 *            The user.
+     * 
+     * @throws PersistenceException
+     *             If the user could not be updated.
 	 */
-	void update(User user);
+	void update(User user) throws PersistenceException;
 
 	/**
 	 * Deletes a user.
 	 * 
 	 * @param user
 	 *            The user.
+	 * 
+     * @throws PersistenceException
+     *             If the user could not be deleted.
 	 */
-	void delete(User user);
+	void delete(User user) throws PersistenceException;
 
 	/**
 	 * Checks the credentials of a user.

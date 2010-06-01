@@ -1,12 +1,7 @@
 package sr.projectx.services;
 
-import java.util.Properties;
+import junit.framework.Assert;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import sr.projectx.entities.User;
@@ -18,38 +13,40 @@ import sr.projectx.entities.User;
  */
 public class UserServiceImplTest {
 	
-	/** Application context. */
-	private static Context context;
-	
-	/** User service. */
-	private static UserService userService;
-	
-	@BeforeClass
-	public static void beforeClass() throws NamingException {
-		// Create OpenEJB container.
-        Properties p = new Properties();
-        p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-        p.put("database", "new://Resource?type=DataSource");
-        p.put("database.JdbcDriver", "org.hsqldb.jdbcDriver");
-        p.put("database.JdbcUrl", "jdbc:hsqldb:mem:projectx");
-        p.put("database.JtaManaged", "true");
-        p.put("databaseUnmanaged", "new://Resource?type=DataSource");
-        p.put("databaseUnmanaged.JdbcDriver", "org.hsqldb.jdbcDriver");
-        p.put("databaseUnmanaged.JdbcUrl", "jdbc:hsqldb:mem:projectx");
-        p.put("databaseUnmanaged.JtaManaged", "false");
-        context = new InitialContext(p);
-
-        // Retrieve User service.
-        userService = (UserService) context.lookup("UserServiceLocal");
-	}
-	
-	@Test
-	public void test() throws NamingException {
-		User user = new User();
-		user.setUsername("o.stigter");
-		user.setPassword("appel");
-		user.setEmail("oscar.stigter@gmail.com");
-		userService.create(user);
-	}
+    @Test
+    public void persistence() throws Exception {
+        UserService userService = new UserServiceImpl();
+        
+        // Create user.
+        String username = "alice";
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword("secret");
+        user.setEmail("alice@somewhere.net");
+        userService.create(user);
+        
+        // Retrieve user.
+        user = userService.retrieve(username);
+        Assert.assertNotNull(user);
+        long id = user.getId();
+        Assert.assertEquals(username, user.getUsername());
+        Assert.assertEquals("secret", user.getPassword());
+        Assert.assertEquals("alice@somewhere.net", user.getEmail());
+        
+        // Update user.
+        user.setPassword("guessme");
+        userService.update(user);
+        
+        // Retrieve updated user.
+        user = userService.retrieve(id);
+        Assert.assertNotNull(user);
+        Assert.assertEquals(username, user.getUsername());
+        Assert.assertEquals("guessme", user.getPassword());
+    
+        // Delete user.
+        userService.delete(user);
+        user = userService.retrieve(username);
+        Assert.assertNull(user);
+    }
 
 }
