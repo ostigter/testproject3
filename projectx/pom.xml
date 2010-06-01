@@ -24,14 +24,70 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <log4j-version>1.2.14</log4j-version>
-        <javaee-api-version>5.0-2</javaee-api-version>
-        <openejb-version>3.1.2</openejb-version>
+        <jsf-version>2.0.2</jsf-version>
+        <servlet-api-version>2.5</servlet-api-version>
+        <jpa-version>1.0</jpa-version>
+        <hibernate-version>3.4.0.GA</hibernate-version>
+        <c3p0-version>0.9.1.2</c3p0-version>
         <postgresql-version>8.4-701.jdbc4</postgresql-version>
+        <log4j-version>1.2.14</log4j-version>
+        <slf4j-version>1.4.2</slf4j-version>
         <junit-version>4.7</junit-version>
+        <hsqldb-version>1.8.0.10</hsqldb-version>
     </properties>
 
     <dependencies>
+    
+        <!-- JSF 2.0 (Mojarra)
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${jsf-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+            <version>${jsf-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet-api-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JPA -->
+        <dependency>
+          <groupId>javax.persistence</groupId>
+          <artifactId>persistence-api</artifactId>
+          <version>${jpa-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+          <version>${hibernate-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+          <groupId>c3p0</groupId>
+          <artifactId>c3p0</artifactId>
+          <version>${c3p0-version}</version>
+          <scope>compile</scope>
+        </dependency>
+
+        <!-- Database -->
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql-version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -39,31 +95,26 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee-api-version}</version>
-            <scope>provided</scope>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+          <version>${slf4j-version}</version>
+          <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>openejb-core</artifactId>
-            <version>${openejb-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql-version}</version>
-            <scope>compile</scope>
-        </dependency>
-        -->
+
+        <!-- Unit testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb-version}</version>
+            <scope>test</scope>
+        </dependency>
+        
     </dependencies>
 
     <build>

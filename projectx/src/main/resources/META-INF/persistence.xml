@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
 
-    <persistence-unit name="default" transaction-type="TRANSACTION">
+    <persistence-unit name="projectx" transaction-type="RESOURCE_LOCAL">
 
-        <!--
-        <jta-data-source>database</jta-data-source>
-        <non-jta-data-source>databaseUnmanaged</non-jta-data-source>
-        -->
-        
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
         <class>sr.projectx.entities.User</class>
 
         <properties>
-            <property name="openjpa.JdbcDriver" value="org.postgresql.Driver" />
-            <property name="openjpa.JdbcUrl" value="jdbc:postgresql://localhost/projectx" />
-            <property name="openjpa.jdbc.SynchronizeMappings" value="buildSchema(ForeignKeys=true)" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:postgresql://localhost/projectx" />
+            <property name="hibernate.connection.username" value="projectx" />
+            <property name="hibernate.connection.password" value="projectx" />
+            <property name="hibernate.connection.pool_size" value="1" />
+            <property name="hibernate.connection.autocommit" value="true" />
+            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />
+            
+            <property name="hibernate.c3p0.min_size" value="1" />
+            <property name="hibernate.c3p0.max_size" value="10" />
+            <property name="hibernate.c3p0.timeout" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="50" />
+            <property name="hibernate.c3p0.idle_test_period" value="3000" />
+
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
         </properties>
 
     </persistence-unit>

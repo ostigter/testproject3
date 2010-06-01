@@ -11,7 +11,7 @@ import javax.persistence.Id;
  * 
  * @author Oscar Stigter
  */
-@Entity(name = "USER")
+@Entity(name = "USERS")
 public class User {
 	
 	@Id
