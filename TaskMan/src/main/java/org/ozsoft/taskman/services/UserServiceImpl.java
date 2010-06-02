@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService, Serializable {
 	@Override
 	public User retrieve(String username) {
 		User user = null;
-		Query query = em.createQuery("SELECT u FROM User u WHERE u.username = :username");
+		Query query = em.createQuery("SELECT u FROM USERS u WHERE u.username = :username");
 		query.setParameter("username", username);
 		try {
 			user = (User) query.getSingleResult();
