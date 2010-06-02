@@ -1,0 +1,19 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:ui="http://java.sun.com/jsf/facelets"
+	    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	    template="/templates/main.xhtml">
+	<ui:define name="title">Home</ui:define>
+	<ui:define name="content">
+		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
+		<c:choose>
+			<c:when test="#{userBean.user == null}">
+				<p>Welcome to Project X!</p>
+			</c:when>
+			<c:otherwise>
+				<p>Welcome, #{userBean.username}!</p>
+			</c:otherwise>
+		</c:choose>
+	</ui:define>
+</ui:composition>

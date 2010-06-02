@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:ui="http://java.sun.com/jsf/facelets">
+	<div id="logo">
+		<a href="home.jsf">
+			<h:graphicImage value="#{resource['images:notepad.jpg']}" />
+		</a>
+	</div>
+	<h1>TaskMan</h1>
+	<div id="genericLinks">
+		<h:panelGroup rendered="${userBean.username == null}">
+			<a href="login.jsf">Login</a>
+		</h:panelGroup>
+		<h:panelGroup rendered="${userBean.username != null}">
+			<h:form>
+				Welcome,
+				<h:outputLink value="editAccount.jsf">
+					<h:outputText value="#{userBean.username}" />
+				</h:outputLink>
+				|
+				<h:commandLink value="Log out" action="#{userBean.doLogOut}" />
+			</h:form>
+		</h:panelGroup>
+	</div>
+</ui:composition>

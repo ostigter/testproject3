@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<title><ui:insert name="title">Default title</ui:insert></title>
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+	</h:head>
+	<h:body>
+		<f:view>
+			<div id="container">
+				<div id="header">
+					<ui:include src="/components/header.xhtml" />
+				</div>
+				<div id="left">
+					<ul>
+						<li><a href="home.jsf">Home</a></li>
+					</ul>
+				</div>
+				<div id="center">
+					<h2><ui:insert name="title">Content title</ui:insert></h2>
+					<ui:insert name="content">Default content</ui:insert>
+				</div>
+				<div id="footer">
+					<ui:include src="/components/footer.xhtml" />
+				</div>
+			</div>
+		</f:view>
+	</h:body>
+</html>

@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:ui="http://java.sun.com/jsf/facelets"
+	    template="/templates/main.xhtml">
+	<ui:define name="title">Login</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<fieldset id="loginPanel">
+	            <legend>Please log in</legend>
+      			<h:messages infoClass="infoMessage" errorClass="errorMessage" />
+      			<h:panelGrid columns="2">
+					<h:outputLabel value="Username:" for="username" />
+					<h:inputText id="username" value="#{userBean.username}" required="true"
+							requiredMessage="Please enter your username" maxlength="15" style="width: 150px;" />      			
+					<h:outputLabel value="Password:" for="password" />
+					<h:inputSecret id="password" value="#{userBean.password}" required="true"
+							requiredMessage="Please enter your password"  maxlength="15" style="width: 150px;" />      			
+      			</h:panelGrid>
+	            <h:commandButton value="Login" action="#{userBean.doLogIn}" />
+	            <p>
+	            	If you do not have an account yet, <a href="createAccount.jsf">create a new account</a>.
+            	</p>
+			</fieldset>
+		</h:form>
+	</ui:define>
+</ui:composition>
