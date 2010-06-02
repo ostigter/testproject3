@@ -11,13 +11,16 @@
       			<h:panelGrid columns="2">
 					<h:outputLabel value="Username:" for="username" />
 					<h:inputText id="username" value="#{userBean.username}"
-							required="true" requiredMessage="Username is required." maxlength="12" style="width: 150px;" />
+							required="true" requiredMessage="Username is required." maxlength="12" style="width: 125px;" />
 					<h:outputLabel value="Password:" for="password" />
 					<h:inputSecret id="password" value="#{userBean.password}"
-							required="true" requiredMessage="Password is required." maxlength="12" style="width: 150px;" />      			
+							required="true" requiredMessage="Password is required." maxlength="12" style="width: 125px;" />      			
 					<h:outputLabel value="Pasword (again):" for="passwordAgain" />
 					<h:inputSecret id="passwordAgain" value="#{userBean.passwordAgain}"
-							required="true" requiredMessage="Please enter the password twice." maxlength="12" style="width: 150px;" />
+							required="true" requiredMessage="Please enter the password twice." maxlength="12" style="width: 125px;" />
+                    <h:outputLabel value="E-mail:" for="email" />
+                    <h:inputText id="email" value="#{userBean.email}"
+                            required="true" requiredMessage="E-mail address is required." maxlength="50" style="width: 350px;" />                 
       			</h:panelGrid>
 	            <h:commandButton value="Create" action="#{userBean.doCreateAccount}" />
 				<h:commandButton value="Cancel" action="login.jsf" immediate="true" />

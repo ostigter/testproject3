@@ -4,9 +4,9 @@ html, body {
 }
 	
 body {
-	background: #c0c0ff url('../resources/images/background.gif');
+	background: #ffffff;
 	width: 100%;
-    font-family: Arial, SansSerife;
+    font-family: Arial, SansSerif;
 	font-size: 14px;
     text-align: center;
 }
@@ -15,16 +15,14 @@ div#container {
 	background: #ffffff;
 	margin: 0 auto 0 auto;
     padding: 0;
-    width:  900px;
+    width:  800px;
     text-align: left;
 }
 
 div#header {
-	border-bottom: 1px solid #c0c0ff;
     margin: 0;
     padding: 0;
 	width:  100%;
-	height: 132px;
 }
 
 #logo {
@@ -36,18 +34,9 @@ div#genericLinks {
 	float: right;
 }
 
-div#left {
-	padding: 10px;
-	width:  150px;
-    float: left;
-}
-
-div#left ul {
-    list-style: none;
-}
-
 div#center {
-	border-left: 1px solid #c0c0ff;
+	width: 100%;
+    border-top: 1px solid #c0c0ff;
 	background-color: #ffffff;
 	padding: 10px;
     float: left;
@@ -76,56 +65,14 @@ th {
 	padding-bottom: 30px;
 }
 
-table.boxed {
-	width: 100%;
-}
-
-th.taskId {
-	width: 50px;
-	text-align: center;
-}
-
-td.taskId {
-	width: 50px;
-	text-align: center;
-}
-
-th.taskSummary {
-}
-
-td.taskSummary {
-}
-
-th.taskStatus {
-	width: 100px;
-	text-align: center;
-}
-
-td.taskStatus {
-	width: 100px;
-	text-align: center;
-}
-
-tr.odd {
-	background: #f0f0ff;
-	color: #000000;
-}
-
-tr.even {
-	background: #e0e0ff;
-	color: #000000;
-}
-
 /* JSF info messages */
 .infoMessage {
 	color: 		 green;
 	font-weight: bold;
-	font-size:   120%;
 }
 
 /* JSF error messages */
 .errorMessage {
 	color:       #ff0000;
 	font-weight: bold;
-	font-size:   120%;
 }

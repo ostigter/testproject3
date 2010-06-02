@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
 	public UserServiceImpl() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
         em = emf.createEntityManager();
+        checkAdminUser();
 	}
 
     /*
@@ -138,5 +139,24 @@ public class UserServiceImpl implements UserService {
 		}
 		return valid;
 	}
+    
+    /**
+     * Checks whether the default 'admin' user exists; if not, it is created.
+     */
+    private void checkAdminUser() {
+        User user = retrieve("admin");
+        if (user == null) {
+            user = new User();
+            user.setUsername("admin");
+            user.setPassword("admin");
+            user.setEmail("admin@projectx.sr");
+            user.setAdmin(true);
+            try {
+                create(user);
+            } catch (PersistenceException e) {
+                LOG.error("Could not create 'admin' user", e);
+            }
+        }
+    }
 	
 }
