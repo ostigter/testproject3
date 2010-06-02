@@ -18,7 +18,7 @@ import javax.persistence.OneToMany;
  * 
  * @author Oscar Stigter
  */
-@Entity
+@Entity(name = "USERS")
 public class User {
 
 	@Id
