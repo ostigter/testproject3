@@ -46,6 +46,9 @@ public class UserBean implements Serializable {
 	/** Password (again). */
 	private String passwordAgain;
 	
+    /** Email. */
+    private String email;
+
 	/**
 	 * Constructor.
 	 */
@@ -53,10 +56,6 @@ public class UserBean implements Serializable {
 		// Empty implementation.
 	}
 	
-	public UserService getUserService() {
-		return userService;
-	}
-
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
@@ -85,15 +84,30 @@ public class UserBean implements Serializable {
 		this.passwordAgain = passwordAgain;
 	}
 	
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 	public String doCreateAccount() {
 		String action = null;
 		FacesContext fc = FacesContext.getCurrentInstance();
 		if (password.equals(passwordAgain)) {
-			prepareUser();
-			userService.create(user);
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"The new account has been created successfully.", null));
-			action = doLogIn();
+	        user = new User();
+	        user.setUsername(username);
+	        user.setPassword(password);
+	        user.setEmail(email);
+	        try {
+    			userService.create(user);
+    			action = doLogIn();
+	        } catch (Exception e) {
+	            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+	                    "An error occurred while creating the user.", null));
+	            clearUser();
+	        }
 		} else {
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Both passwords are not identical.", null));
@@ -106,20 +120,20 @@ public class UserBean implements Serializable {
 		if (userService.checkCredentials(username, password)) {
 			user = userService.retrieve(username);
 			getSession(true).setAttribute("username", username);
-			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
+//			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
 			action = "home.jsf";
 		} else {
 			LOG.debug(String.format("Failed login attempt for user '%s'", username));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Invalid username/password combination", null));
+					"Invalid username/password combination.", null));
 			clearUser();
 		}
 		return action;
 	}
 
 	public String doLogOut() {
-		LOG.debug(String.format("Logged out user '%s'", username));
+//		LOG.debug(String.format("Logged out user '%s'", username));
 		clearUser();
 		return "home.jsf";
 	}
@@ -128,16 +142,11 @@ public class UserBean implements Serializable {
 		return user;
 	}
 
-	private void prepareUser() {
-		user = new User();
-		user.setUsername(username);
-		user.setPassword(password);
-	}
-
 	private void clearUser() {
 		user = null;
 		username = null;
 		password = null;
+		email = null;
 		getSession(false).invalidate();
 	}
 	

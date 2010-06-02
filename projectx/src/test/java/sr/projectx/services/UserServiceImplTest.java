@@ -1,5 +1,7 @@
 package sr.projectx.services;
 
+import javax.persistence.PersistenceException;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -14,7 +16,7 @@ import sr.projectx.entities.User;
 public class UserServiceImplTest {
 	
     @Test
-    public void persistence() throws Exception {
+    public void persistence() throws PersistenceException {
         UserService userService = new UserServiceImpl();
         
         // Create user.
