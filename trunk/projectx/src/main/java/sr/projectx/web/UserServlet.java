@@ -19,6 +19,14 @@ public class UserServlet extends HttpServlet {
 	@ManagedProperty(value = "#{userService}")
 	private UserService userService;
 
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

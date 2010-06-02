@@ -1,5 +1,7 @@
 package sr.projectx.services;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -17,6 +19,8 @@ import sr.projectx.entities.User;
  * 
  * @author Oscar Stigter
  */
+@ManagedBean(name = "userService", eager = true)
+@ApplicationScoped
 public class UserServiceImpl implements UserService {
     
     /** Persistence unit name. */
@@ -28,6 +32,9 @@ public class UserServiceImpl implements UserService {
 	/** Entity manager. */
 	private EntityManager em;
 	
+	/**
+	 * Constructor.
+	 */
 	public UserServiceImpl() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
         em = emf.createEntityManager();
