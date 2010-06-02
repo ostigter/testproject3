@@ -24,19 +24,21 @@ public class UserServlet extends HttpServlet {
 		response.setContentType("text/html");
 		Writer writer = response.getWriter();
 		
-//		User user = new User();
-//		user.setUsername("admin");
-//		user.setPassword("admin");
-//		user.setEmail("admin@projectx.sr");
-//		try {
-//		    userService.create(user);
-//	        writer.write("<b>User created</b>");
-//		} catch (Exception e) {
-//		    writer.write("<b>Could not create user</b>");
-//		}
-		
 		User user = userService.retrieve("admin");
-		writer.write(String.format("<b>User found: '%s'</b>", user));
+		if (user != null) {
+			writer.write(String.format("<b>User found: '%s'</b>", user));
+		} else {
+			user = new User();
+			user.setUsername("admin");
+			user.setPassword("admin");
+			user.setEmail("admin@projectx.sr");
+			try {
+			    userService.create(user);
+		        writer.write("<b>User created</b>");
+			} catch (Exception e) {
+			    writer.write("<b>Could not create user</b>");
+			}
+		}
 	}
 
 }
