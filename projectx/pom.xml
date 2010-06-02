@@ -38,7 +38,7 @@
 
     <dependencies>
     
-        <!-- JSF 2.0 (Mojarra)
+        <!-- JSF 2.0 (Mojarra) -->
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-api</artifactId>
@@ -51,7 +51,6 @@
             <version>${jsf-version}</version>
             <scope>compile</scope>
         </dependency>
-        -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>

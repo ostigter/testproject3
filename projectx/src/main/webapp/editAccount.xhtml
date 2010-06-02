@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:ui="http://java.sun.com/jsf/facelets"
+	    template="/templates/main.xhtml">
+	<ui:define name="title">Edit Account</ui:define>
+	<ui:define name="content">
+		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
+		<h:form>
+			<fieldset id="editAccountPanel">
+      			<h:messages errorClass="errorMessage" />
+      			<h:panelGrid columns="2">
+					<h:outputLabel value="Username:" for="username" />
+					<h:inputText id="username" value="#{userBean.username}" disabled="true" style="width: 150px;" />
+					<h:outputLabel value="Password:" for="password" />
+					<h:inputSecret id="password" value="#{userBean.password}"
+							required="true" requiredMessage="Password is required." maxlength="12" style="width: 150px;" />      			
+					<h:outputLabel value="Pasword (again):" for="passwordAgain" />
+					<h:inputSecret id="passwordAgain" value="#{userBean.passwordAgain}"
+							required="true" requiredMessage="Please enter the password twice." maxlength="12" style="width: 150px;" />
+      			</h:panelGrid>
+			</fieldset>
+			<h:commandButton value="Save" action="#{userBean.save}" />
+			<h:commandButton value="Cancel" action="home.jsf" immediate="true" />
+		</h:form>
+	</ui:define>
+</ui:composition>
