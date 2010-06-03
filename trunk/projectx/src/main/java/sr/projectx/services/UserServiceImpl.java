@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         try {
     		em.persist(user);
     		tx.commit();
-    		LOG.debug(String.format("Created user '%s'", username));
+    		LOG.debug(String.format("Created user '%s' (%s)", username, user.getEmail()));
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not create user '%s'", username); 
@@ -113,12 +113,13 @@ public class UserServiceImpl implements UserService {
     @Override
 	public void delete(User user) throws PersistenceException {
 		String username = user.getUsername();
+		String email = user.getEmail();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
     		em.remove(user);
             tx.commit();
-    		LOG.debug(String.format("Deleted user '%s'", username));
+    		LOG.debug(String.format("Deleted user '%s' (%s)", username, email));
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not delete user '%s'", username); 
