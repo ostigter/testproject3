@@ -1,0 +1,8 @@
+TODO
+====
+
+* Hashed passwords
+* Sending e-mails
+* Multiple language support
+* Header and footer
+* Menu's/tabs
