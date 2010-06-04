@@ -9,6 +9,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
 import sr.projectx.entities.User;
@@ -98,7 +99,7 @@ public class UserBean implements Serializable {
 		if (password.equals(passwordAgain)) {
 	        user = new User();
 	        user.setUsername(username);
-	        user.setPassword(password);
+	        user.setPassword(DigestUtils.shaHex(password));
 	        user.setEmail(email);
 	        try {
     			userService.create(user);
@@ -117,7 +118,8 @@ public class UserBean implements Serializable {
 
 	public String doLogIn() {
 		String action = null;
-		if (userService.checkCredentials(username, password)) {
+		String hashedPassword = DigestUtils.shaHex(password);
+		if (userService.checkCredentials(username, hashedPassword)) {
 			user = userService.retrieve(username);
 			getSession(true).setAttribute("username", username);
 //			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));

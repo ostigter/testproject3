@@ -10,6 +10,7 @@ import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
 import sr.projectx.entities.User;
@@ -22,6 +23,15 @@ import sr.projectx.entities.User;
 @ManagedBean(name = "userService", eager = true)
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
+	
+	/** Default admin username. */
+	private static final String DEFAULT_ADMIN_USERNAME = "admin";
+    
+	/** Default admin password. */
+	private static final String DEFAULT_ADMIN_PASSWORD = "admin";
+    
+	/** Default admin e-mail address. */
+	private static final String DEFAULT_ADMIN_EMAIL = "admin@projectx.sr";
     
     /** Persistence unit name. */
     private static final String PU_NAME = "projectx";
@@ -148,14 +158,14 @@ public class UserServiceImpl implements UserService {
         User user = retrieve("admin");
         if (user == null) {
             user = new User();
-            user.setUsername("admin");
-            user.setPassword("admin");
-            user.setEmail("admin@projectx.sr");
+            user.setUsername(DEFAULT_ADMIN_USERNAME);
+            user.setPassword(DigestUtils.shaHex(DEFAULT_ADMIN_PASSWORD));
+            user.setEmail(DEFAULT_ADMIN_EMAIL);
             user.setAdmin(true);
             try {
                 create(user);
             } catch (PersistenceException e) {
-                LOG.error("Could not create 'admin' user", e);
+                LOG.error("Could not create default admin user", e);
             }
         }
     }
