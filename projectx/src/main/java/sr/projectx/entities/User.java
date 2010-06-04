@@ -26,15 +26,15 @@ public class User implements Serializable {
 	private long id;
 
     /** Username. */
-	@Column(length = 12, nullable = false, unique = true)
+	@Column(nullable = false, unique = true)
 	private String username;
 
     /** Password. */
-	@Column(length = 12, nullable = false)
+	@Column(nullable = false)
 	private String password;
 	
     /** E-mail address. */
-	@Column(length = 50, nullable = false)
+	@Column(nullable = false)
 	private String email;
 	
     /** Whether this user has admin rights. */

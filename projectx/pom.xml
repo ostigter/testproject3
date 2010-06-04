@@ -24,19 +24,27 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <commons-codec-version>1.4</commons-codec-version>
+        <log4j-version>1.2.14</log4j-version>
+        <slf4j-version>1.4.2</slf4j-version>
+        <junit-version>4.7</junit-version>
         <jsf-version>2.0.2</jsf-version>
         <servlet-api-version>2.5</servlet-api-version>
         <jpa-version>1.0</jpa-version>
         <hibernate-version>3.4.0.GA</hibernate-version>
         <c3p0-version>0.9.1.2</c3p0-version>
         <postgresql-version>8.4-701.jdbc4</postgresql-version>
-        <log4j-version>1.2.14</log4j-version>
-        <slf4j-version>1.4.2</slf4j-version>
-        <junit-version>4.7</junit-version>
         <hsqldb-version>1.8.0.10</hsqldb-version>
     </properties>
 
     <dependencies>
+        <!-- Apache Commons -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec-version}</version>
+            <scope>compile</scope>
+        </dependency>
     
         <!-- JSF 2.0 (Mojarra) -->
         <dependency>
