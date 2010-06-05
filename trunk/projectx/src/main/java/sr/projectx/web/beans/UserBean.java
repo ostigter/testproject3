@@ -10,7 +10,6 @@ import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.log4j.Logger;
 
 import sr.projectx.entities.User;
 import sr.projectx.services.UserService;
@@ -25,9 +24,6 @@ import sr.projectx.services.UserService;
 @SessionScoped
 public class UserBean implements Serializable {
 	
-	/** Log. */
-	private static final Logger LOG = Logger.getLogger(UserBean.class);
-
 	/** Serial version UID. */
 	private static final long serialVersionUID = -8153487303544698528L;
 
@@ -57,6 +53,11 @@ public class UserBean implements Serializable {
 		// Empty implementation.
 	}
 	
+	/**
+	 * Sets the User service.
+	 * 
+	 * @param userService The User service.
+	 */
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
@@ -125,7 +126,7 @@ public class UserBean implements Serializable {
 //			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
 			action = "home.jsf";
 		} else {
-			LOG.debug(String.format("Failed login attempt for user '%s'", username));
+//			LOG.debug(String.format("Failed login attempt for user '%s'", username));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Invalid username/password combination.", null));

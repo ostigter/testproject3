@@ -2,11 +2,10 @@ package sr.projectx.services;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
@@ -33,22 +32,30 @@ public class UserServiceImpl implements UserService {
 	/** Default admin e-mail address. */
 	private static final String DEFAULT_ADMIN_EMAIL = "admin@projectx.sr";
     
-    /** Persistence unit name. */
-    private static final String PU_NAME = "projectx";
-
 	/** Log. */
 	private static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
+    /** Log service. */
+    @ManagedProperty(value = "#{logService}")
+    private LogService logService;
+
 	/** Entity manager. */
-	private EntityManager em;
+	private final EntityManager em = PersistenceService.getEntityManager();
 	
 	/**
 	 * Constructor.
 	 */
 	public UserServiceImpl() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
-        em = emf.createEntityManager();
         checkAdminUser();
+	}
+	
+	/**
+	 * Sets the Log service.
+	 * 
+	 * @param logService The Log service.
+	 */
+	public void setLogService(LogService logService) {
+	    this.logService = logService;
 	}
 
     /*
@@ -57,15 +64,21 @@ public class UserServiceImpl implements UserService {
      */
     public void create(User user) throws PersistenceException {
         String username = user.getUsername();
+        String email = user.getEmail();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
     		em.persist(user);
     		tx.commit();
+    		//FIXME: Fix bean instantiation order.
+    		if (logService != null) {
+    		    logService.info("Created account for user '%s' (%s)", username, email);
+    		}
     		LOG.debug(String.format("Created user '%s' (%s)", username, user.getEmail()));
         } catch (Exception e) {
             tx.rollback();
-            String msg = String.format("Could not create user '%s'", username); 
+            String msg = String.format("Could not create user '%s' (%s)", username, email);
+            LOG.error(msg, e);
             throw new PersistenceException(msg, e);
         }
 	}
@@ -112,6 +125,7 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not update user '%s'", username); 
+            LOG.error(msg, e);
             throw new PersistenceException(msg, e);
         }
 	}
@@ -133,6 +147,7 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not delete user '%s'", username); 
+            LOG.error(msg, e);
             throw new PersistenceException(msg, e);
         }
 	}
