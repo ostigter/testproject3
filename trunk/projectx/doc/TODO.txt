@@ -1,8 +1,11 @@
 TODO
 ====
 
-* Hashed passwords
-* Sending e-mails
-* Multiple language support
+* Last accessed date for user
+* Access log
+* Admin tab
+* Email sending
+* Internationalization
 * Header and footer
 * Menu's/tabs
+* Customer role
