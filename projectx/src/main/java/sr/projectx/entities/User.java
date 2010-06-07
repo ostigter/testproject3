@@ -146,7 +146,7 @@ public class User implements Serializable {
 	public void updateLastLogin() {
 		lastLogin = new Date();
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

@@ -25,6 +25,8 @@ public class UserServiceImplTest {
         user.setUsername(username);
         user.setPassword("secret");
         user.setEmail("alice@somewhere.net");
+        user.setAdmin(false);
+        user.updateLastLogin();
         userService.create(user);
         
         // Retrieve user.
