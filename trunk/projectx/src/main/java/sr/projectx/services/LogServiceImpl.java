@@ -10,8 +10,10 @@ import javax.persistence.PersistenceException;
 
 import org.apache.log4j.Logger;
 
+import sr.projectx.entities.AccessLogEntry;
 import sr.projectx.entities.LogLevel;
-import sr.projectx.entities.LogMessage;
+import sr.projectx.entities.AppLogMessage;
+import sr.projectx.entities.User;
 
 /**
  * Log service implementation.
@@ -22,17 +24,18 @@ import sr.projectx.entities.LogMessage;
 @ApplicationScoped
 public class LogServiceImpl implements LogService {
 
-    /** Entity manager. */
-    private final EntityManager em = PersistenceService.getEntityManager();
-    
     /** Log. */
     private static final Logger LOG = Logger.getLogger(LogServiceImpl.class);
 
+    /** Entity manager. */
+    private final EntityManager em;
+    
     /**
      * Constructor.
      */
     public LogServiceImpl() {
-        LOG.debug("Initialized");
+    	em = PersistenceService.getEntityManager();
+    	info("Application started");
     }
     
     /*
@@ -89,6 +92,30 @@ public class LogServiceImpl implements LogService {
         log(LogLevel.TRACE, message, args);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see sr.projectx.services.LogService#access(sr.projectx.entities.User, java.lang.String, java.lang.String)
+     */
+    @Override
+	public void logAccess(User user, String address, String hostname) {
+    	AccessLogEntry entry = new AccessLogEntry();
+    	entry.setDate(new Date());
+    	entry.setUser(user);
+    	entry.setAddress(address);
+    	entry.setHostname(hostname);
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        try {
+            em.persist(entry);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            String msg = "Could not persist access log entry";
+            LOG.error(msg, e);
+            throw new PersistenceException(msg, e);
+        }
+	}
+
     /**
      * Logs a log message.
      * 
@@ -100,7 +127,7 @@ public class LogServiceImpl implements LogService {
      *            Any optional arguments.
      */
     private void log(LogLevel level, String message, Object... args) {
-        LogMessage logMessage = new LogMessage();
+        AppLogMessage logMessage = new AppLogMessage();
         logMessage.setDate(new Date());
         logMessage.setLevel(level);
         logMessage.setMessage(String.format(message, args));
@@ -111,7 +138,7 @@ public class LogServiceImpl implements LogService {
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
-            String msg = "Could not persist log message";
+            String msg = "Could not persist application log message";
             LOG.error(msg, e);
             throw new PersistenceException(msg, e);
         }

@@ -1,17 +1,22 @@
 package sr.projectx.web.beans;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.log4j.Logger;
 
 import sr.projectx.entities.User;
+import sr.projectx.services.LogService;
 import sr.projectx.services.UserService;
 
 /**
@@ -26,6 +31,13 @@ public class UserBean implements Serializable {
 	
 	/** Serial version UID. */
 	private static final long serialVersionUID = -8153487303544698528L;
+
+    /** Log. */
+    private static final Logger LOG = Logger.getLogger(UserBean.class);
+
+	/** Log service. */
+	@ManagedProperty(value = "#{logService}")
+	private LogService logService;
 
 	/** User service. */
 	@ManagedProperty(value = "#{userService}")
@@ -54,9 +66,20 @@ public class UserBean implements Serializable {
 	}
 	
 	/**
+	 * Sets the Log service.
+	 * 
+	 * @param ogService
+	 *            The Log service.
+	 */
+	public void setLogService(LogService logService) {
+		this.logService = logService;
+	}
+
+	/**
 	 * Sets the User service.
 	 * 
-	 * @param userService The User service.
+	 * @param userService
+	 *            The User service.
 	 */
 	public void setUserService(UserService userService) {
 		this.userService = userService;
@@ -122,8 +145,10 @@ public class UserBean implements Serializable {
 		String hashedPassword = DigestUtils.shaHex(password);
 		if (userService.checkCredentials(username, hashedPassword)) {
 			user = userService.retrieve(username);
+			user.updateLastLogin();
+			userService.update(user);
+			logAccess(user);
 			getSession(true).setAttribute("username", username);
-//			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
 			action = "home.jsf";
 		} else {
 //			LOG.debug(String.format("Failed login attempt for user '%s'", username));
@@ -153,9 +178,32 @@ public class UserBean implements Serializable {
 		getSession(false).invalidate();
 	}
 	
-	private HttpSession getSession(boolean create) {
+	private void logAccess(User user) {
+		String address = null;
+		String hostname = null;
+		InetAddress remoteAddress = getRemoteAddress();
+		if (remoteAddress != null) {
+			address = remoteAddress.getHostAddress();
+			hostname = remoteAddress.getCanonicalHostName();
+		}
+		logService.logAccess(user, address, hostname);
+	}
+	
+	private static HttpSession getSession(boolean create) {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		return (HttpSession) facesContext.getExternalContext().getSession(create);
+	}
+	
+	private static InetAddress getRemoteAddress() {
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+		String remoteHost = request.getRemoteHost();
+		InetAddress address = null;
+		try {
+			address = InetAddress.getByName(remoteHost);
+		} catch (UnknownHostException e) {
+			LOG.error(String.format("Could not resolve IP address and/or hostname for remote host '%s' ", remoteHost), e);
+		}
+		return address;
 	}
 
 }

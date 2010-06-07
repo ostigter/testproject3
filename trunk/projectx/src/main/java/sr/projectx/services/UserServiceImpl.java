@@ -29,29 +29,12 @@ public class UserServiceImpl implements UserService {
     /** Property service. */
     @ManagedProperty(value = "#{propertyService}")
     private PropertyService propertyService;
-
     /** Log service. */
     @ManagedProperty(value = "#{logService}")
     private LogService logService;
 
 	/** Entity manager. */
 	private final EntityManager em = PersistenceService.getEntityManager();
-	
-	/**
-	 * Constructor.
-	 */
-	public UserServiceImpl() {
-	    if (propertyService == null) {
-	        throw new IllegalStateException("Property service not set");
-	    }
-        if (logService == null) {
-            throw new IllegalStateException("Log service not set");
-        }
-        
-        checkAdminUser();
-        
-        LOG.debug("Initialized");
-	}
 	
     public PropertyService getPropertyService() {
         return propertyService;
@@ -97,7 +80,9 @@ public class UserServiceImpl implements UserService {
     		if (logService != null) {
     		    logService.info("Created account for user '%s' (%s)", username, email);
     		}
-    		LOG.debug(String.format("Created user '%s' (%s)", username, user.getEmail()));
+    		if (LOG.isDebugEnabled()) {
+    			LOG.debug(String.format("Created user '%s' (%s)", username, user.getEmail()));
+    		}
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not create user '%s' (%s)", username, email);
@@ -144,7 +129,9 @@ public class UserServiceImpl implements UserService {
         try {
     		em.merge(user);
             tx.commit();
-    		LOG.debug(String.format("Updated user '%s'", user.getUsername()));
+            if (LOG.isDebugEnabled()) {
+            	LOG.debug(String.format("Updated user '%s'", user.getUsername()));
+            }
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not update user '%s'", username); 
@@ -166,7 +153,9 @@ public class UserServiceImpl implements UserService {
         try {
     		em.remove(user);
             tx.commit();
-    		LOG.debug(String.format("Deleted user '%s' (%s)", username, email));
+            if (LOG.isDebugEnabled()) {
+            	LOG.debug(String.format("Deleted user '%s' (%s)", username, email));
+            }
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not delete user '%s'", username); 
@@ -181,6 +170,7 @@ public class UserServiceImpl implements UserService {
 	 */
     @Override
 	public boolean checkCredentials(String username, String password) {
+    	checkAdminUser();
 		boolean valid = false;
 		User user = retrieve(username);
 		if (user != null && user.getPassword().equals(password)) {
@@ -193,19 +183,23 @@ public class UserServiceImpl implements UserService {
      * Checks whether the default 'admin' user exists; if not, it is created.
      */
     private void checkAdminUser() {
-        User user = retrieve("admin");
-        if (user == null) {
-            user = new User();
-            user.setUsername(propertyService.getProperty("default.admin.username"));
-            user.setPassword(DigestUtils.shaHex(propertyService.getProperty("default.admin.password")));
-            user.setEmail(propertyService.getProperty("default.admin.email"));
-            user.setAdmin(true);
-            try {
-                create(user);
-            } catch (PersistenceException e) {
-                LOG.error("Could not create default admin user", e);
-            }
-        }
+    	String username = propertyService.getProperty("default.admin.username");
+    	if (username != null) {
+	        User user = retrieve(username);
+	        if (user == null) {
+	            user = new User();
+	            user.setUsername(username);
+	            user.setPassword(DigestUtils.shaHex(propertyService.getProperty("default.admin.password")));
+	            user.setEmail(propertyService.getProperty("default.admin.email"));
+	            user.setAdmin(true);
+	            try {
+	                create(user);
+                	LOG.debug("Default admin account created");
+	            } catch (PersistenceException e) {
+	                LOG.error("Could not create default admin user", e);
+	            }
+	        }
+    	}
     }
     
 }
