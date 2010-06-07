@@ -124,22 +124,32 @@ public class SmallDate implements Comparable<SmallDate> {
     	if (s == null) {
     		throw new IllegalArgumentException("Null string");
     	}
-        if (s.length() != SHORT_DATE_LENGTH) {
-            throw new IllegalArgumentException("Illegal short date format");
-        }
-        try {
-            int year  = Integer.parseInt(s.substring(0, 2));
-            if (year < 50) {
-                year += 2000;
-            } else {
-                year += 1900;
+    	
+    	SmallDate date = null;
+    	
+    	if (s.length() == 8) {
+            try {
+                int year  = Integer.parseInt(s.substring(0, 4));
+                int month = Integer.parseInt(s.substring(4, 6));
+                int day   = Integer.parseInt(s.substring(6, 8));
+                date = new SmallDate(day, month, year);
+            } catch (Exception ex) {
+                throw new Exception("Could not parse date '" + s + "'.");
             }
-            int month = Integer.parseInt(s.substring(2, 4));
-            int day   = Integer.parseInt(s.substring(4, 6));
-            return new SmallDate(day, month, year);
-        } catch (Exception ex) {
-            throw new Exception("Could not parse date '" + s + "'.");
+    	} else if (s.length() == SHORT_DATE_LENGTH) {
+            try {
+                int year  = Integer.parseInt(s.substring(0, 2));
+                int month = Integer.parseInt(s.substring(2, 4));
+                int day   = Integer.parseInt(s.substring(4, 6));
+                date = new SmallDate(day, month, year);
+            } catch (Exception ex) {
+                throw new Exception("Could not parse date '" + s + "'.");
+            }
+    	} else {
+            throw new IllegalArgumentException("Illegal date format");
         }
+    	
+    	return date;
     }
 
     public void serialize(DataOutputStream dos) throws IOException {

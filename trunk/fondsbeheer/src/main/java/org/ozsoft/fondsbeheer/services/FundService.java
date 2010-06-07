@@ -81,16 +81,26 @@ public interface FundService {
 	 */
 	int getNoOfFunds();
 	
-	/**
-	 * Returns a fund specified by its ID.
-	 * 
-	 * @param fundId
-	 *            The fund ID.
-	 * 
-	 * @return The fund if found, otherwise null.
-	 */
-	void retrieveFund(Fund fund);
+//	/**
+//	 * Returns a fund specified by its ID.
+//	 * 
+//	 * @param fundId
+//	 *            The fund ID.
+//	 * 
+//	 * @return The fund if found, otherwise null.
+//	 */
+//	void retrieveFund(String fundId);
 	
+    /**
+     * Returns a fund specified by its ID.
+     * 
+     * @param fundId
+     *            The fund ID.
+     * 
+     * @return The fund if found, otherwise null.
+     */
+    void retrieveFund(Fund fund);
+    
 	/**
 	 * Stores a fund.
 	 * 

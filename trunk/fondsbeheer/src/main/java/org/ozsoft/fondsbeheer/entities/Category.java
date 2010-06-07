@@ -11,9 +11,6 @@ import java.util.TreeMap;
  */
 public class Category {
     
-//	/** The logger. */
-//	private static final Logger LOG = Logger.getLogger(Category.class);
-	
 	/** The ID. */
 	private final String id;
     

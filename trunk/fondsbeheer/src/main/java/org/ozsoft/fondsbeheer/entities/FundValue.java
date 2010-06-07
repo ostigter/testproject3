@@ -77,7 +77,7 @@ public class FundValue {
      */
     @Override
     public String toString() {
-        return String.format(Locale.US, "{%s, %.2f}", date, value); 
+        return String.format(Locale.US, "%s: %.3f", date, value); 
     }
     
     /**
