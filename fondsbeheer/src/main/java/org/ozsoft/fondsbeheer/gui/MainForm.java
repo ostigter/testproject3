@@ -15,6 +15,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 
 import org.ozsoft.fondsbeheer.entities.Category;
 import org.ozsoft.fondsbeheer.entities.Fund;
@@ -86,18 +87,21 @@ public class MainForm {
         fundTree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				int depth = fundTree.getSelectionPath().getPathCount();
-				if (depth == 1) {
-					rootNodeSelected();
-				} else {
-					DefaultMutableTreeNode node = (DefaultMutableTreeNode) fundTree.getLastSelectedPathComponent();
-					Object obj = node.getUserObject();
-					if (depth == 2) {
-						categorySelected((Category) obj);
-					} else {
-						fundSelected((Fund) obj);
-					}
-				}
+			    TreePath path = fundTree.getSelectionPath();
+			    if (path != null) {
+                    int depth = fundTree.getSelectionPath().getPathCount();
+    			    if (depth == 1) {
+    					rootNodeSelected();
+    				} else {
+    					DefaultMutableTreeNode node = (DefaultMutableTreeNode) fundTree.getLastSelectedPathComponent();
+    					Object obj = node.getUserObject();
+    					if (depth == 2) {
+    						categorySelected((Category) obj);
+    					} else {
+    						fundSelected((Fund) obj);
+    					}
+    				}
+			    }
 			}
         });
         JScrollPane treePanel = new JScrollPane(fundTree);

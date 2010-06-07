@@ -90,6 +90,16 @@ public class Fund {
         }
     }
     
+	/**
+	 * Clears the values.
+	 * 
+	 * Used to free resources when the fund's values are no longer needed to be
+	 * kept in memory.
+	 */
+    public void clear() {
+    	values.clear();
+    }
+    
     /*
      * (non-Javadoc)
      * @see java.lang.Object#hashCode()

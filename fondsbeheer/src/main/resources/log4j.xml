@@ -10,7 +10,7 @@
 	</appender>
 
 	<logger name="org.ozsoft.fondsbeheer">
-		<level value="info" />
+		<level value="INFO" />
 	</logger>
 
 	<logger name="org.ozsoft.fondsbeheer.filestore">
@@ -18,7 +18,7 @@
 	</logger>
 
 	<root>
-		<priority value="info" />
+		<priority value="INFO" />
 		<appender-ref ref="console" />
 	</root>
 

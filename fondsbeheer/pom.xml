@@ -8,7 +8,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <name>Fondsbeheer</name>
-    <description>Programma voor het beheren van aandelenfondsen</description>
+    <description>Programma voor het beheren van aandelenfondsen.</description>
     
     <developers>
         <developer>
@@ -21,6 +21,13 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jfreechart-version>1.0.0</jfreechart-version>
+        <log4j-version>1.2.14</log4j-version>
+        <junit-version>4.7</junit-version>
+    </properties>
 
     <build>
         <plugins>
@@ -39,19 +46,19 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
+            <version>${log4j-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>jfreechart</groupId>
+            <groupId>jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.0.0</version>
+            <version>${jfreechart-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.6</version>
+            <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

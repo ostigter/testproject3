@@ -17,28 +17,23 @@ import org.apache.log4j.Logger;
 /**
  * File system based database for storing files.
  *
- * Documents are logically stored, retrieved and deleted based on an integer
- * ID.
+ * Files are logically stored, retrieved, listed and deleted based on a name.
+ * The file contents are handled as a byte array.
+ *
+ * Files are physically stored in a single binary file ('data.dbx').
+ * File positions are stored in a second binary file ('index.dbx').
  *
  * All database files are stored in a configurable directory (by default
  * 'data'). If this directory does not exists, it will be created.
  *
- * Administrative file entries (indices) are stored in a binary file
- * 'index.dbx'. The file contents are stored in a binary file 'data.dbx'.
- *
- * The positioning algorithm for storing a file is simple; it inserts the file
- * at the first free position it fits in, or it appends the file at the end.
- * 
- * For performance reasons, this class offers no synchronization or locking,
- * and is thus NOT thread-safe.
+ * The positioning algorithm for storing a file is simple; it just inserts the
+ * file at the first free position it fits in, or it appends the file at the
+ * end.
  *
  * @author Oscar Stigter
  */
 public class FileStore {
-    
-    /** log4j logger. */
-    private static final Logger logger = Logger.getLogger(FileStore.class);
-    
+
     /** Default database directory. */
     private static final String DEFAULT_DATA_DIR = "data";
     
@@ -47,6 +42,9 @@ public class FileStore {
     
     /** Data file with the file contents. */
     private static final String DATA_FILE = "data.dbx";
+    
+    /** log4j logger. */
+    private static final Logger LOG = Logger.getLogger(FileStore.class);
     
     /** Document entries mapped by the their ID. */
     private final Map<String, FileEntry> entries;
@@ -114,13 +112,11 @@ public class FileStore {
             throw new IllegalStateException("Database already running");
         }
 
-        logger.debug("Starting");
-            
         // Create data directory.
         if (!dataDir.exists()) {
             if (!dataDir.mkdirs()) {
                 String msg = "Could not create data directory: " + dataDir;
-                logger.error(msg);
+                LOG.error(msg);
                 throw new FileStoreException(msg);
             }
         }
@@ -146,7 +142,7 @@ public class FileStore {
 
         isRunning = true;
         
-        logger.debug("Started");
+        LOG.debug("Started");
     }
     
     /**
@@ -161,8 +157,6 @@ public class FileStore {
     public void shutdown() throws FileStoreException {
         checkIsRunning();
         
-        logger.debug("Shutting down");
-        
         sync();
         
         try {
@@ -170,7 +164,7 @@ public class FileStore {
             
         } catch (IOException e) {
             String msg = "Error closing data file: " + e.getMessage();
-            logger.error(msg, e);
+            LOG.error(msg, e);
             throw new FileStoreException(msg, e);
             
         } finally {
@@ -179,7 +173,7 @@ public class FileStore {
         
         entries.clear();
         
-        logger.debug("Shut down");
+        LOG.debug("Shut down");
     }
     
     /**
@@ -244,8 +238,8 @@ public class FileStore {
     public void store(String id, byte[] content) throws FileStoreException {
         checkIsRunning();
         
-        if (logger.isDebugEnabled()) {
-        	logger.debug(String.format("Storing file with ID '%s'", id));
+        if (LOG.isDebugEnabled()) {
+        	LOG.debug(String.format("Storing file with ID '%s'", id));
         }
         
         // Delete (overwrite) any previous file entry with the same ID.
@@ -267,7 +261,7 @@ public class FileStore {
         } catch (IOException e) {
             entries.remove(id);
             String msg = String.format("Could not store file with ID '%s'", id);
-            logger.error(msg, e);
+            LOG.error(msg, e);
             throw new FileStoreException(msg, e);
         }
     }
@@ -288,8 +282,8 @@ public class FileStore {
     public byte[] retrieve(String id) throws FileStoreException {
         checkIsRunning();
 
-        if (logger.isDebugEnabled()) {
-        	logger.debug(String.format("Retrieving file with ID '%s'", id));
+        if (LOG.isDebugEnabled()) {
+        	LOG.debug(String.format("Retrieving file with ID '%s'", id));
         }
         
         byte[] content = null;
@@ -302,12 +296,12 @@ public class FileStore {
             } catch (IOException e) {
                 String msg = String.format(
                 		"Could not retrieve file with ID '%s'", id);
-                logger.error(msg, e);
+                LOG.error(msg, e);
                 throw new FileStoreException(msg, e);
             }
         } else {
             throw new FileStoreException(
-            		String.format("Document with ID '%s' not found", id));
+            		String.format("File with ID '%s' not found", id));
         }
         return content;
     }
@@ -351,7 +345,7 @@ public class FileStore {
         FileEntry entry = entries.get(id);
         if (entry != null) {
             entries.remove(id);
-            logger.debug("Deleted file with ID " + id);
+            LOG.debug("Deleted file with ID " + id);
         }
     }
     
@@ -359,25 +353,25 @@ public class FileStore {
      * Writes any volatile meta-data to disk.
      */
     public void sync() throws FileStoreException {
-        logger.debug("Sync");
+        LOG.debug("Sync");
         if (isRunning) {
             try {
                 writeIndexFile();
             } catch (IOException e) {
                 String msg = "Error sync'ing to disk: " + e.getMessage();
-                logger.error(msg, e);
+                LOG.error(msg, e);
                 throw new FileStoreException(msg, e);
             }
         }
     }
 
     /**
-     * Logs a message showing the disk size usage.
+     * Logs various statistics.
      * 
      * @throws  IllegalStateException
      *              if the database is not running
      */
-    public void printSizeInfo() {
+    public void logStatistics() {
         checkIsRunning();
         
         long stored = getStoredSpace();
@@ -387,10 +381,8 @@ public class FileStore {
         if (stored > 0) {
             wastedPerc = ((double) wasted / (double) stored) * 100;
         }
-        logger.debug(String.format(Locale.US,
-                "Disk usage:  Size: %s, Used: %s, Wasted: %s (%.1f %%)",
-                diskSizeToString(stored), diskSizeToString(used),
-                diskSizeToString(wasted), wastedPerc));
+        LOG.info(String.format(Locale.US, "File count: %d, Allocated: %s, Used: %s, Wasted: %s (%.1f %%)",
+                entries.size(), diskSizeToString(stored), diskSizeToString(used), diskSizeToString(wasted), wastedPerc));
     }
 
     /**
@@ -483,7 +475,7 @@ public class FileStore {
         } catch (IOException e) {
             String msg =
                     "Error retrieving data file length: " + e.getMessage();
-            logger.error(msg, e);
+            LOG.error(msg, e);
         }
         return size;
     }

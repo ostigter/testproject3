@@ -217,9 +217,9 @@ public class FundServiceImpl implements FundService {
     			LOG.warn(String.format("Could not find fund with ID '%s'", id));
     		}
     	} catch (FileStoreException e) {
-    		LOG.error(String.format("Could not retrieve fund '%s'", fund), e);
+    		LOG.error(String.format("Could not retrieve fund with ID '%s'", id), e);
     	} catch (IOException e) {
-    		LOG.error(String.format("Could not deserialize fund '%s'", fund), e);
+    		LOG.error(String.format("Could not deserialize fund with ID '%s'", id), e);
     	}
     }
     
@@ -390,7 +390,7 @@ public class FundServiceImpl implements FundService {
      */
     @Override
     public void printDiskUsage() {
-    	fileStore.printSizeInfo();
+    	fileStore.logStatistics();
     }
 
     /*
