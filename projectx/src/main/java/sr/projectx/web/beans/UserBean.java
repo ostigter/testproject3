@@ -209,7 +209,7 @@ public class UserBean implements Serializable {
                     userService.update(user);
                     fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "Modifications have been saved.", null));
-                    logService.info("Password updated for user '%s' (%s)", username, user.getEmail());
+                    logService.info("Account modified by user '%s' (%s)", username, user.getEmail());
                 } catch (PersistenceException e) {
                     fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "An error occurred while updating the password.", null));
