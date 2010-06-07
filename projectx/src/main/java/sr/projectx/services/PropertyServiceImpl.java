@@ -31,7 +31,6 @@ public class PropertyServiceImpl implements PropertyService {
         if (is != null) {
             try {
                 properties.load(is);
-                LOG.debug("Initialized");
             } catch (IOException e) {
                 LOG.error("Could not read properties file", e);
             }
@@ -46,14 +45,12 @@ public class PropertyServiceImpl implements PropertyService {
      */
     @Override
     public String getProperty(String key) {
-        String value = null;
-        if (properties.contains(key)) {
-            value = properties.getProperty(key); 
-        } else {
-            String msg = String.format("Application property with key '%s' not found", key);
-            LOG.error(msg);
-        }
-        return value;
+		String value = properties.getProperty(key);
+		if (value == null) {
+			String msg = String.format("Application property with key '%s' not found", key);
+			LOG.error(msg);
+		}
+		return value;
     }
 
 }

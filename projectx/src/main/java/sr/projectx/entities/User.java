@@ -1,7 +1,9 @@
 package sr.projectx.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +24,6 @@ public class User implements Serializable {
     /** ID. */
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "user_id")
 	private long id;
 
     /** Username. */
@@ -40,6 +41,10 @@ public class User implements Serializable {
     /** Whether this user has admin rights. */
 	@Column(name = "admin")
 	private boolean isAdmin = false;
+	
+	/** Last login date. */
+	@Basic
+	private Date lastLogin;
 
     /**
      * Returns the user ID.
@@ -124,6 +129,22 @@ public class User implements Serializable {
      */
 	public void setAdmin(boolean isAdmin) {
 	    this.isAdmin = isAdmin;
+	}
+
+	/**
+	 * Returns the date of the last login.
+	 * 
+	 * @return The date of the last login.
+	 */
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	/**
+	 * Updates the date of the last login to now.
+	 */
+	public void updateLastLogin() {
+		lastLogin = new Date();
 	}
 
 	/*

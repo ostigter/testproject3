@@ -1,5 +1,7 @@
 package sr.projectx.services;
 
+import sr.projectx.entities.User;
+
 public interface LogService {
     
     void fatal(String message, Object... args);
@@ -13,5 +15,7 @@ public interface LogService {
     void debug(String message, Object... args);
     
     void trace(String message, Object... args);
+    
+    void logAccess(User user, String address, String hostname);
     
 }

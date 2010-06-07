@@ -1,11 +1,11 @@
 TODO
 ====
 
-* Last accessed date for user
-* Access log
 * Admin tab
-* Email sending
+    - View application log
+    - View access log
 * Internationalization
 * Header and footer
 * Menu's/tabs
+* Email sending
 * Customer role

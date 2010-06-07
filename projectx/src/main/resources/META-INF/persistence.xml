@@ -5,8 +5,8 @@
 
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-        <class>sr.projectx.entities.LogLevel</class>
-        <class>sr.projectx.entities.LogMessage</class>
+        <class>sr.projectx.entities.AppLogMessage</class>
+        <class>sr.projectx.entities.AccessLogEntry</class>
         <class>sr.projectx.entities.User</class>
 
         <properties>
