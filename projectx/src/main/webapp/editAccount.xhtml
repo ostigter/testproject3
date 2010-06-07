@@ -5,22 +5,24 @@
 	    template="/templates/main.xhtml">
 	<ui:define name="title">Edit Account</ui:define>
 	<ui:define name="content">
-		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
 		<h:form>
 			<fieldset id="editAccountPanel">
-      			<h:messages errorClass="errorMessage" />
+                <h:messages infoClass="infoMessage" errorClass="errorMessage" />
       			<h:panelGrid columns="2">
 					<h:outputLabel value="Username:" for="username" />
 					<h:inputText id="username" value="#{userBean.username}" disabled="true" style="width: 150px;" />
-					<h:outputLabel value="Password:" for="password" />
-					<h:inputSecret id="password" value="#{userBean.password}"
-							required="true" requiredMessage="Password is required." maxlength="12" style="width: 150px;" />      			
-					<h:outputLabel value="Pasword (again):" for="passwordAgain" />
-					<h:inputSecret id="passwordAgain" value="#{userBean.passwordAgain}"
-							required="true" requiredMessage="Please enter the password twice." maxlength="12" style="width: 150px;" />
+					<h:outputLabel value="Old Password:" for="oldPassword" />
+					<h:inputSecret id="oldPassword" value="#{userBean.password}"
+							required="true" requiredMessage="Old password is required." maxlength="15" style="width: 150px;" />      			
+                    <h:outputLabel value="New Password:" for="newPassword" />
+                    <h:inputSecret id="newPassword" value="#{userBean.newPassword}"
+                            required="true" requiredMessage="New password is required." maxlength="15" style="width: 150px;" />                 
+					<h:outputLabel value="New Password (again):" for="newPasswordAgain" />
+					<h:inputSecret id="newPasswordAgain" value="#{userBean.passwordAgain}"
+							required="true" requiredMessage="Please enter the new password twice." maxlength="15" style="width: 150px;" />
       			</h:panelGrid>
 			</fieldset>
-			<h:commandButton value="Save" action="#{userBean.save}" />
+			<h:commandButton value="Save" action="#{userBean.doSave}" />
 			<h:commandButton value="Cancel" action="home.jsf" immediate="true" />
 		</h:form>
 	</ui:define>

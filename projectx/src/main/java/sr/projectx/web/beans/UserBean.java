@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -52,9 +53,12 @@ public class UserBean implements Serializable {
 	/** Password. */
 	private String password;
 
-	/** Password (again). */
-	private String passwordAgain;
-	
+    /** Password (again). */
+    private String passwordAgain;
+    
+    /** New password. */
+    private String newPassword;
+
     /** Email. */
     private String email;
 
@@ -101,6 +105,14 @@ public class UserBean implements Serializable {
 		this.password = password;
 	}
 
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+    
 	public String getPasswordAgain() {
 		return passwordAgain;
 	}
@@ -117,30 +129,12 @@ public class UserBean implements Serializable {
         this.email = email;
     }
 
-	public String doCreateAccount() {
-		String action = null;
-		FacesContext fc = FacesContext.getCurrentInstance();
-		if (password.equals(passwordAgain)) {
-	        user = new User();
-	        user.setUsername(username);
-	        user.setPassword(DigestUtils.shaHex(password));
-	        user.setEmail(email);
-	        try {
-    			userService.create(user);
-    			action = doLogIn();
-	        } catch (Exception e) {
-	            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-	                    "An error occurred while creating the user.", null));
-	            clearUser();
-	        }
-		} else {
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Both passwords are not identical.", null));
-		}
-		return action;
-	}
-
-	public String doLogIn() {
+    /**
+     * Logs in a user.
+     * 
+     * @return The navigation result.
+     */
+    public String doLogIn() {
 		String action = null;
 		String hashedPassword = DigestUtils.shaHex(password);
 		if (userService.checkCredentials(username, hashedPassword)) {
@@ -154,17 +148,82 @@ public class UserBean implements Serializable {
 //			LOG.debug(String.format("Failed login attempt for user '%s'", username));
 			FacesContext fc = FacesContext.getCurrentInstance();
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Invalid username/password combination.", null));
+			        "Invalid username/password combination.", null));
 			clearUser();
 		}
 		return action;
 	}
 
+    /**
+     * Logs out the current user.
+     * 
+     * @return The navigation result.
+     */
 	public String doLogOut() {
 //		LOG.debug(String.format("Logged out user '%s'", username));
 		clearUser();
 		return "home.jsf";
 	}
+
+    /**
+     * Creates a new user account (Create Account page).
+     * 
+     * @return The navigation result.
+     */
+	public String doCreateAccount() {
+        String action = null;
+        FacesContext fc = FacesContext.getCurrentInstance();
+        if (password.equals(passwordAgain)) {
+            user = new User();
+            user.setUsername(username);
+            user.setPassword(DigestUtils.shaHex(password));
+            user.setEmail(email);
+            try {
+                userService.create(user);
+                action = doLogIn();
+            } catch (Exception e) {
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "An error occurred while creating the user.", null));
+                clearUser();
+            }
+        } else {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Both passwords are not identical.", null));
+        }
+        return action;
+    }
+    
+    /**
+     * Saves updates to the user account (Edit Account page).
+     * 
+     * @return The navigation result.
+     */
+    public String doSave() {
+        String action = null;
+        FacesContext fc = FacesContext.getCurrentInstance();
+        String hashedPassword = DigestUtils.shaHex(password);
+        if (newPassword.equals(passwordAgain)) {
+            if (userService.checkCredentials(username, hashedPassword)) {
+                user.setPassword(DigestUtils.shaHex(newPassword));
+                try {
+                    userService.update(user);
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "The password has been changed.", null));
+                    logService.info("Password updated for user '%s' (%s)", username, user.getEmail());
+                } catch (PersistenceException e) {
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "An error occurred while updating the password.", null));
+                }
+            } else {
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Incorrect old password.", null));
+            }
+        } else {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Both new passwords are not identical.", null));
+        }
+        return action;
+    }
 
 	public User getUser() {
 		return user;
