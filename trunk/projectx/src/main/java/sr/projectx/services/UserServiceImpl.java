@@ -76,13 +76,7 @@ public class UserServiceImpl implements UserService {
         try {
     		em.persist(user);
     		tx.commit();
-    		//FIXME: Fix bean instantiation order.
-    		if (logService != null) {
-    		    logService.info("Created account for user '%s' (%s)", username, email);
-    		}
-    		if (LOG.isDebugEnabled()) {
-    			LOG.debug(String.format("Created user '%s' (%s)", username, user.getEmail()));
-    		}
+		    logService.info("Created account for user '%s' (%s)", username, email);
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not create user '%s' (%s)", username, email);
@@ -129,9 +123,9 @@ public class UserServiceImpl implements UserService {
         try {
     		em.merge(user);
             tx.commit();
-            if (LOG.isDebugEnabled()) {
-            	LOG.debug(String.format("Updated user '%s'", user.getUsername()));
-            }
+//            if (LOG.isDebugEnabled()) {
+//            	LOG.debug(String.format("Updated user '%s'", user.getUsername()));
+//            }
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not update user '%s'", username); 
@@ -153,9 +147,7 @@ public class UserServiceImpl implements UserService {
         try {
     		em.remove(user);
             tx.commit();
-            if (LOG.isDebugEnabled()) {
-            	LOG.debug(String.format("Deleted user '%s' (%s)", username, email));
-            }
+        	LOG.info(String.format("Deleted user '%s' (%s)", username, email));
         } catch (Exception e) {
             tx.rollback();
             String msg = String.format("Could not delete user '%s'", username); 
