@@ -22,18 +22,13 @@ import sr.projectx.entities.User;
 @ManagedBean(name = "userService", eager = true)
 @ApplicationScoped
 public class UserServiceImpl implements UserService {
-	
-	/** Default admin username. */
-	private static final String DEFAULT_ADMIN_USERNAME = "admin";
-    
-	/** Default admin password. */
-	private static final String DEFAULT_ADMIN_PASSWORD = "admin";
-    
-	/** Default admin e-mail address. */
-	private static final String DEFAULT_ADMIN_EMAIL = "admin@projectx.sr";
     
 	/** Log. */
 	private static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
+
+    /** Property service. */
+    @ManagedProperty(value = "#{propertyService}")
+    private PropertyService propertyService;
 
     /** Log service. */
     @ManagedProperty(value = "#{logService}")
@@ -46,14 +41,42 @@ public class UserServiceImpl implements UserService {
 	 * Constructor.
 	 */
 	public UserServiceImpl() {
+	    if (propertyService == null) {
+	        throw new IllegalStateException("Property service not set");
+	    }
+        if (logService == null) {
+            throw new IllegalStateException("Log service not set");
+        }
+        
         checkAdminUser();
+        
+        LOG.debug("Initialized");
 	}
 	
-	/**
-	 * Sets the Log service.
-	 * 
-	 * @param logService The Log service.
-	 */
+    public PropertyService getPropertyService() {
+        return propertyService;
+    }
+    
+    /**
+     * Sets the Property service.
+     * 
+     * @param propertyService
+     *            The Property service.
+     */
+    public void setPropertyService(PropertyService propertyService) {
+        this.propertyService = propertyService;
+    }
+
+    public LogService getLogService() {
+        return logService;
+    }
+    
+    /**
+     * Sets the Log service.
+     * 
+     * @param logService
+     *            The Log service.
+     */
 	public void setLogService(LogService logService) {
 	    this.logService = logService;
 	}
@@ -173,9 +196,9 @@ public class UserServiceImpl implements UserService {
         User user = retrieve("admin");
         if (user == null) {
             user = new User();
-            user.setUsername(DEFAULT_ADMIN_USERNAME);
-            user.setPassword(DigestUtils.shaHex(DEFAULT_ADMIN_PASSWORD));
-            user.setEmail(DEFAULT_ADMIN_EMAIL);
+            user.setUsername(propertyService.getProperty("default.admin.username"));
+            user.setPassword(DigestUtils.shaHex(propertyService.getProperty("default.admin.password")));
+            user.setEmail(propertyService.getProperty("default.admin.email"));
             user.setAdmin(true);
             try {
                 create(user);
@@ -184,5 +207,5 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
-	
+    
 }

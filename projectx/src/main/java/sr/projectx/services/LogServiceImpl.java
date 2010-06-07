@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 
+import org.apache.log4j.Logger;
+
 import sr.projectx.entities.LogLevel;
 import sr.projectx.entities.LogMessage;
 
@@ -22,6 +24,16 @@ public class LogServiceImpl implements LogService {
 
     /** Entity manager. */
     private final EntityManager em = PersistenceService.getEntityManager();
+    
+    /** Log. */
+    private static final Logger LOG = Logger.getLogger(LogServiceImpl.class);
+
+    /**
+     * Constructor.
+     */
+    public LogServiceImpl() {
+        LOG.debug("Initialized");
+    }
     
     /*
      * (non-Javadoc)
@@ -99,7 +111,9 @@ public class LogServiceImpl implements LogService {
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
-            throw new PersistenceException("Could not persist log message", e);
+            String msg = "Could not persist log message";
+            LOG.error(msg, e);
+            throw new PersistenceException(msg, e);
         }
     }
 

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" id="projectx" version="2.4">
 
+    <display-name>projectx</display-name>
+
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -8,17 +10,6 @@
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
-    </servlet-mapping>
-
-    <display-name>projectx</display-name>
-
-    <servlet>
-        <servlet-name>UserServlet</servlet-name>
-        <servlet-class>sr.projectx.web.UserServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/users</url-pattern>
     </servlet-mapping>
 
     <context-param>
