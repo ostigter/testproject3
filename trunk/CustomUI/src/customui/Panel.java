@@ -1,62 +1,49 @@
 package customui;
 
-import java.awt.Graphics;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Color;
+import java.awt.Graphics2D;
 
 public class Panel extends AbstractComponent {
+	
+	private final int colCount;
+	
+	private final int rowCount;
 
-    private static final AbstractComponent[] EMPTY_ARRAY = new AbstractComponent[0];
+    private final Component[][] components;
 
-    private List<AbstractComponent> children;
-
-    public Panel() {
-        children = new ArrayList<AbstractComponent>();
+    public Panel(int colCount, int rowCount) {
+    	if (colCount < 1) {
+    		throw new IllegalArgumentException("Invalid number of columns: " + colCount);
+    	}
+    	if (rowCount < 1) {
+    		throw new IllegalArgumentException("Invalid number of rows: " + colCount);
+    	}
+    	this.colCount = colCount;
+    	this.rowCount = rowCount;
+        components = new Component[colCount][rowCount];
     }
 
-    public void addComponent(AbstractComponent component) {
-        children.add(component);
-        component.setParent(this);
-    }
-
-    public AbstractComponent[] getComponents() {
-        return children.toArray(EMPTY_ARRAY);
+    public void addComponent(int col, int row, Component component) {
+    	if (col < 0 || col > colCount) {
+    		throw new IllegalArgumentException("Invalid column: " + col);
+    	}
+    	if (row < 0 || row > rowCount) {
+    		throw new IllegalArgumentException("Invalid row: " + row);
+    	}
+        components[col][row] = component;
+        ((AbstractComponent) component).setParent(this);
     }
 
     public void doLayout() {
-        int width = getWidth();
-        int height = getHeight();
-
-        for (AbstractComponent c : children) {
-            c.doLayout();
-        }
-
-        if (width == 0) {
-            for (Component c : children) {
-                width += c.getWidth();
-            }
-
-        }
-        if (height == 0) {
-            for (Component c : children) {
-                height += c.getHeight();
-            }
-
-        }
-
-        // int dx = 0;
-        int dy = 0;
-        for (AbstractComponent c : children) {
-            c.setY(dy);
-            dy += c.getHeight();
-        }
-
     }
 
-    public void paintComponent(Graphics g) {
-        for (AbstractComponent c : children) {
-            c.paintComponent(g);
-        }
+    public void paint(Graphics2D g) {
+    	int x = getX();
+    	int y = getY();
+		int width = getWidth();
+		int height = getHeight();
+		g.setColor(Color.RED);
+		g.drawRect(x, y, x + width, y + height);
     }
 
 }

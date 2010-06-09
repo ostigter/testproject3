@@ -1,6 +1,6 @@
 package customui;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public interface Component {
 	
@@ -16,6 +16,6 @@ public interface Component {
 	
 	void doLayout();
 	
-	void paintComponent(Graphics g);
+	void paint(Graphics2D g);
 
 }
