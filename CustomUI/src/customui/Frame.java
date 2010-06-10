@@ -11,17 +11,12 @@ public class Frame extends AbstractComponent {
 
     private static final long serialVersionUID = 1L;
     
-    private static final int DEFAULT_WIDTH = 400;
-    
-    private static final int DEFAULT_HEIGHT = 300;
-    
     private final JFrame frame;
     
     private Panel panel;
 
     public Frame(String title) {
     	frame = new CustomJFrame(title);
-    	setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
     
     public void setTitle(String title) {
@@ -37,7 +32,7 @@ public class Frame extends AbstractComponent {
     	if (panel != null) {
     		panel.doLayout();
     	}
-        frame.setSize(getWidth(), getHeight());
+        setSize(panel.getWidth() + 1, panel.getHeight() + 1);
         setValid(true);
     }
     
