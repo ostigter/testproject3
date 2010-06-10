@@ -6,15 +6,13 @@ public interface Component {
 	
 	Component getParent();
 	
-	int getX();
-	
-	int getY();
-	
 	int getWidth();
 	
 	int getHeight();
 	
-	void doLayout();
+	int getX();
+	
+	int getY();
 	
 	void paint(Graphics2D g);
 
