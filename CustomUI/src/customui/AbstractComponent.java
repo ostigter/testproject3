@@ -4,13 +4,15 @@ public abstract class AbstractComponent implements Component {
 
 	private Panel parent;
 
-	private int x;
+	private int x = 0;
 
-	private int y;
+	private int y = 0;
 
-	private int width;
+	private int width = -1;
 
-	private int height;
+	private int height = -1;
+	
+	private boolean isValid = false;
 
 	public Panel getParent() {
 		return parent;
@@ -24,15 +26,12 @@ public abstract class AbstractComponent implements Component {
 		return x;
 	}
 
-	/* package */void setX(int x) {
-		this.x = x;
-	}
-
 	public int getY() {
 		return y;
 	}
 
-	/* package */void setY(int y) {
+	/* package */void setLocation(int x, int y) {
+		this.x = x;
 		this.y = y;
 	}
 
@@ -40,16 +39,21 @@ public abstract class AbstractComponent implements Component {
 		return width;
 	}
 
-	/* package */void setWidth(int width) {
-		this.width = width;
-	}
-
 	public int getHeight() {
 		return height;
 	}
 
-	/* package */void setHeight(int height) {
+	/* package */void setSize(int width, int height) {
+		this.width = width;
 		this.height = height;
 	}
-
+	
+	/* package */ boolean isValid() {
+		return isValid;
+	}
+	
+	/* package */ void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+	
 }

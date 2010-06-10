@@ -21,6 +21,7 @@ public class Label extends AbstractComponent {
 
     public void setText(String text) {
         this.text = text;
+        doLayout();
     }
     
     public Font getFont() {
@@ -29,13 +30,7 @@ public class Label extends AbstractComponent {
     
     public void setFont(Font font) {
     	this.font = font;
-    }
-
-    @Override
-    public void doLayout() {
-        // FIXME: Fixed size for testing
-        setWidth(200);
-        setHeight(50);
+        doLayout();
     }
 
 	@Override
@@ -48,6 +43,11 @@ public class Label extends AbstractComponent {
         g.drawRect(x, y, width - 1, height - 1);
         g.setFont(font);
         g.drawString(text, x + 5, y + y);
+	}
+	
+	private void doLayout() {
+		//TODO: Calculate actual required size.
+		setSize(150, 25);
 	}
 
 }
