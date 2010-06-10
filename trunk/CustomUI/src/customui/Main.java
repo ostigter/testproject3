@@ -12,12 +12,12 @@ public class Main {
         Frame frame = new Frame("Test Application");
         frame.setSize(WIDTH, HEIGHT);
 
-    	Panel panel = new Panel(2, 1);
-        Font font = new Font("Arial", Font.PLAIN, 12);
-        Label label1 = new Label("Label 1", font);
-        Label label2 = new Label("Label 2", font);
-        panel.addComponent(0, 0, label1);
-        panel.addComponent(1, 0, label2);
+    	Panel panel = new Panel(2, 2);
+        Font font = new Font("SansSerif", Font.PLAIN, 12);
+        panel.addComponent(0, 0, new Label("Label 1", font));
+        panel.addComponent(1, 0, new Label("Label 2", font));
+        panel.addComponent(0, 1, new Label("Label 3", font));
+        panel.addComponent(1, 1, new Label("Label 4", font));
         frame.setPanel(panel);
         
         frame.center();

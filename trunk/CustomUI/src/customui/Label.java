@@ -3,6 +3,8 @@ package customui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.Rectangle2D;
 
 public class Label extends AbstractComponent {
 
@@ -35,19 +37,32 @@ public class Label extends AbstractComponent {
 
 	@Override
 	public void paint(Graphics2D g) {
+	    doLayout();
+	    
         int x = getX();
         int y = getY();
         int width = getWidth();
         int height = getHeight();
+        
+        g.setColor(Color.GREEN);
+        g.drawRect(x, y, width, height);
         g.setColor(Color.BLACK);
-        g.drawRect(x, y, width - 1, height - 1);
         g.setFont(font);
-        g.drawString(text, x + 5, y + y);
+        g.drawString(text, x, 25 + y);
 	}
 	
 	private void doLayout() {
-		//TODO: Calculate actual required size.
-		setSize(150, 25);
+	    if (isValid()) {
+	        return;
+	    }
+	    
+	    Rectangle2D bounds = font.getStringBounds(text, fontRenderContext);
+	    int width = (int) bounds.getWidth();
+	    int height = (int) bounds.getHeight();
+
+		setSize(width, height);
+		
+		setValid(true);
 	}
 
 }

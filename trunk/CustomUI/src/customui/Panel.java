@@ -36,8 +36,13 @@ public class Panel extends AbstractComponent {
     }
 
     public void doLayout() {
-    	// Calculate total width of all columns.
-    	int width = 0;
+        if (isValid()) {
+            return;
+        }
+        
+    	// Calculate column widths.
+        int[] colWidths = new int[colCount];
+    	int totalWidth = 0;
     	for (int col = 0; col < colCount; col++) {
     		int colWidth = 0;
     		for (int row = 0; row < rowCount; row++) {
@@ -49,11 +54,13 @@ public class Panel extends AbstractComponent {
         			}
         		}
         	}
-    		width += colWidth;
+    		colWidths[col] = colWidth;
+    		totalWidth += colWidth;
     	}
 
-    	// Calculate total height of all rows.
-    	int height = 0;
+    	// Calculate row heights.
+    	int[] rowHeights = new int[rowCount];
+    	int totalHeight = 0;
 		for (int row = 0; row < rowCount; row++) {
     		int rowHeight = 0;
         	for (int col = 0; col < colCount; col++) {
@@ -65,26 +72,44 @@ public class Panel extends AbstractComponent {
         			}
         		}
         	}
-    		height += rowHeight;
+        	rowHeights[row] = rowHeight;
+    		totalHeight += rowHeight;
     	}
 		
-		setSize(width, height);
+		int x = getX();
+		int y = getY();
+		
+		// Set component size and position.
+		for (int row = 0; row < rowCount; row++) {
+		    for (int col = 0; col < colCount; col++) {
+		        AbstractComponent component = (AbstractComponent) components[col][row];
+                component.setLocation(x + (col * colWidths[col]), y + (row * rowHeights[row]));
+		    }
+		}
+		
+		setSize(totalWidth, totalHeight);
 		
 		setValid(true);
     }
 
     public void paint(Graphics2D g) {
-    	if (!isValid()) {
-    		doLayout();
-    	}
+		doLayout();
     	
     	int x = getX();
     	int y = getY();
 		int width = getWidth();
 		int height = getHeight();
 		
-		g.setColor(Color.BLUE);
+		g.setColor(Color.LIGHT_GRAY);
 		g.drawRect(x, y, x + width, y + height);
+		
+        // Set component size and position.
+        for (int row = 0; row < rowCount; row++) {
+            for (int col = 0; col < colCount; col++) {
+                components[col][row].paint(g);
+            }
+        }
+		
     }
 
 }
