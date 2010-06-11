@@ -2,7 +2,7 @@ package customui;
 
 public abstract class AbstractComponent implements Component {
 
-	private Panel parent;
+	private AbstractComponent parent;
 
 	private int x = 0;
 
@@ -14,11 +14,11 @@ public abstract class AbstractComponent implements Component {
 	
 	private boolean isValid = false;
 
-	public Panel getParent() {
+	public AbstractComponent getParent() {
 		return parent;
 	}
 
-	/* package */void setParent(Panel parent) {
+	/* package */void setParent(AbstractComponent parent) {
 		this.parent = parent;
 	}
 

@@ -1,6 +1,5 @@
 package customui;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class Panel extends AbstractComponent {
@@ -35,11 +34,7 @@ public class Panel extends AbstractComponent {
         setValid(false);
     }
 
-    public void doLayout() {
-        if (isValid()) {
-            return;
-        }
-        
+    public void doLayout(Graphics2D g) {
     	// Calculate column widths.
         int[] colWidths = new int[colCount];
     	int totalWidth = 0;
@@ -48,6 +43,7 @@ public class Panel extends AbstractComponent {
     		for (int row = 0; row < rowCount; row++) {
         		Component component = components[col][row];
         		if (component != null) {
+        		    component.doLayout(g);
         			int componentWidth = component.getWidth();
         			if (componentWidth > colWidth) {
             			colWidth = componentWidth; 
@@ -79,11 +75,27 @@ public class Panel extends AbstractComponent {
 		int x = getX();
 		int y = getY();
 		
+		int colX[] = new int[colCount];
+		int x2 = x;
+		for (int col = 0; col < colCount; col++) {
+		    colX[col] = x2;
+		    x2 += colWidths[col];
+		}
+		
+        int rowY[] = new int[rowCount];
+        int y2 = y;
+        for (int row = 0; row < rowCount; row++) {
+            rowY[row] = y2;
+            y2 += rowHeights[row];
+        }
+        
 		// Set component size and position.
 		for (int row = 0; row < rowCount; row++) {
 		    for (int col = 0; col < colCount; col++) {
 		        AbstractComponent component = (AbstractComponent) components[col][row];
-                component.setLocation(x + (col * colWidths[col]), y + (row * rowHeights[row]));
+		        if (component != null) {
+		            component.setLocation(colX[col], rowY[row]);
+		        }
 		    }
 		}
 		
@@ -93,20 +105,22 @@ public class Panel extends AbstractComponent {
     }
 
     public void paint(Graphics2D g) {
-		doLayout();
+        if (!isValid()) {
+            doLayout(g);
+        }
     	
-    	int x = getX();
-    	int y = getY();
-		int width = getWidth();
-		int height = getHeight();
-		
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawRect(x, y, x + width, y + height);
+//    	int x = getX();
+//    	int y = getY();
+//		g.setColor(Color.LIGHT_GRAY);
+//		g.drawRect(x, y, x + getWidth(), y + getHeight());
 		
         // Set component size and position.
         for (int row = 0; row < rowCount; row++) {
             for (int col = 0; col < colCount; col++) {
-                components[col][row].paint(g);
+                Component component = components[col][row];
+                if (component != null) {
+                    component.paint(g);
+                }
             }
         }
 		
