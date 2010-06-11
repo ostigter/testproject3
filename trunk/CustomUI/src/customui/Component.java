@@ -14,6 +14,8 @@ public interface Component {
 	
 	int getY();
 	
+	void doLayout(Graphics2D g);
+	
 	void paint(Graphics2D g);
 
 }

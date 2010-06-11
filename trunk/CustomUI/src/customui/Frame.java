@@ -1,5 +1,6 @@
 package customui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
@@ -28,14 +29,6 @@ public class Frame extends AbstractComponent {
     	setValid(false);
     }
 
-    public void doLayout() {
-    	if (panel != null) {
-    		panel.doLayout();
-    	}
-        setSize(panel.getWidth() + 1, panel.getHeight() + 1);
-        setValid(true);
-    }
-    
     public void center() {
         frame.setLocationRelativeTo(null);
         setLocation(frame.getX(), frame.getY());
@@ -57,11 +50,24 @@ public class Frame extends AbstractComponent {
     	frame.setLocation(x, y);
     }
     
-	@Override
+    @Override
+    public void doLayout(Graphics2D g) {
+        if (panel != null) {
+            panel.doLayout(g);
+        }
+        setSize(panel.getWidth() + 1, panel.getHeight() + 1);
+        setValid(true);
+    }
+    
+    @Override
 	public void paint(Graphics2D g) {
 		if (!isValid()) {
-			doLayout();
+			doLayout(g);
 		}
+		
+		g.setColor(Color.LIGHT_GRAY);
+		g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+		
 		if (panel != null) {
 			panel.paint(g);
 		}
