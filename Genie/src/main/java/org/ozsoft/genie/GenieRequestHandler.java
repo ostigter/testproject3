@@ -27,7 +27,6 @@ public class GenieRequestHandler extends Thread {
 	public GenieRequestHandler(Socket socket, Map<String, Object> services) {
 		this.socket = socket;
 		this.services = services;
-		LOG.debug("Created");
 	}
 	
 	@Override

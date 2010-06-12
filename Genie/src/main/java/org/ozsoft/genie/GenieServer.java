@@ -118,8 +118,6 @@ public class GenieServer implements Runnable {
 			throw new GenieException("Server is already running");
 		}
 		
-		LOG.debug("Starting");
-		
 		try {
 			serverSocket = new ServerSocket(port);
 			serverSocket.setSoTimeout(SOCKET_TIMEOUT);
