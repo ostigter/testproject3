@@ -1,13 +1,14 @@
-package org.ozsoft.genie.example;
+package org.ozsoft.genie;
 
 import org.ozsoft.genie.GenieClient;
 import org.ozsoft.genie.GenieConstants;
 import org.ozsoft.genie.GenieException;
 
 /**
- * Genie-based Calculator client.
+ * Genie-based Calculator client. <br />
+ * <br />
  * 
- * The first (optional) argument specifies the hostname of the Genie server;
+ * The first (optional) argument specifies the hostname of the Genie server,
  * a second (optional) argument specifies the port.
  * 
  * @author Oscar Stigter

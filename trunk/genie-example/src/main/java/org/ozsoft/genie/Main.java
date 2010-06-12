@@ -1,8 +1,9 @@
-package org.ozsoft.genie.example;
+package org.ozsoft.genie;
 
 import org.ozsoft.genie.GenieClient;
 import org.ozsoft.genie.GenieException;
 import org.ozsoft.genie.GenieServer;
+import org.ozsoft.genie.calculator.CalculatorImpl;
 
 /**
  * A example application with a Genie-based calculator service.

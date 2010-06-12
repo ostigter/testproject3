@@ -1,11 +1,13 @@
-package org.ozsoft.genie.example;
+package org.ozsoft.genie;
 
 import org.ozsoft.genie.GenieConstants;
 import org.ozsoft.genie.GenieException;
 import org.ozsoft.genie.GenieServer;
+import org.ozsoft.genie.calculator.CalculatorImpl;
 
 /**
- * Genie-based Calculator service.
+ * Genie-based Calculator service. <br />
+ * <br />
  * 
  * The first (optional) argument specifies the Genie server port.
  * 
