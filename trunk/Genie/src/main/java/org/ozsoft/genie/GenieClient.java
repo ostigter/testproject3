@@ -8,7 +8,7 @@ import java.net.Socket;
 import org.apache.log4j.Logger;
 
 /**
- * A client to call operations on a specific Genie service.
+ * The client.
  * 
  * @author Oscar Stigter
  */
@@ -17,10 +17,15 @@ public class GenieClient {
 	private static final Logger LOG = Logger.getLogger(GenieClient.class);
 	
 	private final String service;
+	
 	private final String host;
+	
 	private final int port;
+	
 	private Socket socket;
+	
 	private ObjectOutputStream oos;
+	
 	private ObjectInputStream ois;
 	
 	/**
