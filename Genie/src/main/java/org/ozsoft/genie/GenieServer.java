@@ -9,15 +9,17 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
- * The server. 
+ * The server. <br />
+ * <br />
  * 
- * Implemented as separate thread.
+ * Runs in its own thread.
  * 
  * @author Oscar Stigter
  */
 public class GenieServer implements Runnable {
 	
-	private static final Logger LOG = Logger.getLogger(GenieServer.class);
+	/** Log. */
+    private static final Logger LOG = Logger.getLogger(GenieServer.class);
 	
 	/** Socket timeout to avoid blocked waiting for connections. */
 	private static final int SOCKET_TIMEOUT = 100;
@@ -53,7 +55,7 @@ public class GenieServer implements Runnable {
 	public GenieServer(int port) {
 		this.port = port;
 		services = new HashMap<String, Object>();
-		LOG.debug("Created");
+		LOG.debug(String.format("Created with port %d", port));
 	}
 	
 	/**
@@ -73,8 +75,12 @@ public class GenieServer implements Runnable {
 			LOG.error(msg);
 			throw new GenieException(msg);
 		}
+		
 		services.put(name, handler);
-		LOG.debug(String.format("Bound service '%s'", name));
+		
+		if (LOG.isDebugEnabled()) {
+		    LOG.debug(String.format("Bound service '%s'", name));
+		}
 	}
 	
 	/**
@@ -88,12 +94,16 @@ public class GenieServer implements Runnable {
 	 */
 	public void unbind(String name) throws GenieException {
 		if (!services.containsKey(name)) {
-			String msg = String.format("Service '%s 'not bound", name);
-			LOG.error(msg);
+			String msg = String.format("Service '%s' is not bound", name);
+			LOG.debug(msg);
 			throw new GenieException(msg);
 		}
+		
 		services.remove(name);
-		LOG.debug(String.format("Unbound service '%s'", name));
+		
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(String.format("Unbound service '%s'", name));
+        }
 	}
 	
 	/**
@@ -126,30 +136,32 @@ public class GenieServer implements Runnable {
 	 */
 	public void stop() {
 		if (isRunning) {
-			LOG.debug("Stopping");
 			isRunning = false;
 			thread.interrupt();
 		}
 	}
 	
 	/**
-	 * The server thread's main loop handling service calls.
+	 * The server thread's main loop handling service calls. <br />
+	 * <br />
+	 * 
 	 * Each service call is handled by a separate, multithreaded handler.
 	 */
 	public void run() {
 		isRunning = true;
 		LOG.debug(String.format("Started, listening on port %d", port));
+
 		while (isRunning) {
 			try {
 				// Handle incoming service requests.
-				new GenieRequestHandler(
-						serverSocket.accept(), services).start();
+				new GenieRequestHandler(serverSocket.accept(), services).start();
 			} catch (SocketTimeoutException e) {
 				// Connection timeout expired; keep listening.
 			} catch (IOException e) {
-				System.err.format("Error handling request: %s", e.getMessage());
+			    LOG.error(String.format("Error handling request: %s", e.getMessage()), e);
 			}
 		}
+		
 		LOG.debug("Stopped");
 	}
 

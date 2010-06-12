@@ -9,10 +9,12 @@ import java.io.Serializable;
  */
 public class GenieRequest implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8082886187283882306L;
+
+    private String service;
 	
-	private String service;
 	private String operation;
+	
 	private Object[] args;
 	
 	public String getService() {
@@ -38,6 +40,5 @@ public class GenieRequest implements Serializable {
 	public void setArgs(Object[] args) {
 		this.args = args;
 	}
-
 
 }

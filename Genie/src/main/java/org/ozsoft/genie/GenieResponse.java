@@ -3,10 +3,12 @@ package org.ozsoft.genie;
 import java.io.Serializable;
 
 /**
- * The response part of a service call.
+ * The response part of a service call. <br />
+ * <br />
  *
  * If the response contains a non-null error message, the service call is
- * considered to have failed.
+ * considered to have failed. <br />
+ * <br />
  * 
  * If the service call was successful, it contains the (optional) return value.
  * 
@@ -17,6 +19,7 @@ public class GenieResponse implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String errorMessage;
+	
 	private Object returnValue;
 	
 	public String getErrorMessage() {

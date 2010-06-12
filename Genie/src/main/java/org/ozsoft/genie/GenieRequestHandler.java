@@ -9,7 +9,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
- * A server thread handling the execution of a single service call.
+ * A server thread handling the execution of a single service call. <br />
+ * <br />
  * 
  * After the service call has been handled, the thread is finished.
  * 
@@ -20,6 +21,7 @@ public class GenieRequestHandler extends Thread {
 	private static final Logger LOG = Logger.getLogger(GenieRequestHandler.class);
 	
 	private final Socket socket;
+	
 	private final Map<String, Object> services;
 	
 	public GenieRequestHandler(Socket socket, Map<String, Object> services) {
@@ -84,14 +86,14 @@ public class GenieRequestHandler extends Thread {
 		LOG.debug("Finished");
 	}
 
-	private static Method getOperationMethod(
-			Object serviceHandler, String operation) {
+	private static Method getOperationMethod(Object serviceHandler, String operation) {
 		for (Method method : serviceHandler.getClass().getMethods()) {
 			if (method.getName().equals(operation)) {
 				// Return first matching method (no overloading support!).
 				return method;
 			}
 		}
+		
 		// Not found.
 		return null;
 	}
