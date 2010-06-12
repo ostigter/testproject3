@@ -1,4 +1,4 @@
-package org.ozsoft.genie.example;
+package org.ozsoft.genie.calculator;
 
 /**
  * Calculator service implementation. <br />
