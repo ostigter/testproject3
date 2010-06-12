@@ -17,7 +17,7 @@ public class Main {
 		GenieServer server = null;
 		
 		// Create the Calculator service handler.
-		Calculator calculator = new Calculator();
+		CalculatorImpl calculator = new CalculatorImpl();
 
 		try {
 			// Create a Genie server on the default port.

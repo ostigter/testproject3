@@ -15,10 +15,8 @@ import org.ozsoft.genie.GenieException;
 public class CalculatorClient {
 
 	public static void main(String[] args) {
-		String host = (args.length >= 1) ?
-				args[0] : GenieConstants.DEFAULT_HOST;
-		int port = (args.length >= 2) ?
-				Integer.parseInt(args[1]) : GenieConstants.DEFAULT_PORT;
+		String host = (args.length >= 1) ? args[0] : GenieConstants.DEFAULT_HOST;
+		int port = (args.length >= 2) ? Integer.parseInt(args[1]) : GenieConstants.DEFAULT_PORT;
 		try {
 			System.out.println("Calling Genie service...");
 			GenieClient client = new GenieClient(host, port, "Calculator");

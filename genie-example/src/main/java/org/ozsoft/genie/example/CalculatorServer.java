@@ -18,7 +18,7 @@ public class CalculatorServer {
 				Integer.parseInt(args[0]) : GenieConstants.DEFAULT_PORT;
 		try { 
 			GenieServer server = new GenieServer(port);
-			server.bind("Calculator", new Calculator());
+			server.bind("Calculator", new CalculatorImpl());
 			server.start();
 			System.out.println("Genie server started (Press CTRL+C to quit)");
 		} catch (GenieException e) {

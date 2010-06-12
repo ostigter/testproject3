@@ -1,31 +1,18 @@
 package org.ozsoft.genie.example;
 
 /**
- * A very simple calculator service.
+ * Calculator service interface.
  * 
- * Note that this is just a POJO, without any Genie specific code.
- *  
- * @author Oscar
+ * @author Oscar Stigter
  */
-public class Calculator {
-	
-	public int add(int i, int j) {
-		return i + j;
-	}
-
-	public int subtract(int i, int j) {
-		return i - j;
-	}
-
-	public int multiply(int i, int j) {
-		return i * j;
-	}
-
-	public int divide(int i, int j) {
-		if (j == 0) {
-			throw new IllegalArgumentException("Division by zero");
-		}
-		return i / j;
-	}
+public interface Calculator {
+    
+    int add(int i, int j);
+    
+    int subtract(int i, int j);
+    
+    int multiply(int i, int j);
+    
+    int divide(int i, int j);
 
 }
