@@ -4,23 +4,31 @@ import java.awt.Font;
 
 public class Main {
 
-    private static final int WIDTH = 400;
+    private static final int WIDTH = 600;
 
-    private static final int HEIGHT = 300;
+    private static final int HEIGHT = 400;
 
     public static void main(String[] args) {
         Frame frame = new Frame("Test Application");
         frame.setSize(WIDTH, HEIGHT);
 
-    	Panel panel = new Panel(3, 3);
+    	Panel seriesPanel = new Panel(1, 3);
         Font font = new Font("SansSerif", Font.PLAIN, 36);
-        panel.addComponent(0, 0, new Label("Loop", font));
-        panel.addComponent(1, 0, new Label("Fuij", font));
-        panel.addComponent(2, 0, new Label("Hlaalu", font));
-        panel.addComponent(0, 1, new Label("Weepy", font));
-        panel.addComponent(1, 1, new Label("USA", font));
-        panel.addComponent(2, 2, new Label("Bottom", font));
-        frame.setPanel(panel);
+        seriesPanel.addComponent(0, 0, new Label("Breaking Bad", font));
+        seriesPanel.addComponent(0, 1, new Label("CSI: New York", font));
+        seriesPanel.addComponent(0, 2, new Label("Dog Whisperer, the", font));
+        
+        Panel moviesPanel = new Panel(1, 3);
+        moviesPanel.addComponent(0, 0, new Label("Ratatouille", font));
+        moviesPanel.addComponent(0, 1, new Label("Up in the air", font));
+        moviesPanel.addComponent(0, 2, new Label("Sleuth", font));
+        
+        TabPane tabPane = new TabPane();
+        tabPane.addTab("Series", seriesPanel);
+        tabPane.addTab("Movies", moviesPanel);
+        tabPane.setSelectedIndex(0);
+
+        frame.setContent(tabPane);
         
         frame.center();
         frame.setVisible(true);

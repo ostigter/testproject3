@@ -89,6 +89,24 @@ public class Panel extends AbstractComponent {
             y2 += rowHeights[row];
         }
         
+        // Distribute any left over space equally.
+        int parentWidth = getParent().getWidth();
+        if (parentWidth > totalWidth) {
+            int remainder = parentWidth - totalWidth;
+            for (int col = 0; col < colCount; col++) {
+                colWidths[col] += (remainder / colCount);
+            }
+            totalWidth = parentWidth;
+        }
+        int parentHeight = getParent().getHeight();
+        if (parentHeight > totalHeight) {
+            int remainder = parentHeight - totalHeight;
+            for (int row = 0; row < rowCount; row++) {
+                rowHeights[row] += (remainder / rowCount);
+            }
+            totalHeight = parentHeight;
+        }
+        
 		// Set component size and position.
 		for (int row = 0; row < rowCount; row++) {
 		    for (int col = 0; col < colCount; col++) {
