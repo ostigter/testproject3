@@ -14,7 +14,7 @@ public class Frame extends AbstractComponent {
     
     private final JFrame frame;
     
-    private Panel panel;
+    private Component content;
 
     public Frame(String title) {
     	frame = new CustomJFrame(title);
@@ -24,8 +24,9 @@ public class Frame extends AbstractComponent {
     	frame.setTitle(title);
     }
 
-    public void setPanel(Panel panel) {
-    	this.panel = panel;
+    public void setContent(Component content) {
+    	this.content = content;
+    	((AbstractComponent) content).setParent(this);
     	setValid(false);
     }
 
@@ -52,10 +53,10 @@ public class Frame extends AbstractComponent {
     
     @Override
     public void doLayout(Graphics2D g) {
-        if (panel != null) {
-            panel.doLayout(g);
+        if (content != null) {
+            content.doLayout(g);
         }
-        setSize(panel.getWidth() + 1, panel.getHeight() + 1);
+        setSize(content.getWidth() + 1, content.getHeight() + 1);
         setValid(true);
     }
     
@@ -68,8 +69,8 @@ public class Frame extends AbstractComponent {
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 		
-		if (panel != null) {
-			panel.paint(g);
+		if (content != null) {
+			content.paint(g);
 		}
 	}
 	
