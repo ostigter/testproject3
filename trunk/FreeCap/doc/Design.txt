@@ -41,30 +41,32 @@ factory
 	dairy workshop (1 milk -> 1 yoghurt/butter/cheese)
 store
 	grocery (bread, milk, yoghurt, butter, cheese, beef)
-
+	funature store
+	bakery
+	clothes shop
 	
 New York
 	population: 10,000
 	companies:
-		Woodland Inc., Forest, 1000 acres  50 workers, $500.00 per tonne, quality 2.5
-		Forest Land, Forest, 100 acres, 10 workers, $450.00 per tonne, quality 1.0
+		Woodland Inc., Forest, 1000 acres  50 workers, $500.00 per tonne, quality 2
+		Forest Land, Forest, 100 acres, 10 workers, $450.00 per tonne, quality 1
 
-		
 Wheat farm
 	Location: Smallville
 	Size: 100 acres
 	Yield: 100,000 wheat per year
 	Employees:
 		10 x $50.00 = $500.00 salary per week
-		Qualification: 1.0
-	Technology level: 1.0
-	Quality: 1.0
+		Qualification: 1
+	Technology level: 1
+	Quality: 1
 	
 	Revenue: 100,000 x $1.00 = $100,000 per year =  $1923.08 per week
 	Fixed costs: 								    -$1000.00
 	Salaries:    									 -$500.00
 													---------
-	Profit											  $423.08 (22.0 %)
+	Profit											  $423.08
+	Profit margin:                                      22.0 %
 
 Fourmill
 	Location: Smallville
@@ -72,13 +74,12 @@ Fourmill
 	Produces: 100 flour per week
 	Employees:
 		10 x $50.00 = $500.00 salary per week
-		Qualification: 1.0
-	Technology level: 1.0
-	Supplier: GreenLand Corp., 1000 units wheat x $1.00 = $1000.00 per week, quality 1.0
-	Quality: 1.0
+		Qualification: 1
+	Technology level: 1
+	Supplier: GreenLand Corp., 1000 units wheat x $1.00 = $1000.00 per week, quality 1
+	Quality: 1
 
 	Revenue: 1000 x $2.00 =             $2000.00
-	
 	Fixed costs               $200.00
 	Material costs:          $1000.00
 	Salaries:    			  $500.00
@@ -87,7 +88,6 @@ Fourmill
 									    --------
 	Profit								 $300.00 (15.0%)
 
-	
 Market
     Wheat
         Quality     Price       Stock
@@ -137,7 +137,7 @@ Enterprise
         Fixed costs: $1,000 per week
         Number of employees: 5
         Avg. salary: $250
-        Avg. qualification: 2.00
+        Avg. qualification: 2
         Quality: 2
         Suppliers
             Name        Product     Quality     Unit price      Volume      Total price
