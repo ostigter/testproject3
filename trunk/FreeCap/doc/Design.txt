@@ -27,9 +27,11 @@ farm
 	quarry (stone)
 	ore mine (ore)
 	oil drill (oil)
-	wheat field (wheat)
-	cotton field (cotton)
+	wheat farm (wheat)
+	cotton farm (cotton)
 	cow farm (milk, cows)
+	pig farm (pigs)
+	sheep farm (wool, sheep)
 factory
 	flourmill (1 wheat -> 1 flour)
 	bakery (1 flour -> 1 bread)
@@ -40,10 +42,10 @@ factory
 	beef workshop (1 cow -> 50 beef)
 	dairy workshop (1 milk -> 1 yoghurt/butter/cheese)
 store
-	grocery (bread, milk, yoghurt, butter, cheese, beef)
-	funature store
-	bakery
-	clothes shop
+	grocery (bread, milk, yoghurt, butter, cheese, meat)
+	funature store (furnature)
+	bakery (bread, pastry)
+	clothes shop (clothes)
 	
 New York
 	population: 10,000
@@ -110,10 +112,6 @@ Market
     Local suppliers
         Avg. quality    Avg. price
         30              $2.25
-
-New York
-Population: 12,000,000
-Wealth:          
 
 Enterprise
     Wheat farm
