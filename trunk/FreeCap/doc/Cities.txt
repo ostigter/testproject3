@@ -1,0 +1,46 @@
+Cities
+======
+
+New York, NY
+Los Angeles, CA
+Chicago, IL
+Houston, TX
+Philadephia, PA
+Phoenix, AZ
+San Diego, CA
+San Antonio, TX
+Detroit, MI
+San Jose, CA
+Indianapolis, IN
+San Fransisco, CA
+Jacksonville, FL
+Columbus, OH
+
+
+Dallas, TX
+Seattle, WA
+Albuquerque, NM
+Portland, OR
+Las Vegas, NV
+Salt Lake City
+Denver
+Oklahoma City
+Memphis, TN
+New Orleans, 
+St. Louis, 
+Minneapolis, 
+Milwaukee, WI
+Louisville
+Cincinnati
+Cleveland
+Washington D.C.
+Boston, MA
+Norfolk
+Charlotte, NC
+Atlanta
+Birmingham
+Miami, FL
+Achorage, AL
+Baltimore, MA
+Austin, TX
+Tampa, FL
