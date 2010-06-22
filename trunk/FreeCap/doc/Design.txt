@@ -5,23 +5,96 @@ FreeCap design
 Concepts
 --------
 
-city
-population
-wealth
-unemployment
-local suppliers
-product
-price
-quality
-brand
-company
-cash
 bank
 loan
-interest rate
-duration
-down payment
-enterprise
+    interest rate
+    duration
+    down payment
+
+city
+    population
+    wealth
+    unemployment
+    economic climate
+        booming
+        depression
+    city part (downtown, suburbs, outskirts, rural)
+    land value
+local suppliers
+
+industry
+    farming
+    manufacturing
+    retail
+    R&D
+
+product
+    raw product (farming, mine)
+    semi product (manufacturing)
+    consumer product (manufacturing, retail)
+necessity rating
+technology level
+price
+price rating
+price concern
+quality
+quality rating
+quality concern
+brand
+brand awareness
+brand loyalty
+brand rating
+
+company
+    name
+    CEO (player)
+    cash
+    firms
+    revenues
+    expenses
+    profit/loss
+    shares
+    shareholders
+    owned stock
+    divident
+
+firm
+    type
+        farm (farming)
+            crop growing
+            lifestock raising
+            lifestock processing
+        factory (manufacuring)
+            purchasing
+            manufacturing
+            sales
+        retail store (retail)
+            purchasing
+            sales
+            advertising
+        R&D center (R&D)
+        headquaters (management)
+            advertising
+            CEO
+            CTO
+            HRM
+    size
+    employees
+    technology (farm, factory)
+    equipment (farm, factory)
+    quality
+    revenues
+    expenses
+    profit/loss
+
+supplier
+    local supplier
+    seaport (import)
+    distance
+    freight costs
+
+technology
+
 farm
 	forest (wood)
 	quarry (stone)
@@ -32,6 +105,7 @@ farm
 	cow farm (milk, cows)
 	pig farm (pigs)
 	sheep farm (wool, sheep)
+mine
 factory
 	flourmill (1 wheat -> 1 flour)
 	bakery (1 flour -> 1 bread)
@@ -48,7 +122,7 @@ store
 	clothes shop (clothes)
 	
 New York
-	population: 10,000
+	population: 3,000,000
 	companies:
 		Woodland Inc., Forest, 1000 acres  50 workers, $500.00 per tonne, quality 2
 		Forest Land, Forest, 100 acres, 10 workers, $450.00 per tonne, quality 1
