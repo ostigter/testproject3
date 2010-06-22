@@ -6,11 +6,11 @@
 
     <groupId>org.ozsoft.freecap</groupId>
     <artifactId>FreeCap</artifactId>
-    <packaging>war</packaging>
     <version>0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <name>FreeCap</name>
-    <description>A free, online business game based on the Capitalism series.</description>
+    <description>A free, online business game based on Capitalism II</description>
 
     <developers>
         <developer>
@@ -40,12 +40,18 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
                     <compilerVersion>6</compilerVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.8</version>
+                <configuration>
+                    <wtpversion>2.0</wtpversion>
                 </configuration>
             </plugin>
         </plugins>
