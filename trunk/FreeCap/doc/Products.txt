@@ -1,0 +1,478 @@
+Raw products
+------------
+
+From crop raising:
+
+Cacao
+Coconut
+Corn
+Cotton
+Flax fiber
+Grapes
+Lemon
+Rubber
+Strawberry
+Sugar
+Tobacco
+Wheat
+
+From lifestock raising:
+
+Chicken
+    Eggs
+    Frozen chicken
+Cows
+    Frozen beef
+    Milk
+    Leather
+Pigs
+    Frozen pork
+    Leather
+Sheep
+    Frozen lamb
+    Leather
+    Wool
+
+
+Natural resources
+-----------------
+
+    A = Aluminum
+    M = Chemical Materials
+    C = Coal
+    G = Gold
+    I = Iron Ore
+    O = Oil
+    S = Silica
+    V = Silver
+    T = Timber
+
+
+Industrial products
+-------------------
+
+CPU                    Silica
+Car body               Silica (Glass), Oil (Plastic), Coal + Iron (Steal)
+Citric acid            Lemon
+Coconut oil            Coconut
+Corn syrup             Corn
+Dye Stuffs             Oil, Timber
+Electronic components  Chemical Materials, Coal, Iron Ore, Silica
+Engine                 Coal, Iron Ore (Steel)
+Flour                  Wheat
+Glass                  Silica
+Linen                  Flax Fiber
+Paper                  Timber
+Plastic                Oil
+Polyester              Chemical Materials, Oil
+Silicon                Silica
+Steel                  Coal, Iron Ore
+Textiles               Cotton
+Wheat germ oil         Wheat
+Wheel and tire         Rubber, Coal, Iron Ore (Steel)
+
+
+Consumer products
+-----------------
+
+Grown (Straight from the Farm)
+Eggs
+Frozen Beef
+Frozen Chicken
+Frozen Lamb
+Frozen Pork
+
+
+Manufactured Goods
+
+Grown
+Bread               Wheat (Flour)
+Cake                Cacao, Eggs, Wheat (Flour)
+Canned Corn         Corn
+Canned Soup         Frozen Chicken
+Chewing Gum         Sugar, Corn (Corn Syrup)
+Chocolate Bar       Cacao, Milk
+Cookies             Sugar, Wheat (Flour)
+Corn Flakes         Corn, Sugar
+Fruit Snack         Strawberry
+Ice Cream           Milk, Strawberry, Sugar
+Leather Bag         Leather, Cotton
+Leather Briefcase   Leather, Cotton (Textiles)
+Leather Jacket      Leather, Cotton (Textiles)
+Leather Wallet      Leather
+Sandals             Rubber
+Shoes               Cotton, Leather
+Socks               Wool
+Yogurt              Strawberry, Milk, Lemon (Citric Acid)
+
+1x Mined + Grown
+A   Aluminum
+Cola                  Aluminum, Sugar
+G  Gold
+Gold Ring             Gold
+S  Silica (Manufactured into CPU, Glass, Silicon)
+Bottled Milk          Silica (Glass), Milk
+Grape Juice           Silica (Glass), Lemon (Citric Acid), Grapes
+Wine                  Silica (Glass), Grapes
+V  Silver
+Silver Necklace       Silver
+T  Timber (Manufactured into Paper)
+Bed                   Timber
+Chair                 Timber, Cotton (Textiles)
+Cigarettes            Timber, Tobacco
+Cigars                Timber, Tobacco
+Soap                  Timber, Coconut (Coconut Oil), Lemon (Citric Acid)
+Sofa                  Timber, Cotton, Leather
+
+2x Mined + Grown
+Backpack               Chemical Material + Oil (Polyester),Flax Fiber (Linen)
+Bath lotion            Chemical Materials, Oil (Plastic), Coconut (Coconut Oil)
+Cold tablets           Chemical Materials, Oil (Plastic)
+Cough syrup            Chemical Materials, Oil (Plastic)
+Deturgent              Chemical Materials, Oil (Plastic), Lemon (Citric Acid)
+Eye shadow             Chemical Materials, Oil (Plastic)
+Hair color             Oil + Timber (Dye Stuff + Plastic) Wheat (Wheat Germ Oil)
+Headache pills         Chemical Materials, Oil (Plastic)
+In-line skates         Oil + Timber (Dye Stuff), Rubber, Leather
+Jeans                  Oil + Timber (Dye Stuff), Cotton (Textiles)
+Leather belt           Coal + Iron Ore (Steel), Leather
+Lipstick               Chemical Materials, Oil (Plastic), Wheat (Wheat Germ Oil)
+Motorcycle             Coal + Iron Ore (Steel), Rubber
+Perfume                Chemical Materials, Silica (Glass)
+Shampoo                Chemical Materials, Oil (Plastic)
+Sports shoes           Chemical Material + Oil (Polyester), Cotton, Rubber
+Sweater                Oil + Timber (Dye Stuff), Wool
+Toilet cleaner         Chemical Materials, Oil (Plastic)
+Toothpaste             Chemical Materials, Oil (Plastic)
+Toy doll               Oil + Timber (Dye Stuff), Cotton (Textiles)
+
+3x Mined + Grown
+Camera Film            Chemical Materials, Oil (Plastic), Silver
+Elegent Watch          Coal + Iron Ore (Steel), Silica (Glass)
+Golf Clubs             Coal + Iron Ore (Steel), Timber
+
+4x Mined + Grown
+Air Conditioner     Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Coal + Iron Ore (Steel)
+Desktop Computer    Chemical Materials, Coal, Iron Ore, Silica (Electronic
+Components+ CPU) Coal + Iron Ore (Steel)
+
+Car    	Car Body         Coal + Iron Ore (Steal), Silica (Glass), Oil (Plastic)
+	Engine           Coal + Iron Ore (Steel)
+	Steel            Coal + Iron Ore
+	Wheel and Tire   Coal + Iron Ore (Steel), Rubber
+
+5x Mined + Grown
+Camera                Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+DVD Player            Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components)
+Hand-Held Game Device Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Hi-fi                 Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Steel)
+Microwave             Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Mobile Phone          Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Notebook Computer     Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Palm Computer         Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Printer               Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Sports Watch          Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Television            Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Toy Racing Car        Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Video Camera          Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Video Game Console    Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Video Recorder        Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass + Steel)
+
+
+
+Listed by Mined Materials and the by alphabetical name. This will help you
+figure out what to do with the materials you have on hand.
+
+2x Mined + Grown
+Back Pack            Chemical Material + Oil (Polyester),Flax Fiber (Linen)
+Bath Lotion          Chemical Materials, Oil (Plastic), Coconut (Coconut Oil
+Cold Tablets         Chemical Materials, Oil (Plastic)
+Cough Syrup          Chemical Materials, Oil (Plastic)
+Deturgent            Chemical Materials, Oil (Plastic), Lemon (Citric Acid)
+Eye Shadow           Chemical Materials, Oil (Plastic)
+Headache Pills       Chemical Materials, Oil (Plastic)
+Lipstick             Chemical Materials, Oil (Plastic), Wheat (Wheat Germ Oil)
+Shampoo              Chemical Materials, Oil (Plastic)
+Sports Shoes         Chemical Material + Oil (Polyester), Cotton, Rubber
+Toilet Cleaner       Chemical Materials, Oil (Plastic)
+Toothpaste           Chemical Materials, Oil (Plastic)
+Perfume              Chemical Materials, Silica (Glass)
+Leather Belt         Coal + Iron Ore (Steel), Leather
+Motor Cycle          Coal + Iron Ore (Steel), Rubber
+Hair Color           Oil + Timber (Dye Stuff + Plastic), Wheat (Wheat Germ Oil)
+In-Line Skates       Oil + Timber (Dye Stuff), Rubber, Leather
+Jeans                Oil + Timber (Dye Stuff), Cotton (Textiles)
+Sweater              Oil + Timber (Dye Stuff), Wool
+Toy Doll             Oil + Timber (Dye Stuff), Cotton (Textiles)
+
+3x Mined + Grown
+Camera Film        Chemical Materials, Oil (Plastic), Silver
+Elegent Watch      Coal + Iron Ore (Steel), Silica (Glass)
+Golf Clubs         Coal + Iron Ore (Steel), Timber
+
+4x Mined + Grown
+Airconditioner     Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Coal + Iron Ore (Steel)
+Desktop Computer   Chemical Materials, Coal, Iron Ore, Silica (Electronic
+Components+ CPU) Coal + Iron Ore (Steel),
+
+Car     Rubber, Coal, Iron Ore (Steel) Silica (Glass), Oil (Plastic) [(Wheel
+and Tire), (Car Body), (Engine), (Steel)]
+	Car Body         Coal + Iron Ore (Steal), Silica (Glass), Oil (Plastic)
+	Engine           Coal + Iron Ore (Steel)
+	Steel            Coal + Iron Ore
+	Wheel and Tire   Coal + Iron Ore (Steel), Rubber
+
+5x Mined + Grown
+Camera                Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Hi-fi                 Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Steel)
+DVD Player            Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components)
+Hand-Held Game Device Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Microwave             Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Mobile Phone          Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Notebook Computer     Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Palm Computer         Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Printer               Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Sports Watch          Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Television            Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Toy Racing Car        Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Video Camera          Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass), Oil (Plastic)
+Video Game Console    Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Components), Oil (Plastic)
+Video Recorder        Chemical Materials + Coal + Iron Ore + Silica
+(Electronic Components + Glass + Steel)
+
+-------------------------Simplified-------------------------
+This part will list submanufactured goods instead of individual components and
+may be of better help with products for consumer purchase.
+
+In product alphabetical order
+
+Grown (Straight from the Farm)
+Eggs
+Frozen Beef
+Frozen Chicken
+Frozen Lamb
+Frozen Pork
+
+
+Manufactured Goods
+
+Grown
+Bread               Flour
+Cake                Cacao, Eggs, Flour
+Canned Corn         Corn
+Canned Soup         Frozen Chicken
+Chewing Gum         Sugar,Corn Syrup
+Chocolate Bar       Cacao, Milk
+Cookies             Sugar, Flour
+Corn Flakes         Corn, Sugar
+Fruit Snack         Strawberry
+Ice Cream           Milk, Strawberry, Sugar
+Leather Bag         Leather, Textiles
+Leather Briefcase   Leather, Textiles
+Leather Jacket      Leather, Textiles
+Leather Wallet      Leather
+Sandals             Rubber
+Shoes               Cotton, Leather
+Socks               Wool
+Yogurt              Strawberry, Milk, Citric Acid
+
+1x Mined + Grown
+A   Aluminum
+Cola                  Aluminum, Sugar
+G  Gold
+Gold Ring             Gold
+S  Silica (Manufactured into CPU, Glass, Silicon)
+Bottled Milk          Glass, Milk
+Grape Juice           Glass, Citric Acid, Grapes
+Wine                  Glass, Grapes
+V  Silver
+Silver Necklace       Silver
+T  Timber (Manufactured into Paper)
+Bed                   Timber
+Chair                 Timber, Textiles
+Cigarettes            Timber, Tobacco
+Cigars                Timber, Tobacco
+Soap                  Timber, Coconut Oil, Citric Acid
+Sofa                  Timber, Cotton, Leather
+
+2x Mined + Grown
+Back Pack              Polyester, Linen
+Bath Lotion            Chemical Materials, Plastic, Coconut Oil
+Cold Tablets           Chemical Materials, Plastic
+Cough Syrup            Chemical Materials, Plastic
+Deturgent              Chemical Materials, Plastic, Citric Acid
+Eye Shadow             Chemical Materials, Plastic
+Hair Color             Dye Stuff, Plastic, Wheat Germ Oil
+Headache Pills         Chemical Materials, Plastic
+In-Line Skates         Dye Stuff, Rubber, Leather
+Jeans                  Dye Stuff, Textiles
+Leather Belt           Steel, Leather
+Lipstick               Chemical Materials, Plastic, Wheat Germ Oil
+Motor Cycle            Steel, Rubber
+Perfume                Chemical Materials, Glass
+Shampoo                Chemical Materials, Plastic
+Sports Shoes           Polyester, Cotton, Rubber
+Sweater                Dye Stuff, Wool
+Toilet Cleaner         Chemical Materials, Plastic
+Toothpaste             Chemical Materials, Plastic
+Toy Doll               Dye Stuff, Textiles
+
+3x Mined + Grown
+Camera Film            Chemical Materials, Plastic, Silver
+Elegent Watch          Steel, Glass
+Golf Clubs             Steel, Timber
+
+4x Mined + Grown
+Air Conditioner     Electronic Components, Steel
+Car    	            Car Body, Engine, Steel, Wheel and Tire
+Desktop Computer    Electronic Components, CPU, Steel
+
+5x Mined + Grown
+Camera                Electronic Components, Glass, Plastic
+DVD Player            Aluminum, Electronic Components
+Hand-Held Game Device Electronic Components, Glass, Plastic
+Hi-fi                 Aluminum, Electronic Components, Steel
+Microwave             Electronic Components, Glass, Plastic
+Mobile Phone          Electronic Components, Plastic
+Notebook Computer     Electronic Components, Glass, Plastic
+Palm Computer         Electronic Components, Glass, Plastic
+Printer               Electronic Components, Plastic
+Sports Watch          Electronic Components, Glass, Plastic
+Television            Electronic Components, Glass, Plastic
+Toy Racing Car        Electronic Components, Plastic
+Video Camera          Electronic Components, Glass, Plastic
+Video Game Console    Electronic Components, Plastic
+Video Recorder        Electronic Components, Glass, Steel
+
+
+--------------------------------------------------------
+
+In order of submanufactured grouping (easier for city planning)
+
+1x Mined + Grown
+A   Aluminum
+Cola                  Aluminum, Sugar
+G  Gold
+Gold Ring             Gold
+
+S  Silica (Manufactured into CPU, Glass, Silicon)
+Bottled Milk          Glass, Milk
+Grape Juice           Glass, Citric Acid, Grapes
+Wine                  Glass, Grapes
+
+V  Silver
+Silver Necklace       Silver
+
+T  Timber (Manufactured into Paper)
+Bed                   Timber
+Chair                 Timber, Textiles
+Cigarettes            Timber, Tobacco
+Cigars                Timber, Tobacco
+Soap                  Timber, Coconut Oil, Citric Acid
+Sofa                  Timber, Cotton, Leather
+
+2x Mined + Grown
+
+Perfume                Chemical Materials, Glass
+Cold Tablets           Chemical Materials, Plastic
+Cough Syrup            Chemical Materials, Plastic
+Eye Shadow             Chemical Materials, Plastic
+Headache Pills         Chemical Materials, Plastic
+Shampoo                Chemical Materials, Plastic
+Toilet Cleaner         Chemical Materials, Plastic
+Toothpaste             Chemical Materials, Plastic
+Deturgent              Chemical Materials, Plastic, Citric Acid
+Bath Lotion            Chemical Materials, Plastic, Coconut Oil
+Lipstick               Chemical Materials, Plastic, Wheat Germ Oil
+Hair Color             Dye Stuff, Plastic, Wheat Germ Oil
+In-Line Skates         Dye Stuff, Rubber, Leather
+Jeans                  Dye Stuff, Textiles
+Toy Doll               Dye Stuff, Textiles
+Sweater                Dye Stuff, Wool
+Sports Shoes           Polyester, Cotton, Rubber
+Back Pack              Polyester, Linen
+Leather Belt           Steel, Leather
+Motor Cycle            Steel, Rubber
+
+3x Mined + Grown
+Camera Film            Chemical Materials, Plastic, Silver
+Elegent Watch          Steel, Glass
+Golf Clubs             Steel, Timber
+
+4x Mined + Grown
+Air Conditioner     Electronic Components, Steel
+Car    	            Car Body, Engine, Steel, Wheel and Tire
+Desktop Computer    Electronic Components, CPU, Steel
+
+5x Mined + Grown
+
+DVD Player            Aluminum, Electronic Components
+Hi-fi                 Aluminum, Electronic Components, Steel
+Mobile Phone          Electronic Components, Plastic
+Printer               Electronic Components, Plastic
+Toy Racing Car        Electronic Components, Plastic
+Video Game Console    Electronic Components, Plastic
+Camera                Electronic Components, Glass, Plastic
+Hand-Held Game Device Electronic Components, Glass, Plastic
+Microwave             Electronic Components, Glass, Plastic
+Notebook Computer     Electronic Components, Glass, Plastic
+Palm Computer         Electronic Components, Glass, Plastic
+Sports Watch          Electronic Components, Glass, Plastic
+Television            Electronic Components, Glass, Plastic
+Video Camera          Electronic Components, Glass, Plastic
+Video Recorder        Electronic Components, Glass, Steel
+
+
+Farm (Wheat) -> Wheat
+Wheat -> Flour
+
+Farm (Chicken) -> Chicken, Eggs
+Farm (Cows) -> Cows, Milk 
+Farm (Pigs) -> Pigs
+Farm (Sheep) -> Sheep, Wool
+
+Farm (Sugar) -> Sugar
+
+Slaughterhouse (Chicken) -> Chicken meat
+Slaughterhouse (Cows) -> Beef, Leather
+Slaughterhouse (Pigs) -> Pork, Leather
+Slaughterhouse (Sheep) -> Lamb, Wool
+
+Silica mine -> Silica
+Silica -> Glass
+Milk + Glass -> Bottled milk
+Iron mine -> Iron
+Aluminium mine -> Aluminium
+Iron, Aluminium -> Steel
+Cacao + Sugar -> Chocolate
