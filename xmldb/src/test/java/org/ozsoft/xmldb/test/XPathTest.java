@@ -17,9 +17,12 @@ import org.ozsoft.xmldb.xpath.IntegerLiteral;
 import org.ozsoft.xmldb.xpath.NodeSelection;
 import org.ozsoft.xmldb.xpath.StringLiteral;
 import org.ozsoft.xmldb.xpath.XPathException;
+import org.ozsoft.xmldb.xpath.function.EqualsFunction;
+import org.ozsoft.xmldb.xpath.function.FalseFunction;
 import org.ozsoft.xmldb.xpath.function.Function;
 import org.ozsoft.xmldb.xpath.function.NodeNameFunction;
 import org.ozsoft.xmldb.xpath.function.NodeTypeFunction;
+import org.ozsoft.xmldb.xpath.function.TrueFunction;
 
 public class XPathTest {
 	
@@ -27,6 +30,7 @@ public class XPathTest {
 	@SuppressWarnings("unchecked")
 	public void xpath() {
 		Expression expr = null;
+		Function function = null;
 		
 		expr = new BooleanLiteral(true);
 		Assert.assertEquals(true, expr.evaluate(null));
@@ -89,7 +93,35 @@ public class XPathTest {
 		Assert.assertEquals("type", typeAttribute.getName());
 		Assert.assertEquals("string", typeAttribute.getValue());
 		
-		Function function = new NodeNameFunction();
+        function = new TrueFunction();
+        try {
+            Assert.assertEquals(true, function.invoke());
+        } catch (XPathException e) {
+            Assert.fail(e.getMessage());
+        }
+        
+        function = new FalseFunction();
+        try {
+            Assert.assertEquals(false, function.invoke());
+        } catch (XPathException e) {
+            Assert.fail(e.getMessage());
+        }
+        
+        function = new EqualsFunction();
+        try {
+            Assert.assertTrue((Boolean) function.invoke(1, 1));
+        } catch (XPathException e) {
+            Assert.fail(e.getMessage());
+        }
+
+        function = new EqualsFunction();
+        try {
+            Assert.assertFalse((Boolean) function.invoke("Foo", "Bar"));
+        } catch (XPathException e) {
+            Assert.fail(e.getMessage());
+        }
+
+		function = new NodeNameFunction();
 		try {
 			Assert.assertEquals("foo-001.xml", function.invoke(doc));
 			Assert.assertEquals("id", function.invoke(idElement));
