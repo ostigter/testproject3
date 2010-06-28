@@ -7,36 +7,36 @@ package org.ozsoft.xmldb;
  */
 public class Resource {
 
-    /** The name. */
-    private final String name;
+	/** The name. */
+	private final String name;
 
-    /**
-     * Constructor.
-     * 
-     * @param name
-     *            The name.
-     */
-    public Resource(String name) {
-	this.name = name;
-    }
+	/**
+	 * Constructor.
+	 * 
+	 * @param name
+	 *            The name.
+	 */
+	public Resource(String name) {
+		this.name = name;
+	}
 
-    /**
-     * Returns the name.
-     * 
-     * @return The name.
-     */
-    public String getName() {
-	return name;
-    }
+	/**
+	 * Returns the name.
+	 * 
+	 * @return The name.
+	 */
+	public String getName() {
+		return name;
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-	return name;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return name;
+	}
 
 }

@@ -162,7 +162,6 @@ public interface XmldbConnector {
      * 
      * @return The function result.
      */
-    String callFunction(String moduleNamespace, String moduleUri, String functionName, String... params)
-	    throws XmldbException;
+    String callFunction(String moduleNamespace, String moduleUri, String functionName, String... params) throws XmldbException;
 
 }
