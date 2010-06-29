@@ -7,12 +7,10 @@ package org.ozsoft.xmldb;
  */
 public abstract class Node {
     
-    protected static final int INDENT = 4;
-    
-    protected final String name;
+    protected String name;
     
     /* package */ Node(String name) {
-        this.name = name;
+        setName(name);
     }
     
     public String getName() {
@@ -23,9 +21,13 @@ public abstract class Node {
     
     public abstract String toXml();
     
+    /* package */ void setName(String name) {
+        this.name = name;
+    }
+    
     /* package */ abstract String toXml(int indent);
     
-    /* package */ String getIndent(int indent) {
+    /* package */ static String getIndent(int indent) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < indent; i++) {
             sb.append(' ');

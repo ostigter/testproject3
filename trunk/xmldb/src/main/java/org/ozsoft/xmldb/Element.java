@@ -12,6 +12,8 @@ import java.util.Map;
  */
 public class Element extends Node {
     
+    private static final int INDENT = 4;
+    
     private Map<String, Attribute> attributes;
     
     private List<Node> children;

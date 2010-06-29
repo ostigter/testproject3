@@ -5,7 +5,7 @@ package org.ozsoft.xmldb;
  * 
  * @author Oscar Stigter
  */
-public class Document extends Node {
+public class Document extends Resource {
     
     private Element rootElement;
     
