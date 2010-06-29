@@ -7,10 +7,20 @@ package org.ozsoft.xmldb;
  */
 public abstract class Node {
     
+    protected final Database database;
+    
+    protected final long id;
+    
     protected String name;
     
-    /* package */ Node(String name) {
-        setName(name);
+    /* package */ Node(Database database) {
+        this.database = database;
+        id = database.getNextId();
+        database.addNode(this);
+    }
+    
+    /* package */ long getId() {
+        return id;
     }
     
     public String getName() {

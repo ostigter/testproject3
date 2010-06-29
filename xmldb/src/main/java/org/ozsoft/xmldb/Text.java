@@ -9,8 +9,8 @@ public class Text extends Node {
     
     private String value;
     
-    public Text(String value) {
-        super(null);
+    /* package */ Text(Database database, String value) {
+        super(database);
         setValue(value);
     }
 

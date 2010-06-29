@@ -21,6 +21,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Parser extends DefaultHandler {
     
+    private final Database database;
+    
     private final Stack<Element> elements = new Stack<Element>();
     
     private Document doc;
@@ -30,6 +32,10 @@ public class Parser extends DefaultHandler {
     private final StringBuilder textBuffer = new StringBuilder();
     
     private Text text;
+    
+    /* package */ Parser(Database database) {
+        this.database = database;
+    }
     
     public Document parse(File file) {
         Document doc = null;
@@ -42,7 +48,7 @@ public class Parser extends DefaultHandler {
     }
     
     public Document parse(InputStream is) {
-        doc = new Document();
+        doc = new Document(database);
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setNamespaceAware(true);
@@ -60,7 +66,7 @@ public class Parser extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attr) {
-        element = new Element(localName);
+        element = new Element(database, localName);
         
         int count = attr.getLength();
         for (int i = 0; i < count; i++) {
@@ -85,7 +91,7 @@ public class Parser extends DefaultHandler {
         if (textBuffer.length() > 0) {
             String value = textBuffer.toString().trim();
             if (value.length() > 0) {
-                text = new Text(textBuffer.toString());
+                text = new Text(database, textBuffer.toString());
                 elements.peek().addText(text);
             }
             textBuffer.delete(0, textBuffer.length());
