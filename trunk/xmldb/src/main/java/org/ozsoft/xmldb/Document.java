@@ -9,12 +9,8 @@ public class Document extends Resource {
     
     private Element rootElement;
     
-    public Document() {
-        super(null);
-    }
-    
-    public Document(String name) {
-        super(name);
+    /* package */ Document(Database database) {
+        super(database);
     }
     
     public Element getRootElement() {
@@ -29,7 +25,7 @@ public class Document extends Resource {
         if (rootElement != null) {
             throw new IllegalStateException("Root element already set");
         }
-        Element element = new Element(name);
+        Element element = new Element(database, name);
         setRootElement(element);
         return element;
     }

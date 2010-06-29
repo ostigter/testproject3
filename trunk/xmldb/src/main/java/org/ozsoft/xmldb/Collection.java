@@ -9,8 +9,8 @@ public class Collection extends Resource {
     
     private final Map<String, Resource> resources;
     
-    public Collection(String name) {
-        super(name);
+    /* package */ Collection(Database database) {
+        super(database);
         resources = new TreeMap<String, Resource>();
     }
     
@@ -24,6 +24,21 @@ public class Collection extends Resource {
     
     public Resource getResource(String name) {
         return resources.get(name);
+    }
+    
+    @Override
+    public String getText() {
+        return name;
+    }
+
+    @Override
+    public String toXml() {
+        return String.format("<collection name=\"%s\" />", name);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Collection(%s)", name);
     }
     
     /* package */ void addResource(Resource resource) throws XmldbException {
@@ -40,23 +55,8 @@ public class Collection extends Resource {
     }
 
     @Override
-    public String getText() {
-        return name;
-    }
-
-    @Override
-    public String toXml() {
-        return String.format("<collection name=\"%s\" />", name);
-    }
-
-    @Override
-    String toXml(int indent) {
+    /* package */ String toXml(int indent) {
         return toXml();
-    }
-    
-    @Override
-    public String toString() {
-        return String.format("Collection(%s)", name);
     }
     
 }

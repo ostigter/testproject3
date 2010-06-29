@@ -18,15 +18,9 @@ public class Element extends Node {
     
     private List<Node> children;
     
-    /* package */ Element(String name) {
-        super(name);
-    }
-    
-    public void addAttribute(String name, String value) {
-        if (attributes == null) {
-            attributes = new LinkedHashMap<String, Attribute>();
-        }
-        attributes.put(name, new Attribute(name, value));
+    /* package */ Element(Database database, String name) {
+        super(database);
+        setName(name);
     }
     
     public List<Attribute> getAttributes() {
@@ -52,16 +46,11 @@ public class Element extends Node {
         attributes.remove(name);
     }
     
-    public Element addElement(String name) {
-        Element element = new Element(name);
-        addChild(element);
-        return element;
-    }
-    
-    public Element addElement(String name, String text) {
-        Element element = addElement(name);
-        element.setText(text);
-        return element;
+    public void addAttribute(String name, String value) {
+        if (attributes == null) {
+            attributes = new LinkedHashMap<String, Attribute>();
+        }
+        attributes.put(name, new Attribute(database, name, value));
     }
     
     /* package */ void addChild(Node child) {
@@ -69,6 +58,20 @@ public class Element extends Node {
             children = new ArrayList<Node>();
         }
         children.add(child);
+    }
+    
+    public Element addElement(String name) {
+        Element element = new Element(database, name);
+        addElement(element);
+        return element;
+    }
+    
+    public Element addElement(String name, String value) {
+        Element element = new Element(database, name);
+        Text text = new Text(database, value);
+        element.addText(text);
+        addElement(element);
+        return element;
     }
     
     /* package */ void addElement(Element element) {
@@ -148,11 +151,12 @@ public class Element extends Node {
         return sb.toString();
     }
     
-    public void setText(String text) {
+    public void setText(String value) {
         if (children != null) {
             children.clear();
         }
-        addChild(new Text(text));
+        Text text = new Text(database, value);
+        addChild(text);
     }
 
     @Override

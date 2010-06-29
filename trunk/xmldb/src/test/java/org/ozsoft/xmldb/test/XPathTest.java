@@ -6,6 +6,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.ozsoft.xmldb.Attribute;
+import org.ozsoft.xmldb.Database;
 import org.ozsoft.xmldb.Document;
 import org.ozsoft.xmldb.Element;
 import org.ozsoft.xmldb.Node;
@@ -47,7 +48,9 @@ public class XPathTest {
 		expr = new StringLiteral("abc");
 		Assert.assertEquals("abc", expr.evaluate(null));
 		
-		Document doc = new Document("foo-001.xml");
+		Database database = new Database();
+		
+		Document doc = database.createDocument("foo-001.xml");
 		Element documentElement = doc.addRootElement("document");
 		Element headerElement = documentElement.addElement("header");
 		Element idElement = headerElement.addElement("id", "foo-001");

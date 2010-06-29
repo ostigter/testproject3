@@ -9,9 +9,10 @@ public class Attribute extends Node {
     
     private String value;
 
-    public Attribute(String name, String value) {
-        super(name);
-        this.value = value;
+    public Attribute(Database database, String name, String value) {
+        super(database);
+        setName(name);
+        setValue(value);
     }
     
     public String getValue() {
