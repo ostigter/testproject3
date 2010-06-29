@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Namepool to efficiently store string values.
+ * Namepool to efficiently store string values. <br />
+ * <br />
  * 
- * Each unique value is stored only once in memory and given an unique ID that a client can use.
+ * Each unique value is stored only once in memory and given an unique ID that
+ * multiple clients can share.
  * 
  * @author Oscar Stigter
  */
@@ -16,20 +18,21 @@ public class Namepool {
 
     private final Map<String, Name> namesByValue;
 
-    private long nextId = 0;
+    private long nextId = 1;
 
     /**
      * Constructor.
      */
     public Namepool() {
-	namesById = new HashMap<Long, Name>();
-	namesByValue = new HashMap<String, Name>();
+        namesById = new HashMap<Long, Name>();
+        namesByValue = new HashMap<String, Name>();
     }
 
     /**
      * Stores a string value in the namepool.
      * 
-     * If a matching string already exists in the pool, its usage count is incremented.
+     * If a matching string already exists in the pool, its usage count is
+     * incremented.
      * 
      * @param value
      *            The string value.
@@ -37,23 +40,21 @@ public class Namepool {
      * @return the ID
      */
     public long store(String value) {
-	Name name = namesByValue.get(value);
-	if (name == null) {
-	    name = new Name();
-	    long id = nextId++;
-	    name.id = id;
-	    name.value = value;
-	    name.count = 1;
-	    namesById.put(id, name);
-	    namesByValue.put(value, name);
-	} else {
-	    name.count++;
-	}
-	return name.id;
+        Name name = namesByValue.get(value);
+        if (name == null) {
+            long id = getNextId();
+            name = new Name(id, value);
+            namesById.put(id, name);
+            namesByValue.put(value, name);
+        } else {
+            name.incrementCount();
+        }
+        return name.id;
     }
-
+    
     /**
-     * Returns the stored string value associated with the specified ID, or null if not found.
+     * Returns the stored string value associated with the specified ID, or null
+     * if not found.
      * 
      * @param id
      *            The name ID.
@@ -61,12 +62,12 @@ public class Namepool {
      * @return the string value, or null if not found
      */
     public String retrieve(long id) {
-	String value = null;
-	Name name = namesById.get(id);
-	if (name != null) {
-	    value = name.value;
-	}
-	return value;
+        String value = null;
+        Name name = namesById.get(id);
+        if (name != null) {
+            value = name.value;
+        }
+        return value;
     }
 
     /**
@@ -80,14 +81,14 @@ public class Namepool {
      * @return the string value, or null if not found
      */
     public void unuse(long id) {
-	Name name = namesById.get(id);
-	if (name != null) {
-	    name.count--;
-	    if (name.count == 0) {
-		namesById.remove(id);
-		namesByValue.remove(name.value);
-	    }
-	}
+        Name name = namesById.get(id);
+        if (name != null) {
+            name.decrementCount();
+            if (name.getCount() == 0) {
+                namesById.remove(id);
+                namesByValue.remove(name.value);
+            }
+        }
     }
 
     /**
@@ -97,23 +98,43 @@ public class Namepool {
      *            The string value.
      */
     public void unuse(String value) {
-	Name name = namesByValue.get(value);
-	if (name != null) {
-	    unuse(name.id);
-	}
+        Name name = namesByValue.get(value);
+        if (name != null) {
+            unuse(name.id);
+        }
     }
 
-    // -------------------------------------------------------------------------
-    // Inner classes
-    // -------------------------------------------------------------------------
+    private long getNextId() {
+        return nextId++;
+    }
 
     private static class Name {
 
-	public long id;
+        private final long id;
 
-	public String value;
+        private final String value;
 
-	public long count;
+        private long count;
+        
+        public Name(long id, String value) {
+            this.id = id;
+            this.value = value;
+            count = 1;
+        }
+        
+        public long getCount() {
+            return count;
+        }
+        
+        public void incrementCount() {
+            count++;
+        }
+        
+        public void decrementCount() {
+            if (count > 0) {
+                count--;
+            }
+        }
 
     }
 
