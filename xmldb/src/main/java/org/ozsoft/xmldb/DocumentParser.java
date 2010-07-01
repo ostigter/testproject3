@@ -19,7 +19,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * 
  * @author Oscar Stigter
  */
-public class Parser extends DefaultHandler {
+public class DocumentParser extends DefaultHandler {
     
     private final Database database;
     
@@ -33,7 +33,7 @@ public class Parser extends DefaultHandler {
     
     private Text text;
     
-    /* package */ Parser(Database database) {
+    /* package */ DocumentParser(Database database) {
         this.database = database;
     }
     

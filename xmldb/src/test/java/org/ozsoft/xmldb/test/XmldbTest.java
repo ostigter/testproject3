@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.ozsoft.xmldb.Database;
 import org.ozsoft.xmldb.Document;
 import org.ozsoft.xmldb.Element;
-import org.ozsoft.xmldb.Parser;
+import org.ozsoft.xmldb.DocumentParser;
 
 public class XmldbTest {
     
@@ -29,7 +29,7 @@ public class XmldbTest {
     @Test
     public void parser() {
         Database database = new Database();
-        Parser parser = database.createParser();
+        DocumentParser parser = database.createParser();
         Document doc = parser.parse(new File(DOCS_DIR, "foo-001.xml"));
         System.out.println(doc.toXml());
     }

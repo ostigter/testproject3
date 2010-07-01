@@ -92,36 +92,38 @@ count(/a) > 0
             TrueFunction() --> Boolean
             
             
-Tokenizer
----------
+Tokenizer & Parser
+------------------
 
 /document/header/id
-    CHILD_ELEMENT QNAME("document") CHILD_ELEMENT QNAME("header") QNAME("id")
-
+    SLASH TEXT("document" SLASH TEXT("header") SLASH TEXT("id")
     Expression
         ChildElementSelection("document")
         ChildElementSelection("header")
         ChildElementSelection("id")
 
 //id/text()
-    DESCENDANT_CHILD QNAME("id") CHILD_ELEMENT QNAME("text") LPAREN RPAREN
+    SLASH SLASH TEXT("id" SLASH TEXT("text" LPAREN RPAREN
+    DESCENDANT_ELEMENT("id") SLASH TEXT("text" LPAREN RPAREN
+    Expression
+        ChildElementSelection("id")
+        Function("text")
 
 count(//id)
-    QNAME("count") LPAREN DESCENDANT_CHILD QNAME("id" RPAREN
+    IDENT("count") LPAREN DESCENDANT IDENT("id") RPAREN
     Expression
         Function("count")
-            DescendantChildSelection("id")
-
-DescendantChildSelection("id")
-CountFunction
+            DescendantElementSelection("id")
 
 count(//id[text() = 'foo-001'])
-    TEXT("count") LPAREN DESCENDANT TEXT("id") LBLOCK TEXT("text" LPAREN RPAREN EQ QUOT TEXT("foo-001" QUOT RBLOCK RPAREN
-    DescendantElementSelection("id")
-    Predicate
-        Equals
-            TextFunction
-            StringLiteral("foo-001")
+    IDENT("count") LPAREN DESCENDANT IDENT("id") LBLOCK IDENT("text" LPAREN RPAREN EQ APOS IDENT("foo-001" APOS RBLOCK RPAREN
+    Expression
+        Function("count")
+            DescendantElementSelection("id")
+            Predicate
+                Equals
+                    Function("text")
+                    StringLiteral("foo-001")
 
 count(/document[//id/text() = 'foo-001'])
     Expression

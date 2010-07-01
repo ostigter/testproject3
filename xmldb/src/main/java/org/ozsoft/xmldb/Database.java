@@ -22,8 +22,8 @@ public class Database {
         return rootCollection;
     }
     
-    public Parser createParser() {
-        return new Parser(this);
+    public DocumentParser createParser() {
+        return new DocumentParser(this);
     }
     
     public Document createDocument() {
