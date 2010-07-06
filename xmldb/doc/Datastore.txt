@@ -1,0 +1,76 @@
+Binary data store
+-----------------
+
+nodes.dbx
+    node*
+        id : long
+        type : byte   # {COLLECTION, DOCUMENT, ELEMENT, ATTRIBUTE, TEXT}
+        offset : long
+        length : long
+
+collections.dbx
+    collection*
+        name : String
+        parent : long
+        noOfDocuments : long
+        document* : long
+
+documents.dbx
+    document*
+        name : String
+        parent : long
+        rootElement : long        
+
+elements.dbx
+    element*
+        name : String
+        noOfAttributes : byte
+        attribute*
+            name : String
+            value : String 
+        noOfChildren : long
+        children* : long
+
+values.dbx
+    value* : String
+
+str_index.dbx
+    noOfElementIndexes : long
+    elementIndex*
+        name : String
+        count : long
+        element* : long
+    noOfAttributeIndexes : long
+    attributeIndex*
+        name : String
+        count : long
+        attribute* : long
+
+val_index.dbx
+    noOfValueIndexes : long
+    valueIndex*
+        name : String
+        type : byte  # {STRING, INTEGER, DATE}
+    
+
+RangeIndex("DocumentId", STRING)
+    IndexValue("Foo-001")
+        nodes : Set<Long>
+    IndexValue("Foo-002")
+        nodes : Set<Long>
+    IndexValue("Bar-001")
+        nodes : Set<Long>
+
+/*[Header/DocumentId = 'Foo-001']
+    SLASH STAR LBRACKET TEXT("Header") SLASH TEXT("DocumentId") EQ QUOT TEXT("Foo-001") QUOT RBRACKET
+    ChildElementSelection()
+    Predicate
+        Equals
+            NodeSelection --> Node*
+                ChildElementSelection("Header") --> Element*
+                ChildElementSelection("DocumentId") --> Element*
+            StringLiteral("Foo-001")
+
+- Use structural index for name "Header" --> Node*
+- Filter on node type ELEMENT.
+- Proceed normally ("/DocumentId = 'Foo-001']"

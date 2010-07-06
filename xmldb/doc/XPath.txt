@@ -1,0 +1,206 @@
+Expressions
+-----------
+
+1
+    TEXT("1")
+    IntegerLiteral(1) --> Integer
+
+'a'
+    QUOT TEXT("a") QUOT
+    Expression --> Node*
+        StringLiteral("a") --> String
+
+()
+    LPAREN RPAREN
+    Sequence --> Node*
+
+(1)
+    LPAREN TEXT("1") RPAREN
+    Sequence --> Node*
+        IntegerLiteral(1) --> Integer
+
+(1, 2, 3)
+    LPAREN TEXT("1") COMMA TEXT("2") COMMA TEXT("3") RPAREN
+    Sequence --> Node*
+        IntegerLiteral(1) --> Integer
+        IntegerLiteral(2) --> Integer
+        IntegerLiteral(3) --> Integer
+
+(1, "a", true())
+    LPAREN TEXT("1") COMMA TEXT("a") COMMA TEXT("true") LPAREN RPAREN RPAREN
+    Sequence --> Node*
+        IntegerLiteral(1) --> Integer
+        StringLiteral("a") --> String
+        Function("true") --> Boolean
+
+(()))
+    LPAREN LPAREN RPAREN RPAREN
+    Sequence --> Node*
+    
+(1, (2, 3))
+    LPAREN TEXT("1") COMMA LPAREN TEXT("2") COMMA TEXT("3") RPAREN RPAREN
+    Sequence --> Node*
+        LiteralInteger(1) --> Integer
+        LiteralInteger(2) --> Integer
+        LiteralInteger(3) --> Integer
+    
+/a
+    SLASH TEXT("a")
+    ChildElementSelection("a") --> Element*
+
+/@a
+    SLASH AT TEXT("a")
+    ChildAttributeSelection("a") --> Attribute*
+        
+//a
+    SLASH SLASH TEXT("a")
+    DescendantElementSelection("a") --> Element* 
+
+/*/a
+    SLASH STAR SLASH TEXT("a")
+    DescendantElementSelection("a") --> Element* 
+    
+//@a
+    SLASH SLASH AT TEXT("a")
+    DescendantAttributeSelection("a") --> Attribute*
+        
+/*/@a
+    SLASH STAR SLASH AT TEXT("a")
+    DescendantAttributeSelection("a") --> Attribute*
+        
+/a/b
+    SLASH TEXT("a") SLASH TEXT("b")
+    NodeSelection --> Node*
+        ChildElementSelection("a") --> Element*
+        ChildElementSelection("b") --> Element*
+
+/a/@b
+    SLASH TEXT("a") SLASH AT TEXT("b")
+    NodeSelection --> Node*
+        ChildElementSelection("a") --> Element*
+        ChildAttributeSelection("b") --> Attribute*
+
+true()
+    TEXT("true") LPAREN RPAREN
+    Expression --> Node*
+        Function("true") --> Boolean
+        
+false()
+    TEXT("false") LPAREN RPAREN
+    Expression --> Node*
+        Function("false") --> Boolean
+        
+count(/a)
+    TEXT("count") LPAREN SLASH TEXT("a") RPAREN
+    Function("count") --> Integer
+        ChildElementSelection("a") --> Element*
+
+count(/a)
+    TEXT("count") LPAREN SLASH TEXT("a") RPAREN
+    Function("count") --> Integer
+        ChildElementSelection("a") --> Element*
+
+
+/a[1]
+    SLASH TEXT("a") LBRAC NUMERIC("1") RBRAC
+    ChildElementSelection("a") --> Element*
+    Predicate --> Node*
+        Equals --> Boolean
+            Function("index") --> Integer
+            IntegerConstant(1) --> Integer
+    
+/a[b = 'c']
+    SLASH TEXT("a") LBRAC TEXT("b") EQ QUOT TEXT("c") QUOT RBRAC
+    ChildElementSelection("a") --> Element*
+    Predicate
+        Equals
+            ChildElementSelection("b") --> Element*
+            StringLiteral("c") --> String
+
+/a[b/text() = 'c']
+    SLASH TEXT("a") LBRAC TEXT("b") SLASH TEXT("text" LPAREN RPAREN EQ QUOT TEXT("c") QUOT RBRAC
+    ChildElementSelection("a") --> Element*
+    Predicate
+        Equals
+            Function("text") --> String
+                ChildElementSelection("b") --> Element*
+            StringLiteral("c") --> String
+
+count(/a) > 0
+    Expression --> Object
+        GreaterThanFunction --> Boolean
+            Count --> Integer
+                NodeSelection --> Node*
+                    ChildElementSelection("a") --> Element*
+            IntegerLiteral(0) --> Integer
+
+/document/header/id
+    Expression --> Node*
+        ChildElementSelection("document") --> Element*
+        ChildElementSelection("header") --> Element*
+        ChildElementSelection("id") --> Element*
+
+/document[header/id = 'foo-001']
+    Expression --> Object
+        ChildElementSelection("document") --> Element*
+        Predicate --> Boolean
+            Equals --> Boolean
+                NodeSelection --> Node*
+                    ChildElement("header") (Element*)
+                    ChildElement("id") (Element*)
+                StringLiteral("foo-001") (String)
+                
+1 + 2
+    Expression --> Object
+        SumFunction --> Number
+            IntegerLiteral(1) --> Integer
+            IntegerLiteral(2) --> Integer
+
+(1, "a", true())
+    Expression --> Object
+        Sequence --> Object*
+            IntegerLiteral(1) --> Integer
+            StringLiteral("a") --> String
+            TrueFunction() --> Boolean
+            
+            
+/document/header/id
+    SLASH TEXT("document" SLASH TEXT("header") SLASH TEXT("id")
+    Expression
+        ChildElementSelection("document")
+        ChildElementSelection("header")
+        ChildElementSelection("id")
+
+//id/text()
+    SLASH SLASH TEXT("id" SLASH TEXT("text" LPAREN RPAREN
+    DESCENDANT_ELEMENT("id") SLASH TEXT("text" LPAREN RPAREN
+    Expression
+        ChildElementSelection("id")
+        Function("text")
+
+count(//id)
+    IDENT("count") LPAREN DESCENDANT IDENT("id") RPAREN
+    Expression
+        Function("count")
+            DescendantElementSelection("id")
+
+count(//id[text() = 'foo-001'])
+    IDENT("count") LPAREN DESCENDANT IDENT("id") LBLOCK IDENT("text" LPAREN RPAREN EQ APOS IDENT("foo-001" APOS RBLOCK RPAREN
+    Expression
+        Function("count")
+            DescendantElementSelection("id")
+            Predicate
+                Equals
+                    Function("text")
+                    StringLiteral("foo-001")
+
+count(/document[//id/text() = 'foo-001'])
+    Expression
+        CountFunction
+            ChildElementSelection("document")
+                Predicate
+                    Equals
+                        NodeSelector
+                            ChildDescendantSelector("id")
+                        TextFunction
+                        StringLiteral("foo-001")

@@ -1,0 +1,29 @@
+Test document
+-------------
+
+foo-001.xml:
+    <?xml version="1.0" encoding="UTF-8"?>
+    <document>
+        <header>
+            <id type="string">foo-001</id>
+            <type>Foo</type>
+        </header>
+        <body>
+            <title lang="EN">Some Foo document</title>
+            <author>John Doe</author>
+        </body>
+    </document>
+
+Document("foo-001.xml")
+    Element("document")
+        Element("header")
+            Element("id")
+                Attribute("type", "string")
+                Text("foo-001")
+            Element("type")
+                Text("Foo")
+        Element("Body")
+            Element("title")
+                Text("Some Foo document")
+            Element("author")
+                Text("John Doe")
