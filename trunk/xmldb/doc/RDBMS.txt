@@ -1,0 +1,42 @@
+RDBMS data store
+----------------
+
+table Collection {
+    id          LONG,
+    name        VARCHAR(255)
+};
+
+table Document (
+    id          LONG,
+    parent      FOREIGN KEY Collection (id),
+    name        VARCHAR,
+    created     DATE,
+    modified    DATE,
+    length      LONG,
+    rootElement LONG REFERENCES Element(id)
+);
+
+table Element (
+    id          LONG,
+    name        VARCHAR
+);
+
+table Attribute (
+    id          LONG,
+    parent      LONG REFERENCES Element(id)
+    name        VARCHAR,
+    value       VARCHAR
+);
+
+table Text (
+    id          LONG,
+    parent      LONG REFERENCES Element(id)
+    value       VARCHAR
+);
+
+
+collection("/data/foo")/Foo[Header/Id = 'Foo-001']
+
+SELECT id FROM Collection WHERE (parent = NULL) AND (name = "data")
+SELECT id FROM Collection WHERE (parent = :id) AND (name = "foo")
+SELECT id FROM Document WHERE (parent = :id)

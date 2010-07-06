@@ -1,0 +1,22 @@
+Database
+--------
+
+abstract class Node {
+    getId() : long
+    getName() : String
+}
+
+abstract class Resource : Node {
+    +getCreated() : Date
+    +getModified() : Date
+}
+
+class Collection : Resource {
+    +getResources : Set<Resource>
+    +getResource(String name) : Resource
+}
+
+class Document : Resource {
+    +getRootElement() : Element
+    +getLength() : long
+}
