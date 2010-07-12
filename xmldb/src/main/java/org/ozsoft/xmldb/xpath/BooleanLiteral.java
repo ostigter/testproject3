@@ -1,6 +1,6 @@
 package org.ozsoft.xmldb.xpath;
 
-public class BooleanLiteral implements Expression {
+public class BooleanLiteral implements XPathExpression {
     
     private final boolean value;
     
