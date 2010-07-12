@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.ozsoft.xmldb.Node;
 
-public class NodeSelection implements Expression {
+public class NodeSelection implements XPathExpression {
 	
 	private final List<NodeSelection> steps;
 	

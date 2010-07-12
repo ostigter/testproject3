@@ -7,8 +7,7 @@ Expressions
 
 'a'
     QUOT TEXT("a") QUOT
-    Expression --> Node*
-        StringLiteral("a") --> String
+    StringLiteral("a") --> String
 
 ()
     LPAREN RPAREN
@@ -45,31 +44,23 @@ Expressions
         LiteralInteger(3) --> Integer
     
 /a
-    SLASH TEXT("a")
+    CHILD_ELEMENT("a")
     ChildElementSelection("a") --> Element*
 
 /@a
-    SLASH AT TEXT("a")
+    CHILD_ATTRIBUTE("a")
     ChildAttributeSelection("a") --> Attribute*
         
 //a
-    SLASH SLASH TEXT("a")
+    DESCENDANT_ELEMENT("a")
     DescendantElementSelection("a") --> Element* 
 
-/*/a
-    SLASH STAR SLASH TEXT("a")
-    DescendantElementSelection("a") --> Element* 
-    
 //@a
-    SLASH SLASH AT TEXT("a")
-    DescendantAttributeSelection("a") --> Attribute*
-        
-/*/@a
-    SLASH STAR SLASH AT TEXT("a")
+    DESCENDANT_ATTRIBUTE("a")
     DescendantAttributeSelection("a") --> Attribute*
         
 /a/b
-    SLASH TEXT("a") SLASH TEXT("b")
+    CHILD_ATTRIBUTE("a") CHILD_ATTRIBUTE("b")
     NodeSelection --> Node*
         ChildElementSelection("a") --> Element*
         ChildElementSelection("b") --> Element*

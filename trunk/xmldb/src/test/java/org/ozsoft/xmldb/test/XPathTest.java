@@ -13,7 +13,7 @@ import org.ozsoft.xmldb.Node;
 import org.ozsoft.xmldb.xpath.BooleanLiteral;
 import org.ozsoft.xmldb.xpath.ChildAttributeSelection;
 import org.ozsoft.xmldb.xpath.ChildElementSelection;
-import org.ozsoft.xmldb.xpath.Expression;
+import org.ozsoft.xmldb.xpath.XPathExpression;
 import org.ozsoft.xmldb.xpath.IntegerLiteral;
 import org.ozsoft.xmldb.xpath.NodeSelection;
 import org.ozsoft.xmldb.xpath.StringLiteral;
@@ -30,7 +30,7 @@ public class XPathTest {
 	@Test
 	@SuppressWarnings("unchecked")
 	public void xpath() {
-		Expression expr = null;
+		XPathExpression expr = null;
 		Function function = null;
 		
 		expr = new BooleanLiteral(true);

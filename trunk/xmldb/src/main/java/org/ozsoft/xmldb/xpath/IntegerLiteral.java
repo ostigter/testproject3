@@ -1,6 +1,6 @@
 package org.ozsoft.xmldb.xpath;
 
-public class IntegerLiteral implements Expression {
+public class IntegerLiteral implements XPathExpression {
     
     private final int value;
     

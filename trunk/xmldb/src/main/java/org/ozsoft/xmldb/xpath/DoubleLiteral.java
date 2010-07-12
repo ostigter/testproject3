@@ -1,6 +1,6 @@
 package org.ozsoft.xmldb.xpath;
 
-public class DoubleLiteral implements Expression {
+public class DoubleLiteral implements XPathExpression {
     
     private final double value;
     
