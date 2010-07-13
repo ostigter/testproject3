@@ -1,23 +1,21 @@
 package org.ozsoft.backup;
 
-import java.util.Date;
-
 public class Backup {
     
     private final int id;
     
-    private final Date date;
+    private final long date;
     
-    public Backup(int id) {
+    public Backup(int id, long date) {
         this.id = id;
-        date = new Date();
+        this.date = date;
     }
     
     public int getId() {
         return id;
     }
     
-    public Date getDate() {
+    public long getDate() {
         return date;
     }
 
