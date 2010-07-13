@@ -1,0 +1,50 @@
+class BackupTool {
+    -projects : Map<String, Project>
+}
+
+class Project {
+    -name : String
+    -sourceFolders : Set<String>
+    -targetFolders : Set<String>
+    -currentBackupId : int
+    -backups : Map<Integer, Backup>
+    +createBackup()
+}
+    
+class Backup {
+    -id : int
+    -date : Date
+    -files : Set<BackupFile>
+}
+
+class BackupFile {
+    -id : long
+    -path : String
+    -versions : Map<Integer, Version>
+    -currentVersion : int
+}
+
+class BackupFileVersion {
+    -id : int
+    -date : Date
+    -offset : long
+    -length : long
+}
+
+BackupFile
+    -id = 1
+    -path = "test/resources/folder1/file1.txt"
+    -versions
+        BackupFileVersion
+            -id = 1
+            -date = 2010-06-01T12:00:00.000+01:00
+            -checksum = 123456789
+            -offset = 0
+            -length = 100
+        BackupFileVersion
+            -id = 2
+            -date = 2010-06-02T17:00:00.000+01:00
+            -checksum = 987654321
+            -offset = 100
+            -length = 50
+    -currentVersion = 2
