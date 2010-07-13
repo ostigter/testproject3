@@ -1,10 +1,14 @@
 package org.ozsoft.backup;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.util.ArrayList;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -16,17 +20,16 @@ public class Project {
     
     private final Set<String> sourceFolders;
     
-    private final Set<String> destinationFolders;
+    private String destinationFolder;
     
-    private final List<Date> backups;
+    private final Map<Integer, Long> backups;
     
     private final Map<String, BackupFile> files;
     
     public Project(String name) {
         this.name = name;
         sourceFolders = new TreeSet<String>();
-        destinationFolders = new TreeSet<String>();
-        backups = new ArrayList<Date>();
+        backups = new TreeMap<Integer, Long>();
         files = new TreeMap<String, BackupFile>();
     }
     
@@ -46,28 +49,28 @@ public class Project {
         sourceFolders.remove(folder);
     }
     
-    public Set<String> getDestinationFolders() {
-        return Collections.unmodifiableSet(destinationFolders);
+    public String getDestinationFolder() {
+        return destinationFolder;
     }
     
-    public void addDestinationFolder(String folder) {
-        destinationFolders.add(folder);
-    }
-    
-    public void removeDestinationFolder(String folder) {
-        destinationFolders.remove(folder);
+    public void setDestinationFolder(String destinationFolder) {
+        this.destinationFolder = destinationFolder;
     }
     
     public void createBackup() {
         if (sourceFolders.size() == 0) {
-            throw new IllegalStateException("Project has no source folders defined");
+            throw new IllegalStateException("No source folders defined");
         }
-        if (destinationFolders.size() == 0) {
-            throw new IllegalStateException("Project has no destination folders defined");
+        if (destinationFolder == null || destinationFolder.length() == 0) {
+            throw new IllegalStateException("Destination folder not set");
         }
+        
+        readIndexFile();
+        
         int backupId = backups.size() + 1;
-        Date date = new Date();
+        long date = new Date().getTime();
         System.out.println("Creating backup with ID " + backupId);
+        
         for (String sourceFolder : sourceFolders) {
             File dir = new File(sourceFolder);
             if (dir.isDirectory()) {
@@ -76,7 +79,9 @@ public class Project {
                 System.err.println("ERROR: Source folder not found: " + sourceFolder);
             }
         }
-        backups.add(date);
+        backups.put(backupId, date);
+        
+        writeIndexFile();
     }
     
     private void backupFolder(File dir, int backupId) {
@@ -110,6 +115,86 @@ public class Project {
                 System.out.println("U " + path);
             }
         }
+    }
+    
+    private void readIndexFile() {
+        backups.clear();
+        files.clear();
+        File file = new File(String.format("%s/%s.idx", destinationFolder, name));
+        if (file.isFile()) {
+            DataInputStream dis = null;
+            try {
+                dis = new DataInputStream(new FileInputStream(file));
+                int nofBackups = dis.readInt();
+                for (int i = 0; i < nofBackups; i++) {
+                    int id = dis.readInt();
+                    long date = dis.readLong();
+                    backups.put(id, date);
+                }
+                int nofFiles = dis.readInt();
+                for (int i = 0; i < nofFiles; i++) {
+                    String path = dis.readUTF();
+                    BackupFile backupFile = new BackupFile(path);
+                    int nofVersions = dis.readInt();
+                    for (int j = 0; j < nofVersions; j++) {
+                        int backupId = dis.readInt();
+                        long date = dis.readLong();
+                        backupFile.addVersion(backupId, date);
+                    }
+                    files.put(path, backupFile);
+                }
+            } catch (IOException e) {
+                System.err.println("ERROR: " + e.getMessage());
+            } finally {
+                if (dis != null) {
+                    try {
+                        dis.close();
+                    } catch (IOException e) {
+                        // Best effort; ignore.
+                    }
+                }
+            }
+        }
+    }
+    
+    private void writeIndexFile() {
+        File dir = new File(destinationFolder);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        File file = new File(String.format("%s/%s.idx", destinationFolder, name));
+        DataOutputStream dos = null;
+        try {
+            dos = new DataOutputStream(new FileOutputStream(file));
+            dos.writeInt(backups.size());
+            for (int backupId : backups.keySet()) {
+                long date = backups.get(backupId);
+                dos.writeInt(backupId);
+                dos.writeLong(date);
+            }
+            dos.writeInt(files.size());
+            for (BackupFile backupFile : files.values()) {
+                dos.writeUTF(backupFile.getPath());
+                Collection<BackupFileVersion> versions = backupFile.getVersions();
+                int nofVersions = versions.size();
+                dos.writeInt(nofVersions);
+                for (BackupFileVersion version : versions) {
+                    dos.writeInt(version.getBackupId());
+                    dos.writeLong(version.getDate());
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR: " + e.getMessage());
+        } finally {
+            if (dos != null) {
+                try {
+                    dos.close();
+                } catch (IOException e) {
+                    // Best effort; ignore.
+                }
+            }
+        }
+        
     }
     
 }

@@ -30,7 +30,7 @@ public abstract class FileHelper {
      * @throws IOException
      *             If the file could not be written.
      */
-    public static File createTextFile(File dir, String name, String content) throws IOException {
+    public static File writeTextFile(File dir, String name, String content) throws IOException {
         File file = new File(dir, name);
         BufferedWriter bw = null;
         try {

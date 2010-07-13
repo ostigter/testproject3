@@ -27,7 +27,7 @@ public class BackupFile {
     }
     
     public void addVersion(int backupId, long date) {
-        versions.put(backupId, new BackupFileVersion(date));
+        versions.put(backupId, new BackupFileVersion(backupId, date));
         currentVersion = backupId;
     }
 
