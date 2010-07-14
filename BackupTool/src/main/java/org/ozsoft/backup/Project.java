@@ -1,11 +1,13 @@
 package org.ozsoft.backup;
 
+import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -16,6 +18,8 @@ import java.util.TreeSet;
 
 public class Project {
     
+    private static final int BUFFER_SIZE = 8192;
+    
     private final String name;
     
     private final Set<String> sourceFolders;
@@ -25,6 +29,10 @@ public class Project {
     private final Map<Integer, Long> backups;
     
     private final Map<String, BackupFile> files;
+    
+    private final byte[] buffer = new byte[BUFFER_SIZE];
+    
+    private RandomAccessFile archiveFile;
     
     public Project(String name) {
         this.name = name;
@@ -67,24 +75,48 @@ public class Project {
         
         readIndexFile();
         
-        int backupId = backups.size() + 1;
-        long date = new Date().getTime();
-        System.out.println("Creating backup with ID " + backupId);
-        
-        for (String sourceFolder : sourceFolders) {
-            File dir = new File(sourceFolder);
-            if (dir.isDirectory()) {
-                backupFolder(dir, backupId);
-            } else {
-                System.err.println("ERROR: Source folder not found: " + sourceFolder);
+        // Make sure destination folder exists. 
+        File dir = new File(destinationFolder);
+        if (!dir.exists()) {
+            boolean created = dir.mkdirs();
+            if (!created) {
+                throw new RuntimeException("Could not create destination folder: " + destinationFolder);
             }
         }
-        backups.put(backupId, date);
+        
+        String archivePath = String.format("%s/%s.dbx", destinationFolder, name);
+        try {
+            archiveFile = new RandomAccessFile(archivePath, "rw");
+            
+            int backupId = backups.size() + 1;
+            long date = new Date().getTime();
+            System.out.println("Creating backup with ID " + backupId);
+            
+            for (String sourceFolder : sourceFolders) {
+                dir = new File(sourceFolder);
+                if (dir.isDirectory()) {
+                    backupFolder(dir, backupId);
+                } else {
+                    System.err.println("ERROR: Source folder not found: " + sourceFolder);
+                }
+            }
+            backups.put(backupId, date);
+        } catch (IOException e) {
+            System.err.println("ERROR: Could not write to archive file: " + e.getMessage());
+        } finally {
+            if (archiveFile != null) {
+                try {
+                    archiveFile.close();
+                } catch (IOException e) {
+                    // Best effort; ignore.
+                }
+            }
+        }
         
         writeIndexFile();
     }
     
-    private void backupFolder(File dir, int backupId) {
+    private void backupFolder(File dir, int backupId) throws IOException {
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
                 backupFolder(file, backupId);
@@ -94,14 +126,17 @@ public class Project {
         }
     }
     
-    private void backupFile(File file, int backupId) {
+    private void backupFile(File file, int backupId) throws IOException {
         String path = file.getAbsolutePath();
         long date = file.lastModified();
+        long offset = -1L;
+        long length = file.length();
         BackupFile backupFile = files.get(path);
         if (backupFile == null) {
             // New file; create first version.
+            writeBackupFileVersion(file);
             backupFile = new BackupFile(path);
-            backupFile.addVersion(backupId, date);
+            backupFile.addVersion(backupId, date, offset, length);
             files.put(path, backupFile);
             System.out.println("A " + path);
         } else {
@@ -111,10 +146,32 @@ public class Project {
                 // Unchanged file; do nothing.
             } else {
                 // Updated file; add new version.
-                backupFile.addVersion(backupId, date);
+                writeBackupFileVersion(file);
+                backupFile.addVersion(backupId, date, offset, length);
                 System.out.println("U " + path);
             }
         }
+    }
+    
+    private void writeBackupFileVersion(File file) throws IOException {
+        archiveFile.seek(archiveFile.length());
+        BufferedInputStream bis = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(file));
+            int length = 0;
+            while ((length = bis.read(buffer)) > 0) {
+                archiveFile.write(buffer, 0, length);
+            }
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    // Best effort; ignore.
+                }
+            }
+        }
+        
     }
     
     private void readIndexFile() {
@@ -139,7 +196,9 @@ public class Project {
                     for (int j = 0; j < nofVersions; j++) {
                         int backupId = dis.readInt();
                         long date = dis.readLong();
-                        backupFile.addVersion(backupId, date);
+                        long offset = dis.readLong();
+                        long length = dis.readLong();
+                        backupFile.addVersion(backupId, date, offset, length);
                     }
                     files.put(path, backupFile);
                 }
@@ -158,10 +217,6 @@ public class Project {
     }
     
     private void writeIndexFile() {
-        File dir = new File(destinationFolder);
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
         File file = new File(String.format("%s/%s.idx", destinationFolder, name));
         DataOutputStream dos = null;
         try {
@@ -181,6 +236,8 @@ public class Project {
                 for (BackupFileVersion version : versions) {
                     dos.writeInt(version.getBackupId());
                     dos.writeLong(version.getDate());
+                    dos.writeLong(version.getOffset());
+                    dos.writeLong(version.getLength());
                 }
             }
         } catch (IOException e) {

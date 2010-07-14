@@ -25,10 +25,7 @@ public class ProjectTest {
     @BeforeClass
     public static void beforeClass() {
         // Create temporary test directory.
-        File dir = new File(TEST_DIR);
-        if (!dir.isDirectory()) {
-            dir.mkdirs();
-        }
+        new File(TEST_DIR).mkdir();
     }
     
     /**
@@ -45,8 +42,8 @@ public class ProjectTest {
      */
     @Before
     public void before() {
-        // Clean temporary test directory. 
-        FileHelper.cleanDir(new File(TEST_DIR));
+        // Clean temporary test directory.
+        FileHelper.cleanDir(TEST_DIR);
     }
     
     /**
@@ -83,7 +80,7 @@ public class ProjectTest {
         // Update a file.
         FileHelper.writeTextFile(folder1, "file-1001.txt", "1001_v2");
         // Delete a file.
-        FileHelper.deleteFile(new File(folder2, "file-2002.txt"));
+        FileHelper.deleteFile(new File(folder2, "file-2001.txt"));
 
         // Create another backup (1 updated file).
         project.createBackup();

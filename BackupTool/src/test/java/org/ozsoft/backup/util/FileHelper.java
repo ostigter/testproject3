@@ -18,20 +18,18 @@ public abstract class FileHelper {
      * 
      * A previously existing file will be overwritten.
      * 
-     * @param dir
-     *            The directory to create the file in.
-     * @param name
-     *            The filename.
+     * @param path
+     *            The file path.
      * @param content
      *            The file content.
      * 
-     * @return The created text file.
+     * @return The created file.
      * 
      * @throws IOException
      *             If the file could not be written.
      */
-    public static File writeTextFile(File dir, String name, String content) throws IOException {
-        File file = new File(dir, name);
+    public static File writeTextFile(String path, String content) throws IOException {
+        File file = new File(path);
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new FileWriter(file));
@@ -48,6 +46,28 @@ public abstract class FileHelper {
             }
         }
         return file;
+    }
+    
+    /**
+     * Creates a text file with a specific content. <br />
+     * <br />
+     * 
+     * A previously existing file will be overwritten.
+     * 
+     * @param dir
+     *            The directory to create the file in.
+     * @param name
+     *            The filename.
+     * @param content
+     *            The file content.
+     * 
+     * @return The created text file.
+     * 
+     * @throws IOException
+     *             If the file could not be written.
+     */
+    public static File writeTextFile(File dir, String name, String content) throws IOException {
+        return writeTextFile(new File(dir, name).getPath(), content);
     }
     
     /**
@@ -73,8 +93,24 @@ public abstract class FileHelper {
                     deleteFile(child);
                 }
             }
-            file.delete();
+            boolean deleted = file.delete();
+            if (!deleted) {
+                throw new IllegalStateException("Could not delete file or directory: " + file);
+            }
         }
+    }
+    
+    /**
+     * Cleans a directory, deleting all of its contents. <br />
+     * <br />
+     * 
+     * The directory itself will not be deleted.
+     * 
+     * @param path
+     *            The directory path.
+     */
+    public static void cleanDir(String path) {
+        cleanDir(new File(path));
     }
 
     /**

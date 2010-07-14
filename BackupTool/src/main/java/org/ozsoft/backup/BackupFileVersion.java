@@ -6,9 +6,15 @@ public class BackupFileVersion {
     
     private final long date;
     
-    public BackupFileVersion(int backupId, long date) {
+    private long offset;
+    
+    private long length;
+    
+    public BackupFileVersion(int backupId, long date, long offset, long length) {
         this.backupId = backupId;
         this.date = date;
+        this.offset = offset;
+        this.length = length;
     }
     
     public int getBackupId() {
@@ -17,6 +23,14 @@ public class BackupFileVersion {
     
     public long getDate() {
         return date;
+    }
+    
+    public long getOffset() {
+        return offset;
+    }
+    
+    public long getLength() {
+        return length;
     }
     
 }
