@@ -26,8 +26,8 @@ public class BackupFile {
         return Collections.unmodifiableCollection(versions.values());
     }
     
-    public void addVersion(int backupId, long date) {
-        versions.put(backupId, new BackupFileVersion(backupId, date));
+    public void addVersion(int backupId, long date, long offset, long length) {
+        versions.put(backupId, new BackupFileVersion(backupId, date, offset, length));
         currentVersion = backupId;
     }
 
