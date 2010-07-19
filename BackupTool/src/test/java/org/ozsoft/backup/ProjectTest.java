@@ -2,6 +2,11 @@ package org.ozsoft.backup;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Map;
+
+import junit.framework.Assert;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -67,6 +72,14 @@ public class ProjectTest {
 
         // Create initial backup (no files).
         project.createBackup();
+        
+        // Test backup.
+        Map<Integer, Long> backups = project.getBackups();
+        Assert.assertEquals(1, backups.size());
+        Assert.assertTrue(backups.containsKey(1));
+        Assert.assertFalse(backups.containsKey(2));
+        Map<String, BackupFile> backupFiles = project.getBackupFiles();
+        Assert.assertEquals(0, backupFiles.size());
 
         // Create some files.
         FileHelper.writeTextFile(folder1, "file-1001.txt", "1001_v1");
@@ -84,6 +97,24 @@ public class ProjectTest {
 
         // Create another backup (1 updated file).
         project.createBackup();
+
+        // Test backup.
+        backups = project.getBackups();
+        Assert.assertEquals(3, backups.size());
+        Assert.assertTrue(backups.containsKey(1));
+        Assert.assertTrue(backups.containsKey(2));
+        Assert.assertTrue(backups.containsKey(3));
+        Assert.assertFalse(backups.containsKey(4));
+        backupFiles = project.getBackupFiles();
+        Assert.assertEquals(4, backupFiles.size());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        for (BackupFile file : backupFiles.values()) {
+            System.out.println(file);
+            for (BackupFileVersion version : file.getVersions()) {
+                System.out.format("  %d, %s, %d, %d\n", version.getBackupId(),
+                        dateFormat.format(version.getDate()), version.getOffset(), version.getLength());
+            }
+        }
     }
     
 }

@@ -93,9 +93,18 @@ Project("Project1")
         0000: {D:/Documents/folder1/file-001.txt-1}
         0020: {D:/Documents/folder1/file-001.txt-2}
         0050: {D:/Documents/folder1/file-002.txt-2}
-Project("Project2")
-    F:/Backups/Project2.idx
-        ...
-    F:/Backups/Project2.dbx
-        ...
-...
+    F:/Backups/Project1.log
+        [2010-07-01 09:00:00] Created project
+        [2010-07-01 17:00:00] Create backup with ID 1 started
+        [2010-07-01 17:00:00] Create backup with ID 1 finished
+        [2010-07-02 17:00:00] Create backup with ID 2 started
+        [2010-07-02 17:00:00] Added 'D:\Documents\folder1\file-1001.txt' with date '2010-07-02 12:00:00' and length 7
+        [2010-07-02 17:00:00] Added 'D:\Documents\folder1\file-1002.txt' with date '2010-07-02 12:00:00' and length 7
+        [2010-07-02 17:00:00] Added 'D:\Documents\folder2\file-2001.txt' with date '2010-07-02 12:00:00' and length 7
+        [2010-07-02 17:00:00] Added 'D:\Documents\folder2\file-2002.txt' with date '2010-07-02 12:00:00' and length 7
+        [2010-07-02 17:00:00] Create backup with ID 2 finished
+        [2010-07-03 17:00:00] Create backup with ID 3 started
+        [2010-07-03 17:00:00] Updated 'D:\Documents\folder2\file-2001.txt' with date '2010-07-03 12:00:00' and length 7
+        [2010-07-03 17:00:00] Deleted 'D:\Documents\folder2\file-2001.txt'
+        [2010-07-03 17:00:00] Create backup with ID 3 finished
+        [2010-07-04 15:30:00] Deleted backup with ID 1 of date '2010-07-01 17:00:00'

@@ -43,4 +43,9 @@ public class BackupFile {
         versions.remove(backupId);
     }
     
+    @Override
+    public String toString() {
+        return path;
+    }
+    
 }
