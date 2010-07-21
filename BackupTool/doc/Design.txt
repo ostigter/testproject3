@@ -2,6 +2,19 @@ Design
 ======
 
 
+Functionality
+-------------
+
+* View projects
+* Create project
+* Edit project
+* Delete project
+* View backups
+* Create backup
+* Restore backup
+* Delete backup
+
+
 Classes
 -------
 
