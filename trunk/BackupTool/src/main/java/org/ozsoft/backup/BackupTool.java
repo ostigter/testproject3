@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -57,6 +59,8 @@ public class BackupTool {
     
     private static final File PROJECTS_FILE = new File("projects.dat");
     
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    
     private final Map<String, Project> projects;
     
     private JFrame frame;
@@ -73,10 +77,8 @@ public class BackupTool {
     
     public BackupTool() {
         projects = new TreeMap<String, Project>();
-
-        createUI();
-        
         readProjects();
+        createUI();
     }
 
     public static void main(String[] args) {
@@ -110,8 +112,7 @@ public class BackupTool {
         menuItem.addActionListener(new ActionListener() {
            @Override
             public void actionPerformed(ActionEvent e) {
-               Dialog dialog = new CreateProjectDialog(frame);
-               dialog.show();
+               createProject();
             } 
         });
         rootMenu.add(menuItem);
@@ -179,16 +180,24 @@ public class BackupTool {
         gc.weighty = 1.0;
         frame.getContentPane().add(treePane, gc);
         
-        projectsNode.setUserObject("Backups");
-//        DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode("Project1");
-//        projectsNode.add(projectNode);
-//        DefaultMutableTreeNode backupNode = new DefaultMutableTreeNode("2010-07-01 09:00");
-//        projectNode.add(backupNode);
-        projectTree.updateUI();
+        projectsNode.setUserObject("Projects");
+        updateProjectTree();
         
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+    
+    private void updateProjectTree() {
+        projectsNode.removeAllChildren();
+        for (Project project : projects.values()) {
+            DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project.getName());
+            for (long date : project.getBackups().values()) {
+                projectNode.add(new DefaultMutableTreeNode(DATE_FORMAT.format(date)));
+            }
+            projectsNode.add(projectNode);
+        }
+        projectTree.updateUI();
     }
     
     private void showProjectTreeContextMenu(MouseEvent e) {
@@ -223,12 +232,14 @@ public class BackupTool {
                 dis = new DataInputStream(new FileInputStream(PROJECTS_FILE));
                 int nofProjects = dis.readInt();
                 for (int i = 0; i < nofProjects; i++) {
-                    Project project = new Project(dis.readUTF());
+                    String name = dis.readUTF();
+                    Project project = new Project(name);
                     int nofFolders = dis.readInt();
                     for (int j = 0; j < nofFolders; j++) {
                         project.addSourceFolder(dis.readUTF());
                     }
                     project.setDestinationFolder(dis.readUTF());
+                    projects.put(name, project);
                 }
             } catch (IOException e) {
                 System.err.println("ERROR: " + e.getMessage());
@@ -268,6 +279,25 @@ public class BackupTool {
                     // Best effort; ignore.
                 }
             }
+        }
+    }
+    
+    private void createProject() {
+        CreateProjectDialog dialog = new CreateProjectDialog(frame);
+        if (dialog.show() == Dialog.OK) {
+            // Create project.
+            String name = dialog.getName();
+            Project project = new Project(name);
+            for (String folder : dialog.getSourceFolders()) {
+                project.addSourceFolder(folder);
+            }
+            project.setDestinationFolder(dialog.getDestinationFolder());
+            projects.put(name, project);
+            
+            // Update project tree.
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
+            projectsNode.add(node);
+            projectTree.updateUI();
         }
     }
     
