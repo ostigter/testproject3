@@ -32,12 +32,20 @@ public class Document extends Resource {
 
     @Override
     public String getText() {
-        return rootElement.getText();
+        if (rootElement != null) {
+            return rootElement.getText();
+        } else {
+            return "";
+        }
     }
 
     @Override
     public String toXml() {
-        return rootElement.toXml();
+        if (rootElement != null) {
+            return rootElement.toXml();
+        } else {
+            return "";
+        }
     }
     
     @Override

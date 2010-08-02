@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+    <book>
+        <title>Nijntje in de dierentuin</title>
+        <author>Dick Bruna</author>
+        <jaar>1985</jaar>
+    </book>
+    <book>
+        <title>Effective Java</title>
+        <author>James Brown</author>
+        <jaar>2006</jaar>
+    </book>
+    <book>
+        <title>Effective Java</title>
+        <author>James Brown</author>
+        <jaar>2006</jaar>
+    </book>
+</library>
