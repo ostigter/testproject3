@@ -104,5 +104,5 @@ public class DocumentParser extends DefaultHandler {
     public void characters(char[] ch, int start, int length) {
         textBuffer.append(ch, start, length);
     }
-
+    
 }
