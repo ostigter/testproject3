@@ -71,15 +71,11 @@ public class Main {
 
             LOG.info("Listing the collection '/db/data':");
             col = connector.retrieveCollection("/db/data");
-            for (Resource resource : col.getResources()) {
-                LOG.info("  " + resource.getName());
-            }
+            printCollection(col);
 
             LOG.info("Listing the collection '/db/data/foo':");
             col = connector.retrieveCollection("/db/data/foo");
-            for (Resource resource : col.getResources()) {
-                LOG.info("  " + resource.getName());
-            }
+            printCollection(col);
 
             LOG.info("Retrieving the raw content of a resource");
             uri = "/db/data/foo/foo-001.xml";
@@ -121,6 +117,16 @@ public class Main {
         }
 
         LOG.info("Finished");
+    }
+    
+    private static void printCollection(Collection col) {
+        for (Resource resource : col.getResources()) {
+            if (resource instanceof Collection) {
+                LOG.info(String.format("  [%s]", resource.getName()));
+            } else {
+                LOG.info(String.format("  %s", resource.getName()));
+            }
+        }
     }
 
 }
