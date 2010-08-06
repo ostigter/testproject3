@@ -109,8 +109,7 @@ public class Main {
 
             LOG.info("Calling an XQuery library function");
             String[] params = new String[] { "Mr. Smith" };
-            result = connector.callFunction("http://www.example.org/greeter", "/db/modules/greeter2.xql", "greeting",
-                    params);
+            result = connector.callFunction("http://www.example.org/greeter", "/db/modules/greeter2.xql", "greeting", params);
             LOG.info("Result:\n" + result);
 
             LOG.info("Deleting resources");
