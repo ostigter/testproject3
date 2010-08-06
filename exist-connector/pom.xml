@@ -22,9 +22,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <log4j-version>1.2.14</log4j-version>
         <httpclient-version>3.1</httpclient-version>
         <dom4j-version>1.6.1</dom4j-version>
+        <log4j-version>1.2.14</log4j-version>
+        <junit-version>4.7</junit-version>
     </properties>
 
     <dependencies>
@@ -44,6 +45,12 @@
             <artifactId>log4j</artifactId>
             <version>${log4j-version}</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit-version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

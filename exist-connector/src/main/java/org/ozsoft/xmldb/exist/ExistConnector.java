@@ -41,6 +41,8 @@ public class ExistConnector implements XmldbConnector {
     
     private static final int STATUS_ERROR = 400;
 
+    private static final int ERROR_NOT_FOUND = 404;
+
     private static final String PARAMETER_STRING_DELIMITER = "\"";
 
     private static final String PARAMETER_SEPERATOR = ", ";
@@ -115,8 +117,11 @@ public class ExistConnector implements XmldbConnector {
         try {
             int statusCode = httpClient.executeMethod(getMethod);
             if (statusCode >= STATUS_ERROR) {
-                String msg = String.format("Could not retrieve XML document '%s' (HTTP status code: %d)", uri, statusCode);
-                throw new XmldbException(msg);
+                if (statusCode == ERROR_NOT_FOUND) {
+                    throw new XmldbException(String.format("XML document not found: '%s'", uri));
+                } else {
+                    throw new XmldbException(String.format("Could not retrieve XML document '%s' (HTTP status code: %d)", uri, statusCode));
+                }
             }
             InputStream is = getMethod.getResponseBodyAsStream();
             SAXReader reader = new SAXReader();
@@ -142,6 +147,20 @@ public class ExistConnector implements XmldbConnector {
         } catch (IOException e) {
             String msg = String.format("Could not store resource '%s'", uri);
             throw new XmldbException(msg, e);
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.xmldb.XmldbConnector#importResources(java.lang.String, java.io.File)
+     */
+    public void importResources(String uri, File dir) throws XmldbException {
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                importResources(uri, file);
+            } else {
+                storeResource(uri, file);
+            }
         }
     }
 
@@ -222,23 +241,29 @@ public class ExistConnector implements XmldbConnector {
     @Override
     public Collection retrieveCollection(String uri) throws XmldbException {
         Collection col = null;
-        Element result = retrieveXmlDocument(uri).getRootElement();
-        if (result.getName().equals("result")) {
-            Element el = result.element("collection");
-            if (el != null) {
-                String name = el.attributeValue("name");
-                col = new Collection(name);
-                for (Object child : el.elements()) {
-                    el = (Element) child;
-                    name = el.attributeValue("name");
-                    Resource res = null;
-                    if (el.getName().equals("collection")) {
-                        res = new Collection(name);
-                    } else {
-                        res = new Resource(name);
+        try {
+            Element result = retrieveXmlDocument(uri).getRootElement();
+            if (result.getName().equals("result")) {
+                Element el = result.element("collection");
+                if (el != null) {
+                    String name = el.attributeValue("name");
+                    col = new Collection(name);
+                    for (Object child : el.elements()) {
+                        el = (Element) child;
+                        name = el.attributeValue("name");
+                        Resource res = null;
+                        if (el.getName().equals("collection")) {
+                            res = new Collection(name);
+                        } else {
+                            res = new Resource(name);
+                        }
+                        col.addResource(res);
                     }
-                    col.addResource(res);
                 }
+            }
+        } catch (XmldbException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(String.format("Collection not found: '%s'", uri));
             }
         }
         return col;

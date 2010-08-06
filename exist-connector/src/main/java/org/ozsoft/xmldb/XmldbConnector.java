@@ -106,6 +106,19 @@ public interface XmldbConnector {
      *             If the input stream could not be read or the resource could not be stored.
      */
     void storeResource(String uri, InputStream is) throws XmldbException;
+    
+    /**
+     * Recursively imports an entire directory tree into the database.
+     * 
+     * @param uri
+     *            The base URI the resources are stored under.
+     * @param dir
+     *            The root directory of the directory tree.
+     * 
+     * @throws XmldbException
+     *             If the import failed.
+     */
+    void importResources(String uri, File dir) throws XmldbException;
 
     /**
      * Deletes a resource.
