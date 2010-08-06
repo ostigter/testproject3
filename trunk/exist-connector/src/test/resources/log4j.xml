@@ -9,15 +9,7 @@
     </appender>
 
     <logger name="org.ozsoft.xmldb">
-        <level value="DEBUG" />
-    </logger>
-
-    <logger name="org.ozsoft.xmldb.exist">
-        <level value="DEBUG" />
-    </logger>
-
-    <logger name="org.ozsoft.xmldb.exist.test">
-        <level value="DEBUG" />
+        <level value="INFO" />
     </logger>
 
     <root>
