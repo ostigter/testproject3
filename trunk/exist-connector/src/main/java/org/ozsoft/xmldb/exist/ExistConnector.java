@@ -30,13 +30,16 @@ import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 
 /**
- * eXist XML database connector.
+ * Connector for the eXist XML database, using its REST interface. <br />
+ * <br />
  * 
- * Uses eXist's REST interface with the Apache Commons HttpClient library.
+ * Implemented using the Apache Commons HttpClient library.
  * 
  * @author Oscar Stigter
  */
 public class ExistConnector implements XmldbConnector {
+    
+    private static final int STATUS_ERROR = 400;
 
     private static final String PARAMETER_STRING_DELIMITER = "\"";
 
@@ -78,7 +81,10 @@ public class ExistConnector implements XmldbConnector {
         byte[] content = null;
         try {
             int statusCode = httpClient.executeMethod(getMethod);
-            LOG.trace("HTTP status: " + statusCode);
+            if (statusCode >= STATUS_ERROR) {
+                String msg = String.format("Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode);
+                throw new XmldbException(msg);
+            }
             InputStream is = getMethod.getResponseBodyAsStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[BUFFER_SIZE];
@@ -108,12 +114,15 @@ public class ExistConnector implements XmldbConnector {
         Document doc = null;
         try {
             int statusCode = httpClient.executeMethod(getMethod);
-            LOG.trace("HTTP status: " + statusCode);
+            if (statusCode >= STATUS_ERROR) {
+                String msg = String.format("Could not retrieve XML document '%s' (HTTP status code: %d)", uri, statusCode);
+                throw new XmldbException(msg);
+            }
             InputStream is = getMethod.getResponseBodyAsStream();
             SAXReader reader = new SAXReader();
             doc = reader.read(is);
         } catch (Exception e) {
-            String msg = String.format("Could not create XML document from content of resource '%s'", uri);
+            String msg = String.format("Could not retrieve XML document '%s'", uri);
             throw new XmldbException(msg, e);
         }
         return doc;
@@ -174,7 +183,10 @@ public class ExistConnector implements XmldbConnector {
         ((EntityEnclosingMethod) putMethod).setRequestEntity(entity);
         try {
             int statusCode = httpClient.executeMethod(putMethod);
-            LOG.trace("HTTP status: " + statusCode);
+            if (statusCode >= STATUS_ERROR) {
+                String msg = String.format("Could not store resource '%s' (HTTP status code: %d)", uri, statusCode);
+                throw new XmldbException(msg);
+            }
         } catch (Exception e) {
             String msg = String.format("Could not store resource '%s'", uri);
             throw new XmldbException(msg, e);
@@ -192,7 +204,10 @@ public class ExistConnector implements XmldbConnector {
         DeleteMethod deleteMethod = new DeleteMethod(servletUri + uri);
         try {
             int statusCode = httpClient.executeMethod(deleteMethod);
-            LOG.trace("HTTP status: " + statusCode);
+            if (statusCode >= STATUS_ERROR) {
+                String msg = String.format("Could not delete resource '%s' (HTTP status code: %d)", uri, statusCode);
+                throw new XmldbException(msg);
+            }
         } catch (Exception e) {
             String msg = String.format("Could not delete resource '%s'", uri);
             throw new XmldbException(msg, e);
@@ -216,7 +231,12 @@ public class ExistConnector implements XmldbConnector {
                 for (Object child : el.elements()) {
                     el = (Element) child;
                     name = el.attributeValue("name");
-                    Resource res = new Resource(name);
+                    Resource res = null;
+                    if (el.getName().equals("collection")) {
+                        res = new Collection(name);
+                    } else {
+                        res = new Resource(name);
+                    }
                     col.addResource(res);
                 }
             }
@@ -256,7 +276,10 @@ public class ExistConnector implements XmldbConnector {
         String response = null;
         try {
             int statusCode = httpClient.executeMethod(postMethod);
-            LOG.trace("HTTP status: " + statusCode);
+            if (statusCode >= STATUS_ERROR) {
+                String msg = String.format("Could not execute query '%s' (HTTP status code: %d)", query, statusCode);
+                throw new XmldbException(msg);
+            }
 
             // Read response body.
             Reader reader = new InputStreamReader(postMethod.getResponseBodyAsStream());
@@ -308,7 +331,10 @@ public class ExistConnector implements XmldbConnector {
         try {
             // Execute query.
             int statusCode = httpClient.executeMethod(getMethod);
-            LOG.trace("HTTP status: " + statusCode);
+            if (statusCode >= STATUS_ERROR) {
+                String msg = String.format("Could not call module '%s' (HTTP status code: %d)", uri, statusCode);
+                throw new XmldbException(msg);
+            }
 
             // Read response body.
             Reader reader = new InputStreamReader(getMethod.getResponseBodyAsStream());
