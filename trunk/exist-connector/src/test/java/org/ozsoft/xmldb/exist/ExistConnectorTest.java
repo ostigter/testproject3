@@ -48,28 +48,17 @@ public class ExistConnectorTest {
             byte[] content = null;
             String query = null;
             String result = null;
-
-            LOG.debug("Storing resources");
-            uri = "/db/data/foo/foo-001.xml";
-            connector.storeResource(uri, new File(RESOURCES_DIR, uri));
-            uri = "/db/data/foo/foo-002.xml";
-            connector.storeResource(uri, new File(RESOURCES_DIR, uri));
-            uri = "/db/data/bar/bar-001.xml";
-            connector.storeResource(uri, new File(RESOURCES_DIR, uri));
-            uri = "/db/data/bar/bar-002.xml";
-            connector.storeResource(uri, new File(RESOURCES_DIR, uri));
-            uri = "/db/modules/greeter1.xql";
-            connector.storeResource(uri, new File(RESOURCES_DIR, uri));
-            uri = "/db/modules/greeter2.xql";
-            connector.storeResource(uri, new File(RESOURCES_DIR, uri));
+            
+            LOG.debug("Importing resources");
+            connector.importResources("/db", new File(RESOURCES_DIR, "/db"));
 
             LOG.debug("Listing the collection '/db/data':");
             col = connector.retrieveCollection("/db/data");
             Assert.assertNotNull(col);
             Assert.assertEquals(2, col.getResources().size());
-            Assert.assertEquals("foo", col.getResources().get(0).getName());
+            Assert.assertEquals("bar", col.getResources().get(0).getName());
             Assert.assertTrue(col.getResources().get(0) instanceof Collection);
-            Assert.assertEquals("bar", col.getResources().get(1).getName());
+            Assert.assertEquals("foo", col.getResources().get(1).getName());
             Assert.assertTrue(col.getResources().get(1) instanceof Collection);
 
             LOG.debug("Listing the collection '/db/data/foo':");
