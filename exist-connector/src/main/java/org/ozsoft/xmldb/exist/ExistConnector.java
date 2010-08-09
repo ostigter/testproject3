@@ -156,10 +156,14 @@ public class ExistConnector implements XmldbConnector {
      */
     public void importResources(String uri, File dir) throws XmldbException {
         for (File file : dir.listFiles()) {
-            if (file.isDirectory()) {
-                importResources(uri, file);
-            } else {
-                storeResource(uri, file);
+            String name = file.getName();
+            if (!name.startsWith(".")) {
+                String resourceUri = String.format("%s/%s", uri, name);
+                if (file.isDirectory()) {
+                    importResources(resourceUri, file);
+                } else {
+                    storeResource(resourceUri, file);
+                }
             }
         }
     }
