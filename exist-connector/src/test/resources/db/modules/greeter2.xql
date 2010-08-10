@@ -1,6 +1,6 @@
 xquery version "1.0";
 
-module namespace gr = "http://www.example.org/greeter";
+module namespace gr = "http://www.example.org/greeter2";
 
 declare function gr:greeting($name as xs:string) as element(Greeting) {
 	let $greeting :=

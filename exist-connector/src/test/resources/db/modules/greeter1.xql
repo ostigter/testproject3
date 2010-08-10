@@ -2,7 +2,7 @@ xquery version "1.0";
 
 import module namespace request="http://exist-db.org/xquery/request"; 
 
-declare namespace gr = "http://www.example.org/greeter";
+declare namespace gr = "http://www.example.org/greeter1";
 
 declare function gr:greeting($name as xs:string) as element(Greeting) {
 	let $greeting :=

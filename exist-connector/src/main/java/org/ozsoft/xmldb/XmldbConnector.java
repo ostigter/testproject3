@@ -157,7 +157,7 @@ public interface XmldbConnector {
      *             If the resource does not exist or could not be read, or the
      *             file could not be written.
      */
-    void exportResource(String uri, File dir) throws XmldbException;
+    void exportResource(String uri, File file) throws XmldbException;
 
     /**
      * Executes an ad-hoc query.
