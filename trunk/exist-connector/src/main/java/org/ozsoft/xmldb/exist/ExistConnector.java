@@ -53,24 +53,36 @@ public class ExistConnector implements XmldbConnector {
     private static final int BUFFER_SIZE = 8192;
 
     private static final Logger LOG = Logger.getLogger(ExistConnector.class);
+    
+    private final HttpClient httpClient;
 
     private final String servletUri;
 
     /**
      * Constructor.
-     * 
+     *
      * @param host
      *            The host running an eXist instance.
      * @param port
      *            The port eXist is running on.
+     * @param username
+     *            The username of the eXist user account.
+     * @param password
+     *            The password of the eXist user account.
      */
-    public ExistConnector(String host, int port) {
+    public ExistConnector(String host, int port, String username, String password) {
         if (host == null || host.length() == 0) {
             throw new IllegalArgumentException("Null or empty host");
         }
         if (port < 1 || port > 65535) {
             throw new IllegalArgumentException("Invalid port");
         }
+
+        httpClient = new HttpClient();
+//        httpClient.getParams().setAuthenticationPreemptive(true);
+//        Credentials credentials = new UsernamePasswordCredentials(username, password);
+//        httpClient.getState().setCredentials(new AuthScope(host, port, AuthScope.ANY_REALM), credentials);
+
         servletUri = String.format("http://%s:%d/exist/rest", host, port);
     }
 
@@ -117,14 +129,16 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public byte[] retrieveResource(String uri) throws XmldbException {
-        HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(servletUri + uri);
         byte[] content = null;
         try {
             int statusCode = httpClient.executeMethod(getMethod);
             if (statusCode >= STATUS_ERROR) {
-                String msg = String.format("Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode);
-                throw new XmldbException(msg);
+                if (statusCode == ERROR_NOT_FOUND) {
+                    throw new XmldbException(String.format("Resource not found: '%s'", uri));
+                } else {
+                    throw new XmldbException(String.format("Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode));
+                }
             }
             InputStream is = getMethod.getResponseBodyAsStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -150,7 +164,6 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public Document retrieveXmlDocument(String uri) throws XmldbException {
-        HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(servletUri + uri);
         Document doc = null;
         try {
@@ -204,7 +217,6 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public void storeResource(String uri, InputStream is) throws XmldbException {
-        HttpClient httpClient = new HttpClient();
         PutMethod putMethod = new PutMethod(servletUri + uri);
         RequestEntity entity = new InputStreamRequestEntity(is);
         ((EntityEnclosingMethod) putMethod).setRequestEntity(entity);
@@ -227,7 +239,6 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public void deleteResource(String uri) throws XmldbException {
-        HttpClient httpClient = new HttpClient();
         DeleteMethod deleteMethod = new DeleteMethod(servletUri + uri);
         try {
             int statusCode = httpClient.executeMethod(deleteMethod);
@@ -290,11 +301,13 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public void exportCollection(String uri, File dir) throws XmldbException {
+        // Retrieve collection.
         Collection col = retrieveCollection(uri);
         if (col == null) {
             throw new XmldbException(String.format("Collection not found: '%s'", uri));
         }
 
+        // Create directory if necessary.
         if (!dir.isDirectory()) {
             boolean dirCreated = dir.mkdirs();
             if (!dirCreated) {
@@ -302,6 +315,7 @@ public class ExistConnector implements XmldbConnector {
             }
         }
         
+        // Export resources.
         for (Resource res : col.getResources()) {
             String name = res.getName();
             String resourceUri = String.format("%s/%s", uri, name);
@@ -320,7 +334,19 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public void exportResource(String uri, File file) throws XmldbException {
+        // Make sure parent directory exists.
+        File dir = file.getParentFile();
+        if (dir != null && !dir.isDirectory()) {
+            boolean dirCreated = dir.mkdirs();
+            if (!dirCreated) {
+                throw new XmldbException(String.format("Could not create directory: '%s'", dir.getAbsolutePath()));
+            }
+        }
+        
+        // Get (binary) resource content.
         byte[] content = retrieveResource(uri);
+        
+        // Write file.
         BufferedOutputStream bos = null;
         try {
             bos = new BufferedOutputStream(new FileOutputStream(file));
@@ -360,7 +386,6 @@ public class ExistConnector implements XmldbConnector {
         LOG.trace("POST request:\n" + body);
 
         // Create POST method.
-        HttpClient httpClient = new HttpClient();
         PostMethod postMethod = new PostMethod(servletUri + "/db");
         ByteArrayInputStream bais = new ByteArrayInputStream(body.getBytes());
         RequestEntity entity = new InputStreamRequestEntity(bais, "text/xml; charset=UTF-8");
@@ -369,10 +394,10 @@ public class ExistConnector implements XmldbConnector {
         // Execute method.
         String response = null;
         try {
+            // Execute query.
             int statusCode = httpClient.executeMethod(postMethod);
             if (statusCode >= STATUS_ERROR) {
-                String msg = String.format("Could not execute query '%s' (HTTP status code: %d)", query, statusCode);
-                throw new XmldbException(msg);
+                throw new XmldbException(String.format("Could not execute query '%s' (HTTP status code: %d)", query, statusCode));
             }
 
             // Read response body.
@@ -411,7 +436,6 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public String callModule(String uri, Map<String, String> params) throws XmldbException {
-        HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(servletUri + uri);
         if (params != null && params.size() > 0) {
             NameValuePair[] nameValuePairs = new NameValuePair[params.size()];
@@ -426,8 +450,11 @@ public class ExistConnector implements XmldbConnector {
             // Execute query.
             int statusCode = httpClient.executeMethod(getMethod);
             if (statusCode >= STATUS_ERROR) {
-                String msg = String.format("Could not call module '%s' (HTTP status code: %d)", uri, statusCode);
-                throw new XmldbException(msg);
+                if (statusCode == ERROR_NOT_FOUND) {
+                    throw new XmldbException(String.format("Module not found: '%s'", uri));
+                } else {
+                    throw new XmldbException(String.format("Error while executing module '%s' (HTTP status code: %d)", uri, statusCode));
+                }
             }
 
             // Read response body.

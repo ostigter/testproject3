@@ -23,11 +23,20 @@ public class ExistConnectorTest {
     /** Hostname of the machine running the eXist instance. */
     private static final String HOST = "localhost";
 
-    /** The port eXist is running on. */
+    /** Port number of the eXist instance. */
     private static final int PORT = 8080;
+    
+    /** Username of the eXist user account. */
+    private static final String USERNAME = "guest";
+    
+    /** Password of the eXist user account. */
+    private static final String PASSWORD = "";
 
     /** Directory with the test resources. */
     private static final File RESOURCES_DIR = new File("src/test/resources");
+
+    /** Directory with the test resources. */
+    private static final File EXPORT_DIR = new File("target/test/export");
 
     /** Logger. */
     private static final Logger LOG = Logger.getLogger(ExistConnectorTest.class);
@@ -39,7 +48,7 @@ public class ExistConnectorTest {
     public void test() {
         LOG.info("Started");
         
-        XmldbConnector connector = new ExistConnector(HOST, PORT);
+        XmldbConnector connector = new ExistConnector(HOST, PORT, USERNAME, PASSWORD);
 
         try {
             String uri = null;
@@ -49,8 +58,18 @@ public class ExistConnectorTest {
             String query = null;
             String result = null;
             
-            LOG.debug("Importing resources");
+            LOG.debug("Importing database");
             connector.importCollection("/db", new File(RESOURCES_DIR, "/db"));
+
+            connector.importResource("/db/modules/greeter2.xql", new File(RESOURCES_DIR, "/db/modules/greeter2.xql"));
+//            connector.exportResource("/db/modules/greeter2.xql", new File(EXPORT_DIR,    "/db/modules/greeter2.xql"));
+//            
+//            LOG.debug("Exporting non-collection resources");
+//            connector.exportResource("/db/data/bar/bar-002.xml", new File(EXPORT_DIR, "db/data/bar/bar-002.xml"));
+//            connector.exportResource("/db/modules/greeter1.xql", new File(EXPORT_DIR, "greeter1.xql"));
+//
+//            LOG.debug("Exporting collections");
+//            connector.exportCollection("/db/modules", new File(EXPORT_DIR, "/db/modules"));
 
             LOG.debug("Listing the collection '/db/data':");
             col = connector.retrieveCollection("/db/data");
@@ -112,10 +131,10 @@ public class ExistConnectorTest {
 
             LOG.debug("Calling an XQuery library function");
             String[] params = new String[] { "Mr. Smith" };
-            result = connector.callFunction("http://www.example.org/greeter", "/db/modules/greeter2.xql", "greeting", params);
+            result = connector.callFunction("http://www.example.org/greeter2", "/db/modules/greeter2.xql", "greeting", params);
             LOG.debug("Result:\n" + result);
             Assert.assertTrue(result.contains("<Greeting>Hello, Mr. Smith!</Greeting>"));
-
+            
             LOG.debug("Deleting resources");
             connector.deleteResource("/db/data");
             Assert.assertNull(connector.retrieveCollection("/db/data"));
@@ -125,7 +144,7 @@ public class ExistConnectorTest {
             LOG.info("Finished");
 
         } catch (XmldbException e) {
-            LOG.error("Database error: " + e.getMessage(), e);
+            LOG.error("ERROR: " + e.getMessage(), e);
         }
     }
 
