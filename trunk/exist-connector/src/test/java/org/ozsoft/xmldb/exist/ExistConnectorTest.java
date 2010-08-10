@@ -50,7 +50,7 @@ public class ExistConnectorTest {
             String result = null;
             
             LOG.debug("Importing resources");
-            connector.importResources("/db", new File(RESOURCES_DIR, "/db"));
+            connector.importCollection("/db", new File(RESOURCES_DIR, "/db"));
 
             LOG.debug("Listing the collection '/db/data':");
             col = connector.retrieveCollection("/db/data");

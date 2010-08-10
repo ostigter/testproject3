@@ -56,19 +56,6 @@ public interface XmldbConnector {
     Document retrieveXmlDocument(String uri) throws XmldbException;
 
     /**
-     * Stores a resource based on a file.
-     * 
-     * @param uri
-     *            The resource URI.
-     * @param file
-     *            The file.
-     * 
-     * @throws XmldbException
-     *             If the file could not be read or the resource could not be stored.
-     */
-    void storeResource(String uri, File file) throws XmldbException;
-
-    /**
      * Stores an XML document.
      * 
      * @param uri
@@ -108,19 +95,6 @@ public interface XmldbConnector {
     void storeResource(String uri, InputStream is) throws XmldbException;
     
     /**
-     * Recursively imports an entire directory tree into the database.
-     * 
-     * @param uri
-     *            The base URI the resources are stored under.
-     * @param dir
-     *            The root directory of the directory tree.
-     * 
-     * @throws XmldbException
-     *             If the import failed.
-     */
-    void importResources(String uri, File dir) throws XmldbException;
-
-    /**
      * Deletes a resource.
      * 
      * @param uri
@@ -130,6 +104,60 @@ public interface XmldbConnector {
      *             If the resource could not be deleted.
      */
     void deleteResource(String uri) throws XmldbException;
+
+    /**
+     * Recursively imports a collection from a directory on the file system.
+     * 
+     * @param uri
+     *            The collection URI.
+     * @param dir
+     *            The directory.
+     * 
+     * @throws XmldbException
+     *             If the import failed.
+     */
+    void importCollection(String uri, File dir) throws XmldbException;
+    
+    /**
+     * Imports a non-collection resource from a file on the file system.
+     * 
+     * @param uri
+     *            The resource URI.
+     * @param file
+     *            The file.
+     * 
+     * @throws XmldbException
+     *             If the file does not exist or could not be read, or the
+     *             resource could not be stored.
+     */
+    void importResource(String uri, File file) throws XmldbException;
+    
+    /**
+     * Recursively exports a collection to a directory on the file system.
+     * 
+     * @param uri
+     *            The collection URI.
+     * @param dir
+     *            The directory.
+     * 
+     * @throws XmldbException
+     *             If the export failed.
+     */
+    void exportCollection(String uri, File dir) throws XmldbException;
+    
+    /**
+     * Exports a non-collection resource to a file on the file system.
+     * 
+     * @param uri
+     *            The resource URI.
+     * @param file
+     *            The file.
+     * 
+     * @throws XmldbException
+     *             If the resource does not exist or could not be read, or the
+     *             file could not be written.
+     */
+    void exportResource(String uri, File dir) throws XmldbException;
 
     /**
      * Executes an ad-hoc query.
