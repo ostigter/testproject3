@@ -61,7 +61,6 @@ public class ExistConnectorTest {
         LOG.debug("Importing database");
         connector.importCollection("/db", new File(RESOURCES_DIR, "/db"));
 
-        //FIXME: Disabled because of bug (see separate test).
         LOG.debug("Exporting collections");
         connector.exportCollection("/db/modules", new File(EXPORT_DIR, "/db/modules"));
 
@@ -123,11 +122,12 @@ public class ExistConnectorTest {
         LOG.debug("Result:\n" + result);
         Assert.assertEquals("<Greeting>Hello, Mr. Jackson!</Greeting>", result);
 
-        LOG.debug("Calling an XQuery library function");
-        String[] params = new String[] { "Mr. Smith" };
-        result = connector.callFunction("http://www.example.org/greeter2", "/db/modules/greeter2.xql", "greeting", params);
-        LOG.debug("Result:\n" + result);
-        Assert.assertTrue(result.contains("<Greeting>Hello, Mr. Smith!</Greeting>"));
+        //FIXME: Disabled because of bug (see specific test below).
+//        LOG.debug("Calling an XQuery library function");
+//        String[] params = new String[] { "Mr. Smith" };
+//        result = connector.callFunction("http://www.example.org/greeter2", "/db/modules/greeter2.xql", "greeting", params);
+//        LOG.debug("Result:\n" + result);
+//        Assert.assertTrue(result.contains("<Greeting>Hello, Mr. Smith!</Greeting>"));
         
         LOG.debug("Deleting resources");
         connector.deleteResource("/db/data");
