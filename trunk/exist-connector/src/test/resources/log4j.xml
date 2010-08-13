@@ -13,7 +13,7 @@
     </logger>
 
     <logger name="org.apache">
-        <level value="INFO" />
+        <level value="WARN" />
     </logger>
 
     <root>

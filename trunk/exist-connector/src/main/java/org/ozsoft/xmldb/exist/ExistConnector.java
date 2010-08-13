@@ -14,8 +14,11 @@ import java.io.Reader;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -25,15 +28,18 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.ozsoft.xmldb.Collection;
+import org.ozsoft.xmldb.NotAuthorizedException;
+import org.ozsoft.xmldb.NotFoundException;
 import org.ozsoft.xmldb.Resource;
 import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 
 /**
- * Connector for the eXist XML database, using its REST interface. <br />
+ * Connector for the eXist XML database using the REST interface. <br />
  * <br />
  * 
  * Implemented using the Apache Commons HttpClient library.
@@ -44,7 +50,11 @@ public class ExistConnector implements XmldbConnector {
     
     private static final int STATUS_ERROR = 400;
 
-    private static final int ERROR_NOT_FOUND = 404;
+    private static final int AUTHORIZATION_REQUIRED = 401;
+
+    private static final int NOT_AUTHORIZED = 403;
+
+    private static final int NOT_FOUND = 404;
 
     private static final String PARAMETER_STRING_DELIMITER = "\"";
 
@@ -79,9 +89,9 @@ public class ExistConnector implements XmldbConnector {
         }
 
         httpClient = new HttpClient();
-//        httpClient.getParams().setAuthenticationPreemptive(true);
-//        Credentials credentials = new UsernamePasswordCredentials(username, password);
-//        httpClient.getState().setCredentials(new AuthScope(host, port, AuthScope.ANY_REALM), credentials);
+        httpClient.getParams().setAuthenticationPreemptive(true);
+        Credentials credentials = new UsernamePasswordCredentials(username, password);
+        httpClient.getState().setCredentials(new AuthScope(host, port, AuthScope.ANY_REALM), credentials);
 
         servletUri = String.format("http://%s:%d/exist/rest", host, port);
     }
@@ -130,28 +140,47 @@ public class ExistConnector implements XmldbConnector {
     @Override
     public byte[] retrieveResource(String uri) throws XmldbException {
         GetMethod getMethod = new GetMethod(servletUri + uri);
+        InputStream is = null;
+        ByteArrayOutputStream baos = null;        
         byte[] content = null;
         try {
             int statusCode = httpClient.executeMethod(getMethod);
             if (statusCode >= STATUS_ERROR) {
-                if (statusCode == ERROR_NOT_FOUND) {
-                    throw new XmldbException(String.format("Resource not found: '%s'", uri));
+                if (statusCode == NOT_FOUND) {
+                    throw new NotFoundException(uri);
+                } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
+                    throw new NotAuthorizedException(String.format("Not authorized to access resource '%s'", uri));
                 } else {
                     throw new XmldbException(String.format("Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode));
                 }
             }
-            InputStream is = getMethod.getResponseBodyAsStream();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            is = getMethod.getResponseBodyAsStream();
+            baos = new ByteArrayOutputStream();
             byte[] buffer = new byte[BUFFER_SIZE];
             int length = 0;
             while ((length = is.read(buffer)) > 0) {
                 baos.write(buffer, 0, length);
             }
             content = baos.toByteArray();
-            baos.close();
         } catch (IOException e) {
-            String msg = String.format("Could not retrieve resource '%s'", uri);
+            String msg = String.format("Could not retrieve resource '%s': %s", uri, e.getMessage());
+            LOG.error(msg, e);
             throw new XmldbException(msg, e);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    LOG.error("Could not close InputStream", e);
+                }
+            }
+            if (baos != null) {
+                try {
+                    baos.close();
+                } catch (IOException e) {
+                    LOG.error("Could not close ByteArrayOutputStream", e);
+                }
+            }
         }
         return content;
     }
@@ -169,8 +198,10 @@ public class ExistConnector implements XmldbConnector {
         try {
             int statusCode = httpClient.executeMethod(getMethod);
             if (statusCode >= STATUS_ERROR) {
-                if (statusCode == ERROR_NOT_FOUND) {
-                    throw new XmldbException(String.format("XML document not found: '%s'", uri));
+                if (statusCode == NOT_FOUND) {
+                    throw new NotFoundException(uri);
+                } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
+                    throw new NotAuthorizedException(String.format("Not authorized to access resource '%s'", uri));
                 } else {
                     throw new XmldbException(String.format("Could not retrieve XML document '%s' (HTTP status code: %d)", uri, statusCode));
                 }
@@ -178,8 +209,12 @@ public class ExistConnector implements XmldbConnector {
             InputStream is = getMethod.getResponseBodyAsStream();
             SAXReader reader = new SAXReader();
             doc = reader.read(is);
-        } catch (Exception e) {
-            String msg = String.format("Could not retrieve XML document '%s'", uri);
+        } catch (DocumentException e) {
+            String msg = String.format("Resource is not a valid XML document '%s': %s", uri, e.getMessage());
+            throw new XmldbException(msg, e);
+        } catch (IOException e) {
+            String msg = String.format("Could not retrieve XML document '%s': %s", uri, e.getMessage());
+            LOG.error(msg, e);
             throw new XmldbException(msg, e);
         }
         return doc;
@@ -223,10 +258,16 @@ public class ExistConnector implements XmldbConnector {
         try {
             int statusCode = httpClient.executeMethod(putMethod);
             if (statusCode >= STATUS_ERROR) {
-                throw new XmldbException(String.format("Could not store resource '%s' (HTTP status code: %d)", uri, statusCode));
+                if (statusCode == NOT_FOUND) {
+                    throw new NotFoundException(uri);
+                } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
+                    throw new NotAuthorizedException(String.format("Not authorized to store resource '%s'", uri));
+                } else {
+                    throw new XmldbException(String.format("Could not store resource '%s' (HTTP status code: %d)", uri, statusCode));
+                }
             }
-        } catch (Exception e) {
-            String msg = String.format("Could not store resource '%s'", uri);
+        } catch (IOException e) {
+            String msg = String.format("Could not store resource '%s': %s", uri, e.getMessage());
             LOG.error(msg, e);
             throw new XmldbException(msg, e);
         }
@@ -246,8 +287,9 @@ public class ExistConnector implements XmldbConnector {
                 String msg = String.format("Could not delete resource '%s' (HTTP status code: %d)", uri, statusCode);
                 throw new XmldbException(msg);
             }
-        } catch (Exception e) {
-            String msg = String.format("Could not delete resource '%s'", uri);
+        } catch (IOException e) {
+            String msg = String.format("Could not delete resource '%s': %s", uri, e.getMessage());
+            LOG.error(msg, e);
             throw new XmldbException(msg, e);
         }
     }
@@ -282,7 +324,8 @@ public class ExistConnector implements XmldbConnector {
             bis = new BufferedInputStream(new FileInputStream(file));
             storeResource(uri, bis);
         } catch (IOException e) {
-            String msg = String.format("Could not store resource '%s'", uri);
+            String msg = String.format("Could not store resource '%s': %s", uri, e.getMessage());
+            LOG.error(msg, e);
             throw new XmldbException(msg, e);
         } finally {
             if (bis != null) {
@@ -383,7 +426,9 @@ public class ExistConnector implements XmldbConnector {
         sb.append("  </properties>\n");
         sb.append("</query>\n");
         String body = sb.toString();
-        LOG.trace("POST request:\n" + body);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("POST request:\n" + body);
+        }
 
         // Create POST method.
         PostMethod postMethod = new PostMethod(servletUri + "/db");
@@ -396,9 +441,6 @@ public class ExistConnector implements XmldbConnector {
         try {
             // Execute query.
             int statusCode = httpClient.executeMethod(postMethod);
-            if (statusCode >= STATUS_ERROR) {
-                throw new XmldbException(String.format("Could not execute query '%s' (HTTP status code: %d)", query, statusCode));
-            }
 
             // Read response body.
             Reader reader = new InputStreamReader(postMethod.getResponseBodyAsStream());
@@ -410,9 +452,15 @@ public class ExistConnector implements XmldbConnector {
             }
             reader.close();
             response = sb2.toString();
-            LOG.trace("POST response:\n" + response);
-        } catch (Exception e) {
-            throw new XmldbException("Error while executing query", e);
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("POST response:\n" + response);
+            }
+            
+            if (statusCode >= STATUS_ERROR) {
+                throw new XmldbException(String.format("Could not execute query '%s' (HTTP status code: %d)", query, statusCode));
+            }
+        } catch (IOException e) {
+            throw new XmldbException("Error while executing query: " + e.getMessage(), e);
         } finally {
             if (bais != null) {
                 try {
@@ -450,10 +498,12 @@ public class ExistConnector implements XmldbConnector {
             // Execute query.
             int statusCode = httpClient.executeMethod(getMethod);
             if (statusCode >= STATUS_ERROR) {
-                if (statusCode == ERROR_NOT_FOUND) {
-                    throw new XmldbException(String.format("Module not found: '%s'", uri));
+                if (statusCode == NOT_FOUND) {
+                    throw new NotFoundException(uri);
+                } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
+                    throw new NotAuthorizedException(String.format("Not authorized to execute module '%s'", uri));
                 } else {
-                    throw new XmldbException(String.format("Error while executing module '%s' (HTTP status code: %d)", uri, statusCode));
+                    throw new XmldbException(String.format("Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode));
                 }
             }
 
