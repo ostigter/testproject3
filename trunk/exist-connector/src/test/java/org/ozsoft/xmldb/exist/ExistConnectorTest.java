@@ -15,7 +15,18 @@ import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 
 /**
- * Test suite for the ExistConnector.
+ * Test suite for the <code>ExistConnector</code> class. <br />
+ * <br />
+ * 
+ * Requires a running eXist instance somewhere (by default on the local machine,
+ * port 8080). <br />
+ * <br />
+ * 
+ * Creates and deletes the collections '/db/data' and '/db/modules'. <br />
+ * <br />
+ * 
+ * <b>WARNING: Do not use this test suite on an eXist instance with important
+ * data!</b>
  * 
  * @author Oscar Stigter
  */
@@ -175,8 +186,8 @@ public class ExistConnectorTest {
      * interface.
      */
     @Test
-    public void bug() throws XmldbException {
-        LOG.info("Test 'bug' started");
+    public void xqueryFunctionCallBug() throws XmldbException {
+        LOG.info("Test 'xqueryFunctionCallBug' started");
         
         XmldbConnector connector = new ExistConnector(HOST, PORT, USERNAME, PASSWORD);
 
@@ -196,7 +207,7 @@ public class ExistConnectorTest {
         LOG.debug("Result:\n" + result);
         Assert.assertTrue(result.contains("<Greeting>Hello, Mr. Smith!</Greeting>"));
 
-        LOG.info("Test 'bug' finished");
+        LOG.info("Test 'xqueryFunctionCallBug' finished");
     }
 
 }
