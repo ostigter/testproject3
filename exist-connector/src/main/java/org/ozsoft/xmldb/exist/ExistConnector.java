@@ -284,8 +284,13 @@ public class ExistConnector implements XmldbConnector {
         try {
             int statusCode = httpClient.executeMethod(deleteMethod);
             if (statusCode >= STATUS_ERROR) {
-                String msg = String.format("Could not delete resource '%s' (HTTP status code: %d)", uri, statusCode);
-                throw new XmldbException(msg);
+                if (statusCode == NOT_FOUND) {
+                    // Resource does not exist (no problem).
+                } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
+                    throw new NotAuthorizedException(String.format("Not authorized to delete resource '%s'", uri));
+                } else {
+                    throw new XmldbException(String.format("Could not delete resource '%s' (HTTP status code: %d)", uri, statusCode));
+                }
             }
         } catch (IOException e) {
             String msg = String.format("Could not delete resource '%s': %s", uri, e.getMessage());
@@ -300,6 +305,13 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public void importCollection(String uri, File dir) throws XmldbException {
+        if (!dir.isDirectory()) {
+            throw new XmldbException("Directory not found: " + dir.getAbsolutePath());
+        }
+        if (!dir.canRead()) {
+            throw new XmldbException("Directory not readable: " + dir.getAbsolutePath());
+        }
+        
         for (File file : dir.listFiles()) {
             String name = file.getName();
             if (!name.startsWith(".")) {
@@ -319,6 +331,13 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public void importResource(String uri, File file) throws XmldbException {
+        if (!file.isFile()) {
+            throw new XmldbException("File not found: " + file.getAbsolutePath());
+        }
+        if (!file.canRead()) {
+            throw new XmldbException("File not readable: " + file.getAbsolutePath());
+        }
+        
         BufferedInputStream bis = null;
         try {
             bis = new BufferedInputStream(new FileInputStream(file));
