@@ -95,7 +95,7 @@ public class ExistConnector implements XmldbConnector {
 
         servletUri = String.format("http://%s:%d/exist/rest", host, port);
     }
-
+    
     /*
      * (non-Javadoc)
      * 
