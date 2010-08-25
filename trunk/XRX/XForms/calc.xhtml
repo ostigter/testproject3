@@ -1,0 +1,37 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:xf="http://www.w3.org/2002/xforms"
+        xmlns:ev="http://www.w3.org/2001/xml-events">
+    <head>
+        <title>XRX Calculator</title>
+        <xf:model>
+            <xf:instance>
+                <data xmlns="">
+                    <number1>0</number1>
+                    <number2>0</number2>
+                    <result>0</result>
+                 </data>
+            </xf:instance>
+            <xf:submission id="calculate" method="post" action="calc.xql" replace="instance" />
+         </xf:model>
+    </head>
+    <body>
+        <h1>XRX Calculator</h1>
+        <xf:input ref="number1" incremental="true">
+            <xf:label>Number 1:</xf:label>
+        </xf:input>
+        <br/>
+        <xf:input ref="number2">
+            <xf:label>Number 2:</xf:label>
+        </xf:input>
+        <br/>
+        <xf:input ref="result">
+            <xf:label>Result:</xf:label>
+        </xf:input>
+        <br/>
+        <xf:submit submission="calculate">
+            <xf:label>Calculate</xf:label>
+        </xf:submit>
+    </body>
+</html>
