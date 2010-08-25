@@ -5,7 +5,7 @@
 
     <groupId>org.ozsoft</groupId>
     <artifactId>exist-connector</artifactId>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
 
     <name>exist-connector</name>
     <description>Library to connect to an eXist XML database using the REST interface</description>
@@ -64,6 +64,28 @@
                     <target>1.6</target>
                     <compilerVersion>6</compilerVersion>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-5</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>org.ozsoft.xmldb.exist.Main</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

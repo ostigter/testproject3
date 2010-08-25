@@ -185,7 +185,7 @@ public class ExistConnectorTest {
      * module, after first trying to retrieve the module through the REST
      * interface.
      */
-    @Test
+//    @Test
     public void xqueryFunctionCallBug() throws XmldbException {
         LOG.info("Test 'xqueryFunctionCallBug' started");
         
