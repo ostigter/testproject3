@@ -1,0 +1,47 @@
+Pages
+=====
+
+Home
+    Create Account
+    Log in
+    Log out
+    Company
+    Enterprises
+    Market
+
+Company
+    
+Enterprises
+
+Create Enterprise
+
+Edit Enterprise
+
+Edit Employees
+
+Edit Suppliers
+
+Edit Prices
+
+Technologies
+
+
+Create Enterprise:
+    type (mine, farm, factory, store, R&D center, office)
+    city
+    size
+        farm
+            crop growing
+                product (wheat)
+            lifestock raising:
+                animal (chicken (eggs), cows (milk), pigs, sheep (whool))
+        factory
+            flour mill (wheat -> flour)
+            bakery (flour -> bread)
+            slaughterhouse (chicken -> chicken meat; cows -> beef, leather; pigs -> pork, leather; sheep -> lamb, leather)
+            taylor (whool -> cloth)
+            leather workshop (leather -> leather jackets, leather bags)
+            clothing factory (cloth -> clothes)
+        store
+            grocery (bread, milk, eggs, chicken, pork, lamb)
+            

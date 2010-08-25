@@ -41,7 +41,7 @@ Natural resources
     M = Chemical Materials
     C = Coal
     G = Gold
-    I = Iron Ore
+    I = Iron
     O = Oil
     S = Silica
     V = Silver
@@ -57,8 +57,8 @@ Citric acid            Lemon
 Coconut oil            Coconut
 Corn syrup             Corn
 Dye Stuffs             Oil, Timber
-Electronic components  Chemical Materials, Coal, Iron Ore, Silica
-Engine                 Coal, Iron Ore (Steel)
+Electronic components  Chemical Materials, Coal, Iron, Silica
+Engine                 Coal, Iron (Steel)
 Flour                  Wheat
 Glass                  Silica
 Linen                  Flax Fiber
@@ -66,16 +66,15 @@ Paper                  Timber
 Plastic                Oil
 Polyester              Chemical Materials, Oil
 Silicon                Silica
-Steel                  Coal, Iron Ore
+Steel                  Coal, Iron
 Textiles               Cotton
 Wheat germ oil         Wheat
-Wheel and tire         Rubber, Coal, Iron Ore (Steel)
+Wheel and tire         Rubber, Coal, Iron (Steel)
 
 
 Consumer products
 -----------------
 
-Grown (Straight from the Farm)
 Eggs
 Frozen Beef
 Frozen Chicken
@@ -85,7 +84,6 @@ Frozen Pork
 
 Manufactured Goods
 
-Grown
 Bread               Wheat (Flour)
 Cake                Cacao, Eggs, Wheat (Flour)
 Canned Corn         Corn
@@ -135,9 +133,9 @@ Hair color             Oil + Timber (Dye Stuff + Plastic) Wheat (Wheat Germ Oil)
 Headache pills         Chemical Materials, Oil (Plastic)
 In-line skates         Oil + Timber (Dye Stuff), Rubber, Leather
 Jeans                  Oil + Timber (Dye Stuff), Cotton (Textiles)
-Leather belt           Coal + Iron Ore (Steel), Leather
+Leather belt           Coal + Iron (Steel), Leather
 Lipstick               Chemical Materials, Oil (Plastic), Wheat (Wheat Germ Oil)
-Motorcycle             Coal + Iron Ore (Steel), Rubber
+Motorcycle             Coal + Iron (Steel), Rubber
 Perfume                Chemical Materials, Silica (Glass)
 Shampoo                Chemical Materials, Oil (Plastic)
 Sports shoes           Chemical Material + Oil (Polyester), Cotton, Rubber
@@ -148,50 +146,50 @@ Toy doll               Oil + Timber (Dye Stuff), Cotton (Textiles)
 
 3x Mined + Grown
 Camera Film            Chemical Materials, Oil (Plastic), Silver
-Elegent Watch          Coal + Iron Ore (Steel), Silica (Glass)
-Golf Clubs             Coal + Iron Ore (Steel), Timber
+Elegent Watch          Coal + Iron (Steel), Silica (Glass)
+Golf Clubs             Coal + Iron (Steel), Timber
 
 4x Mined + Grown
-Air Conditioner     Chemical Materials + Coal + Iron Ore + Silica (Electronic
-Components), Coal + Iron Ore (Steel)
-Desktop Computer    Chemical Materials, Coal, Iron Ore, Silica (Electronic
-Components+ CPU) Coal + Iron Ore (Steel)
+Air Conditioner     Chemical Materials + Coal + Iron + Silica (Electronic
+Components), Coal + Iron (Steel)
+Desktop Computer    Chemical Materials, Coal, Iron, Silica (Electronic
+Components+ CPU) Coal + Iron (Steel)
 
-Car    	Car Body         Coal + Iron Ore (Steal), Silica (Glass), Oil (Plastic)
-	Engine           Coal + Iron Ore (Steel)
-	Steel            Coal + Iron Ore
-	Wheel and Tire   Coal + Iron Ore (Steel), Rubber
+Car    	Car Body         Coal + Iron (Steal), Silica (Glass), Oil (Plastic)
+	Engine           Coal + Iron (Steel)
+	Steel            Coal + Iron
+	Wheel and Tire   Coal + Iron (Steel), Rubber
 
 5x Mined + Grown
-Camera                Chemical Materials + Coal + Iron Ore + Silica
+Camera                Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-DVD Player            Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+DVD Player            Aluminum, Chemical Materials + Coal + Iron + Silica
 (Electronic Components)
-Hand-Held Game Device Chemical Materials + Coal + Iron Ore + Silica
+Hand-Held Game Device Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Hi-fi                 Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+Hi-fi                 Aluminum, Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Steel)
-Microwave             Chemical Materials + Coal + Iron Ore + Silica
+Microwave             Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Mobile Phone          Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Mobile Phone          Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Notebook Computer     Chemical Materials + Coal + Iron Ore + Silica
+Notebook Computer     Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Palm Computer         Chemical Materials + Coal + Iron Ore + Silica
+Palm Computer         Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Printer               Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Printer               Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Sports Watch          Chemical Materials + Coal + Iron Ore + Silica
+Sports Watch          Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Television            Chemical Materials + Coal + Iron Ore + Silica
+Television            Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Toy Racing Car        Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Toy Racing Car        Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Video Camera          Chemical Materials + Coal + Iron Ore + Silica
+Video Camera          Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Video Game Console    Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Video Game Console    Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Video Recorder        Chemical Materials + Coal + Iron Ore + Silica
+Video Recorder        Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass + Steel)
 
 
@@ -213,8 +211,8 @@ Sports Shoes         Chemical Material + Oil (Polyester), Cotton, Rubber
 Toilet Cleaner       Chemical Materials, Oil (Plastic)
 Toothpaste           Chemical Materials, Oil (Plastic)
 Perfume              Chemical Materials, Silica (Glass)
-Leather Belt         Coal + Iron Ore (Steel), Leather
-Motor Cycle          Coal + Iron Ore (Steel), Rubber
+Leather Belt         Coal + Iron (Steel), Leather
+Motor Cycle          Coal + Iron (Steel), Rubber
 Hair Color           Oil + Timber (Dye Stuff + Plastic), Wheat (Wheat Germ Oil)
 In-Line Skates       Oil + Timber (Dye Stuff), Rubber, Leather
 Jeans                Oil + Timber (Dye Stuff), Cotton (Textiles)
@@ -223,52 +221,52 @@ Toy Doll             Oil + Timber (Dye Stuff), Cotton (Textiles)
 
 3x Mined + Grown
 Camera Film        Chemical Materials, Oil (Plastic), Silver
-Elegent Watch      Coal + Iron Ore (Steel), Silica (Glass)
-Golf Clubs         Coal + Iron Ore (Steel), Timber
+Elegent Watch      Coal + Iron (Steel), Silica (Glass)
+Golf Clubs         Coal + Iron (Steel), Timber
 
 4x Mined + Grown
-Airconditioner     Chemical Materials + Coal + Iron Ore + Silica (Electronic
-Components), Coal + Iron Ore (Steel)
-Desktop Computer   Chemical Materials, Coal, Iron Ore, Silica (Electronic
-Components+ CPU) Coal + Iron Ore (Steel),
+Airconditioner     Chemical Materials + Coal + Iron + Silica (Electronic
+Components), Coal + Iron (Steel)
+Desktop Computer   Chemical Materials, Coal, Iron, Silica (Electronic
+Components+ CPU) Coal + Iron (Steel),
 
-Car     Rubber, Coal, Iron Ore (Steel) Silica (Glass), Oil (Plastic) [(Wheel
+Car     Rubber, Coal, Iron (Steel) Silica (Glass), Oil (Plastic) [(Wheel
 and Tire), (Car Body), (Engine), (Steel)]
-	Car Body         Coal + Iron Ore (Steal), Silica (Glass), Oil (Plastic)
-	Engine           Coal + Iron Ore (Steel)
-	Steel            Coal + Iron Ore
-	Wheel and Tire   Coal + Iron Ore (Steel), Rubber
+	Car Body         Coal + Iron (Steal), Silica (Glass), Oil (Plastic)
+	Engine           Coal + Iron (Steel)
+	Steel            Coal + Iron
+	Wheel and Tire   Coal + Iron (Steel), Rubber
 
 5x Mined + Grown
-Camera                Chemical Materials + Coal + Iron Ore + Silica
+Camera                Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Hi-fi                 Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+Hi-fi                 Aluminum, Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Steel)
-DVD Player            Aluminum, Chemical Materials + Coal + Iron Ore + Silica
+DVD Player            Aluminum, Chemical Materials + Coal + Iron + Silica
 (Electronic Components)
-Hand-Held Game Device Chemical Materials + Coal + Iron Ore + Silica
+Hand-Held Game Device Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Microwave             Chemical Materials + Coal + Iron Ore + Silica
+Microwave             Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Mobile Phone          Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Mobile Phone          Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Notebook Computer     Chemical Materials + Coal + Iron Ore + Silica
+Notebook Computer     Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Palm Computer         Chemical Materials + Coal + Iron Ore + Silica
+Palm Computer         Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Printer               Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Printer               Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Sports Watch          Chemical Materials + Coal + Iron Ore + Silica
+Sports Watch          Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Television            Chemical Materials + Coal + Iron Ore + Silica
+Television            Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Toy Racing Car        Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Toy Racing Car        Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Video Camera          Chemical Materials + Coal + Iron Ore + Silica
+Video Camera          Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass), Oil (Plastic)
-Video Game Console    Chemical Materials + Coal + Iron Ore + Silica (Electronic
+Video Game Console    Chemical Materials + Coal + Iron + Silica (Electronic
 Components), Oil (Plastic)
-Video Recorder        Chemical Materials + Coal + Iron Ore + Silica
+Video Recorder        Chemical Materials + Coal + Iron + Silica
 (Electronic Components + Glass + Steel)
 
 -------------------------Simplified-------------------------
@@ -287,7 +285,6 @@ Frozen Pork
 
 Manufactured Goods
 
-Grown
 Bread               Flour
 Cake                Cacao, Eggs, Flour
 Canned Corn         Corn

@@ -6,11 +6,10 @@ Concepts
 --------
 
 bank
-loan
-    interest rate
-    duration
-    down payment
-
+    loan
+        interest rate
+        duration
+        down payment
 city
     population
     wealth
@@ -18,52 +17,62 @@ city
     economic climate
         booming
         depression
-    city part (downtown, suburbs, outskirts, rural)
-    land value
-local suppliers
-
+    land value (wealth, demand, unemployment, economic climate)
+    local suppliers
+    
 industry
+    mining
     farming
     manufacturing
     retail
     R&D
 
 product
-    raw product (farming, mine)
+    raw product (farming, mining)
     semi product (manufacturing)
     consumer product (manufacturing, retail)
-necessity rating
-technology level
-price
-price rating
-price concern
-quality
-quality rating
-quality concern
-brand
-brand awareness
-brand loyalty
-brand rating
+    technology level
+    necessity rating
+    supply
+    demand
+    price
+    price rating
+    price concern
+    quality
+    quality rating
+    quality concern
+    brand
+    brand awareness
+    brand loyalty
+    brand rating
 
 company
     name
-    CEO (player)
+    logo
+    description
+    CEO (name, picture)
     cash
-    firms
+    enterprises
     revenues
     expenses
-    profit/loss
+    result (profit/loss)
     shares
     shareholders
     owned stock
     divident
 
-firm
+enterprise
     type
+        harbor (fresh fish)
         farm (farming)
             crop growing
             lifestock raising
             lifestock processing
+        mine (mining)
+            forest (wood)
+            quarry (stone)
+            ore mine (ore)
+            oil drill (oil)
         factory (manufacuring)
             purchasing
             manufacturing
@@ -73,19 +82,22 @@ firm
             sales
             advertising
         R&D center (R&D)
-        headquaters (management)
+        headquarters (management)
             advertising
             CEO
             CTO
             HRM
     size
     employees
+        salaries
     technology (farm, factory)
     equipment (farm, factory)
-    quality
+    quality (farm, factory)
+    yield (farm)
+    productivity (factory)
     revenues
     expenses
-    profit/loss
+    result (profit/loss)
 
 supplier
     local supplier
@@ -93,46 +105,61 @@ supplier
     distance
     freight costs
 
-technology
-
 farm
-	forest (wood)
-	quarry (stone)
-	ore mine (ore)
-	oil drill (oil)
 	wheat farm (wheat)
 	cotton farm (cotton)
 	cow farm (milk, cows)
 	pig farm (pigs)
 	sheep farm (wool, sheep)
+
 mine
+    forest (wood)
+    quarry (stone)
+    ore mine (ore)
+    oil drill (oil)
+
 factory
 	flourmill (1 wheat -> 1 flour)
 	bakery (1 flour -> 1 bread)
-	woodmill (1 wood -> 1 planks)
+	wood mill (1 wood -> 1 planks)
 	carpentry (5 planks -> 1 furnature)
-	cottonmill (1 cotton -> 1 thread)
+	cotton mill (1 cotton -> 1 thread)
 	clothing workshop (10 thread -> 1 clothes) 
 	beef workshop (1 cow -> 50 beef)
 	dairy workshop (1 milk -> 1 yoghurt/butter/cheese)
+
 store
 	grocery (bread, milk, yoghurt, butter, cheese, meat)
 	funature store (furnature)
 	bakery (bread, pastry)
 	clothes shop (clothes)
 	
+research center
+    technology
+
+game
+    products
+    cities
+    companies
+    turn (1 turn per 1 real day = 1 game week; 1 month = 4 weeks, 12 months = 1 year, 48 weeks = 1 year)
+        First week of January, 1900
+        Second week of May, 1945
+        Third week of September, 2000
+        Fourth week of December, 2010
+	
 New York
 	population: 3,000,000
 	companies:
-		Woodland Inc., Forest, 1000 acres  50 workers, $500.00 per tonne, quality 2
-		Forest Land, Forest, 100 acres, 10 workers, $450.00 per tonne, quality 1
+		Woodland Inc., Forest, 1000 acres  50 workers, $500/mt, quality 2
+		Forest Land, Forest, 100 acres, 10 workers, $450/mt, quality 1
 
-Wheat farm
+Crop farm
 	Location: Smallville
 	Size: 100 acres
-	Yield: 100,000 wheat per year
+	Product: Wheat
+	Yield: 300 mt/year
 	Employees:
-		10 x $50.00 = $500.00 salary per week
+		10 x $50.00 = $500.00 per week ($24,000 per year)
 		Qualification: 1
 	Technology level: 1
 	Quality: 1
@@ -171,7 +198,6 @@ Market
         2          $1.50        5,000
         5          $4.75        1,000
         10         $9.95          500
-
     Flour
         Quality     Price       Stock
         10          $1.50       10,000
@@ -233,3 +259,41 @@ Market
         Supply: 5,000 (+5.0%)
         Demand: 2,000 (-1.5%)
         Avg. price: $0.48 (-2.0%)
+
+Crop size
+    1 are  =    100 m2 = 10 x 10 m
+    1 ha   = 10,000 m2 = 100 x 100 m
+    1 acre =  4,047 m2 = 63.62 x 63.62 m
+    
+    50 x 50 m   = 2,500 m2 = 0.62 acres
+    500 x 500 m = 250,000 m2 = 62 acres
+
+    Tiny:   0.1 acre    (20 x 20 m)
+    Small:  1 acre      (65 x 65 m)
+    Medium: 10 acres    (200 x 200 m)
+    Large:  100 acres   (635 x 635 m)
+    Huge:   1,000 acres (2 x 2 km)
+
+Crop prices
+    Wheat: $200/mt = $0.20/kg
+    1 acre = 3 mt = $600 
+    10 acres = 30 mt = $6,000
+    100 acres = 300 mt = $60,000
+    1,000 acres = 3,000 mt = $600,000
+
+Farm
+    quality
+        raw product (crops, lifestock)
+        technology (equipment)
+        qualification (employees)
+
+Factory
+    quality
+        raw/semi product
+        technology (machines)
+        qualification (employees)
+        experience (employees)
+    productivity
+        technology (machines)
+        qualification (employees)
+        experience (employees)
