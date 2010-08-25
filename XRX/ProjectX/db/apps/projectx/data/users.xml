@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Users xmlns="http://www.projectx.org">
+    <User>
+        <Username>admin</Username>
+        <Password>admin</Password>
+        <IsAdmin>true</IsAdmin>
+    </User>
+    <User>
+        <Username>oscar</Username>
+        <Password>appel</Password>
+        <IsAdmin>false</IsAdmin>
+    </User>
+</Users>
