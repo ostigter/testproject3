@@ -1,0 +1,33 @@
+TODO
+====
+
+- Home page
+- Log in
+- Log out
+- Create Account
+- Edit Account
+- Delete Account
+- View Cities
+- View Market
+    - View Product Report
+- View Companies
+- Take Out New Loan
+- Make Down Payment
+- View Enterprises
+- Create Enterprise
+    - Build Mine
+    - Build Farm
+    - Build Factory
+    - Build Store
+    - Build R&D Center
+    - Build Headquarters
+- Edit Enterprise
+    - Edit Prices
+    - Edit Suppliers
+- Edit Advertising
+- View Technologies
+- Buy Technology
+- Read Messages
+- Send Message
+- Sell Enterprise for Sale
+- Buy Enterprise
