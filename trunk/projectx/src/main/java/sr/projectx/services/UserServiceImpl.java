@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
     /** Property service. */
     @ManagedProperty(value = "#{propertyService}")
     private PropertyService propertyService;
+    
     /** Log service. */
     @ManagedProperty(value = "#{logService}")
     private LogService logService;
@@ -36,7 +37,12 @@ public class UserServiceImpl implements UserService {
 	/** Entity manager. */
 	private final EntityManager em = PersistenceService.getEntityManager();
 	
-    public PropertyService getPropertyService() {
+    /**
+     * Returns the Property service.
+     * 
+     * @return The Property service.
+     */
+	public PropertyService getPropertyService() {
         return propertyService;
     }
     
@@ -50,6 +56,11 @@ public class UserServiceImpl implements UserService {
         this.propertyService = propertyService;
     }
 
+    /**
+     * Returns the Log service.
+     * 
+     * @return The Log service.
+     */
     public LogService getLogService() {
         return logService;
     }
