@@ -1,3 +1,19 @@
+// This file is part of the exist-connector project.
+//
+// Copyright 2010 Oscar Stigter
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package org.ozsoft.xmldb.exist;
 
 import java.io.BufferedInputStream;
@@ -39,7 +55,7 @@ import org.ozsoft.xmldb.XmldbConnector;
 import org.ozsoft.xmldb.XmldbException;
 
 /**
- * Connector for the eXist XML database using the REST interface. <br />
+ * Connector for the eXist XML database using the REST and WebDAV interfaces. <br />
  * <br />
  * 
  * Implemented using the Apache Commons HttpClient library.
@@ -159,7 +175,8 @@ public class ExistConnector implements XmldbConnector {
                 } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
                     throw new NotAuthorizedException(String.format("Not authorized to access resource '%s'", uri));
                 } else {
-                    throw new XmldbException(String.format("Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode));
+                    throw new XmldbException(String.format(
+                            "Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode));
                 }
             }
             is = getMethod.getResponseBodyAsStream();
@@ -258,7 +275,8 @@ public class ExistConnector implements XmldbConnector {
                 } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
                     throw new NotAuthorizedException(String.format("Not authorized to store resource '%s'", uri));
                 } else {
-                    throw new XmldbException(String.format("Could not store resource '%s' (HTTP status code: %d)", uri, statusCode));
+                    throw new XmldbException(String.format(
+                            "Could not store resource '%s' (HTTP status code: %d)", uri, statusCode));
                 }
             }
         } catch (IOException e) {
@@ -384,7 +402,8 @@ public class ExistConnector implements XmldbConnector {
                 } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
                     throw new NotAuthorizedException(String.format("Not authorized to delete resource '%s'", uri));
                 } else {
-                    throw new XmldbException(String.format("Could not delete resource '%s' (HTTP status code: %d)", uri, statusCode));
+                    throw new XmldbException(
+                            String.format("Could not delete resource '%s' (HTTP status code: %d)", uri, statusCode));
                 }
             }
         } catch (IOException e) {
@@ -444,7 +463,8 @@ public class ExistConnector implements XmldbConnector {
             }
             
             if (statusCode >= STATUS_ERROR) {
-                throw new XmldbException(String.format("Could not execute query '%s' (HTTP status code: %d)", query, statusCode));
+                throw new XmldbException(String.format(
+                        "Could not execute query '%s' (HTTP status code: %d)", query, statusCode));
             }
         } catch (IOException e) {
             throw new XmldbException("Error while executing query: " + e.getMessage(), e);
@@ -492,7 +512,8 @@ public class ExistConnector implements XmldbConnector {
                 } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
                     throw new NotAuthorizedException(String.format("Not authorized to execute module '%s'", uri));
                 } else {
-                    throw new XmldbException(String.format("Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode));
+                    throw new XmldbException(String.format(
+                            "Could not retrieve resource '%s' (HTTP status code: %d)", uri, statusCode));
                 }
             }
 
@@ -521,7 +542,7 @@ public class ExistConnector implements XmldbConnector {
      * java.lang.String, java.lang.String, java.lang.String[])
      */
     @Override
-    public String callFunction(String moduleNamespace, String moduleUri, String functionName, String... params)
+    public String callFunction(String moduleNamespace, String moduleUri,String functionName, String... params)
             throws XmldbException {
         StringBuilder sb = new StringBuilder();
         final int paramCount = params.length;
