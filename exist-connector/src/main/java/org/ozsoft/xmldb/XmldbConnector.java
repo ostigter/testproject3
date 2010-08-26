@@ -1,3 +1,19 @@
+// This file is part of the exist-connector project.
+//
+// Copyright 2010 Oscar Stigter
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package org.ozsoft.xmldb;
 
 import java.io.File;
@@ -7,7 +23,11 @@ import java.util.Map;
 import org.dom4j.Document;
 
 /**
- * Connector to an XML database.
+ * Connector to an XML database. <br />
+ * <br />
+ * 
+ * Can be used to retrieve, store and delete resources, execute ad-hoc queries
+ * and stored XQuery modules, and call stored XQuery functions.
  * 
  * @author Oscar Stigter
  */
@@ -51,7 +71,8 @@ public interface XmldbConnector {
      * @return The document.
      * 
      * @throws XmldbException
-     *             If the document could not be found or read.
+     *             If the resource could not be found or read, or is not a valid
+     *             XML document.
      */
     Document retrieveXmlDocument(String uri) throws XmldbException;
 
@@ -59,9 +80,9 @@ public interface XmldbConnector {
      * Stores an XML document.
      * 
      * @param uri
-     *            The document URI.
+     *            The resource URI.
      * @param doc
-     *            The document.
+     *            The XML document.
      * 
      * @throws XmldbException
      *             If the document could not be stored.
@@ -95,12 +116,12 @@ public interface XmldbConnector {
     void storeResource(String uri, InputStream is) throws XmldbException;
     
     /**
-     * Imports a non-collection resource from a file on the file system.
+     * Imports a resource from a file or directory.
      * 
      * @param uri
      *            The resource URI.
      * @param file
-     *            The file.
+     *            The file or directory.
      * 
      * @throws XmldbException
      *             If the file does not exist or could not be read, or the
@@ -109,12 +130,12 @@ public interface XmldbConnector {
     void importResource(String uri, File file) throws XmldbException;
     
     /**
-     * Exports a non-collection resource to a file on the file system.
+     * Exports a resource to a file or directory.
      * 
      * @param uri
      *            The resource URI.
      * @param file
-     *            The file.
+     *            The file or directory.
      * 
      * @throws XmldbException
      *             If the resource does not exist or could not be read, or the
@@ -137,7 +158,7 @@ public interface XmldbConnector {
      * Executes an ad-hoc query.
      * 
      * @param query
-     *            The query.
+     *            The query text.
      * 
      * @return The query result.
      * 
