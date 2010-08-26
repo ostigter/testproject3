@@ -70,10 +70,11 @@ public class ExistConnectorTest {
         String result = null;
         
         LOG.debug("Importing database");
-        connector.importCollection("/db", new File(RESOURCES_DIR, "/db"));
+        connector.importResource("/db", new File(RESOURCES_DIR, "/db"));
 
         LOG.debug("Exporting collections");
-        connector.exportCollection("/db/modules", new File(EXPORT_DIR, "/db/modules"));
+        connector.exportResource("/db/data", new File(EXPORT_DIR, "/db/data"));
+        connector.exportResource("/db/modules", new File(EXPORT_DIR, "/db/modules"));
 
         LOG.debug("Listing the collection '/db/data':");
         col = connector.retrieveCollection("/db/data");
@@ -98,14 +99,12 @@ public class ExistConnectorTest {
         content = connector.retrieveResource(uri);
         LOG.debug("Resource content:\n" + new String(content));
         Assert.assertNotNull(content);
-        Assert.assertEquals(64, content.length);
+        Assert.assertTrue(content.length > 0);
 
         LOG.debug("Retrieving the content of an XML document");
         uri = "/db/data/foo/foo-001.xml";
         doc = connector.retrieveXmlDocument(uri);
-        if (doc == null) {
-            Assert.fail("Document not found: " + uri);
-        }
+        Assert.assertNotNull("Document not found", doc);
         result = doc.asXML();
         LOG.debug("XML document content:\n" + result);
         Assert.assertTrue(result.contains("<type>Foo</type>"));
@@ -133,12 +132,11 @@ public class ExistConnectorTest {
         LOG.debug("Result:\n" + result);
         Assert.assertEquals("<Greeting>Hello, Mr. Jackson!</Greeting>", result);
 
-        //FIXME: Disabled because of bug (see specific test below).
-//        LOG.debug("Calling an XQuery library function");
-//        String[] params = new String[] { "Mr. Smith" };
-//        result = connector.callFunction("http://www.example.org/greeter2", "/db/modules/greeter2.xql", "greeting", params);
-//        LOG.debug("Result:\n" + result);
-//        Assert.assertTrue(result.contains("<Greeting>Hello, Mr. Smith!</Greeting>"));
+        LOG.debug("Calling an XQuery library function");
+        String[] params = new String[] { "Mr. Smith" };
+        result = connector.callFunction("http://www.example.org/greeter2", "/db/modules/greeter2.xql", "greeting", params);
+        LOG.debug("Result:\n" + result);
+        Assert.assertTrue(result.contains("<Greeting>Hello, Mr. Smith!</Greeting>"));
         
         LOG.debug("Deleting resources");
         connector.deleteResource("/db/data");
@@ -157,8 +155,19 @@ public class ExistConnectorTest {
     public void security() {
         LOG.info("Test 'security' started");
         
-        // Unauthorized access (guest role).
-        XmldbConnector connector = new ExistConnector(HOST, PORT, "guest", "guest");
+        // Unknown user.
+        XmldbConnector connector = new ExistConnector(HOST, PORT, "foo", "bar");
+        try {
+            connector.retrieveXmlDocument("/db");
+            Assert.fail("No exception thrown");
+        } catch (NotAuthorizedException e) {
+            // OK
+        } catch (XmldbException e) {
+            Assert.fail("Incorrect exception type: " + e);
+        }
+
+        // Insufficient rights (guest account).
+        connector = new ExistConnector(HOST, PORT, "guest", "guest");
         try {
             connector.retrieveXmlDocument("/db/system/users.xml");
             Assert.fail("No exception thrown");
@@ -168,6 +177,17 @@ public class ExistConnectorTest {
             Assert.fail("Incorrect exception type: " + e);
         }
 
+        // Incorrect password (DBA role).
+        connector = new ExistConnector(HOST, PORT, "admin", "bar");
+        try {
+            connector.retrieveXmlDocument("/db/system/users.xml");
+            Assert.fail("No exception thrown");
+        } catch (NotAuthorizedException e) {
+            // OK
+        } catch (XmldbException e) {
+            Assert.fail("Incorrect exception type: " + e);
+        }
+        
         // Authorized access (DBA role).
         connector = new ExistConnector(HOST, PORT, "admin", "admin");
         try {
@@ -180,34 +200,4 @@ public class ExistConnectorTest {
         LOG.info("Test 'security' finished");
     }
     
-    /**
-     * Tests a possible eXist bug when calling a function of an XQuery library
-     * module, after first trying to retrieve the module through the REST
-     * interface.
-     */
-//    @Test
-    public void xqueryFunctionCallBug() throws XmldbException {
-        LOG.info("Test 'xqueryFunctionCallBug' started");
-        
-        XmldbConnector connector = new ExistConnector(HOST, PORT, USERNAME, PASSWORD);
-
-        // Import an XQuery library module.
-        connector.importResource("/db/modules/greeter2.xql", new File(RESOURCES_DIR, "/db/modules/greeter2.xql"));
-
-        // Retrieve the XQuery library module through the REST interface (always returns an empty result!).
-        //FIXME: Enabling this statement seems to cause the bug!
-        byte[] content = connector.retrieveResource("/db/modules/greeter2.xql");
-        Assert.assertNotNull(content);
-        Assert.assertEquals(0, content.length);
-        
-        // Call an XQuery function of the library module.
-        //FIXME: If the above block is enabled, the function call will cause a HTTP 500 (Server Error).
-        String[] params = new String[] { "Mr. Smith" };
-        String result = connector.callFunction("http://www.example.org/greeter2", "/db/modules/greeter2.xql", "greeting", params);
-        LOG.debug("Result:\n" + result);
-        Assert.assertTrue(result.contains("<Greeting>Hello, Mr. Smith!</Greeting>"));
-
-        LOG.info("Test 'xqueryFunctionCallBug' finished");
-    }
-
 }

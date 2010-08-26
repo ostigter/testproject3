@@ -66,7 +66,7 @@ public class ExistConnector implements XmldbConnector {
     
     private final HttpClient httpClient;
 
-    private final String servletUri;
+    private final String existUri;
 
     /**
      * Constructor.
@@ -93,7 +93,7 @@ public class ExistConnector implements XmldbConnector {
         Credentials credentials = new UsernamePasswordCredentials(username, password);
         httpClient.getState().setCredentials(new AuthScope(host, port, AuthScope.ANY_REALM), credentials);
 
-        servletUri = String.format("http://%s:%d/exist/rest", host, port);
+        existUri = String.format("http://%s:%d/exist", host, port);
     }
     
     /*
@@ -131,7 +131,7 @@ public class ExistConnector implements XmldbConnector {
         }
         return col;
     }
-
+    
     /*
      * (non-Javadoc)
      * 
@@ -139,7 +139,15 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public byte[] retrieveResource(String uri) throws XmldbException {
-        GetMethod getMethod = new GetMethod(servletUri + uri);
+        String actualUri = null;
+        if (isCollection(uri)) {
+            // Use the REST interface for collections.
+            actualUri = String.format("%s/rest%s", existUri, uri);
+        } else {
+            // Use the WebDAV interface for other resources.
+            actualUri = String.format("%s/webdav%s", existUri, uri);
+        }
+        GetMethod getMethod = new GetMethod(actualUri);
         InputStream is = null;
         ByteArrayOutputStream baos = null;        
         byte[] content = null;
@@ -193,28 +201,13 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public Document retrieveXmlDocument(String uri) throws XmldbException {
-        GetMethod getMethod = new GetMethod(servletUri + uri);
         Document doc = null;
         try {
-            int statusCode = httpClient.executeMethod(getMethod);
-            if (statusCode >= STATUS_ERROR) {
-                if (statusCode == NOT_FOUND) {
-                    throw new NotFoundException(uri);
-                } else if (statusCode == AUTHORIZATION_REQUIRED || statusCode == NOT_AUTHORIZED) {
-                    throw new NotAuthorizedException(String.format("Not authorized to access resource '%s'", uri));
-                } else {
-                    throw new XmldbException(String.format("Could not retrieve XML document '%s' (HTTP status code: %d)", uri, statusCode));
-                }
-            }
-            InputStream is = getMethod.getResponseBodyAsStream();
+            byte[] content = retrieveResource(uri);
             SAXReader reader = new SAXReader();
-            doc = reader.read(is);
+            doc = reader.read(new ByteArrayInputStream(content));
         } catch (DocumentException e) {
             String msg = String.format("Resource is not a valid XML document '%s': %s", uri, e.getMessage());
-            throw new XmldbException(msg, e);
-        } catch (IOException e) {
-            String msg = String.format("Could not retrieve XML document '%s': %s", uri, e.getMessage());
-            LOG.error(msg, e);
             throw new XmldbException(msg, e);
         }
         return doc;
@@ -252,7 +245,9 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public void storeResource(String uri, InputStream is) throws XmldbException {
-        PutMethod putMethod = new PutMethod(servletUri + uri);
+        // Use the REST interface for storing resources.
+        String actualUri = String.format("%s/rest%s", existUri, uri);
+        PutMethod putMethod = new PutMethod(actualUri);
         RequestEntity entity = new InputStreamRequestEntity(is);
         ((EntityEnclosingMethod) putMethod).setRequestEntity(entity);
         try {
@@ -275,12 +270,112 @@ public class ExistConnector implements XmldbConnector {
 
     /*
      * (non-Javadoc)
+     * @see org.ozsoft.xmldb.XmldbConnector#importResource(java.lang.String, java.io.File)
+     */
+    @Override
+    public void importResource(String uri, File file) throws XmldbException {
+        if (!file.exists()) {
+            throw new XmldbException("File or directory not found: " + file.getAbsolutePath());
+        }
+        if (!file.canRead()) {
+            throw new XmldbException("File or directory not readable: " + file.getAbsolutePath());
+        }
+        
+        if (file.isDirectory()) {
+            // Import collection from directory.
+            for (File child : file.listFiles()) {
+                String name = child.getName();
+                if (!name.startsWith(".")) {  // Ignore hidden files and directories (e.g. SVN).
+                    importResource(String.format("%s/%s", uri, name), child);
+                }
+            }
+            
+        } else {
+            // Import resource from file.
+            BufferedInputStream bis = null;
+            try {
+                bis = new BufferedInputStream(new FileInputStream(file));
+                storeResource(uri, bis);
+            } catch (IOException e) {
+                String msg = String.format("Could not store resource '%s': %s", uri, e.getMessage());
+                LOG.error(msg, e);
+                throw new XmldbException(msg, e);
+            } finally {
+                if (bis != null) {
+                    try {
+                        bis.close();
+                    } catch (IOException e) {
+                        LOG.error(String.format("Could not properly close file '%s'", file.getAbsolutePath()));
+                    }
+                }
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.ozsoft.xmldb.XmldbConnector#exportResource(java.lang.String,
+     * java.io.File)
+     */
+    @Override
+    public void exportResource(String uri, File file) throws XmldbException {
+        // Make sure parent directory exists.
+        File dir = file.getParentFile();
+        if (dir != null && !dir.isDirectory()) {
+            boolean dirCreated = dir.mkdirs();
+            if (!dirCreated) {
+                throw new XmldbException(String.format("Could not create directory: '%s'", dir.getAbsolutePath()));
+            }
+        }
+
+        // Check whether the resource is a collection.
+        if (isCollection(uri)) {
+            Collection col = retrieveCollection(uri);
+            if (col == null) {
+                throw new XmldbException(String.format("Collection not found: '%s'", uri));
+            } else {
+                // Export collection to directory.
+                for (Resource res : col.getResources()) {
+                    String name = res.getName();
+                    File resourceFile = new File(file, name);
+                    exportResource(String.format("%s/%s", uri, name), resourceFile);
+                }
+            }
+        } else {
+            // Export resource to file.
+            if (file.isDirectory()) {
+                file = new File(file, getResourceName(uri));
+            }
+            byte[] content = retrieveResource(uri);
+            BufferedOutputStream bos = null;
+            try {
+                bos = new BufferedOutputStream(new FileOutputStream(file));
+                bos.write(content);
+            } catch (IOException e) {
+                LOG.error(String.format("Could not export resource '%s' to file '%s'", uri, file.getAbsolutePath()));
+            } finally {
+                if (bos != null) {
+                    try {
+                        bos.close();
+                    } catch (IOException e) {
+                        LOG.error(String.format("Could not properly close file '%s'", file.getAbsolutePath()));
+                    }
+                }
+            }
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
      * 
      * @see org.example.exist.XmldbConnector#deleteResource(java.lang.String)
      */
     @Override
     public void deleteResource(String uri) throws XmldbException {
-        DeleteMethod deleteMethod = new DeleteMethod(servletUri + uri);
+        // Use the REST interface for deleting resources.
+        String actualUri = String.format("%s/rest%s", existUri, uri);
+        DeleteMethod deleteMethod = new DeleteMethod(actualUri);
         try {
             int statusCode = httpClient.executeMethod(deleteMethod);
             if (statusCode >= STATUS_ERROR) {
@@ -299,133 +394,6 @@ public class ExistConnector implements XmldbConnector {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.xmldb.XmldbConnector#importCollection(java.lang.String, java.io.File)
-     */
-    @Override
-    public void importCollection(String uri, File dir) throws XmldbException {
-        if (!dir.isDirectory()) {
-            throw new XmldbException("Directory not found: " + dir.getAbsolutePath());
-        }
-        if (!dir.canRead()) {
-            throw new XmldbException("Directory not readable: " + dir.getAbsolutePath());
-        }
-        
-        for (File file : dir.listFiles()) {
-            String name = file.getName();
-            if (!name.startsWith(".")) {
-                String resourceUri = String.format("%s/%s", uri, name);
-                if (file.isDirectory()) {
-                    importCollection(resourceUri, file);
-                } else {
-                    importResource(resourceUri, file);
-                }
-            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.xmldb.XmldbConnector#importResource(java.lang.String, java.io.File)
-     */
-    @Override
-    public void importResource(String uri, File file) throws XmldbException {
-        if (!file.isFile()) {
-            throw new XmldbException("File not found: " + file.getAbsolutePath());
-        }
-        if (!file.canRead()) {
-            throw new XmldbException("File not readable: " + file.getAbsolutePath());
-        }
-        
-        BufferedInputStream bis = null;
-        try {
-            bis = new BufferedInputStream(new FileInputStream(file));
-            storeResource(uri, bis);
-        } catch (IOException e) {
-            String msg = String.format("Could not store resource '%s': %s", uri, e.getMessage());
-            LOG.error(msg, e);
-            throw new XmldbException(msg, e);
-        } finally {
-            if (bis != null) {
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    LOG.error(String.format("Could not properly close file '%s'", file.getAbsolutePath()));
-                }
-            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.xmldb.XmldbConnector#exportCollection(java.lang.String, java.io.File)
-     */
-    @Override
-    public void exportCollection(String uri, File dir) throws XmldbException {
-        // Retrieve collection.
-        Collection col = retrieveCollection(uri);
-        if (col == null) {
-            throw new XmldbException(String.format("Collection not found: '%s'", uri));
-        }
-
-        // Create directory if necessary.
-        if (!dir.isDirectory()) {
-            boolean dirCreated = dir.mkdirs();
-            if (!dirCreated) {
-                throw new XmldbException(String.format("Could not create directory: '%s'", dir.getAbsolutePath()));
-            }
-        }
-        
-        // Export resources.
-        for (Resource res : col.getResources()) {
-            String name = res.getName();
-            String resourceUri = String.format("%s/%s", uri, name);
-            File resourceFile = new File(dir, name);
-            if (res instanceof Collection) {
-                exportCollection(resourceUri, resourceFile);
-            } else {
-                exportResource(resourceUri, resourceFile);
-            }
-        }
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.xmldb.XmldbConnector#exportResource(java.lang.String, java.io.File)
-     */
-    @Override
-    public void exportResource(String uri, File file) throws XmldbException {
-        // Make sure parent directory exists.
-        File dir = file.getParentFile();
-        if (dir != null && !dir.isDirectory()) {
-            boolean dirCreated = dir.mkdirs();
-            if (!dirCreated) {
-                throw new XmldbException(String.format("Could not create directory: '%s'", dir.getAbsolutePath()));
-            }
-        }
-        
-        // Get (binary) resource content.
-        byte[] content = retrieveResource(uri);
-        
-        // Write file.
-        BufferedOutputStream bos = null;
-        try {
-            bos = new BufferedOutputStream(new FileOutputStream(file));
-            bos.write(content);
-        } catch (IOException e) {
-            LOG.error(String.format("Could not export resource '%s' to file '%s'", uri, file.getAbsolutePath()));
-        } finally {
-            if (bos != null) {
-                try {
-                    bos.close();
-                } catch (IOException e) {
-                    LOG.error(String.format("Could not properly close file '%s'", file.getAbsolutePath()));
-                }
-            }
-        }
-    }
-    
     /*
      * (non-Javadoc)
      * 
@@ -449,8 +417,8 @@ public class ExistConnector implements XmldbConnector {
             LOG.trace("POST request:\n" + body);
         }
 
-        // Create POST method.
-        PostMethod postMethod = new PostMethod(servletUri + "/db");
+        // Create POST method with REST interface.
+        PostMethod postMethod = new PostMethod(existUri + "/rest/db");
         ByteArrayInputStream bais = new ByteArrayInputStream(body.getBytes());
         RequestEntity entity = new InputStreamRequestEntity(bais, "text/xml; charset=UTF-8");
         ((EntityEnclosingMethod) postMethod).setRequestEntity(entity);
@@ -503,7 +471,9 @@ public class ExistConnector implements XmldbConnector {
      */
     @Override
     public String callModule(String uri, Map<String, String> params) throws XmldbException {
-        GetMethod getMethod = new GetMethod(servletUri + uri);
+        // Use the REST interface for executing XQuery modules.
+        String actualUri = String.format("%s/rest%s", existUri, uri);
+        GetMethod getMethod = new GetMethod(actualUri);
         if (params != null && params.size() > 0) {
             NameValuePair[] nameValuePairs = new NameValuePair[params.size()];
             int i = 0;
@@ -569,6 +539,41 @@ public class ExistConnector implements XmldbConnector {
                 "import module namespace tns=\"%s\" at \"xmldb:exist://%s\"; tns:%s(%s)",
                 moduleNamespace, moduleUri, functionName, paramString);
         return executeQuery(query);
+    }
+    
+    /**
+     * Returns the name of a resource based on its URI.
+     * 
+     * @param uri The resource URI.
+     * 
+     * @return The resource name.
+     */
+    private static String getResourceName(String uri) {
+        int p = uri.lastIndexOf('/');
+        if (p != -1) {
+            return uri.substring(p + 1);
+        } else {
+            return uri;
+        }
+    }
+
+    /**
+     * Checks whether a resource is a collection based on its URI. <br />
+     * <br />
+     * 
+     * If the resource name has an extention, the resource is assumed to be a
+     * NOT collection. <br />
+     * <br />
+     * 
+     * <b>NOTE:</b> This means that collection names must not contain any dots!
+     * 
+     * @param uri
+     *            The resource URI.
+     * 
+     * @return True if a collection, otherwise false.
+     */
+    private static boolean isCollection(String uri) {
+        return (getResourceName(uri).indexOf('.') == -1);
     }
 
 }
