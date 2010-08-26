@@ -95,30 +95,6 @@ public interface XmldbConnector {
     void storeResource(String uri, InputStream is) throws XmldbException;
     
     /**
-     * Deletes a resource.
-     * 
-     * @param uri
-     *            The resource URI.
-     * 
-     * @throws XmldbException
-     *             If the resource could not be deleted.
-     */
-    void deleteResource(String uri) throws XmldbException;
-
-    /**
-     * Recursively imports a collection from a directory on the file system.
-     * 
-     * @param uri
-     *            The collection URI.
-     * @param dir
-     *            The directory.
-     * 
-     * @throws XmldbException
-     *             If the import failed.
-     */
-    void importCollection(String uri, File dir) throws XmldbException;
-    
-    /**
      * Imports a non-collection resource from a file on the file system.
      * 
      * @param uri
@@ -133,19 +109,6 @@ public interface XmldbConnector {
     void importResource(String uri, File file) throws XmldbException;
     
     /**
-     * Recursively exports a collection to a directory on the file system.
-     * 
-     * @param uri
-     *            The collection URI.
-     * @param dir
-     *            The directory.
-     * 
-     * @throws XmldbException
-     *             If the export failed.
-     */
-    void exportCollection(String uri, File dir) throws XmldbException;
-    
-    /**
      * Exports a non-collection resource to a file on the file system.
      * 
      * @param uri
@@ -158,6 +121,17 @@ public interface XmldbConnector {
      *             file could not be written.
      */
     void exportResource(String uri, File file) throws XmldbException;
+
+    /**
+     * Deletes a resource (recursively).
+     * 
+     * @param uri
+     *            The resource URI.
+     * 
+     * @throws XmldbException
+     *             If the resource could not be deleted.
+     */
+    void deleteResource(String uri) throws XmldbException;
 
     /**
      * Executes an ad-hoc query.

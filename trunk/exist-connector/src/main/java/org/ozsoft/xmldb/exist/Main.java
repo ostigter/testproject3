@@ -27,7 +27,7 @@ public class Main {
     private static final String DEFAULT_USERNAME = "guest";
 
     /** Default password of eXist user account. */
-    private static final String DEFAULT_PASSWORD = "";
+    private static final String DEFAULT_PASSWORD = "guest";
     
     /** Database connector. */
     private XmldbConnector connector;
@@ -42,27 +42,42 @@ public class Main {
         new Main(args);
     }
     
+    /**
+     * Constructor.
+     * 
+     * @param args
+     *            The command line arguments.
+     */
     public Main(String[] args) {
         parseArguments(args);
     }
     
+    /**
+     * Prints the command line usage.
+     */
     private void printUsage() {
         System.out.println("Usage:");
         System.out.println("  java -jar ExistConnector.jar [<options>] <command>");
         System.out.println("where");
         System.out.println("  <options> :");
-        System.out.println("    -h <host>          : eXist hostname (default: 'localhost')");
-        System.out.println("    -port <port>       : port number the eXist instance (default: 8080)");
-        System.out.println("    -u <username>      : username of the eXist user account to use (default: 'guest')");
-        System.out.println("    -pwd <password>    : password of the eXist user account to use (default: empty)");
+        System.out.println("    -h <host>                  : eXist hostname (default: 'localhost')");
+        System.out.println("    -p <port>                  : eXist port number (default: 8080)");
+        System.out.println("    -u <username>:[<password>] : eXist user account to use (default: 'guest' account");
         System.out.println("  <command> :");
-        System.out.println("    list <uri>         : retrieves the listing of a collection");
-        System.out.println("    get <uri> [<path>] : retrieves the content of a resource, optionally exporting it to a file or directory");
-        System.out.println("    put <uri> <path>   : stores a resource from a file or directory");
-        System.out.println("    delete <uri>       : deletes a resource (recursively)");
-        System.out.println("    query <text>       : executes an ad-hoc query");
+        System.out.println("    list <uri>                 : retrieves a (textual) listing of a collection");
+        System.out.println("    get <uri>                  : retrieves the content of a resource");
+        System.out.println("    import <uri> <path>        : stores a resource from a file or directory");
+        System.out.println("    export <uri> <path>        : exports a resource to a file or directory");
+        System.out.println("    delete <uri>               : deletes a resource (recursively)");
+        System.out.println("    query <text>               : executes an ad-hoc query");
     }
     
+    /**
+     * Parses the command line arguments.
+     * 
+     * @param args
+     *            The command line arguments.
+     */
     private void parseArguments(String[] args) {
         String hostname = DEFAULT_HOSTNAME;
         int port = DEFAULT_PORT;
@@ -81,7 +96,7 @@ public class Main {
                     System.err.println("ERROR: Missing hostname with '-h' option");
                     System.exit(1);
                 }
-            } else if (arg.equals("-port")) {
+            } else if (arg.equals("-p")) {
                 i++;
                 if (i < args.length) {
                     try {
@@ -91,23 +106,21 @@ public class Main {
                         System.exit(1);
                     }
                 } else {
-                    System.err.println("ERROR: Missing port number with '-port' option");
+                    System.err.println("ERROR: Missing port number with '-p' option");
                     System.exit(1);
                 }
             } else if (arg.equals("-u")) {
                 i++;
                 if (i < args.length) {
-                    username = args[i];
+                    String[] parts = args[i].split(":");
+                    username = parts[0];
+                    if (parts.length > 1) {
+                        password = parts[1];
+                    } else {
+                        password = "";
+                    }
                 } else {
-                    System.err.println("ERROR: Missing username with '-u' option");
-                    System.exit(1);
-                }
-            } else if (arg.equals("-pwd")) {
-                i++;
-                if (i < args.length) {
-                    password = args[i];
-                } else {
-                    System.err.println("ERROR: Missing password with '-pwd' option");
+                    System.err.println("ERROR: Missing user account with '-u' option");
                     System.exit(1);
                 }
             } else {
@@ -131,8 +144,10 @@ public class Main {
                 doList(params);
             } else if (command.equalsIgnoreCase("get")) {
                 doGet(params);
-            } else if (command.equalsIgnoreCase("put")) {
-                doPut(params);
+            } else if (command.equalsIgnoreCase("import")) {
+                doImport(params);
+            } else if (command.equalsIgnoreCase("export")) {
+                doExport(params);
             } else if (command.equalsIgnoreCase("delete")) {
                 doDelete(params);
             } else if (command.equalsIgnoreCase("query")) {
@@ -147,6 +162,15 @@ public class Main {
         }
     }
     
+    /**
+     * Retrieves a textual listing of a collection.
+     * 
+     * @param params
+     *            The command parameters with the collection URI.
+     * 
+     * @throws XmldbException
+     *             If the collection could not be retrieved.
+     */
     private void doList(List<String> params) throws XmldbException {
         if (params.isEmpty()) {
             System.err.println("ERROR: Missing resource URI");
@@ -164,34 +188,70 @@ public class Main {
         }
     }
     
+    /**
+     * Retrieves a resource. <br />
+     * <br />
+     * 
+     * The resource content is retrieved as an UTF-8 encoded String and written
+     * to stdout.
+     * 
+     * @param params
+     *            The command parameters with the resource URI.
+     * 
+     * @throws XmldbException
+     *             If the resource could not be retrieved.
+     */
     private void doGet(List<String> params) throws XmldbException {
         if (params.size() == 0) {
             System.err.println("ERROR: Missing resource URI");
             System.exit(2);
         }
         String uri = params.get(0);
-        String path = null;
-        if (params.size() > 1) {
-            path = params.get(1);
-        }
-        
-        if (path != null) {
-            // Export resource to file.
-            connector.exportResource(uri, new File(path));
-        } else {
-            // Write resource content to console.
-            byte[] data = connector.retrieveResource(uri);
-            try {
-                String content = new String(data, "UTF-8");
-                System.out.println(content);
-            } catch (UnsupportedEncodingException e) {
-                // This should never happen since UTF-8 is a standard charset.
-                System.err.println("ERROR: " + e.getMessage());
-            }
+        byte[] data = connector.retrieveResource(uri);
+        try {
+            String content = new String(data, "UTF-8");
+            System.out.println(content);
+        } catch (UnsupportedEncodingException e) {
+            // This should never happen since UTF-8 is a standard charset.
+            System.err.println("ERROR: " + e.getMessage());
         }
     }
     
-    private void doPut(List<String> params) throws XmldbException {
+    /**
+     * Imports a resource from a file or directory.
+     * 
+     * @param params
+     *            The command parameters with the resource URI and the file or
+     *            directory path.
+     * 
+     * @throws XmldbException
+     *             If a resource could not be imported.
+     */
+    private void doImport(List<String> params) throws XmldbException {
+        if (params.size() < 1) {
+            System.err.println("ERROR: Missing resource URI");
+            System.exit(1);
+        }
+        if (params.size() < 2) {
+            System.err.println("ERROR: Missing path");
+            System.exit(1);
+        }
+        String uri = params.get(0);
+        String path = params.get(1);
+        connector.importResource(uri, new File(path));
+    }
+    
+    /**
+     * Exports a resource to a file or directory.
+     * 
+     * @param params
+     *            The command parameters with the resource URI and the file or
+     *            directory path.
+     * 
+     * @throws XmldbException
+     *             If a resource could not be exported.
+     */
+    private void doExport(List<String> params) throws XmldbException {
         if (params.size() < 1) {
             System.err.println("ERROR: Missing resource URI");
             System.exit(1);
@@ -205,6 +265,15 @@ public class Main {
         connector.exportResource(uri, new File(path));
     }
     
+    /**
+     * Deletes a resource.
+     * 
+     * @param params
+     *            The command parameters with the resource URI.
+     * 
+     * @throws XmldbException
+     *             If the resource could not be deleted.
+     */
     private void doDelete(List<String> params) throws XmldbException {
         if (params.size() == 0) {
             System.err.println("ERROR: Missing resource URI");
@@ -214,6 +283,15 @@ public class Main {
         connector.deleteResource(uri);
     }
     
+    /**
+     * Executes an ad-hoc query.
+     * 
+     * @param params
+     *            The command parameters with the query text.
+     * 
+     * @throws XmldbException
+     *             If the query could not be executed successfully.
+     */
     private void doQuery(List<String> params) throws XmldbException {
         if (params.size() == 0) {
             System.err.println("ERROR: Missing query text");
