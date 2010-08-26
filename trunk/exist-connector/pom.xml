@@ -8,7 +8,7 @@
     <version>0.1-SNAPSHOT</version>
 
     <name>exist-connector</name>
-    <description>Library to connect to an eXist XML database using the REST interface</description>
+    <description>Library to connect to an eXist XML database using the REST and WebDAV interface.</description>
 
     <developers>
         <developer>
