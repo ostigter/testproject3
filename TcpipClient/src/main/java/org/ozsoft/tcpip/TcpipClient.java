@@ -1,4 +1,4 @@
-package org.ozsoft.tcpipclient;
+package org.ozsoft.tcpip;
 
 import java.awt.Dimension;
 import java.awt.Font;
