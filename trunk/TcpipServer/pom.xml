@@ -10,7 +10,6 @@
 
     <name>TcpipServer</name>
     <description>Simple TCP/IP server application for sending and receiving text messages.</description>
-
     <inceptionYear>2010</inceptionYear>
     <developers>
         <developer>
