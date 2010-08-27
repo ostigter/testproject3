@@ -1,0 +1,83 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.vanderlande.weca.util</groupId>
+    <artifactId>TcpipClient</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>TcpipClient</name>
+    <description>Simple TCP/IP client application for sending text messages.</description>
+    <inceptionYear>2010</inceptionYear>
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@vanderlande.com</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <netty-version>3.1.5.GA</netty-version>
+    </properties>
+
+    <dependencies>
+        <!-- Netty (Java NIO framework) -->
+        <dependency>
+            <groupId>org.jboss.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>${netty-version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    
+    <repositories>
+        <repository>
+            <id>repository.jboss.org</id>
+            <name>JBoss repository</name>
+            <url>http://repository.jboss.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <compilerVersion>6</compilerVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-5</version>
+                <executions>
+                    <execution>
+                        <id>package-jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>org.ozsoft.tcpipclient.TcpipClient</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
