@@ -36,12 +36,11 @@ import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
+import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -265,8 +264,7 @@ public class ExistConnector implements XmldbConnector {
         // Use the REST interface for storing resources.
         String actualUri = String.format("%s/rest%s", existUri, uri);
         PutMethod putMethod = new PutMethod(actualUri);
-        RequestEntity entity = new InputStreamRequestEntity(is);
-        ((EntityEnclosingMethod) putMethod).setRequestEntity(entity);
+        putMethod.setRequestEntity(new InputStreamRequestEntity(is));
         try {
             int statusCode = httpClient.executeMethod(putMethod);
             if (statusCode >= STATUS_ERROR) {
@@ -436,16 +434,13 @@ public class ExistConnector implements XmldbConnector {
             LOG.trace("POST request:\n" + body);
         }
 
-        // Create POST method with REST interface.
-        PostMethod postMethod = new PostMethod(existUri + "/rest/db");
-        ByteArrayInputStream bais = new ByteArrayInputStream(body.getBytes());
-        RequestEntity entity = new InputStreamRequestEntity(bais, "text/xml; charset=UTF-8");
-        ((EntityEnclosingMethod) postMethod).setRequestEntity(entity);
-
-        // Execute method.
+        // Execute POST method with REST interface.
+        PostMethod postMethod = null;
         String response = null;
         try {
             // Execute query.
+            postMethod = new PostMethod(existUri + "/rest/db");
+            postMethod.setRequestEntity(new StringRequestEntity(body, "text/xml", "UTF-8"));
             int statusCode = httpClient.executeMethod(postMethod);
 
             // Read response body.
@@ -469,13 +464,6 @@ public class ExistConnector implements XmldbConnector {
         } catch (IOException e) {
             throw new XmldbException("Error while executing query: " + e.getMessage(), e);
         } finally {
-            if (bais != null) {
-                try {
-                    bais.close();
-                } catch (IOException e) {
-                    LOG.warn("Could not close stream", e);
-                }
-            }
             if (postMethod != null) {
                 postMethod.releaseConnection();
             }
