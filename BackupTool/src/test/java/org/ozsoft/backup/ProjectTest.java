@@ -70,7 +70,7 @@ public class ProjectTest {
         File folder2 = new File(TEST_DIR, "folder2");
         folder2.mkdir();
 
-        // Create initial backup (no files).
+        // Create backup with ID 1 (no files).
         project.createBackup();
         
         // Test backup.
@@ -87,7 +87,7 @@ public class ProjectTest {
         FileHelper.writeTextFile(folder2, "file-2001.txt", "2001_v1");
         FileHelper.writeTextFile(folder2, "file-2002.txt", "2002_v1");
         
-        // Create another backup (4 new files).
+        // Create backup with ID 2 (4 new files).
         project.createBackup();
 
         // Update a file.
@@ -95,7 +95,7 @@ public class ProjectTest {
         // Delete a file.
         FileHelper.deleteFile(new File(folder2, "file-2001.txt"));
 
-        // Create another backup (1 updated file).
+        // Create backup with ID 3 (1 updated file).
         project.createBackup();
 
         // Test backup.
@@ -115,6 +115,25 @@ public class ProjectTest {
                         dateFormat.format(version.getDate()), version.getOffset(), version.getLength());
             }
         }
+        
+        // Delete file.
+        File file = new File(folder1, "file-1001.txt");
+        FileHelper.deleteFile(file);
+        
+
+        // Restore files.
+        project.restoreFile(file.getAbsolutePath(), -1);
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v2"));
+
+        project.restoreFile(file.getAbsolutePath(), 2);
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v1"));
+
+        project.restoreFile(file.getAbsolutePath(), 3);
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v2"));
+
+        file = new File(folder1, "file-1002.txt");
+        project.restoreFile(file.getAbsolutePath(), -1);
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("1002_v1"));
     }
     
 }

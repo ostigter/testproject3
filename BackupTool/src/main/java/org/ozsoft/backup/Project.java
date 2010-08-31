@@ -1,12 +1,15 @@
 package org.ozsoft.backup;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,8 +40,6 @@ public class Project {
     private final Map<Integer, Long> backups;
     
     private final Map<String, BackupFile> files;
-    
-    private final byte[] buffer = new byte[BUFFER_SIZE];
     
     private RandomAccessFile archiveFile;
     
@@ -73,6 +74,14 @@ public class Project {
         this.destinationFolder = destinationFolder;
     }
     
+    public Map<Integer, Long> getBackups() {
+        return Collections.unmodifiableMap(backups);
+    }
+    
+    public Map<String, BackupFile> getBackupFiles() {
+        return Collections.unmodifiableMap(files);
+    }
+    
     public void createBackup() {
         if (sourceFolders.size() == 0) {
             throw new IllegalStateException("No source folders defined");
@@ -92,14 +101,13 @@ public class Project {
             }
         }
         
-        String archivePath = String.format("%s/%s.dbx", destinationFolder, name);
         try {
-            archiveFile = new RandomAccessFile(archivePath, "rw");
-            
             int backupId = backups.size() + 1;
             long date = new Date().getTime();
             System.out.println("Creating backup with ID " + backupId);
             backups.put(backupId, date);
+            
+            openArchiveFile();
             
             // Backup new and updated files.
             for (String sourceFolder : sourceFolders) {
@@ -119,30 +127,67 @@ public class Project {
                     System.out.println("D " + path);
                 }
             }
-            
         } catch (IOException e) {
-            System.err.println("ERROR: Could not write to archive file: " + e.getMessage());
-        } finally {
-            if (archiveFile != null) {
-                try {
-                    archiveFile.close();
-                } catch (IOException e) {
-                    // Best effort; ignore.
-                }
-            }
+            System.err.println("Error creating backup: " + e.getMessage());
+            //TODO: Clean up failed backup.
         }
-        
-        
+
+        closeArchiveFile();
         
         writeIndexFile();
     }
     
-    public Map<Integer, Long> getBackups() {
-        return Collections.unmodifiableMap(backups);
+    public void restoreFile(String path, int backupId) throws IOException {
+        BackupFile backupFile = files.get(path);
+        if (backupFile == null) {
+            throw new IllegalArgumentException(String.format("Backup file not found: '%s'", path));
+        }
+        BackupFileVersion version = backupFile.getVersion(backupId);
+        if (version == null) {
+            throw new IllegalArgumentException(String.format("File version for backup ID %d not found", backupId));
+        }
+        openArchiveFile();
+        archiveFile.seek(version.getOffset());
+        long length = version.getLength();
+        OutputStream os = null;
+        try {
+            os = new BufferedOutputStream(new FileOutputStream(path));
+            byte[] buffer = new byte[BUFFER_SIZE];
+            long read = 0L;
+            long written = 0L;
+            while ((read = archiveFile.read(buffer)) > 0 && written < length) {
+                if ((written + read) > length) {
+                    // Do not read past end of file. 
+                    read = length - written;
+                }
+                os.write(buffer, 0, (int) read);
+            }
+            System.out.println("Restored " + path);
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    System.err.println("Could not close output stream");
+                }
+            }
+            closeArchiveFile();
+        }
     }
     
-    public Map<String, BackupFile> getBackupFiles() {
-        return Collections.unmodifiableMap(files);
+    private void openArchiveFile() throws IOException {
+        String archivePath = String.format("%s/%s.dbx", destinationFolder, name);
+        archiveFile = new RandomAccessFile(archivePath, "rw");
+    }
+    
+    private void closeArchiveFile() {
+        if (archiveFile != null) {
+            try {
+                archiveFile.close();
+            } catch (IOException e) {
+                System.err.println("Could not close archive file: " + e.getMessage());
+            }
+        }
     }
     
     private void backupFolder(File dir, int backupId) throws IOException {
@@ -162,7 +207,7 @@ public class Project {
         BackupFile backupFile = files.get(path);
         if (backupFile == null) {
             // New file; create first version.
-            long offset = writeBackupFileVersion(file);
+            long offset = backupFileVersion(file);
             backupFile = new BackupFile(path);
             backupFile.addVersion(backupId, date, offset, length);
             files.put(path, backupFile);
@@ -174,19 +219,20 @@ public class Project {
                 // Unchanged file; do nothing.
             } else {
                 // Updated file; add new version.
-                long offset = writeBackupFileVersion(file);
+                long offset = backupFileVersion(file);
                 backupFile.addVersion(backupId, date, offset, length);
                 System.out.println("U " + path);
             }
         }
     }
     
-    private long writeBackupFileVersion(File file) throws IOException {
+    private long backupFileVersion(File file) throws IOException {
         long offset = archiveFile.length();
         archiveFile.seek(offset);
-        BufferedInputStream bis = null;
+        InputStream bis = null;
         try {
             bis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buffer = new byte[BUFFER_SIZE];
             int length = 0;
             while ((length = bis.read(buffer)) > 0) {
                 archiveFile.write(buffer, 0, length);
@@ -196,7 +242,7 @@ public class Project {
                 try {
                     bis.close();
                 } catch (IOException e) {
-                    // Best effort; ignore.
+                    System.err.println("Could not close input stream");
                 }
             }
         }
@@ -232,13 +278,13 @@ public class Project {
                     files.put(path, backupFile);
                 }
             } catch (IOException e) {
-                System.err.println("ERROR: " + e.getMessage());
+                System.err.println("Could not read backup index file: " + e.getMessage());
             } finally {
                 if (dis != null) {
                     try {
                         dis.close();
                     } catch (IOException e) {
-                        // Best effort; ignore.
+                        System.err.println("Could not close input stream");
                     }
                 }
             }
@@ -270,17 +316,16 @@ public class Project {
                 }
             }
         } catch (IOException e) {
-            System.err.println("ERROR: " + e.getMessage());
+            System.err.println("Could not write backup index file: " + e.getMessage());
         } finally {
             if (dos != null) {
                 try {
                     dos.close();
                 } catch (IOException e) {
-                    // Best effort; ignore.
+                    System.err.println("Could not close output stream");
                 }
             }
         }
-        
     }
     
 }

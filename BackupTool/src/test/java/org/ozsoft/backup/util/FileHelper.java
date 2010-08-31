@@ -1,7 +1,9 @@
 package org.ozsoft.backup.util;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -11,6 +13,31 @@ import java.io.IOException;
  * @author Oscar Stigter
  */
 public abstract class FileHelper {
+    
+    public static final String NEWLINE = System.getProperty("line.separator");
+    
+    public static String readTextFile(File file) throws IOException {
+        String content = null;
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append(NEWLINE);
+            }
+            content = sb.toString();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    // Best effort; ignore.
+                }
+            }
+        }
+        return content;
+    }
     
     /**
      * Creates a text file with a specific content. <br />
