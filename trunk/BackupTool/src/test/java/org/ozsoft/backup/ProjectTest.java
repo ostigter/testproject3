@@ -39,7 +39,7 @@ public class ProjectTest {
     @AfterClass
     public static void afterClass() {
         // Delete temporary test directory. 
-        FileHelper.deleteFile(TEST_DIR);
+        FileHelper.deleteFile(new File(TEST_DIR));
     }
     
     /**
@@ -48,7 +48,7 @@ public class ProjectTest {
     @Before
     public void before() {
         // Clean temporary test directory.
-        FileHelper.cleanDir(TEST_DIR);
+        FileHelper.cleanDir(new File(TEST_DIR));
     }
     
     /**
@@ -82,16 +82,16 @@ public class ProjectTest {
         Assert.assertEquals(0, backupFiles.size());
 
         // Create some files.
-        FileHelper.writeTextFile(folder1, "file-1001.txt", "1001_v1");
-        FileHelper.writeTextFile(folder1, "file-1002.txt", "1002_v1");
-        FileHelper.writeTextFile(folder2, "file-2001.txt", "2001_v1");
-        FileHelper.writeTextFile(folder2, "file-2002.txt", "2002_v1");
+        FileHelper.writeTextFile(new File(folder1, "file-1001.txt"), "1001_v1");
+        FileHelper.writeTextFile(new File(folder1, "file-1002.txt"), "1002_v1");
+        FileHelper.writeTextFile(new File(folder2, "file-2001.txt"), "2001_v1");
+        FileHelper.writeTextFile(new File(folder2, "file-2002.txt"), "2002_v1");
         
         // Create backup with ID 2 (4 new files).
         project.createBackup();
 
         // Update a file.
-        FileHelper.writeTextFile(folder1, "file-1001.txt", "1001_v2");
+        FileHelper.writeTextFile(new File(folder1, "file-1001.txt"), "1001_v2");
         // Delete a file.
         FileHelper.deleteFile(new File(folder2, "file-2001.txt"));
 
@@ -116,12 +116,12 @@ public class ProjectTest {
             }
         }
         
-        // Delete file.
-        File file = new File(folder1, "file-1001.txt");
-        FileHelper.deleteFile(file);
-        
+        // Delete files.
+        FileHelper.deleteFile(folder1);
+        FileHelper.deleteFile(folder2);
 
         // Restore files.
+        File file = new File(folder1, "file-1001.txt");
         project.restoreFile(file.getAbsolutePath(), -1);
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v2"));
 
