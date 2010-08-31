@@ -37,7 +37,11 @@ public class BackupFile {
     }
 
     public BackupFileVersion getVersion(int backupId) {
-        return versions.get(backupId);
+        if (backupId > 0) {
+            return versions.get(backupId);
+        } else {
+            return getCurrentVersion();
+        }
     }
     
     public BackupFileVersion getCurrentVersion() {
