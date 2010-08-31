@@ -5,6 +5,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+/**
+ * Backup'ed file (versioned).
+ * 
+ * @author Oscar Stigter
+ */
 public class BackupFile {
     
     private final String path;

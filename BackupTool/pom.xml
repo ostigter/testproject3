@@ -5,11 +5,18 @@
 
     <groupId>org.ozsoft</groupId>
     <artifactId>BackupTool</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>BackupTool</name>
     <description>Simple backup tool written in Java with a Swing GUI.</description>
+    <inceptionYear>2010</inceptionYear>
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@gmail.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

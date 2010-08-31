@@ -108,7 +108,7 @@ public class BackupTool {
         
         // Create context menus for the project tree.
         rootMenu = new JPopupMenu();
-        JMenuItem menuItem = new JMenuItem("Create");
+        JMenuItem menuItem = new JMenuItem("Create Project...");
         menuItem.addActionListener(new ActionListener() {
            @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,7 +117,7 @@ public class BackupTool {
         });
         rootMenu.add(menuItem);
         projectMenu = new JPopupMenu();
-        menuItem = new JMenuItem("Edit");
+        menuItem = new JMenuItem("Edit Project...");
         menuItem.addActionListener(new ActionListener() {
            @Override
             public void actionPerformed(ActionEvent e) {
@@ -125,7 +125,7 @@ public class BackupTool {
             } 
         });
         projectMenu.add(menuItem);
-        menuItem = new JMenuItem("Delete");
+        menuItem = new JMenuItem("Delete Project");
         menuItem.addActionListener(new ActionListener() {
            @Override
             public void actionPerformed(ActionEvent e) {
@@ -134,7 +134,7 @@ public class BackupTool {
         });
         projectMenu.add(menuItem);
         backupMenu = new JPopupMenu();
-        menuItem = new JMenuItem("View");
+        menuItem = new JMenuItem("View Backup...");
         menuItem.addActionListener(new ActionListener() {
            @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,7 +142,7 @@ public class BackupTool {
             } 
         });
         backupMenu.add(menuItem);
-        menuItem = new JMenuItem("Restore");
+        menuItem = new JMenuItem("Restore Backup...");
         menuItem.addActionListener(new ActionListener() {
            @Override
             public void actionPerformed(ActionEvent e) {
@@ -150,7 +150,7 @@ public class BackupTool {
             } 
         });
         backupMenu.add(menuItem);
-        menuItem = new JMenuItem("Delete");
+        menuItem = new JMenuItem("Delete Backup");
         menuItem.addActionListener(new ActionListener() {
            @Override
             public void actionPerformed(ActionEvent e) {
@@ -283,7 +283,7 @@ public class BackupTool {
     }
     
     private void createProject() {
-        CreateProjectDialog dialog = new CreateProjectDialog(frame);
+        ProjectDialog dialog = new ProjectDialog(frame);
         if (dialog.show() == Dialog.OK) {
             // Create project.
             String name = dialog.getName();

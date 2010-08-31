@@ -16,6 +16,14 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+/**
+ * Backup project specifying the source and destination folders. <br />
+ * <br />
+ * 
+ * Implements the actual creating and restoring of backups.
+ * 
+ * @author Oscar Stigter
+ */
 public class Project {
     
     private static final int BUFFER_SIZE = 8192;
