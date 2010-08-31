@@ -52,10 +52,7 @@ public class ProjectTest {
     }
     
     /**
-     * Tests creating a backup.
-     * 
-     * @throws IOException
-     *             In case of an I/O error.
+     * Tests creating and restoring backups.
      */
     @Test
     public void backup() throws IOException {
@@ -92,10 +89,11 @@ public class ProjectTest {
 
         // Update a file.
         FileHelper.writeTextFile(new File(folder1, "file-1001.txt"), "1001_v2");
+
         // Delete a file.
         FileHelper.deleteFile(new File(folder2, "file-2001.txt"));
 
-        // Create backup with ID 3 (1 updated file).
+        // Create backup with ID 3 (1 updated file, 1 deleted file).
         project.createBackup();
 
         // Test backup.
@@ -116,7 +114,7 @@ public class ProjectTest {
             }
         }
         
-        // Delete files.
+        // Delete all files.
         FileHelper.deleteFile(folder1);
         FileHelper.deleteFile(folder2);
 
