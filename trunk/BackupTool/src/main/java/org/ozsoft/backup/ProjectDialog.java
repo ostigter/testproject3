@@ -25,7 +25,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-public class CreateProjectDialog extends Dialog {
+/**
+ * Dialog for creating and editing a project.
+ * 
+ * @author Oscar Stigter
+ */
+public class ProjectDialog extends Dialog {
     
     private static final String TITLE = "Create Project";
     
@@ -49,7 +54,7 @@ public class CreateProjectDialog extends Dialog {
     
     private JButton cancelButton;
     
-    public CreateProjectDialog(JFrame owner) {
+    public ProjectDialog(JFrame owner) {
         super(TITLE, owner);
     }
     

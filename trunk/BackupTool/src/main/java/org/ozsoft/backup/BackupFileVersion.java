@@ -1,5 +1,10 @@
 package org.ozsoft.backup;
 
+/**
+ * Version of a backup'ed file.
+ * 
+ * @author Oscar Stigter
+ */
 public class BackupFileVersion {
     
     private final int backupId;
