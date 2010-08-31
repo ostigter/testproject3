@@ -14,8 +14,19 @@ import java.io.IOException;
  */
 public abstract class FileHelper {
     
-    public static final String NEWLINE = System.getProperty("line.separator");
+    /** Platform specific NEWLINE character. */
+    private static final String NEWLINE = System.getProperty("line.separator");
     
+    /**
+     * Reads the content of a text file.
+     * 
+     * @param file
+     *            The file.
+     * @return The content.
+     * 
+     * @throws IOException
+     *             If the file could not be read.
+     */
     public static String readTextFile(File file) throws IOException {
         String content = null;
         BufferedReader br = null;
@@ -40,23 +51,20 @@ public abstract class FileHelper {
     }
     
     /**
-     * Creates a text file with a specific content. <br />
+     * Writes a text file with the specified content. <br />
      * <br />
      * 
      * A previously existing file will be overwritten.
      * 
-     * @param path
-     *            The file path.
+     * @param file
+     *            The file.
      * @param content
-     *            The file content.
-     * 
-     * @return The created file.
+     *            The content.
      * 
      * @throws IOException
      *             If the file could not be written.
      */
-    public static File writeTextFile(String path, String content) throws IOException {
-        File file = new File(path);
+    public static void writeTextFile(File file, String content) throws IOException {
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new FileWriter(file));
@@ -72,39 +80,6 @@ public abstract class FileHelper {
                 }
             }
         }
-        return file;
-    }
-    
-    /**
-     * Creates a text file with a specific content. <br />
-     * <br />
-     * 
-     * A previously existing file will be overwritten.
-     * 
-     * @param dir
-     *            The directory to create the file in.
-     * @param name
-     *            The filename.
-     * @param content
-     *            The file content.
-     * 
-     * @return The created text file.
-     * 
-     * @throws IOException
-     *             If the file could not be written.
-     */
-    public static File writeTextFile(File dir, String name, String content) throws IOException {
-        return writeTextFile(new File(dir, name).getPath(), content);
-    }
-    
-    /**
-     * Deletes a file or directory.
-     * 
-     * @param path
-     *            The path to the file.
-     */
-    public static void deleteFile(String path) {
-        deleteFile(new File(path));
     }
     
     /**
@@ -127,19 +102,6 @@ public abstract class FileHelper {
         }
     }
     
-    /**
-     * Cleans a directory, deleting all of its contents. <br />
-     * <br />
-     * 
-     * The directory itself will not be deleted.
-     * 
-     * @param path
-     *            The directory path.
-     */
-    public static void cleanDir(String path) {
-        cleanDir(new File(path));
-    }
-
     /**
      * Cleans a directory, deleting all of its contents. <br />
      * <br />

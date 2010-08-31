@@ -142,10 +142,23 @@ public class Project {
         if (backupFile == null) {
             throw new IllegalArgumentException(String.format("Backup file not found: '%s'", path));
         }
+        
         BackupFileVersion version = backupFile.getVersion(backupId);
         if (version == null) {
             throw new IllegalArgumentException(String.format("File version for backup ID %d not found", backupId));
         }
+        
+        // Make sure parent directory exists.
+        File file = new File(path);
+        File dir = file.getParentFile();
+        if (!dir.isDirectory()) {
+            boolean created = dir.mkdirs();
+            if (!created) {
+                throw new IOException(String.format("Could not create directory '%s'", dir.getAbsolutePath()));
+            }
+        }
+        
+        // Restore file.
         openArchiveFile();
         archiveFile.seek(version.getOffset());
         long length = version.getLength();
