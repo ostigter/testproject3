@@ -148,43 +148,51 @@ public class Project {
             throw new IllegalArgumentException(String.format("File version for backup ID %d not found", backupId));
         }
         
-        // Make sure parent directory exists.
-        File file = new File(path);
-        File dir = file.getParentFile();
-        if (!dir.isDirectory()) {
-            boolean created = dir.mkdirs();
-            if (!created) {
-                throw new IOException(String.format("Could not create directory '%s'", dir.getAbsolutePath()));
-            }
-        }
+        long originalDate = version.getDate();
         
-        // Restore file.
-        openArchiveFile();
-        archiveFile.seek(version.getOffset());
-        long length = version.getLength();
-        OutputStream os = null;
-        try {
-            os = new BufferedOutputStream(new FileOutputStream(path));
-            byte[] buffer = new byte[BUFFER_SIZE];
-            long read = 0L;
-            long written = 0L;
-            while ((read = archiveFile.read(buffer)) > 0 && written < length) {
-                if ((written + read) > length) {
-                    // Do not read past end of file. 
-                    read = length - written;
-                }
-                os.write(buffer, 0, (int) read);
-            }
-            System.out.println("Restored " + path);
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException e) {
-                    System.err.println("Could not close output stream");
+        // Only restore if the file does not already exist or it differs from the backup'ed version.
+        File file = new File(path);
+        if (!file.exists() || (file.lastModified() != originalDate)) {
+            // Make sure parent directory exists.
+            File dir = file.getParentFile();
+            if (!dir.isDirectory()) {
+                boolean created = dir.mkdirs();
+                if (!created) {
+                    throw new IOException(String.format("Could not create directory '%s'", dir.getAbsolutePath()));
                 }
             }
-            closeArchiveFile();
+            
+            // Restore file.
+            openArchiveFile();
+            archiveFile.seek(version.getOffset());
+            long length = version.getLength();
+            OutputStream os = null;
+            try {
+                os = new BufferedOutputStream(new FileOutputStream(path));
+                byte[] buffer = new byte[BUFFER_SIZE];
+                long read = 0L;
+                long written = 0L;
+                while ((read = archiveFile.read(buffer)) > 0 && written < length) {
+                    if ((written + read) > length) {
+                        // Do not read past end of file. 
+                        read = length - written;
+                    }
+                    os.write(buffer, 0, (int) read);
+                }
+                System.out.println("Restored " + path);
+            } finally {
+                if (os != null) {
+                    try {
+                        os.close();
+                    } catch (IOException e) {
+                        System.err.println("Could not close output stream");
+                    }
+                }
+                closeArchiveFile();
+                
+                // Restore original file date.
+                file.setLastModified(originalDate);
+            }
         }
     }
     
