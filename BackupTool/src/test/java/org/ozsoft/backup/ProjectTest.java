@@ -121,16 +121,22 @@ public class ProjectTest {
         // Restore files.
         File file = new File(folder1, "file-1001.txt");
         project.restoreFile(file.getAbsolutePath(), -1);
+        Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v2"));
 
+        FileHelper.deleteFile(file);
         project.restoreFile(file.getAbsolutePath(), 2);
+        Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v1"));
 
+        FileHelper.deleteFile(file);
         project.restoreFile(file.getAbsolutePath(), 3);
+        Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v2"));
 
         file = new File(folder1, "file-1002.txt");
         project.restoreFile(file.getAbsolutePath(), -1);
+        Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1002_v1"));
     }
     

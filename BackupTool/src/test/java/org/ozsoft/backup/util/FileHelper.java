@@ -28,6 +28,13 @@ public abstract class FileHelper {
      *             If the file could not be read.
      */
     public static String readTextFile(File file) throws IOException {
+        if (!file.isFile()) {
+            throw new IllegalArgumentException("File not found: " + file.getAbsolutePath());
+        }
+        if (!file.canRead()) {
+            throw new IllegalArgumentException("File not readable: " + file.getAbsolutePath());
+        }
+        
         String content = null;
         BufferedReader br = null;
         try {
