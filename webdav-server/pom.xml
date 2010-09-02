@@ -9,19 +9,16 @@
 
     <name>webdav-server</name>
     <description>Standalone WebDAV server</description>
-
+    <inceptionYear>2009</inceptionYear>
 	<developers>
 		<developer>
 			<name>Oscar Stigter</name>
 			<email>oscar.stigter@gmail.com</email>
-			<roles>
-				<role>Architect</role>
-				<role>Developer</role>
-			</roles>
 		</developer>
 	</developers>
 
 	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jetty-version>6.0.2</jetty-version>
 		<dom4j-version>1.6.1</dom4j-version>
 		<slf4j-version>1.5.6</slf4j-version>
