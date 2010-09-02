@@ -3,7 +3,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ozsoft</groupId>
+    <groupId>org.ozsoft.backuptool</groupId>
     <artifactId>BackupTool</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
