@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.ozsoft.backup;
+package org.ozsoft.backuptool.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.ozsoft.backup;
+package org.ozsoft.backuptool.gui;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -46,6 +46,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+
+import org.ozsoft.backuptool.Project;
 
 /**
  * Simple backup tool with a Swing UI. <br />
