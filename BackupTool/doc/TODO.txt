@@ -1,0 +1,14 @@
+TODO
+====
+
+- List projects and backups
+- Create project
+- Edit project
+- Delete project
+- Create backup
+- View backup (list directories, files and versions)
+- Restore entire backup
+- Restore single file or directory
+- Delete backup
+- Compact archive
+- Scan files before actual backup
