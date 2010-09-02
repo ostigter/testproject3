@@ -112,13 +112,17 @@ public class ProjectTest {
         // Create backup with ID 3 (1 updated file, 1 deleted file).
         project.createBackup();
 
+        // Create backup with ID 4 (no changes).
+        project.createBackup();
+
         // Test backup.
         backups = project.getBackups();
-        Assert.assertEquals(3, backups.size());
+        Assert.assertEquals(4, backups.size());
         Assert.assertTrue(backups.containsKey(1));
         Assert.assertTrue(backups.containsKey(2));
         Assert.assertTrue(backups.containsKey(3));
-        Assert.assertFalse(backups.containsKey(4));
+        Assert.assertTrue(backups.containsKey(4));
+        Assert.assertFalse(backups.containsKey(5));
         backupFiles = project.getBackupFiles();
         Assert.assertEquals(4, backupFiles.size());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

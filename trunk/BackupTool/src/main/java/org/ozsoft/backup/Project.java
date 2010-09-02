@@ -45,20 +45,33 @@ import java.util.TreeSet;
  */
 public class Project {
     
+    /** Size of the file buffer. */
     private static final int BUFFER_SIZE = 8192;
     
+    /** Project name. */
     private final String name;
     
+    /** Source folders. */
     private final Set<String> sourceFolders;
     
+    /** Destination folder. */
     private String destinationFolder;
     
+    /** The backups mapped by ID. */
     private final Map<Integer, Long> backups;
     
+    /** The files that have been backup'ed for this project. */
     private final Map<String, BackupFile> files;
     
+    /** The archive file with the backup'ed file versions. */
     private RandomAccessFile archiveFile;
     
+    /**
+     * Constructor.
+     * 
+     * @param name
+     *            The project name.
+     */
     public Project(String name) {
         this.name = name;
         sourceFolders = new TreeSet<String>();
@@ -66,38 +79,83 @@ public class Project {
         files = new TreeMap<String, BackupFile>();
     }
     
+    /**
+     * Returns the project name.
+     * 
+     * @return The project name.
+     */
     public String getName() {
         return name;
     }
     
+    /**
+     * Returns the source folders.
+     * 
+     * @return The full paths of the source folders.
+     */
     public Set<String> getSourceFolders() {
         return Collections.unmodifiableSet(sourceFolders);
     }
     
+    /**
+     * Adds a source folder.
+     * 
+     * @param folder
+     *            The full path of the source folder.
+     */
     public void addSourceFolder(String folder) {
         sourceFolders.add(folder);
     }
     
+    /**
+     * Removes a source folder.
+     * 
+     * @param folder The full path of the source folder.
+     */
     public void removeSourceFolder(String folder) {
         sourceFolders.remove(folder);
     }
     
+    /**
+     * Returns the destination folder.
+     * 
+     * @return The full path of the destination folder.
+     */
     public String getDestinationFolder() {
         return destinationFolder;
     }
     
+    /**
+     * Sets the destination folder.
+     * 
+     * @param destinationFolder
+     *            The full path of the destination folder.
+     */
     public void setDestinationFolder(String destinationFolder) {
         this.destinationFolder = destinationFolder;
     }
     
+    /**
+     * Returns the backups mapped by ID.
+     * 
+     * @return The backups mapped by ID.
+     */
     public Map<Integer, Long> getBackups() {
         return Collections.unmodifiableMap(backups);
     }
     
+    /**
+     * Returns the backup'ed files.
+     * 
+     * @return The backup'ed files.
+     */
     public Map<String, BackupFile> getBackupFiles() {
         return Collections.unmodifiableMap(files);
     }
     
+    /**
+     * Creates a new backup.
+     */
     public void createBackup() {
         if (sourceFolders.size() == 0) {
             throw new IllegalStateException("No source folders defined");
@@ -139,6 +197,8 @@ public class Project {
             for (BackupFile file : files.values()) {
                 String path = file.getPath();
                 if (!(new File(path).isFile())) {
+                    BackupFileVersion previousVersion = file.getPreviousVersion(backupId);
+                    
                     file.addVersion(backupId, date, -1L, 0L);
                     System.out.println("D " + path);
                 }
@@ -153,6 +213,18 @@ public class Project {
         writeIndexFile();
     }
     
+    /**
+     * Restores a single file from a backup.
+     * 
+     * @param path
+     *            The (original) full path of the file to restore.
+     * @param backupId
+     *            The backup ID.
+     * 
+     * @throws IOException
+     *             If the file could not be read from the archive or written to
+     *             its destination directory.
+     */
     public void restoreFile(String path, int backupId) throws IOException {
         BackupFile backupFile = files.get(path);
         if (backupFile == null) {
@@ -212,11 +284,20 @@ public class Project {
         }
     }
     
+    /**
+     * Opens the archive file for random access.
+     * 
+     * @throws IOException
+     *             If the archive file does not exist or could not be read.
+     */
     private void openArchiveFile() throws IOException {
         String archivePath = String.format("%s/%s.dbx", destinationFolder, name);
         archiveFile = new RandomAccessFile(archivePath, "rw");
     }
     
+    /**
+     * Closes the archive file.
+     */
     private void closeArchiveFile() {
         if (archiveFile != null) {
             try {
@@ -227,6 +308,17 @@ public class Project {
         }
     }
     
+    /**
+     * Backups a single directory.
+     * 
+     * @param dir
+     *            The directory.
+     * @param backupId
+     *            The backup ID.
+     * 
+     * @throws IOException
+     *             If a file could not be backup'ed.
+     */
     private void backupFolder(File dir, int backupId) throws IOException {
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
@@ -237,6 +329,18 @@ public class Project {
         }
     }
     
+    /**
+     * Backups a single file, but only when it is new or has been updated
+     * compared to its previous version.
+     * 
+     * @param file
+     *            The file.
+     * @param backupId
+     *            The backup ID.
+     * 
+     * @throws IOException
+     *             If the file could not be read or written to the archive file.
+     */
     private void backupFile(File file, int backupId) throws IOException {
         String path = file.getAbsolutePath();
         long date = file.lastModified();
@@ -244,26 +348,37 @@ public class Project {
         BackupFile backupFile = files.get(path);
         if (backupFile == null) {
             // New file; create first version.
-            long offset = backupFileVersion(file);
+            long offset = createFileVersion(file);
             backupFile = new BackupFile(path);
             backupFile.addVersion(backupId, date, offset, length);
             files.put(path, backupFile);
             System.out.println("A " + path);
         } else {
             // Existing file.
-            BackupFileVersion version = backupFile.getCurrentVersion();
+            BackupFileVersion version = backupFile.getLatestVersion();
             if (version.getDate() == date) {
                 // Unchanged file; do nothing.
             } else {
                 // Updated file; add new version.
-                long offset = backupFileVersion(file);
+                long offset = createFileVersion(file);
                 backupFile.addVersion(backupId, date, offset, length);
                 System.out.println("U " + path);
             }
         }
     }
     
-    private long backupFileVersion(File file) throws IOException {
+    /**
+     * Creates a new file version and writes it to the archive file.
+     * 
+     * @param file
+     *            The file.
+     * 
+     * @return The version's offset inside the archive file.
+     * 
+     * @throws IOException
+     *             If the file could not be read or written to the archive file.
+     */
+    private long createFileVersion(File file) throws IOException {
         long offset = archiveFile.length();
         archiveFile.seek(offset);
         InputStream bis = null;
@@ -286,6 +401,10 @@ public class Project {
         return offset;
     }
     
+    /**
+     * Reads the project's index file, containing information about all backups,
+     * backup'ed files and versions.
+     */
     private void readIndexFile() {
         backups.clear();
         files.clear();
@@ -328,6 +447,10 @@ public class Project {
         }
     }
     
+    /**
+     * Writes the project's index file, containing information about all
+     * backups, backup'ed files and versions.
+     */
     private void writeIndexFile() {
         File file = new File(String.format("%s/%s.idx", destinationFolder, name));
         DataOutputStream dos = null;

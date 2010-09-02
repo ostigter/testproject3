@@ -23,14 +23,30 @@ package org.ozsoft.backup;
  */
 public class BackupFileVersion {
     
+    /** Backup ID. */
     private final int backupId;
     
+    /** The file date at time of the backup. */
     private final long date;
     
+    /** Byte offset inside the project's archive file. */
     private long offset;
     
+    /** The file length in bytes. */
     private long length;
     
+    /**
+     * Constructor.
+     * 
+     * @param backupId
+     *            The backup ID.
+     * @param date
+     *            The file date.
+     * @param offset
+     *            The byte offset inside the project's archive.
+     * @param length
+     *            The file length.
+     */
     public BackupFileVersion(int backupId, long date, long offset, long length) {
         this.backupId = backupId;
         this.date = date;
@@ -38,18 +54,38 @@ public class BackupFileVersion {
         this.length = length;
     }
     
+    /**
+     * Returns the backup ID.
+     * 
+     * @return The backup ID.
+     */
     public int getBackupId() {
         return backupId;
     }
     
+    /**
+     * Returns the file date at time of the backup.
+     * 
+     * @return The file date.
+     */
     public long getDate() {
         return date;
     }
     
+    /**
+     * Returns the byte offset of the file inside the archive file.
+     * 
+     * @return The offset.
+     */
     public long getOffset() {
         return offset;
     }
     
+    /**
+     * Returns the file length.
+     * 
+     * @return The file length.
+     */
     public long getLength() {
         return length;
     }
