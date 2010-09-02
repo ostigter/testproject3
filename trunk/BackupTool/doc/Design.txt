@@ -2,52 +2,6 @@ Design
 ======
 
 
-Functionality
--------------
-
-* View projects
-* Create project
-* Edit project
-* Delete project
-* View backups
-* Create backup
-* Restore backup
-* Delete backup
-
-
-Classes
--------
-
-class BackupTool {
-    -projects : Map<String, Project>
-}
-
-class Project {
-    -name : String
-    -sourceFolders : Set<String>
-    -destinationFolders : Set<String>
-    -backups : List<Backup>
-    -files : Map<String, BackupFile>
-    +createBackup()
-}
-    
-class Backup {
-    -id : int
-    -date : Date
-}
-
-class BackupFile {
-    -id : long
-    -path : String
-    -versions : Map<Integer, Version>
-}
-
-class BackupFileVersion {
-    -date : Date
-    -offset : long
-    -length : long
-}
-
 Project files
 -------------
 

@@ -197,10 +197,12 @@ public class Project {
             for (BackupFile file : files.values()) {
                 String path = file.getPath();
                 if (!(new File(path).isFile())) {
+                    // Only if previous version was not already flagged as deleted.
                     BackupFileVersion previousVersion = file.getPreviousVersion(backupId);
-                    
-                    file.addVersion(backupId, date, -1L, 0L);
-                    System.out.println("D " + path);
+                    if (previousVersion != null && previousVersion.getOffset() != -1) {
+                        file.addVersion(backupId, date, -1L, 0L);
+                        System.out.println("D " + path);
+                    }
                 }
             }
         } catch (IOException e) {
