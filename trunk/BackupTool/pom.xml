@@ -42,6 +42,17 @@
                     <compilerVersion>6</compilerVersion>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                  <archive>
+                    <manifest>
+                        <mainClass>org.ozsoft.backuptool.gui.BackupTool</mainClass>
+                    </manifest>
+                  </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

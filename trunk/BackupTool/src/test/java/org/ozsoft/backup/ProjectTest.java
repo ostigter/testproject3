@@ -29,6 +29,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ozsoft.backup.util.FileHelper;
+import org.ozsoft.backuptool.BackupFile;
+import org.ozsoft.backuptool.BackupFileVersion;
+import org.ozsoft.backuptool.Project;
 
 /**
  * Test suite for the Project class.
