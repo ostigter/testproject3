@@ -86,14 +86,12 @@ public class ProjectTest {
         File folder2 = new File(TEST_DIR, "folder2");
         folder2.mkdir();
 
-        // Create backup with ID 1 (no files).
+        // Create first backup (no files).
         project.createBackup();
         
         // Test backup.
-        Map<Integer, Long> backups = project.getBackups();
-        Assert.assertEquals(1, backups.size());
-        Assert.assertTrue(backups.containsKey(1));
-        Assert.assertFalse(backups.containsKey(2));
+        Long[] backups = project.getBackups();
+        Assert.assertEquals(1, backups.length);
         Map<String, BackupFile> backupFiles = project.getBackupFiles();
         Assert.assertEquals(0, backupFiles.size());
 
@@ -103,7 +101,7 @@ public class ProjectTest {
         FileHelper.writeTextFile(new File(folder2, "file-2001.txt"), "2001_v1");
         FileHelper.writeTextFile(new File(folder2, "file-2002.txt"), "2002_v1");
         
-        // Create backup with ID 2 (4 new files).
+        // Create second backup (4 new files).
         project.createBackup();
 
         // Update a file.
@@ -112,28 +110,23 @@ public class ProjectTest {
         // Delete a file.
         FileHelper.deleteFile(new File(folder2, "file-2001.txt"));
 
-        // Create backup with ID 3 (1 updated file, 1 deleted file).
+        // Create third backup (1 updated file, 1 deleted file).
         project.createBackup();
 
-        // Create backup with ID 4 (no changes).
+        // Create fourth backup (no changes).
         project.createBackup();
-
-        // Test backup.
+        
+        // Test backups.
         backups = project.getBackups();
-        Assert.assertEquals(4, backups.size());
-        Assert.assertTrue(backups.containsKey(1));
-        Assert.assertTrue(backups.containsKey(2));
-        Assert.assertTrue(backups.containsKey(3));
-        Assert.assertTrue(backups.containsKey(4));
-        Assert.assertFalse(backups.containsKey(5));
+        Assert.assertEquals(4, backups.length);
         backupFiles = project.getBackupFiles();
         Assert.assertEquals(4, backupFiles.size());
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (BackupFile file : backupFiles.values()) {
             System.out.println(file);
             for (BackupFileVersion version : file.getVersions()) {
-                System.out.format("  %d, %s, %d, %d\n", version.getBackupId(),
-                        dateFormat.format(version.getDate()), version.getOffset(), version.getLength());
+                System.out.format("  %s, %s, %d, %d\n", dateFormat.format(version.getBackupDate()),
+                        dateFormat.format(version.getFileDate()), version.getOffset(), version.getLength());
             }
         }
         
@@ -143,24 +136,41 @@ public class ProjectTest {
 
         // Restore files.
         File file = new File(folder1, "file-1001.txt");
-        project.restoreFile(file.getAbsolutePath(), -1);
+        project.restoreFile(file.getAbsolutePath(), -1L);
         Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v2"));
 
         FileHelper.deleteFile(file);
-        project.restoreFile(file.getAbsolutePath(), 2);
+        project.restoreFile(file.getAbsolutePath(), backups[1]);
         Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v1"));
 
         FileHelper.deleteFile(file);
-        project.restoreFile(file.getAbsolutePath(), 3);
+        project.restoreFile(file.getAbsolutePath(), backups[2]);
         Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1001_v2"));
 
         file = new File(folder1, "file-1002.txt");
-        project.restoreFile(file.getAbsolutePath(), -1);
+        project.restoreFile(file.getAbsolutePath(), -1L);
         Assert.assertTrue("File not restored", file.exists());
         Assert.assertTrue(FileHelper.readTextFile(file).contains("1002_v1"));
+        
+        // Delete backups.
+        project.deleteBackup(-1L);  // Unknown backup date.
+        backups = project.getBackups();
+        Assert.assertEquals(4, backups.length);
+
+        project.deleteBackup(backups[0]); // First backup (no files)
+        backups = project.getBackups();
+        Assert.assertEquals(3, backups.length);
+        
+        project.deleteBackup(backups[0]); // Second backup
+        backups = project.getBackups();
+        Assert.assertEquals(2, backups.length);
+        
+        project.deleteBackup(backups[0]); // Third backup
+        backups = project.getBackups();
+        Assert.assertEquals(1, backups.length);
     }
     
 }
