@@ -30,6 +30,7 @@ import java.io.RandomAccessFile;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -48,6 +49,9 @@ public class Project {
     /** Size of the file buffer. */
     private static final int BUFFER_SIZE = 8192;
     
+    /** Empty backup array. */
+    private static final Long[] EMPTY_BACKUP_ARRAY = new Long[0];
+    
     /** Project name. */
     private final String name;
     
@@ -57,8 +61,8 @@ public class Project {
     /** Destination folder. */
     private String destinationFolder;
     
-    /** The backups mapped by ID. */
-    private final Map<Integer, Long> backups;
+    /** The backups (dates). */
+    private final Set<Long> backups;
     
     /** The files that have been backup'ed for this project. */
     private final Map<String, BackupFile> files;
@@ -75,7 +79,7 @@ public class Project {
     public Project(String name) {
         this.name = name;
         sourceFolders = new TreeSet<String>();
-        backups = new TreeMap<Integer, Long>();
+        backups = new TreeSet<Long>();
         files = new TreeMap<String, BackupFile>();
     }
     
@@ -136,12 +140,12 @@ public class Project {
     }
     
     /**
-     * Returns the backups mapped by ID.
+     * Returns the backup dates (in chronological order).
      * 
-     * @return The backups mapped by ID.
+     * @return The backup dates.
      */
-    public Map<Integer, Long> getBackups() {
-        return Collections.unmodifiableMap(backups);
+    public Long[] getBackups() {
+        return backups.toArray(EMPTY_BACKUP_ARRAY);
     }
     
     /**
@@ -176,10 +180,8 @@ public class Project {
         }
         
         try {
-            int backupId = backups.size() + 1;
-            long date = new Date().getTime();
-            System.out.println("Creating backup with ID " + backupId);
-            backups.put(backupId, date);
+            long backupDate = new Date().getTime();
+            backups.add(backupDate);
             
             openArchiveFile();
             
@@ -187,7 +189,7 @@ public class Project {
             for (String sourceFolder : sourceFolders) {
                 dir = new File(sourceFolder);
                 if (dir.isDirectory()) {
-                    backupFolder(dir, backupId);
+                    backupFolder(dir, backupDate);
                 } else {
                     System.err.println("ERROR: Source folder not found: " + sourceFolder);
                 }
@@ -198,9 +200,9 @@ public class Project {
                 String path = file.getPath();
                 if (!(new File(path).isFile())) {
                     // Only if previous version was not already flagged as deleted.
-                    BackupFileVersion previousVersion = file.getPreviousVersion(backupId);
+                    BackupFileVersion previousVersion = file.getPreviousVersion(backupDate);
                     if (previousVersion != null && previousVersion.getOffset() != -1) {
-                        file.addVersion(backupId, date, -1L, 0L);
+                        file.addVersion(backupDate, backupDate, -1L, 0L);
                         System.out.println("D " + path);
                     }
                 }
@@ -220,25 +222,26 @@ public class Project {
      * 
      * @param path
      *            The (original) full path of the file to restore.
-     * @param backupId
-     *            The backup ID.
+     * @param backupDate
+     *            The backup date, or -1 for the latest backup.
      * 
      * @throws IOException
      *             If the file could not be read from the archive or written to
      *             its destination directory.
      */
-    public void restoreFile(String path, int backupId) throws IOException {
+    public void restoreFile(String path, long backupDate) throws IOException {
         BackupFile backupFile = files.get(path);
         if (backupFile == null) {
             throw new IllegalArgumentException(String.format("Backup file not found: '%s'", path));
         }
         
-        BackupFileVersion version = backupFile.getVersion(backupId);
+        BackupFileVersion version = (backupDate > 0) ?
+                backupFile.getVersion(backupDate) : backupFile.getLatestVersion();
         if (version == null) {
-            throw new IllegalArgumentException(String.format("File version for backup ID %d not found", backupId));
+            throw new IllegalArgumentException(String.format("File version for backup date %d not found", backupDate));
         }
         
-        long originalDate = version.getDate();
+        long originalDate = version.getFileDate();
         
         // Only restore if the file does not already exist or it differs from the backup'ed version.
         File file = new File(path);
@@ -286,6 +289,22 @@ public class Project {
         }
     }
     
+    public void deleteBackup(long date) {
+        // Delete all related file versions.
+        Iterator<BackupFile> it = files.values().iterator();
+        while (it.hasNext()) {
+            BackupFile file = it.next();
+            file.removeVersion(date);
+            if (file.getVersions().isEmpty()) {
+                // Last version deleted; delete reference to file itself.
+                it.remove();
+            }
+        }
+        
+        // Delete the backup itself.
+        backups.remove(date);
+    }
+    
     /**
      * Opens the archive file for random access.
      * 
@@ -315,18 +334,18 @@ public class Project {
      * 
      * @param dir
      *            The directory.
-     * @param backupId
-     *            The backup ID.
+     * @param backupDate
+     *            The backup date.
      * 
      * @throws IOException
      *             If a file could not be backup'ed.
      */
-    private void backupFolder(File dir, int backupId) throws IOException {
+    private void backupFolder(File dir, long backupDate) throws IOException {
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
-                backupFolder(file, backupId);
+                backupFolder(file, backupDate);
             } else {
-                backupFile(file, backupId);
+                backupFile(file, backupDate);
             }
         }
     }
@@ -337,13 +356,13 @@ public class Project {
      * 
      * @param file
      *            The file.
-     * @param backupId
-     *            The backup ID.
+     * @param backupDate
+     *            The backup date.
      * 
      * @throws IOException
      *             If the file could not be read or written to the archive file.
      */
-    private void backupFile(File file, int backupId) throws IOException {
+    private void backupFile(File file, long backupDate) throws IOException {
         String path = file.getAbsolutePath();
         long date = file.lastModified();
         long length = file.length();
@@ -352,18 +371,19 @@ public class Project {
             // New file; create first version.
             long offset = createFileVersion(file);
             backupFile = new BackupFile(path);
-            backupFile.addVersion(backupId, date, offset, length);
+            backupFile.addVersion(backupDate, date, offset, length);
             files.put(path, backupFile);
             System.out.println("A " + path);
         } else {
             // Existing file.
-            BackupFileVersion version = backupFile.getLatestVersion();
-            if (version.getDate() == date) {
-                // Unchanged file; do nothing.
+            BackupFileVersion previousVersion = backupFile.getLatestVersion();
+            if (previousVersion.getFileDate() == date) {
+                // Unchanged file; create reference to previous version.
+                backupFile.addVersion(backupDate, date, previousVersion.getOffset(), previousVersion.getLength());
             } else {
                 // Updated file; add new version.
                 long offset = createFileVersion(file);
-                backupFile.addVersion(backupId, date, offset, length);
+                backupFile.addVersion(backupDate, date, offset, length);
                 System.out.println("U " + path);
             }
         }
@@ -407,7 +427,7 @@ public class Project {
      * Reads the project's index file, containing information about all backups,
      * backup'ed files and versions.
      */
-    private void readIndexFile() {
+    public void readIndexFile() {
         backups.clear();
         files.clear();
         File file = new File(String.format("%s/%s.idx", destinationFolder, name));
@@ -417,9 +437,8 @@ public class Project {
                 dis = new DataInputStream(new FileInputStream(file));
                 int nofBackups = dis.readInt();
                 for (int i = 0; i < nofBackups; i++) {
-                    int id = dis.readInt();
                     long date = dis.readLong();
-                    backups.put(id, date);
+                    backups.add(date);
                 }
                 int nofFiles = dis.readInt();
                 for (int i = 0; i < nofFiles; i++) {
@@ -427,11 +446,11 @@ public class Project {
                     BackupFile backupFile = new BackupFile(path);
                     int nofVersions = dis.readInt();
                     for (int j = 0; j < nofVersions; j++) {
-                        int backupId = dis.readInt();
-                        long date = dis.readLong();
+                        long backupDate = dis.readLong();
+                        long fileDate = dis.readLong();
                         long offset = dis.readLong();
                         long length = dis.readLong();
-                        backupFile.addVersion(backupId, date, offset, length);
+                        backupFile.addVersion(backupDate, fileDate, offset, length);
                     }
                     files.put(path, backupFile);
                 }
@@ -459,9 +478,7 @@ public class Project {
         try {
             dos = new DataOutputStream(new FileOutputStream(file));
             dos.writeInt(backups.size());
-            for (int backupId : backups.keySet()) {
-                long date = backups.get(backupId);
-                dos.writeInt(backupId);
+            for (long date : backups) {
                 dos.writeLong(date);
             }
             dos.writeInt(files.size());
@@ -471,8 +488,8 @@ public class Project {
                 int nofVersions = versions.size();
                 dos.writeInt(nofVersions);
                 for (BackupFileVersion version : versions) {
-                    dos.writeInt(version.getBackupId());
-                    dos.writeLong(version.getDate());
+                    dos.writeLong(version.getBackupDate());
+                    dos.writeLong(version.getFileDate());
                     dos.writeLong(version.getOffset());
                     dos.writeLong(version.getLength());
                 }
