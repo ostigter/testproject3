@@ -25,31 +25,31 @@ Retrieve resource (to stdout):
     </Document>
 
 Export resource/collection to file/directory:
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin get /db/data/foo-0001.xml .
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin get /db/data/foo-0001.xml document.xml
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin get /db/data/foo-0001.xml D:/temp/data
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin get /db/data/foo-0001.xml D:/temp/document.xml
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin get /db/data D:/temp/data
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin get /db/data/foo-0001.xml .
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin get /db/data/foo-0001.xml document.xml
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin get /db/data/foo-0001.xml D:/temp/data
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin get /db/data/foo-0001.xml D:/temp/document.xml
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin get /db/data D:/temp/data
 
 Import resource/collection from file/directory:
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin put /db/data/foo foo-0001.xml
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin put /db/data/foo-0001.xml D:/data/foo/0001.xml
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin put /db/data D:/data/foo
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin put /db/data/foo foo-0001.xml
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin put /db/data/foo-0001.xml D:/data/foo/0001.xml
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin put /db/data D:/data/foo
 
 Delete resource (recursively):
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin delete /db/data/foo-0001.xml
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin delete /db/modules
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin delete /db/data/foo-0001.xml
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin delete /db/modules
     
 Execute ad-hoc query:
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin query "//Document[Header/Id = 'foo-0001']"
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin query "//Document[Header/Id = 'foo-0001']"
 
 Call XQuery module with parameters:
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin call /db/modules/greeting.xql name="Mr. Smith"
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin call /db/modules/greeting.xql name="Mr. Smith"
     <?xml version="1.0" encoding="UTF-8"?>
     <Greeting>Hello, Mr. Smith!</Greeting>
 
 Call XQuery function with parameters:
     java -jar ExistConnector.jar <options> call <moduleUri> <namespaceUri> <function> [<params>]
-    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin -p admin call /db/modules/greeting.xql http://www.example.org/greeting greeting "Mr. Smith"
+    $ java -jar ExistConnector.jar -h localhost -p 8080 -u admin:admin call /db/modules/greeting.xql http://www.example.org/greeting greeting "Mr. Smith"
     <?xml version="1.0" encoding="UTF-8"?>
     <Greeting>Hello, Mr. Smith!</Greeting>
