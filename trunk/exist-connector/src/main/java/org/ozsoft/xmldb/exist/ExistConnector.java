@@ -435,15 +435,11 @@ public class ExistConnector implements XmldbConnector {
         }
 
         // Execute POST method with REST interface.
-        PostMethod postMethod = null;
+        PostMethod postMethod = new PostMethod(existUri + "/rest/db");
         String response = null;
         try {
-            // Execute query.
-            postMethod = new PostMethod(existUri + "/rest/db");
             postMethod.setRequestEntity(new StringRequestEntity(body, "text/xml", "UTF-8"));
             int statusCode = httpClient.executeMethod(postMethod);
-
-            // Read response body.
             Reader reader = new InputStreamReader(postMethod.getResponseBodyAsStream());
             StringBuilder sb2 = new StringBuilder();
             char[] buffer = new char[BUFFER_SIZE];
