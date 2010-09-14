@@ -364,7 +364,11 @@ public class BackupTool {
     }
     
     private void restoreBackup() {
-        //TODO: Restore Backup
+        TreePath path = projectTree.getSelectionPath();
+        if (path != null) {
+            String name = path.getLastPathComponent().toString();
+            System.out.println(name);
+        }
     }
     
     private void deleteBackup() {
