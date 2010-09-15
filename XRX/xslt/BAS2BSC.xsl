@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    File: plc2bsc.xsl
-    
-    Description:
-        XSLT stylesheet to transform the CM message body as received from a
-        PLC to the format as expected by BSC.
-        Based on the 'messageId' element, a message type specific element is
-        wrapped around the message elements.
-    
-    History:
-        04-Mar-2010 nlost Created.
-        
-    Copyright 2010 Vanderlande Industries
- -->
 <xsl:stylesheet version="1.0"
         xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-        xmlns:env="http://xmlns.vanderlande.com/cm/envelope">
+        xmlns:env="http://www.example.org/envelope">
         
     <xsl:output method="xml" version="1.0" encoding="UTF-8" />
     
