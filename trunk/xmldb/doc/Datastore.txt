@@ -1,5 +1,8 @@
 Binary data store
------------------
+=================
+
+global.dbx
+    nextId = 8
 
 nodes.dbx
     node*
@@ -11,28 +14,142 @@ nodes.dbx
 collections.dbx
     collection*
         name : String
-        parent : long
-        noOfDocuments : long
-        document* : long
+        nofCollections : int
+        collection* : long
+        nofDocuments : int
+        documents* : long
 
 documents.dbx
     document*
         name : String
-        parent : long
         rootElement : long        
 
 elements.dbx
     element*
         name : String
-        noOfAttributes : byte
+        nofAttributes : byte
         attribute*
             name : String
             value : String 
-        noOfChildren : long
+        nofChildren : int
         children* : long
 
 values.dbx
     value* : String
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+    <header>
+        <id>foo-001</id>
+    </header>
+    <body>
+        <value>123</value>
+    </body>
+</document>
+
+Document("foo-001.xml")
+    Element("header")
+        Element("id")
+            Text("foo-001")
+    Element("body")
+        Element("value")
+            Text("123")
+
+nodes.dbx:
+    Node
+        id = 0
+        type = COLLECTION
+        offset = 0
+        length = ...
+    Node
+        id = 1
+        type = DOCUMENT
+        offset = ...
+        length = ...
+    Node
+        id = 2
+        type = ELEMENT
+        offset = ...
+        length = ...
+    Node
+        id = 3
+        type = ELEMENT
+        offset = ...
+        length = ...
+    Node
+        id = 4
+        type = TEXT
+        offset = ...
+        length = ...
+    Node
+        id = 5
+        type = ELEMENT
+        offset = ...
+        length = ...
+    Node
+        id = 6
+        type = ELEMENT
+        offset = ...
+        length = ...
+    Node
+        id = 7
+        type = TEXT
+        offset = ...
+        length = ...
+        
+collectons.dbx:
+    Collection
+        name = ""
+        nofCollections = 0
+        collections = {}
+        nofDocuments = 1
+        documents = {1}
+    
+documents.dbx:
+    Document
+        name = "foo-001.xml"
+        rootElement = 2
+
+elements.dbx:
+    Element
+        name = "document"
+        nofAttributes = 0
+        attributes = {}
+        nofChildren = 1
+        children = {3}
+    Element
+        name = "header"
+        nofAttributes = 0
+        attributes = {}
+        nofChildren = 1
+        children = {4}
+    Element
+        name = "id"
+        nofAttributes = 0
+        attributes = {}
+        nofChildren = 1
+        children = {4}
+    Element
+        name = "body"
+        nofAttributes = 0
+        attributes = {}
+        nofChildren = 1
+        children = {6}
+    Element
+        name = "value"
+        nofAttributes = 0
+        attributes = {}
+        nofChildren = 1
+        children = {7}
+        
+values.dbx:
+    value = "foo-001"
+    value = "123"
+    
+
+Indxes
+------
 
 str_index.dbx
     noOfElementIndexes : long
