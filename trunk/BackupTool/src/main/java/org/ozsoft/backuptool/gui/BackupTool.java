@@ -31,8 +31,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -49,6 +47,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import org.ozsoft.backuptool.Backup;
 import org.ozsoft.backuptool.Project;
 
 /**
@@ -78,8 +77,6 @@ public class BackupTool {
     private static final String TITLE = "Backup Tool";
     
     private static final File PROJECTS_FILE = new File("projects.dat");
-    
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     
     private final Map<String, Project> projects;
     
@@ -211,11 +208,12 @@ public class BackupTool {
         frame.getContentPane().add(treePane, gc);
         
         projectsNode.setUserObject("Projects");
-        updateProjectTree();
         
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        updateProjectTree();
     }
     
     private void updateProjectTree() {
@@ -224,9 +222,9 @@ public class BackupTool {
             public void run() {
                 projectsNode.removeAllChildren();
                 for (Project project : projects.values()) {
-                    DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project.getName());
-                    for (long date : project.getBackups()) {
-                        projectNode.add(new DefaultMutableTreeNode(DATE_FORMAT.format(date)));
+                    DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project);
+                    for (Backup backup : project.getBackups()) {
+                        projectNode.add(new DefaultMutableTreeNode(backup));
                     }
                     projectsNode.add(projectNode);
                 }
@@ -366,8 +364,13 @@ public class BackupTool {
     private void restoreBackup() {
         TreePath path = projectTree.getSelectionPath();
         if (path != null) {
-            String name = path.getLastPathComponent().toString();
-            System.out.println(name);
+            Project project = (Project) ((DefaultMutableTreeNode) path.getPathComponent(1)).getUserObject();
+            Backup backup = (Backup) ((DefaultMutableTreeNode) path.getPathComponent(2)).getUserObject();
+            try {
+                project.restoreBackup(backup.getId());
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Error restoring file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
     
