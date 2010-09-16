@@ -31,11 +31,11 @@ public class BackupFile {
     /** Full file path. */
     private final String path;
     
-    /** The versions mapped by backup date. */
-    private final Map<Long, BackupFileVersion> versions;
+    /** The versions mapped by backup ID. */
+    private final Map<Integer, BackupFileVersion> versions;
     
-    /** Backup date of the latest version. */
-    private long latestVersion = 0;
+    /** Backup ID with the latest version. */
+    private int latestVersion = 0;
     
     /**
      * Constructor.
@@ -45,7 +45,7 @@ public class BackupFile {
      */
     public BackupFile(String path) {
         this.path = path;
-        versions = new TreeMap<Long, BackupFileVersion>();
+        versions = new TreeMap<Integer, BackupFileVersion>();
     }
     
     /**
@@ -70,8 +70,8 @@ public class BackupFile {
     /**
      * Adds a file version.
      * 
-     * @param backupDate
-     *            The backup date.
+     * @param backupId
+     *            The backup ID.
      * @param date
      *            The file date.
      * @param offset
@@ -79,21 +79,21 @@ public class BackupFile {
      * @param length
      *            The file length.
      */
-    public void addVersion(long backupDate, long fileDate, long offset, long length) {
-        versions.put(backupDate, new BackupFileVersion(backupDate, fileDate, offset, length));
-        latestVersion = backupDate;
+    public void addVersion(int backupId, long date, long offset, long length) {
+        versions.put(backupId, new BackupFileVersion(backupId, date, offset, length));
+        latestVersion = backupId;
     }
 
     /**
      * Returns the file version belonging to specific backup.
      * 
-     * @param backupDate
-     *            The backup date.
+     * @param backupId
+     *            The backup ID.
      * 
      * @return The file version if found, otherwise null.
      */
-    public BackupFileVersion getVersion(long backupDate) {
-        return versions.get(backupDate);
+    public BackupFileVersion getVersion(int backupId) {
+        return versions.get(backupId);
     }
     
     /**
@@ -108,15 +108,15 @@ public class BackupFile {
     /**
      * Returns the previous version in relation to a specific backup.
      * 
-     * @param backupDate
-     *            The backup date.
+     * @param backupId
+     *            The backup ID.
      * 
      * @return The previous version, or null if not found.
      */
-    public BackupFileVersion getPreviousVersion(long backupDate) {
+    public BackupFileVersion getPreviousVersion(int backupId) {
         BackupFileVersion previousVersion = null;
         for (BackupFileVersion version : versions.values()) {
-            if (version.getBackupDate() != backupDate) {
+            if (version.getBackupId() != backupId) {
                 previousVersion = version;
             } else {
                 // No more previous versions.
@@ -129,11 +129,11 @@ public class BackupFile {
     /**
      * Removes the file version belonging to a specific backup.
      * 
-     * @param backupDate
-     *            The backup date.
+     * @param backupId
+     *            The backup ID.
      */
-    public void removeVersion(long backupDate) {
-        versions.remove(backupDate);
+    public void removeVersion(int backupId) {
+        versions.remove(backupId);
     }
     
     /*
