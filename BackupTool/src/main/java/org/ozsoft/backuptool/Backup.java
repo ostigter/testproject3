@@ -72,7 +72,8 @@ public class Backup {
      */
     @Override
     public String toString() {
-        return String.format("%d: %s", id, DATE_FORMAT.format(date));
+//        return String.format("%d: %s", id, DATE_FORMAT.format(date));
+        return DATE_FORMAT.format(date);
     }
 
 }
