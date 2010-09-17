@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -43,6 +44,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import org.ozsoft.backuptool.Backup;
@@ -234,7 +236,6 @@ public class BackupTool {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                // Populate tree from scratch.
                 projectsNode.removeAllChildren();
                 for (Project project : projects.values()) {
                     DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project);
@@ -243,12 +244,7 @@ public class BackupTool {
                     }
                     projectsNode.add(projectNode);
                 }
-                
-                // Expand all leaves.
-                for (int i = 0; i < projectTree.getRowCount(); i++) {
-                    projectTree.expandRow(i);
-                }
-                
+                expandTree(projectTree, true);
                 projectTree.updateUI();
             }
         });
@@ -366,11 +362,6 @@ public class BackupTool {
             projects.put(name, project);
             writeProjects();
             updateProjectTree();
-            
-//            // Update UI.
-//            DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
-//            projectsNode.add(node);
-//            projectTree.updateUI();
         }
     }
     
@@ -442,5 +433,41 @@ public class BackupTool {
         JOptionPane.showMessageDialog(null,
                 "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
+    
+    /**
+     * Expands or collapses all nodes of a <code>JTree</code>.
+     * 
+     * @param tree
+     *            The <code>JTree</code>.
+     * @param expand
+     *            If true, expands the nodes, otherwise collapses them.
+     */
+    private static void expandTree(JTree tree, boolean expand) {
+        TreeNode root = (TreeNode) tree.getModel().getRoot();
+        expandTreeNode(tree, new TreePath(root), expand);
+    }
+    
+    /**
+     * Expands or collapses a single <code>JTree</code> node.
+     * 
+     * @param tree
+     *            The <code>JTree</code>.
+     * @param parent
+     *            The node.
+     * @param expand
+     *            If true, expands the nodes, otherwise collapses them.
+     */
+    private static void expandTreeNode(JTree tree, TreePath parent, boolean expand) {
+        TreeNode node = (TreeNode) parent.getLastPathComponent();
+        for (Enumeration<?> e = node.children(); e.hasMoreElements(); ) {
+            TreeNode childNode = (TreeNode) e.nextElement();
+            expandTreeNode(tree, parent.pathByAddingChild(childNode), expand);
+        }
+        if (expand) {
+            tree.expandPath(parent);
+        } else {
+            tree.collapsePath(parent);
+        }
+    }     
     
 }
