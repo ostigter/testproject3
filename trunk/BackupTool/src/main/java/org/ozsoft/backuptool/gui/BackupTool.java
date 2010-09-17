@@ -23,8 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -92,26 +90,32 @@ public class BackupTool {
     
     private JPopupMenu backupMenu;
     
+    /**
+     * Constructor.
+     */
     public BackupTool() {
         projects = new TreeMap<String, Project>();
         readProjects();
         createUI();
     }
 
+    /**
+     * Application entry point.
+     * 
+     * @param args
+     *            The command line arguments.
+     */
     public static void main(String[] args) {
         new BackupTool();
     }
     
+    /**
+     * Creates the UI.
+     */
     private void createUI() {
         // Create frame.
         frame = new JFrame(TITLE);
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosed(WindowEvent e) {
-                writeProjects();
-            }
-        });
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridBagLayout());
         
         // Create project tree.
@@ -124,6 +128,8 @@ public class BackupTool {
         treePane.setPreferredSize(new Dimension(300, 400));
         
         // Create context menus for the project tree.
+        
+        // Root menu.
         rootMenu = new JPopupMenu();
         JMenuItem menuItem = new JMenuItem("Create Project...");
         menuItem.addActionListener(new ActionListener() {
@@ -133,7 +139,18 @@ public class BackupTool {
             } 
         });
         rootMenu.add(menuItem);
+        
+        // Project menu.
         projectMenu = new JPopupMenu();
+        menuItem = new JMenuItem("Create Backup...");
+        menuItem.addActionListener(new ActionListener() {
+           @Override
+            public void actionPerformed(ActionEvent e) {
+               createBackup();
+            } 
+        });
+        projectMenu.add(menuItem);
+        projectMenu.addSeparator();
         menuItem = new JMenuItem("Edit Project...");
         menuItem.addActionListener(new ActionListener() {
            @Override
@@ -150,16 +167,8 @@ public class BackupTool {
             } 
         });
         projectMenu.add(menuItem);
-        projectMenu.addSeparator();
-        menuItem = new JMenuItem("Create Backup...");
-        menuItem.addActionListener(new ActionListener() {
-           @Override
-            public void actionPerformed(ActionEvent e) {
-               createBackup();
-            } 
-        });
-        projectMenu.add(menuItem);
         
+        // Backup menu.
         backupMenu = new JPopupMenu();
         menuItem = new JMenuItem("View Backup...");
         menuItem.addActionListener(new ActionListener() {
@@ -177,6 +186,7 @@ public class BackupTool {
             } 
         });
         backupMenu.add(menuItem);
+        backupMenu.addSeparator();
         menuItem = new JMenuItem("Delete Backup");
         menuItem.addActionListener(new ActionListener() {
            @Override
@@ -185,6 +195,7 @@ public class BackupTool {
             } 
         });
         backupMenu.add(menuItem);
+        
         projectTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -216,10 +227,14 @@ public class BackupTool {
         updateProjectTree();
     }
     
+    /**
+     * Updates the project tree.
+     */
     private void updateProjectTree() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
+                // Populate tree from scratch.
                 projectsNode.removeAllChildren();
                 for (Project project : projects.values()) {
                     DefaultMutableTreeNode projectNode = new DefaultMutableTreeNode(project);
@@ -228,11 +243,24 @@ public class BackupTool {
                     }
                     projectsNode.add(projectNode);
                 }
+                
+                // Expand all leaves.
+                for (int i = 0; i < projectTree.getRowCount(); i++) {
+                    projectTree.expandRow(i);
+                }
+                
                 projectTree.updateUI();
             }
         });
     }
     
+    /**
+     * Shows the project tree's context menu, based on the type of the selected
+     * node (root, project or backup).
+     * 
+     * @param e
+     *            The mouse event that triggered the context menu.
+     */
     private void showProjectTreeContextMenu(MouseEvent e) {
         if (e.isPopupTrigger()) {
             int x = e.getX();
@@ -257,6 +285,9 @@ public class BackupTool {
         }
     }
 
+    /**
+     * Reads the project information from the file system.
+     */
     private void readProjects() {
         projects.clear();
         if (PROJECTS_FILE.isFile()) {
@@ -289,6 +320,9 @@ public class BackupTool {
         }
     }
     
+    /**
+     * Writes the project information to the file system.
+     */
     private void writeProjects() {
         DataOutputStream dos = null;
         try {
@@ -316,6 +350,9 @@ public class BackupTool {
         }
     }
     
+    /**
+     * Creates a new project.
+     */
     private void createProject() {
         ProjectDialog dialog = new ProjectDialog(frame);
         if (dialog.show() == Dialog.OK) {
@@ -327,22 +364,37 @@ public class BackupTool {
             }
             project.setDestinationFolder(dialog.getDestinationFolder());
             projects.put(name, project);
+            writeProjects();
+            updateProjectTree();
             
-            // Update project tree.
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
-            projectsNode.add(node);
-            projectTree.updateUI();
+//            // Update UI.
+//            DefaultMutableTreeNode node = new DefaultMutableTreeNode(name);
+//            projectsNode.add(node);
+//            projectTree.updateUI();
         }
     }
     
+    /**
+     * Edits the selected project.
+     */
     private void editProject() {
-        //TODO: Edit Project
+        //TODO: Implement Edit Project.
+        JOptionPane.showMessageDialog(null,
+                "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
+    /**
+     * Deletes the selected project.
+     */
     private void deleteProject() {
-        //TODO: Delete Project
+        //TODO: Implement Delete Project.
+        JOptionPane.showMessageDialog(null,
+                "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
+    /**
+     * Creates a backup of the selected project.
+     */
     private void createBackup() {
         TreePath path = projectTree.getSelectionPath();
         if (path != null) {
@@ -357,10 +409,18 @@ public class BackupTool {
         }
     }
     
+    /**
+     * Views the contents of the selected backup.
+     */
     private void viewBackup() {
-        //TODO: View Backup
+        //TODO: Implement View Project.
+        JOptionPane.showMessageDialog(null,
+                "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
+    /**
+     * Restores the selected backup.
+     */
     private void restoreBackup() {
         TreePath path = projectTree.getSelectionPath();
         if (path != null) {
@@ -374,8 +434,13 @@ public class BackupTool {
         }
     }
     
+    /**
+     * Deletes the selected backup.
+     */
     private void deleteBackup() {
-        //TODO: Delete Backup
+        //TODO: Implement Delete Backup.
+        JOptionPane.showMessageDialog(null,
+                "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
 }
