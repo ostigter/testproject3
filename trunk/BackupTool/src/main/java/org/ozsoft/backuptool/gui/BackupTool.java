@@ -169,6 +169,15 @@ public class BackupTool {
             } 
         });
         projectMenu.add(menuItem);
+        projectMenu.addSeparator();
+        menuItem = new JMenuItem("Compact Archive");
+        menuItem.addActionListener(new ActionListener() {
+           @Override
+            public void actionPerformed(ActionEvent e) {
+               compactArchive();
+            } 
+        });
+        projectMenu.add(menuItem);
         
         // Backup menu.
         backupMenu = new JPopupMenu();
@@ -370,7 +379,7 @@ public class BackupTool {
      */
     private void editProject() {
         //TODO: Implement Edit Project.
-        JOptionPane.showMessageDialog(null,
+        JOptionPane.showMessageDialog(frame,
                 "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
@@ -379,7 +388,7 @@ public class BackupTool {
      */
     private void deleteProject() {
         //TODO: Implement Delete Project.
-        JOptionPane.showMessageDialog(null,
+        JOptionPane.showMessageDialog(frame,
                 "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
@@ -394,8 +403,7 @@ public class BackupTool {
             if (project != null) {
                 project.createBackup();
                 updateProjectTree();
-                JOptionPane.showMessageDialog(null,
-                        "Backup created successfully.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Backup created successfully.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }
@@ -405,8 +413,8 @@ public class BackupTool {
      */
     private void viewBackup() {
         //TODO: Implement View Project.
-        JOptionPane.showMessageDialog(null,
-                "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(
+                frame, "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
     /**
@@ -420,7 +428,7 @@ public class BackupTool {
             try {
                 project.restoreBackup(backup.getId());
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Error restoring file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame, "Error restoring file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -429,9 +437,28 @@ public class BackupTool {
      * Deletes the selected backup.
      */
     private void deleteBackup() {
-        //TODO: Implement Delete Backup.
-        JOptionPane.showMessageDialog(null,
-                "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+        TreePath path = projectTree.getSelectionPath();
+        if (path != null) {
+            Project project = (Project) ((DefaultMutableTreeNode) path.getPathComponent(1)).getUserObject();
+            Backup backup = (Backup) ((DefaultMutableTreeNode) path.getPathComponent(2)).getUserObject();
+            String[] options = new String[] {"Delete", "Cancel"};
+            int result = JOptionPane.showOptionDialog(frame,
+                    String.format("Delete backup of project '%s' with date %s?", project, backup),
+                    "BackupTool", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (result == JOptionPane.OK_OPTION) {
+                project.deleteBackup(backup.getId());
+                updateProjectTree();
+            }
+        }
+    }
+    
+    /**
+     * Compacts the project's archive file.
+     */
+    private void compactArchive() {
+        //TODO: Implement CompactArchive.
+        JOptionPane.showMessageDialog(
+                frame, "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
     }
     
     /**

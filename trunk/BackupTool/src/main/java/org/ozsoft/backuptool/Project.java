@@ -305,7 +305,22 @@ public class Project {
             }
         }
     }
-    
+
+    /**
+     * Deletes a backup. <br />
+     * <br />
+     * 
+     * Deletes all file versions related to the backup. If no more versions
+     * exist, the file reference is deleted, too. <br />
+     * <br />
+     * 
+     * Note that only the file and version references are deleted, not the
+     * actual file contents in the archive file; the latter can be done by
+     * calling the <code>compactArchive</code> method afterwards.
+     * 
+     * @param backupId
+     *            The backup ID.
+     */
     public void deleteBackup(int backupId) {
         // Delete all related file versions.
         Iterator<BackupFile> it = files.values().iterator();
@@ -320,6 +335,20 @@ public class Project {
         
         // Delete the backup itself.
         backups.remove(backupId);
+        
+        writeIndexFile();
+    }
+    
+    /**
+     * Compacts the archive file by deleting all file versions that are no
+     * longer references by any backup. <br />
+     * <br />
+     * 
+     * Calling this method after deleting backups or projects will likely reduce
+     * the disk usage of the archive file.
+     */
+    public void compactArchive() {
+        //TODO: Implement CompactArchive.
     }
     
     /*
