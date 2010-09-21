@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 /**
  * Backup project specifying the source and destination folders. <br />
@@ -53,7 +52,7 @@ public class Project {
     private final String name;
     
     /** Source folders. */
-    private final Set<String> sourceFolders;
+    private Set<String> sourceFolders;
     
     /** Destination folder. */
     private String destinationFolder;
@@ -78,7 +77,6 @@ public class Project {
      */
     public Project(String name) {
         this.name = name;
-        sourceFolders = new TreeSet<String>();
         backups = new TreeMap<Integer, Backup>();
         files = new TreeMap<String, BackupFile>();
     }
@@ -98,26 +96,17 @@ public class Project {
      * @return The full paths of the source folders.
      */
     public Set<String> getSourceFolders() {
-        return Collections.unmodifiableSet(sourceFolders);
+        return sourceFolders;
     }
     
     /**
-     * Adds a source folder.
+     * Sets the source folders.
      * 
-     * @param folder
-     *            The full path of the source folder.
+     * @param sourceFolders
+     *            The full paths of the source folders.
      */
-    public void addSourceFolder(String folder) {
-        sourceFolders.add(folder);
-    }
-    
-    /**
-     * Removes a source folder.
-     * 
-     * @param folder The full path of the source folder.
-     */
-    public void removeSourceFolder(String folder) {
-        sourceFolders.remove(folder);
+    public void setSourceFolders(Set<String> sourceFolders) {
+        this.sourceFolders = sourceFolders;
     }
     
     /**

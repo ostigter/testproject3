@@ -52,6 +52,8 @@ public class ProjectDialog extends Dialog {
     
     private static final Font MONOSPACED_FONT = new Font("Monospaced", Font.PLAIN, 14);
     
+//    private final boolean editMode;
+    
     private JTextField nameTextField;
     
     private DefaultListModel sourceFolders; 
@@ -70,12 +72,21 @@ public class ProjectDialog extends Dialog {
     
     private JButton cancelButton;
     
-    public ProjectDialog(JFrame owner) {
+    public ProjectDialog(JFrame owner, boolean editMode) {
         super(TITLE, owner);
+        if (editMode) {
+            nameTextField.setEditable(false);
+            destFolderTextField.setEditable(false);
+            browseButton.setEnabled(false);
+        }
     }
     
     public String getName() {
         return nameTextField.getText().trim();
+    }
+    
+    public void setName(String name) {
+        nameTextField.setText(name);
     }
     
     public Set<String> getSourceFolders() {
@@ -87,8 +98,19 @@ public class ProjectDialog extends Dialog {
         return folders;
     }
     
+    public void setSourceFolders(Set<String> folders) {
+        sourceFolders.clear();
+        for (String folder : folders) {
+            sourceFolders.addElement(folder);
+        }
+    }
+    
     public String getDestinationFolder() {
         return destFolderTextField.getText().trim();
+    }
+    
+    public void setDestinationFolder(String folder) {
+        destFolderTextField.setText(folder);
     }
     
     protected void createUI() {

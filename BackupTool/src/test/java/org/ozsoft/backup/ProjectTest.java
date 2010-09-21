@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -77,8 +79,10 @@ public class ProjectTest {
     @Test
     public void backup() throws IOException {
         Project project = new Project("Project1");
-        project.addSourceFolder(TEST_DIR + "/folder1");
-        project.addSourceFolder(TEST_DIR + "/folder2");
+        Set<String> sourceFolders = new HashSet<String>();
+        sourceFolders.add(TEST_DIR + "/folder1");
+        sourceFolders.add(TEST_DIR + "/folder2");
+        project.setSourceFolders(sourceFolders);
         project.setDestinationFolder(TEST_DIR + "/backup");
         
         // Create some (empty) source folders.

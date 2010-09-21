@@ -1,7 +1,6 @@
 TODO
 ====
 
-- Edit Project
 - Restore Backup
 - View Backup (list directories, files and versions)
 - Restore File/Directory
