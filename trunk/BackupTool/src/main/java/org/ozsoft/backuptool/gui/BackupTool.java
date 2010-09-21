@@ -33,6 +33,7 @@ import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -304,9 +305,11 @@ public class BackupTool {
                     String name = dis.readUTF();
                     Project project = new Project(name);
                     int nofFolders = dis.readInt();
+                    Set<String> sourceFolders = new TreeSet<String>();
                     for (int j = 0; j < nofFolders; j++) {
-                        project.addSourceFolder(dis.readUTF());
+                        sourceFolders.add(dis.readUTF());
                     }
+                    project.setSourceFolders(sourceFolders);
                     project.setDestinationFolder(dis.readUTF());
                     project.readIndexFile();
                     projects.put(name, project);
@@ -359,14 +362,12 @@ public class BackupTool {
      * Creates a new project.
      */
     private void createProject() {
-        ProjectDialog dialog = new ProjectDialog(frame);
+        ProjectDialog dialog = new ProjectDialog(frame, false);
         if (dialog.show() == Dialog.OK) {
             // Create project.
             String name = dialog.getName();
             Project project = new Project(name);
-            for (String folder : dialog.getSourceFolders()) {
-                project.addSourceFolder(folder);
-            }
+            project.setSourceFolders(dialog.getSourceFolders());
             project.setDestinationFolder(dialog.getDestinationFolder());
             projects.put(name, project);
             writeProjects();
@@ -378,9 +379,18 @@ public class BackupTool {
      * Edits the selected project.
      */
     private void editProject() {
-        //TODO: Implement Edit Project.
-        JOptionPane.showMessageDialog(frame,
-                "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+        TreePath path = projectTree.getSelectionPath();
+        if (path != null) {
+            Project project = (Project) ((DefaultMutableTreeNode) path.getPathComponent(1)).getUserObject();
+            ProjectDialog dialog = new ProjectDialog(frame, true);
+            dialog.setName(project.getName());
+            dialog.setSourceFolders(project.getSourceFolders());
+            dialog.setDestinationFolder(project.getDestinationFolder());
+            if (dialog.show() == Dialog.OK) {
+                project.setSourceFolders(dialog.getSourceFolders());
+                writeProjects();
+            }
+        }
     }
     
     /**
@@ -398,18 +408,15 @@ public class BackupTool {
     private void createBackup() {
         TreePath path = projectTree.getSelectionPath();
         if (path != null) {
-            String name = path.getLastPathComponent().toString();
-            Project project = projects.get(name);
-            if (project != null) {
-                try {
-                    project.createBackup();
-                    updateProjectTree();
-                    JOptionPane.showMessageDialog(frame,
-                            "Backup created successfully.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
-                } catch (IOException e) {
-                    JOptionPane.showMessageDialog(frame,
-                            "Error creating backup: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            Project project = (Project) ((DefaultMutableTreeNode) path.getPathComponent(1)).getUserObject();
+            try {
+                project.createBackup();
+                updateProjectTree();
+                JOptionPane.showMessageDialog(frame,
+                        "Backup created successfully.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Error creating backup: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
