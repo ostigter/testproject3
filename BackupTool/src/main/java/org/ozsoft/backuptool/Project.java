@@ -160,7 +160,7 @@ public class Project {
     /**
      * Creates a new backup.
      */
-    public void createBackup() {
+    public void createBackup() throws IOException {
         if (sourceFolders.size() == 0) {
             throw new IllegalStateException("No source folders defined");
         }
@@ -210,13 +210,12 @@ public class Project {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error creating backup: " + e.getMessage());
             //TODO: Clean up failed backup.
+            throw e;
+        } finally {
+            closeArchiveFile();
+            writeIndexFile();
         }
-
-        closeArchiveFile();
-        
-        writeIndexFile();
     }
     
     /**
@@ -338,17 +337,70 @@ public class Project {
         
         writeIndexFile();
     }
-    
+
     /**
      * Compacts the archive file by deleting all file versions that are no
-     * longer references by any backup. <br />
+     * longer referenced by any backup. <br />
      * <br />
      * 
      * Calling this method after deleting backups or projects will likely reduce
-     * the disk usage of the archive file.
+     * the disk usage of the archive file. <br />
+     * <br />
+     * 
+     * Actually just rewrites the archive file from scratch, based on the
+     * existing file versions.
      */
-    public void compactArchive() {
-        //TODO: Implement CompactArchive.
+    public void compactArchive() throws IOException {
+        openArchiveFile();
+        String archivePath = String.format("%s/%s.dbx", destinationFolder, name);
+        String tmpArchivePath = archivePath + ".tmp";
+        File tmpArchiveFile = new File(tmpArchivePath);
+        OutputStream os = null;
+        try {
+            os = new BufferedOutputStream(new FileOutputStream(tmpArchiveFile));
+            byte[] buffer = new byte[BUFFER_SIZE];
+            long totalOffset = 0L;
+            for (BackupFile file : files.values()) {
+                long lastOffset = -1L;
+                for (BackupFileVersion version : file.getVersions()) {
+                    long offset = version.getOffset();
+                    if (offset != lastOffset) {
+                        archiveFile.seek(offset);
+                        long length = version.getLength();
+                        long read = 0L;
+                        long written = 0L;
+                        while ((read = archiveFile.read(buffer)) > 0) {
+                            if (written + read > length) {
+                                read = length - written;
+                            }
+                            os.write(buffer, 0, (int) read);
+                            written += read;
+                        }
+                        version.setOffset(totalOffset);
+                        totalOffset += length;
+                        lastOffset = offset;
+                    }
+                }
+            }
+            os.close();
+            closeArchiveFile();
+            
+            // Replace archive file with temp file.
+            File oldArchiveFile = new File(archivePath);
+            oldArchiveFile.delete();
+            tmpArchiveFile.renameTo(oldArchiveFile);
+            writeIndexFile();
+            
+        } finally {
+            if (os != null) {
+                try {
+                    os.close();
+                } catch (IOException e) {
+                    System.err.println("Could not close temporary archive file: " + e.getMessage());
+                }
+            }
+            closeArchiveFile();
+        }
     }
     
     /*

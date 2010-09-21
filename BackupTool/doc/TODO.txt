@@ -5,7 +5,5 @@ TODO
 - Restore Backup
 - View Backup (list directories, files and versions)
 - Restore File/Directory
-- Delete Backup
 - Delete Project
-- Compact Project
 - Scan Files for Changes
