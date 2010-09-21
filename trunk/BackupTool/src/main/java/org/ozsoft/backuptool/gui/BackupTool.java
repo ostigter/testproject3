@@ -401,9 +401,15 @@ public class BackupTool {
             String name = path.getLastPathComponent().toString();
             Project project = projects.get(name);
             if (project != null) {
-                project.createBackup();
-                updateProjectTree();
-                JOptionPane.showMessageDialog(frame, "Backup created successfully.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+                try {
+                    project.createBackup();
+                    updateProjectTree();
+                    JOptionPane.showMessageDialog(frame,
+                            "Backup created successfully.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(frame,
+                            "Error creating backup: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
@@ -428,7 +434,8 @@ public class BackupTool {
             try {
                 project.restoreBackup(backup.getId());
             } catch (IOException e) {
-                JOptionPane.showMessageDialog(frame, "Error restoring file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(frame,
+                        "Error restoring file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -456,9 +463,18 @@ public class BackupTool {
      * Compacts the project's archive file.
      */
     private void compactArchive() {
-        //TODO: Implement CompactArchive.
-        JOptionPane.showMessageDialog(
-                frame, "This functionality has not been implemented yet.", "BackupTool", JOptionPane.INFORMATION_MESSAGE);
+        TreePath path = projectTree.getSelectionPath();
+        if (path != null) {
+            Project project = (Project) ((DefaultMutableTreeNode) path.getPathComponent(1)).getUserObject();
+            try {
+                project.compactArchive();
+                JOptionPane.showMessageDialog(frame,
+                        "Archive file compacted successfully.", "Backup Tool", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(frame,
+                        "Error compacting archive file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
     
     /**

@@ -82,6 +82,16 @@ public class BackupFileVersion {
     }
     
     /**
+     * Sets the offset of the file inside the archive file.
+     * 
+     * @param offset
+     *            The offset.
+     */
+    public void setOffset(long offset) {
+        this.offset = offset;
+    }
+    
+    /**
      * Returns the file length.
      * 
      * @return The file length.
