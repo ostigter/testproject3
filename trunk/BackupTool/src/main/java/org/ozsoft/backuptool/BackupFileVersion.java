@@ -33,7 +33,7 @@ public class BackupFileVersion {
     private long offset;
     
     /** The file length in bytes. */
-    private long length;
+    private final long length;
     
     /**
      * Constructor.
