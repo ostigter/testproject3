@@ -17,6 +17,12 @@ public class Main {
 
         ontology.defineRelation("hasPart");
         ontology.defineRelation("isPartOf");
+
+        ontology.defineRelation("isProperty");
+        ontology.defineRelation("hasProperty");
+
+        ontology.defineRelation("isColor");
+        ontology.defineRelation("hasColor");
         
         // Concepts
         
@@ -24,7 +30,9 @@ public class Main {
         ontology.defineConcept("Car");
         ontology.defineConcept("Engine");
         ontology.defineConcept("MyCar");
-        
+        ontology.defineConcept("Property");
+        ontology.defineConcept("Color");
+        ontology.defineConcept("Red");
 
         // Concept relations
         
@@ -41,6 +49,12 @@ public class Main {
         ontology.defineRelation("MyCar", "isInstance");
         ontology.defineRelation("MyCar", "implements", "Car");
         ontology.defineRelation("Car", "isImplementedBy", "MyCar");
+        
+        ontology.defineRelation("Color", "isProperty");
+//        ontology.defineRelation("MyCar", "hasProperty", "Color", "Red");
+        
+        ontology.defineRelation("Red", "isColor");
+        ontology.defineRelation("MyCar", "hasColor", "Red");
     }
 
 }

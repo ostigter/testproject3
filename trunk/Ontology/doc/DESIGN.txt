@@ -2,6 +2,68 @@ Ontology
 ========
 
 
+Examples
+--------
+
+> isPerson(*)
+> isMale(isPerson)
+> isFemale(isPerson)
+> isMale DISJOINT isFemale
+> hasChildren(isPerson)
+> isFather(isMale)
+> isMother(isFemale)
+> isChild(isPerson)
+> isParent(isPerson)
+> parentOf(isParent, isChild) 
+> childOf(isChild, isParent)
+> childOf INVERSE parentOf
+> fatherOf(isFather, isChild)
+> hasFather(isChild, isFather)
+> hasFather INVERSE fatherOf
+> motherOf(isMother, isChild)
+> hasMother(isChild, isMother)
+> hasMother INVERSE motherOf
+
+> fatherOf(A, B)
+    ->
+        isFather(A)
+        isMale(A)
+        isPerson(A)
+        isChild(B)
+        isPerson(B)
+        fatherOf(A, B)
+        hasFather(B, A)
+        parentOf(A, B)
+        childOf(B, A)
+> isPerson?
+A
+B
+> A?
+isPerson(A)
+isMale(A)
+isParent(A)
+isFather(A)
+parentOf(A, B)
+fatherOf(A, B)
+> B?
+isPerson(B)
+isChild(B)
+childOf(B, A)
+hasParent(B, A)
+hasFather(B, A)
+> isMale?
+A
+> isFemale?
+> isParent?
+A
+> isFather?
+A
+> fatherOf(A)?
+B
+> childOf(B)?
+A
+
+
 Rules/relations
 ---------------
 
@@ -79,17 +141,22 @@ hasProperty(isClass, isProperty)
     hasProperty(Car, Color)
     hasProperty(Car, Mass)
     hasProperty(Car, Length)
-
+    
 isInstance
 
+    isInstance(MyCar)
     isInstanceOf(MyCar, Car)
 
-isInstanceOf(X, Y) -> isInstance(X) AND isClass(Y)
+instanceOf(X, Y) -> isInstance(X) AND isClass(Y)
 
-    isClass(Car)?      -> true
-    isInstance(Car)?   -> false
-    isClass(MyCar)?    -> false
-    isInstance(MyCar)? -> true
+    instanceOf(isInstance(), isClass())
+
+    isClass(Car)?           -> true
+    isInstance(Car)?        -> false
+    isClass(MyCar)?         -> false
+    isInstance(MyCar)?      -> true
+    instanceOf(MyCar, Car)? -> true
+    instanceOf(Car, MyCar)? -> false
 
 isPhysical DISJOINT isAbstract
 
@@ -111,8 +178,8 @@ hasColor(isInstance AND isPhysical, isColor)
 
 isClass(Vehicle)
 isClass(Car)
-isSubClassOf(Car, Vehicle)
-isSuperClassOf(Vehicle, Car)
+subClassOf(Car, Vehicle)
+superClassOf(Vehicle, Car)
 
 isInstance(MyCar)
 isInstanceOf(MyCar, Car)
@@ -173,3 +240,79 @@ Car extends Vehicle <--> Vehicle is-extended-by Car
     isClass
     isInstance
         inverse isExtendedBy
+
+> isClass
+> extends(isClass, isClass)
+> extendedBy(isClass, isClass)
+> extends INVERSE extendedBy
+> extends(Car, Vehicle)
+    ->
+        isClass(Car)
+        isClass(Vehicle)
+        extends(Car, Vehicle)
+        extendedBy(Vehicle, Car)
+       
+> isClass?
+Car
+Vehicle
+> extends(Car)?
+Vehicle
+> extendedBy(Vehicle)?
+Car
+       
+> isInstance
+> isInstance DISJOINT isClass
+> isInstance(MyCar)
+> instanceOf(isInstance, isClass)
+> instanceOf(MyCar, Car)
+> MyCar?
+isInstance(MyCar)
+instanceOf(MyCar, Car)
+> isInstance?
+MyCar
+> instanceOf(MyCar)?
+Car
+> hasInstance(isClass, isInstance)
+> hasInstance INVERSE instanceOf
+> hasInstance(Car)?
+MyCar
+
+> isColor(Red)
+> hasColor(isInstance, isColor)
+> hasColor(MyCar, Red)
+> Red?
+isColor(Red)
+hasColor(MyCar, Red)
+> MyCar?
+isInstance(MyCar)
+instanceOf(MyCar, Car)
+hasInstance(Car, MyCar)
+hasColor(MyCar, Red)
+
+> extends(Human, Animal)
+> instanceOf(Oscar, Human)
+> instanceOf(Oscar, Animal)?
+true
+
+> Oscar?
+isInstance(Oscar)
+instanceOf(Oscar, Human)
+> extends(Animal)?
+Human
+> Human?
+isClass(Human)
+extends(Human, Animal)
+instanceOf(Oscar, Human)
+> instanceOf(Oscar)?
+Human
+> instanceOf(Oscar, Human)?
+true
+> instanceOf TRANSATIVE
+> instanceOf(Oscar, Animal)?
+true
+
+> isDate
+> hasBirthDate(instanceOf(Animal), isDate)
+> hasBirthDate(Oscar, 1977-04-04)
+> isDate?
+isDate(1977-04-04)
