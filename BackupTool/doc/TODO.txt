@@ -2,7 +2,10 @@ TODO
 ====
 
 - Restore Backup
-- View Backup (list directories, files and versions)
+- View Backup (list files and versions)
 - Restore File/Directory
 - Delete Project
+- Compression
+- Use Java NIO
 - Scan Files for Changes
+- Progress bars
