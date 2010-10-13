@@ -136,7 +136,6 @@ public class BackupTool {
         rootMenu = new JPopupMenu();
         JMenuItem menuItem = new JMenuItem("Create Project...");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                createProject();
             } 
@@ -147,7 +146,6 @@ public class BackupTool {
         projectMenu = new JPopupMenu();
         menuItem = new JMenuItem("Create Backup...");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                createBackup();
             } 
@@ -156,7 +154,6 @@ public class BackupTool {
         projectMenu.addSeparator();
         menuItem = new JMenuItem("Edit Project...");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                editProject();
             } 
@@ -164,7 +161,6 @@ public class BackupTool {
         projectMenu.add(menuItem);
         menuItem = new JMenuItem("Delete Project");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                deleteProject();
             } 
@@ -173,7 +169,6 @@ public class BackupTool {
         projectMenu.addSeparator();
         menuItem = new JMenuItem("Compact Archive");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                compactArchive();
             } 
@@ -184,7 +179,6 @@ public class BackupTool {
         backupMenu = new JPopupMenu();
         menuItem = new JMenuItem("View Backup...");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                viewBackup();
             } 
@@ -192,7 +186,6 @@ public class BackupTool {
         backupMenu.add(menuItem);
         menuItem = new JMenuItem("Restore Backup...");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                restoreBackup();
             } 
@@ -201,7 +194,6 @@ public class BackupTool {
         backupMenu.addSeparator();
         menuItem = new JMenuItem("Delete Backup");
         menuItem.addActionListener(new ActionListener() {
-           @Override
             public void actionPerformed(ActionEvent e) {
                deleteBackup();
             } 
@@ -209,7 +201,6 @@ public class BackupTool {
         backupMenu.add(menuItem);
         
         projectTree.addMouseListener(new MouseAdapter() {
-            @Override
             public void mousePressed(MouseEvent e) {
                 showProjectTreeContextMenu(e);
             }
@@ -244,7 +235,6 @@ public class BackupTool {
      */
     private void updateProjectTree() {
         SwingUtilities.invokeLater(new Runnable() {
-            @Override
             public void run() {
                 projectsNode.removeAllChildren();
                 for (Project project : projects.values()) {

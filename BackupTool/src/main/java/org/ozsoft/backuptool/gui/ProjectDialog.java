@@ -165,7 +165,6 @@ public class ProjectDialog extends Dialog {
         addButton = new JButton("Add...");
         addButton.setPreferredSize(new Dimension(100, 25));
         addButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 addSourceFolder();
             }
@@ -184,7 +183,6 @@ public class ProjectDialog extends Dialog {
         removeButton = new JButton("Remove");
         removeButton.setPreferredSize(new Dimension(100, 25));
         removeButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 removeSourceFolder();
             }
@@ -243,7 +241,6 @@ public class ProjectDialog extends Dialog {
         browseButton = new JButton("Browse...");
         browseButton.setPreferredSize(new Dimension(100, 25));
         browseButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 browseDestFolder();
             }
@@ -275,7 +272,6 @@ public class ProjectDialog extends Dialog {
         okButton = new JButton("OK");
         okButton.setPreferredSize(new Dimension(100, 25));
         okButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 ok();
             }
@@ -294,7 +290,6 @@ public class ProjectDialog extends Dialog {
         cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(new Dimension(100, 25));
         cancelButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 cancel();
             }
