@@ -12,13 +12,13 @@ import trmi.RemoteSecurityManager;
  */
 public class Main {
 
-    private static final int REGISTRY_PORT = 1099;  // RMI Default
+    private static final int REGISTRY_PORT = 1099; // RMI Default
 
     public static void main(String[] args) {
-        new Main();
+        new Main().run();
     }
 
-    public Main() {
+    public void run() {
         try {
             LocateRegistry.createRegistry(REGISTRY_PORT);
 
@@ -31,6 +31,7 @@ public class Main {
             client.getGreeting();
 
             server.stop();
+            
         } catch (Exception e) {
             System.err.println(e);
         }

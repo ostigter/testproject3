@@ -10,9 +10,9 @@ public interface HelloServer {
     String SERVER_ID = "HelloServer";
 
     void start();
-    
+
     void stop();
-    
+
     String sayHello();
 
 }

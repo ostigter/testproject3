@@ -8,11 +8,11 @@ package trmi.test.remote;
 public interface HelloServer {
 
     String getName();
-	
-	void start();
-    
+
+    void start();
+
     void stop();
-    
+
     String sayHello();
 
 }

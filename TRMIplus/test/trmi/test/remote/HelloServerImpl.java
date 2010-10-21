@@ -11,82 +11,83 @@ import trmi.RemoteSecurityManager;
  * @author Oscar Stigter
  */
 public class HelloServerImpl implements HelloServer {
-    
-    private static final int REGISTRY_PORT = 1099;  // RMI default
-    
+
+    private static final int REGISTRY_PORT = 1099; // RMI default
+
     private static final String MESSAGE = "Hello World!";
     
-    private final String name;
-    
-    private boolean alive = true;
-    
-    private boolean running = false;
-    
-    public static void main(String[] args) {
-    	if (args.length != 1) {
-    		System.err.println("No process name specified!");
-    		System.exit(1);
-    	}
+    private static final long DELAY = 10L;
 
-    	new HelloServerImpl(args[0]);
+    private final String name;
+
+    private boolean alive = true;
+
+    private boolean running = false;
+
+    public static void main(String[] args) {
+        if (args.length != 1) {
+            System.err.println("No process name specified!");
+            System.exit(1);
+        }
+
+        new HelloServerImpl(args[0]);
     }
-    
+
     public HelloServerImpl(String name) {
-    	this.name = name;
-    	
-    	try {
-        	LocateRegistry.getRegistry(REGISTRY_PORT);
-        	
+        this.name = name;
+
+        try {
+            LocateRegistry.getRegistry(REGISTRY_PORT);
+
             RemoteSecurityManager.setup();
-            
-    		Naming.bind(name, this, new Class[] { HelloServer.class });
-    		
-        	System.out.println("Server '" + name + "': Created.");
-        	
-        	while (alive) {
-            	try {
-            		Thread.sleep(50);
-            	} catch (InterruptedException e) {
-            		// Ignore.
-            	}
-        	}
+
+            Naming.bind(name, this, new Class[] { HelloServer.class });
+
+            System.out.println("Server '" + name + "': Created.");
+
+            while (alive) {
+                try {
+                    Thread.sleep(DELAY);
+                } catch (InterruptedException e) {
+                    // Ignore.
+                }
+            }
 
             Naming.unbind(name);
-            
-        	System.out.println("Server '" + name + "': Destroyed.");
-    	} catch (Exception e) {
-    		System.err.println("ERROR: " + e);
-    	}
+
+            System.out.println("Server '" + name + "': Destroyed.");
+        } catch (Exception e) {
+            System.err.println("ERROR: " + e);
+        }
     }
-    
+
     public String getName() {
-    	return name;
+        return name;
     }
-    
+
     public void start() {
-    	if (!running) {
-    		running = true;
-	        System.out.println("Server: Started.");
-	        
-	        while (running) {
-	        	try {
-	        		Thread.sleep(50);
-	        	} catch (InterruptedException e) {
-	        		// Ignore.
-	        	}
-	        }
-	        
-	        System.out.println("Server: Stopped.");
-    	}
+        if (!running) {
+            running = true;
+            System.out.println("Server: Started.");
+
+            while (running) {
+                try {
+                    Thread.sleep(DELAY);
+                } catch (InterruptedException e) {
+                    // Ignore.
+                }
+            }
+
+            System.out.println("Server: Stopped.");
+        }
     }
-    
+
     public void stop() {
         if (running) {
-        	System.out.println("Server '" + name + "': Stopping...");
-        	running = false;
+            System.out.println("Server '" + name + "': Stopping...");
+            running = false;
         } else {
-            System.err.println(
-                    "WARNING: stop() called but server not running");
+            System.err.println("WARNING: stop() called but server not running");
         }
     }
 
