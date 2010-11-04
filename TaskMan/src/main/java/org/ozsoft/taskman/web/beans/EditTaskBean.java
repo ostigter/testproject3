@@ -17,36 +17,36 @@ import org.ozsoft.taskman.domain.Task;
 @SessionScoped
 public class EditTaskBean implements Serializable {
 
-	/** Serial version UID. */
-	private static final long serialVersionUID = -6860027446038205685L;
+    /** Serial version UID. */
+    private static final long serialVersionUID = -6860027446038205685L;
 
-	/** User bean. */
-	@ManagedProperty(value = "#{userBean}")
-	private UserBean userBean;
-	
-	/** Task being edited. */
-	private Task task;
-	
-	public void setUserBean(UserBean userBean) {
-		this.userBean = userBean;
-	}
-	
-	public Task getTask() {
-		return task;
-	}
-	
-	public void setTask(Task task) {
-		this.task = task;
-	}
-	
-	/**
-	 * Action for editing a task.
-	 * 
-	 * @return The navigate result.
-	 */
-	public String editTask() {
-		userBean.editTask(task);
-		return "list.xhtml";
-	}
+    /** User bean. */
+    @ManagedProperty(value = "#{userBean}")
+    private UserBean userBean;
+
+    /** Task being edited. */
+    private Task task;
+
+    public void setUserBean(UserBean userBean) {
+        this.userBean = userBean;
+    }
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
+    /**
+     * Action for editing a task.
+     * 
+     * @return The navigate result.
+     */
+    public String editTask() {
+        userBean.editTask(task);
+        return "list.xhtml";
+    }
 
 }

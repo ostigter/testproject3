@@ -26,159 +26,157 @@ import org.ozsoft.taskman.services.UserService;
 @ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {
-	
-	/** Log. */
-	private static final Logger LOG = Logger.getLogger(UserBean.class);
 
-	/** Serial version UID. */
-	private static final long serialVersionUID = -8153487303544698528L;
+    /** Log. */
+    private static final Logger LOG = Logger.getLogger(UserBean.class);
 
-	/** User service. */
-	@ManagedProperty(value = "#{userService}")
-	private UserService userService;
+    /** Serial version UID. */
+    private static final long serialVersionUID = -8153487303544698528L;
 
-	/** Logged in user. */
-	private User user;
+    /** User service. */
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
 
-	/** Username. */
-	private String username;
+    /** Logged in user. */
+    private User user;
 
-	/** Password. */
-	private String password;
+    /** Username. */
+    private String username;
 
-	/** Password (again). */
-	private String passwordAgain;
-	
-	/** Whether to show completed tasks. */
-	private boolean showCompleted;
+    /** Password. */
+    private String password;
 
-	public UserService getUserService() {
-		return userService;
-	}
+    /** Password (again). */
+    private String passwordAgain;
 
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+    /** Whether to show completed tasks. */
+    private boolean showCompleted;
 
-	public String getUsername() {
-		return username;
-	}
+    public UserService getUserService() {
+        return userService;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getPasswordAgain() {
-		return passwordAgain;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPasswordAgain(String passwordAgain) {
-		this.passwordAgain = passwordAgain;
-	}
-	
-	public boolean getShowCompleted() {
-		return showCompleted;
-	}
-	
-	public void setShowCompleted(boolean showCompleted) {
-		this.showCompleted = showCompleted;
-	}
-	
-	public List<Task> getTasks() {
-		List<Task> filteredTasks = new LinkedList<Task>();
-		List<Task> tasks = user.getTasks();
-		if (tasks != null && tasks.size() > 0) {
-			for (Task task : user.getTasks()) {
-				if (showCompleted || task.getStatus() != Status.COMPLETED) {
-					filteredTasks.add(task);
-				}
-			}
-		}
-		return filteredTasks;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public String doCreateAccount() {
-		String action = null;
-		FacesContext fc = FacesContext.getCurrentInstance();
-		if (password.equals(passwordAgain)) {
-			prepareUser();
-			userService.create(user);
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"The new account has been created successfully.", null));
-			action = doLogIn();
-		} else {
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Both passwords are not identical.", null));
-		}
-		return action;
-	}
+    public String getPasswordAgain() {
+        return passwordAgain;
+    }
 
-	public String doLogIn() {
-		String action = null;
-		if (userService.checkCredentials(username, password)) {
-			user = userService.retrieve(username);
-			getSession(true).setAttribute("username", username);
-//			LOG.debug(String.format("Logged in user '%s'", user.getUsername()));
-			action = "home.jsf";
-		} else {
-			LOG.debug(String.format("Failed login attempt for user '%s'", username));
-			FacesContext fc = FacesContext.getCurrentInstance();
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Invalid username/password combination", null));
-			clearUser();
-		}
-		return action;
-	}
+    public void setPasswordAgain(String passwordAgain) {
+        this.passwordAgain = passwordAgain;
+    }
 
-	public String doLogOut() {
-//		LOG.debug(String.format("Logged out user '%s'", username));
-		clearUser();
-		return "home.jsf";
-	}
+    public boolean getShowCompleted() {
+        return showCompleted;
+    }
 
-	public User getUser() {
-		return user;
-	}
+    public void setShowCompleted(boolean showCompleted) {
+        this.showCompleted = showCompleted;
+    }
 
-	public void createTask(Task task) {
-		if (user == null) {
-			throw new IllegalStateException("No logged in user");
-		}
-		user.addTask(task);
-		userService.update(user);
-	}
+    public List<Task> getTasks() {
+        List<Task> filteredTasks = new LinkedList<Task>();
+        List<Task> tasks = user.getTasks();
+        if (tasks != null && tasks.size() > 0) {
+            for (Task task : user.getTasks()) {
+                if (showCompleted || task.getStatus() != Status.COMPLETED) {
+                    filteredTasks.add(task);
+                }
+            }
+        }
+        return filteredTasks;
+    }
 
-	public void editTask(Task task) {
-		if (user == null) {
-			throw new IllegalStateException("No logged in user");
-		}
-		userService.update(user);
-	}
+    public String doCreateAccount() {
+        String action = null;
+        FacesContext fc = FacesContext.getCurrentInstance();
+        if (password.equals(passwordAgain)) {
+            prepareUser();
+            userService.create(user);
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The new account has been created successfully.", null));
+            action = doLogIn();
+        } else {
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Both passwords are not identical.", null));
+        }
+        return action;
+    }
 
-	private void prepareUser() {
-		user = new User();
-		user.setUsername(username);
-		user.setPassword(password);
-	}
+    public String doLogIn() {
+        String action = null;
+        if (userService.checkCredentials(username, password)) {
+            user = userService.retrieve(username);
+            getSession(true).setAttribute("username", username);
+            // LOG.debug(String.format("Logged in user '%s'",
+            // user.getUsername()));
+            action = "home.jsf";
+        } else {
+            LOG.debug(String.format("Failed login attempt for user '%s'", username));
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid username/password combination", null));
+            clearUser();
+        }
+        return action;
+    }
 
-	private void clearUser() {
-		user = null;
-		username = null;
-		password = null;
-		getSession(false).invalidate();
-	}
-	
-	private HttpSession getSession(boolean create) {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		return (HttpSession) facesContext.getExternalContext().getSession(create);
-	}
+    public String doLogOut() {
+        // LOG.debug(String.format("Logged out user '%s'", username));
+        clearUser();
+        return "home.jsf";
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void createTask(Task task) {
+        if (user == null) {
+            throw new IllegalStateException("No logged in user");
+        }
+        user.addTask(task);
+        userService.update(user);
+    }
+
+    public void editTask(Task task) {
+        if (user == null) {
+            throw new IllegalStateException("No logged in user");
+        }
+        userService.update(user);
+    }
+
+    private void prepareUser() {
+        user = new User();
+        user.setUsername(username);
+        user.setPassword(password);
+    }
+
+    private void clearUser() {
+        user = null;
+        username = null;
+        password = null;
+        getSession(false).invalidate();
+    }
+
+    private HttpSession getSession(boolean create) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        return (HttpSession) facesContext.getExternalContext().getSession(create);
+    }
 
 }

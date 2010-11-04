@@ -7,37 +7,37 @@ package org.ozsoft.taskman.domain;
  */
 public enum Status {
 
-	/** Open. */
-	OPEN("Open"),
+    /** Open. */
+    OPEN("Open"),
 
-	/** In progress. */
-	IN_PROGRESS("In Progress"),
+    /** In progress. */
+    IN_PROGRESS("In Progress"),
 
-	/** Completed. */
-	COMPLETED("Completed"),
+    /** Completed. */
+    COMPLETED("Completed"),
 
-	;
+    ;
 
-	/** Name. */
-	private final String name;
+    /** Name. */
+    private final String name;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param name
-	 *            The name.
-	 */
-	Status(String name) {
-		this.name = name;
-	}
+    /**
+     * Constructor.
+     * 
+     * @param name
+     *            The name.
+     */
+    Status(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Returns the name.
-	 * 
-	 * @return The name.
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     * Returns the name.
+     * 
+     * @return The name.
+     */
+    public String getName() {
+        return name;
+    }
 
 }
