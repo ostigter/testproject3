@@ -5,22 +5,32 @@
 
     <groupId>org.ozsoft</groupId>
     <artifactId>taskman</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>TaskMan</name>
     <description>Example web application with JSF 2.0 to manage tasks</description>
-
+    <inceptionYear>2010</inceptionYear>
     <developers>
         <developer>
             <name>Oscar Stigter</name>
             <email>oscar.stigter@gmail.com</email>
-            <roles>
-                <role>Architect</role>
-                <role>Developer</role>
-            </roles>
         </developer>
     </developers>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jsf-version>2.1.0-SNAPSHOT</jsf-version>
+        <servlet-version>2.5</servlet-version>
+        <jpa-version>1.0</jpa-version>
+        <hibernate-version>3.4.0.GA</hibernate-version>
+        <postgresql-version>9.0-801.jdbc4</postgresql-version>
+        <hsqldb-version>1.8.0.10</hsqldb-version>
+        <c3p0-version>0.9.1.2</c3p0-version>
+        <log4j-version>1.2.14</log4j-version>
+        <slf4j-version>1.4.2</slf4j-version>
+        <junit-version>4.7</junit-version>
+    </properties>
 
     <dependencies>
 
@@ -28,19 +38,19 @@
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-api</artifactId>
-            <version>2.0.2</version>
+            <version>${jsf-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-impl</artifactId>
-            <version>2.0.2</version>
+            <version>${jsf-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <version>${servlet-version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -48,19 +58,19 @@
         <dependency>
             <groupId>javax.persistence</groupId>
             <artifactId>persistence-api</artifactId>
-            <version>1.0</version>
+            <version>${jpa-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>3.4.0.GA</version>
+            <version>${hibernate-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
+            <version>${c3p0-version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -68,7 +78,7 @@
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>8.4-701.jdbc4</version>
+            <version>${postgresql-version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -76,13 +86,13 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.14</version>
+            <version>${log4j-version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.4.2</version>
+            <version>${slf4j-version}</version>
             <scope>compile</scope>
         </dependency>
 
@@ -90,34 +100,32 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
+            <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
-            <version>1.8.0.10</version>
+            <version>${hsqldb-version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <repositories>
         <repository>
-            <id>maven2-repository.dev.java.net</id>
-            <name>java.net Maven2 repository</name>
+            <id>dev.java.net</id> <!-- Mojarra -->
+            <name>dev.java.net Maven2 repository</name>
             <url>http://download.java.net/maven/2</url>
         </repository>
     </repositories>
 
     <build>
-        <finalName>taskman</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <compilerVersion>6</compilerVersion>
                 </configuration>
             </plugin>
             <plugin>

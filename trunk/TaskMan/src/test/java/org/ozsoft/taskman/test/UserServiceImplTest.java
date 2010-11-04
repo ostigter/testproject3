@@ -18,8 +18,11 @@ import org.ozsoft.taskman.services.UserServiceImpl;
  */
 public class UserServiceImplTest {
 
+    /**
+     * Tests the user management.
+     */
     @Test
-    public void persistence() throws Exception {
+    public void persistence() {
         UserService userService = new UserServiceImpl();
 
         // Create user.
