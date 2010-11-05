@@ -12,16 +12,16 @@ import org.apache.log4j.Logger;
 @ManagedBean(name = "propertyService", eager = true)
 @ApplicationScoped
 public class PropertyServiceImpl implements PropertyService {
-    
+
     /** Properties file. */
     private static final String PROPERTIES_FILE = "/application.properties";
-    
+
     /** Log. */
     private static final Logger LOG = Logger.getLogger(PropertyServiceImpl.class);
 
     /** Properties. */
     private final Properties properties;
-    
+
     /**
      * Constructor.
      */
@@ -41,16 +41,17 @@ public class PropertyServiceImpl implements PropertyService {
 
     /*
      * (non-Javadoc)
+     * 
      * @see sr.projectx.services.PropertyService#getProperty(java.lang.String)
      */
     @Override
     public String getProperty(String key) {
-		String value = properties.getProperty(key);
-		if (value == null) {
-			String msg = String.format("Application property with key '%s' not found", key);
-			LOG.error(msg);
-		}
-		return value;
+        String value = properties.getProperty(key);
+        if (value == null) {
+            String msg = String.format("Application property with key '%s' not found", key);
+            LOG.error(msg);
+        }
+        return value;
     }
 
 }

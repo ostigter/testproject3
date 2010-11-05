@@ -29,81 +29,81 @@ import sr.projectx.services.UserService;
 @ManagedBean
 @SessionScoped
 public class UserBean implements Serializable {
-	
-	/** Serial version UID. */
-	private static final long serialVersionUID = -8153487303544698528L;
+
+    /** Serial version UID. */
+    private static final long serialVersionUID = -8153487303544698528L;
 
     /** Log. */
     private static final Logger LOG = Logger.getLogger(UserBean.class);
 
-	/** Log service. */
-	@ManagedProperty(value = "#{logService}")
-	private LogService logService;
+    /** Log service. */
+    @ManagedProperty(value = "#{logService}")
+    private LogService logService;
 
-	/** User service. */
-	@ManagedProperty(value = "#{userService}")
-	private UserService userService;
+    /** User service. */
+    @ManagedProperty(value = "#{userService}")
+    private UserService userService;
 
-	/** Logged in user. */
-	private User user;
+    /** Logged in user. */
+    private User user;
 
-	/** Username. */
-	private String username;
+    /** Username. */
+    private String username;
 
-	/** Password. */
-	private String password;
+    /** Password. */
+    private String password;
 
     /** Password (again). */
     private String passwordAgain;
-    
+
     /** New password. */
     private String newPassword;
 
     /** Email. */
     private String email;
 
-	/**
-	 * Constructor.
-	 */
-	public UserBean() {
-		// Empty implementation.
-	}
-	
-	/**
-	 * Sets the Log service.
-	 * 
-	 * @param ogService
-	 *            The Log service.
-	 */
-	public void setLogService(LogService logService) {
-		this.logService = logService;
-	}
+    /**
+     * Constructor.
+     */
+    public UserBean() {
+        // Empty implementation.
+    }
 
-	/**
-	 * Sets the User service.
-	 * 
-	 * @param userService
-	 *            The User service.
-	 */
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
+    /**
+     * Sets the Log service.
+     * 
+     * @param ogService
+     *            The Log service.
+     */
+    public void setLogService(LogService logService) {
+        this.logService = logService;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    /**
+     * Sets the User service.
+     * 
+     * @param userService
+     *            The User service.
+     */
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public String getNewPassword() {
         return newPassword;
@@ -112,15 +112,15 @@ public class UserBean implements Serializable {
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
     }
-    
-	public String getPasswordAgain() {
-		return passwordAgain;
-	}
 
-	public void setPasswordAgain(String passwordAgain) {
-		this.passwordAgain = passwordAgain;
-	}
-	
+    public String getPasswordAgain() {
+        return passwordAgain;
+    }
+
+    public void setPasswordAgain(String passwordAgain) {
+        this.passwordAgain = passwordAgain;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -135,42 +135,42 @@ public class UserBean implements Serializable {
      * @return The navigation result.
      */
     public String doLogIn() {
-		String action = null;
-		String hashedPassword = DigestUtils.shaHex(password);
-		if (userService.checkCredentials(username, hashedPassword)) {
-			user = userService.retrieve(username);
-			user.updateLastLogin();
-			userService.update(user);
-			logAccess(user);
-			getSession(true).setAttribute("username", username);
-			action = "home.jsf";
-		} else {
-//			LOG.debug(String.format("Failed login attempt for user '%s'", username));
-			FacesContext fc = FacesContext.getCurrentInstance();
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-			        "Invalid username/password combination.", null));
-			clearUser();
-		}
-		return action;
-	}
+        String action = null;
+        String hashedPassword = DigestUtils.shaHex(password);
+        if (userService.checkCredentials(username, hashedPassword)) {
+            user = userService.retrieve(username);
+            user.updateLastLogin();
+            userService.update(user);
+            logAccess(user);
+            getSession(true).setAttribute("username", username);
+            action = "home.jsf";
+        } else {
+            // LOG.debug(String.format("Failed login attempt for user '%s'",
+            // username));
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid username/password combination.", null));
+            clearUser();
+        }
+        return action;
+    }
 
     /**
      * Logs out the current user.
      * 
      * @return The navigation result.
      */
-	public String doLogOut() {
-//		LOG.debug(String.format("Logged out user '%s'", username));
-		clearUser();
-		return "home.jsf";
-	}
+    public String doLogOut() {
+        // LOG.debug(String.format("Logged out user '%s'", username));
+        clearUser();
+        return "home.jsf";
+    }
 
     /**
      * Creates a new user account (Create Account page).
      * 
      * @return The navigation result.
      */
-	public String doCreateAccount() {
+    public String doCreateAccount() {
         String action = null;
         FacesContext fc = FacesContext.getCurrentInstance();
         if (password.equals(passwordAgain)) {
@@ -182,17 +182,15 @@ public class UserBean implements Serializable {
                 userService.create(user);
                 action = doLogIn();
             } catch (Exception e) {
-                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "An error occurred while creating the user.", null));
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error occurred while creating the user.", null));
                 clearUser();
             }
         } else {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Both passwords are not identical.", null));
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Both passwords are not identical.", null));
         }
         return action;
     }
-    
+
     /**
      * Saves updates to the user account (Edit Account page).
      * 
@@ -207,62 +205,58 @@ public class UserBean implements Serializable {
                 user.setPassword(DigestUtils.shaHex(newPassword));
                 try {
                     userService.update(user);
-                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
-                            "Modifications have been saved.", null));
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Modifications have been saved.", null));
                     logService.info("Account modified by user '%s' (%s)", username, user.getEmail());
                 } catch (PersistenceException e) {
-                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "An error occurred while updating the password.", null));
+                    fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error occurred while updating the password.", null));
                 }
             } else {
-                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Incorrect old password.", null));
+                fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect old password.", null));
             }
         } else {
-            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Both new passwords are not identical.", null));
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Both new passwords are not identical.", null));
         }
         return action;
     }
 
-	public User getUser() {
-		return user;
-	}
+    public User getUser() {
+        return user;
+    }
 
-	private void clearUser() {
-		user = null;
-		username = null;
-		password = null;
-		email = null;
-		getSession(false).invalidate();
-	}
-	
-	private void logAccess(User user) {
-		String address = null;
-		String hostname = null;
-		InetAddress remoteAddress = getRemoteAddress();
-		if (remoteAddress != null) {
-			address = remoteAddress.getHostAddress();
-			hostname = remoteAddress.getCanonicalHostName();
-		}
-		logService.logAccess(user, address, hostname);
-	}
-	
-	private static HttpSession getSession(boolean create) {
-		FacesContext facesContext = FacesContext.getCurrentInstance();
-		return (HttpSession) facesContext.getExternalContext().getSession(create);
-	}
-	
-	private static InetAddress getRemoteAddress() {
-		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-		String remoteHost = request.getRemoteHost();
-		InetAddress address = null;
-		try {
-			address = InetAddress.getByName(remoteHost);
-		} catch (UnknownHostException e) {
-			LOG.error(String.format("Could not resolve IP address and/or hostname for remote host '%s' ", remoteHost), e);
-		}
-		return address;
-	}
+    private void clearUser() {
+        user = null;
+        username = null;
+        password = null;
+        email = null;
+        getSession(false).invalidate();
+    }
+
+    private void logAccess(User user) {
+        String address = null;
+        String hostname = null;
+        InetAddress remoteAddress = getRemoteAddress();
+        if (remoteAddress != null) {
+            address = remoteAddress.getHostAddress();
+            hostname = remoteAddress.getCanonicalHostName();
+        }
+        logService.logAccess(user, address, hostname);
+    }
+
+    private static HttpSession getSession(boolean create) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        return (HttpSession) facesContext.getExternalContext().getSession(create);
+    }
+
+    private static InetAddress getRemoteAddress() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String remoteHost = request.getRemoteHost();
+        InetAddress address = null;
+        try {
+            address = InetAddress.getByName(remoteHost);
+        } catch (UnknownHostException e) {
+            LOG.error(String.format("Could not resolve IP address and/or hostname for remote host '%s' ", remoteHost), e);
+        }
+        return address;
+    }
 
 }

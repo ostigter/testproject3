@@ -29,18 +29,20 @@ public class LogServiceImpl implements LogService {
 
     /** Entity manager. */
     private final EntityManager em;
-    
+
     /**
      * Constructor.
      */
     public LogServiceImpl() {
-    	em = PersistenceService.getEntityManager();
-    	info("Application started");
+        em = PersistenceService.getEntityManager();
+        info("Application started");
     }
-    
+
     /*
      * (non-Javadoc)
-     * @see sr.projectx.services.LogService#fatal(java.lang.String, java.lang.Object[])
+     * 
+     * @see sr.projectx.services.LogService#fatal(java.lang.String,
+     * java.lang.Object[])
      */
     @Override
     public void fatal(String message, Object... args) {
@@ -49,7 +51,9 @@ public class LogServiceImpl implements LogService {
 
     /*
      * (non-Javadoc)
-     * @see sr.projectx.services.LogService#error(java.lang.String, java.lang.Object[])
+     * 
+     * @see sr.projectx.services.LogService#error(java.lang.String,
+     * java.lang.Object[])
      */
     @Override
     public void error(String message, Object... args) {
@@ -58,16 +62,20 @@ public class LogServiceImpl implements LogService {
 
     /*
      * (non-Javadoc)
-     * @see sr.projectx.services.LogService#warn(java.lang.String, java.lang.Object[])
+     * 
+     * @see sr.projectx.services.LogService#warn(java.lang.String,
+     * java.lang.Object[])
      */
     @Override
     public void warn(String message, Object... args) {
         log(LogLevel.WARN, message, args);
     }
-    
+
     /*
      * (non-Javadoc)
-     * @see sr.projectx.services.LogService#info(java.lang.String, java.lang.Object[])
+     * 
+     * @see sr.projectx.services.LogService#info(java.lang.String,
+     * java.lang.Object[])
      */
     @Override
     public void info(String message, Object... args) {
@@ -76,7 +84,9 @@ public class LogServiceImpl implements LogService {
 
     /*
      * (non-Javadoc)
-     * @see sr.projectx.services.LogService#debug(java.lang.String, java.lang.Object[])
+     * 
+     * @see sr.projectx.services.LogService#debug(java.lang.String,
+     * java.lang.Object[])
      */
     @Override
     public void debug(String message, Object... args) {
@@ -85,7 +95,9 @@ public class LogServiceImpl implements LogService {
 
     /*
      * (non-Javadoc)
-     * @see sr.projectx.services.LogService#trace(java.lang.String, java.lang.Object[])
+     * 
+     * @see sr.projectx.services.LogService#trace(java.lang.String,
+     * java.lang.Object[])
      */
     @Override
     public void trace(String message, Object... args) {
@@ -94,15 +106,17 @@ public class LogServiceImpl implements LogService {
 
     /*
      * (non-Javadoc)
-     * @see sr.projectx.services.LogService#access(sr.projectx.entities.User, java.lang.String, java.lang.String)
+     * 
+     * @see sr.projectx.services.LogService#access(sr.projectx.entities.User,
+     * java.lang.String, java.lang.String)
      */
     @Override
-	public void logAccess(User user, String address, String hostname) {
-    	AccessLogEntry entry = new AccessLogEntry();
-    	entry.setDate(new Date());
-    	entry.setUser(user);
-    	entry.setAddress(address);
-    	entry.setHostname(hostname);
+    public void logAccess(User user, String address, String hostname) {
+        AccessLogEntry entry = new AccessLogEntry();
+        entry.setDate(new Date());
+        entry.setUser(user);
+        entry.setAddress(address);
+        entry.setHostname(hostname);
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
@@ -114,7 +128,7 @@ public class LogServiceImpl implements LogService {
             LOG.error(msg, e);
             throw new PersistenceException(msg, e);
         }
-	}
+    }
 
     /**
      * Logs a log message.

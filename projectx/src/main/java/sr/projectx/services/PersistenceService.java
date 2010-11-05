@@ -11,29 +11,29 @@ import javax.persistence.Persistence;
  */
 public class PersistenceService {
 
-	/** Persistency unit name. */
-	private static final String PU_NAME = "projectx";
+    /** Persistency unit name. */
+    private static final String PU_NAME = "projectx";
 
-	/** Entity manager. */
-	private static final EntityManager entityManager;
-	
-	/**
-	 * Static initializer.
-	 * 
-	 * Creates the entity manager.
-	 */
-	static {
-		EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
-		entityManager = emf.createEntityManager();
-	}
+    /** Entity manager. */
+    private static final EntityManager entityManager;
 
-	/**
-	 * Returns the entity manager.
-	 * 
-	 * @return The entity manager.
-	 */
-	public static EntityManager getEntityManager() {
-		return entityManager;
-	}
+    /**
+     * Static initializer.
+     * 
+     * Creates the entity manager.
+     */
+    static {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
+        entityManager = emf.createEntityManager();
+    }
+
+    /**
+     * Returns the entity manager.
+     * 
+     * @return The entity manager.
+     */
+    public static EntityManager getEntityManager() {
+        return entityManager;
+    }
 
 }
