@@ -52,7 +52,7 @@ Industrial products
 -------------------
 
 CPU                    Silica
-Car body               Silica (Glass), Oil (Plastic), Coal + Iron (Steal)
+Car body               Glass, Plastic, Steel
 Citric acid            Lemon
 Coconut oil            Coconut
 Corn syrup             Corn
@@ -69,7 +69,7 @@ Silicon                Silica
 Steel                  Coal, Iron
 Textiles               Cotton
 Wheat germ oil         Wheat
-Wheel and tire         Rubber, Coal, Iron (Steel)
+Wheel and tire         Rubber, Steel
 
 
 Consumer products

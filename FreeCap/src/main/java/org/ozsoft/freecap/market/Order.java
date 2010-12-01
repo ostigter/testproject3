@@ -1,4 +1,4 @@
-package org.ozsoft.freecap;
+package org.ozsoft.freecap.market;
 
 public class Order {
     

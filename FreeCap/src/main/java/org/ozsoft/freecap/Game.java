@@ -30,13 +30,12 @@ public class Game implements GameListener {
         Product wheat = products.get("Wheat");
         City smallville = cities.get("Smallville");
         Factory wheatFarm = new Factory("Wheat farm 1", wheat, ozCorp, smallville);
-        ozCorp.addEnterprise(wheatFarm);
+        ozCorp.addBusiness(wheatFarm);
         
         System.out.println("Enterprise: " + wheatFarm.getName());
         System.out.println("Company:    " + wheatFarm.getCompany());
         System.out.println("City:       " + wheatFarm.getCity());
         System.out.println("Produces:   " + wheatFarm.getProduct());
-        System.out.println("Level:      " + wheatFarm.getLevel());
         System.out.println("Production: " + wheatFarm.getProduction());
         System.out.println("Inventory:  " + wheatFarm.getInventoryItem(wheat));
         
@@ -64,10 +63,16 @@ public class Game implements GameListener {
     }
     
     private void initProducts() {
-        Product wheat = new Product("Wheat", null, 100);
+        Product wheat = new Product("Wheat", ProductLevel.RAW, 100);
         products.put(wheat.getName(), wheat);
-        Product flour = new Product("Flour", wheat, 100);
+
+        Product flour = new Product("Flour", ProductLevel.SEMI, 100);
+        flour.addIngredient(wheat, 1);
         products.put(flour.getName(), flour);
+        
+        Product bread = new Product("Bread", ProductLevel.CONSUMER, 100);
+        flour.addIngredient(flour, 1);
+        products.put(bread.getName(), bread);
     }
     
     private void initCities() {

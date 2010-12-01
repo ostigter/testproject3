@@ -1,16 +1,22 @@
 package org.ozsoft.freecap;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Product {
     
     private final String name;
     
-    private final Product ingredient;
+    private final ProductLevel level;
     
-    private final int baseProduction; 
+    private final Map<Product, Integer> ingredients;
     
-    public Product(String name, Product ingredient, int baseProduction) {
+    private final int baseProduction;
+    
+    public Product(String name, ProductLevel level, int baseProduction) {
         this.name = name;
-        this.ingredient = ingredient;
+        this.level = level;
+        this.ingredients = new HashMap<Product, Integer>();
         this.baseProduction = baseProduction;
     }
     
@@ -18,16 +24,16 @@ public class Product {
         return name;
     }
     
-    public Product getIngredient() {
-        return ingredient;
+    public ProductLevel getLevel() {
+        return level;
     }
     
-    public int getLevel() {
-        int level = 1;
-        if (ingredient != null) {
-            level += ingredient.getLevel();
-        }
-        return level;
+    public Map<Product, Integer> getIngredients() {
+        return ingredients;
+    }
+    
+    public void addIngredient(Product product, int amount) {
+        ingredients.put(product, amount);
     }
     
     public int getBaseProduction() {

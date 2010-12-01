@@ -1,16 +1,12 @@
 package org.ozsoft.freecap;
 
-public class Factory extends Enterprise {
+public class Factory extends Business {
     
     private int production;
     
     public Factory(String name, Product product, Company company, City city) {
         super(name, product, company, city);
         production = product.getBaseProduction();
-    }
-    
-    public int getLevel() {
-        return product.getLevel();
     }
     
     public int getProduction() {

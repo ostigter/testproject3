@@ -103,7 +103,7 @@ supplier
     local supplier
     seaport (import)
     distance
-    freight costs
+        freight costs
 
 farm
 	wheat farm (wheat)
