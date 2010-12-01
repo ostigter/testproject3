@@ -7,23 +7,23 @@ public class Company implements GameListener {
     
     private final String name;
     
-    private final Map<String, Enterprise> enterprises;
+    private final Map<String, Business> businesses;
     
     public Company(String name) {
         this.name = name;
-        enterprises = new HashMap<String, Enterprise>();
+        businesses = new HashMap<String, Business>();
     }
     
     public String getName() {
         return name;
     }
     
-    public void addEnterprise(Enterprise enterprise) {
-        enterprises.put(enterprise.getName(), enterprise);
+    public void addBusiness(Business business) {
+        businesses.put(business.getName(), business);
     }
     
-    public Enterprise getEnterprise(String name) {
-        return enterprises.get(name);
+    public Business getBusiness(String name) {
+        return businesses.get(name);
     }
     
     @Override
@@ -34,8 +34,8 @@ public class Company implements GameListener {
     @Override
     public void doNextTurn() {
         System.out.println(name + ": Processing next turn");
-        for (Enterprise enterprise : enterprises.values()) {
-            enterprise.doNextTurn();
+        for (Business business : businesses.values()) {
+            business.doNextTurn();
         }
     }
 

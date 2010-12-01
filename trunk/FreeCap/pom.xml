@@ -10,16 +10,12 @@
     <packaging>war</packaging>
 
     <name>FreeCap</name>
-    <description>A free, online business game based on Capitalism II</description>
-
+    <description>A free, online business game based on Capitalism 2</description>
+    <inceptionYear>2010</inceptionYear>
     <developers>
         <developer>
             <name>Oscar Stigter</name>
             <email>oscar.stigter@gmail.com</email>
-            <roles>
-                <role>Architect</role>
-                <role>Developer</role>
-            </roles>
         </developer>
     </developers>
 
@@ -40,19 +36,25 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <compilerVersion>6</compilerVersion>
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
                 <version>2.8</version>
                 <configuration>
                     <wtpversion>2.0</wtpversion>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
             </plugin>
         </plugins>
     </build>

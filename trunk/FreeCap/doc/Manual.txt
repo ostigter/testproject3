@@ -1,0 +1,80 @@
+FreeCap manual
+==============
+
+
+Summary
+
+FreeCap is an online business simulation game, where the player builds up his
+own company from the ground, to a multi-billion corporation consisting of many
+businesses in possibly many product areas. The game simulates supply and
+demand per city for a large number of products. The player can try his hand at
+mining, farming, manufacturing, retail and research by building farms, mines,
+factories, retail stores and R&D centers respectively. The game is turn-based,
+with each turn representing a single game week.
+
+
+Company
+
+The player acts as the CEO of his company, consisting of many individual
+businesses. Each business is responsible for its own result, and all businesses
+contribute to the overall company's result.
+
+
+Products
+
+Products are divided into three categories:
+- raw products (e.g. wheat, silica, oil)
+- semi products (e.g. flour, glass, plastics)
+- consumer products (e.g. bread, bottled milk, dolls)
+Raw products are produced by mines and farms. Semi and consumer products are
+produced in factories. Consumer products are sold in stores. 
+
+
+Businesses
+
+A business can be either a mine, farm, factory, retail store or R&D center.
+Businesses can (depending on the type) buy products from or sell them to other
+businesses, which may belong to the same company or belong to competing
+companies. These transactions are initiated by the buying business, which
+places a (continuing) order at the selling business. These orders will be
+processed every turn (as long as the seller has enough products in stock). Both
+the seller and the buyer can cancel an order at any time.
+
+
+Mines
+
+A mine produces raw products from the earth's natural resources, like iron,
+coal and oil. Each mine has a fixed quantity of its product and thus will
+eventually be depleted.
+
+
+Farms
+
+A farm produces raw products from crops or lifestock, dividing farms in crop
+farms and lifestock farms. A crop farm produces raw products like wheat, sugar,
+cotton and rubber. A lifestock farm primarily produces the lifestock itself
+(e.g. chickens, cows, pigs) and secondarily any produces from these lifestock
+(e.g. eggs, milk, beef, pork, leather).
+
+
+Factories
+
+A factory takes one or more raw or semi products and manufactures them into
+(other) semi or consumer products. Factories can be chained to produce even
+more complex products.
+
+
+Stores
+
+A store sells consumer products to a city's local consumers. The demand depends
+on many factors, including the product price, quality, brand and necessity
+level, competition, whealth and economic situation.
+
+
+Cities
+
+Each business is located in a specific city. Each city has its own population
+demographics, determining the demand in local stores. A city can contain many
+businesses from many companies, all competing for the same customer demand. The
+distance between cities determines the freight costs of transactions between
+businesses in different cities.
