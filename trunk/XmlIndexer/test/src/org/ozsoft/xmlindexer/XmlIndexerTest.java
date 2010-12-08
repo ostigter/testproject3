@@ -1,11 +1,12 @@
-package xmlindexer;
+package org.ozsoft.xmlindexer;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.junit.Assert;
+import org.ozsoft.xmlindexer.Index;
+import org.ozsoft.xmlindexer.XmlIndexer;
 
-import xmlindexer.XmlIndexer;
 
 public class XmlIndexerTest {
 
