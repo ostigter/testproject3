@@ -10,15 +10,10 @@
 
     <name>projectx</name>
     <description>Project X</description>
-
     <developers>
         <developer>
             <name>Oscar Stigter</name>
             <email>oscar.stigter@gmail.com</email>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
         </developer>
     </developers>
 
