@@ -9,11 +9,11 @@
 	</appender>
 
 	<logger name="org.ozsoft.xpathevaluator">
-		<level value="debug" />
+		<level value="DEBUG" />
 	</logger>
 
 	<root>
-		<priority value="info" />
+		<priority value="INFO" />
 		<appender-ref ref="console" />
 	</root>
 
