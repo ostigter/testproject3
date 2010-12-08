@@ -1,4 +1,4 @@
-package xmlindexer;
+package org.ozsoft.xmlindexer;
 
 public class Index {
 
