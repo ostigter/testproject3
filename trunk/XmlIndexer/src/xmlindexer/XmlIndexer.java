@@ -1,6 +1,5 @@
 package xmlindexer;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,20 +12,17 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-
 /**
  * Indexer for XML documents using SAX and XPath-like paths.
  * 
  * @author Oscar Stigter
  */
 public class XmlIndexer {
-    
-    
+
     private final SAXParser parser;
-    
-    private final XPathHandler handler = new XPathHandler(); 
-    
-    
+
+    private final XPathHandler handler = new XPathHandler();
+
     public XmlIndexer() {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -35,12 +31,10 @@ public class XmlIndexer {
         try {
             parser = factory.newSAXParser();
         } catch (Exception e) {
-            throw new RuntimeException(
-                    "Error instantiating SAX parser: " + e.getMessage());
+            throw new RuntimeException("Error instantiating SAX parser: " + e.getMessage());
         }
     }
-    
-    
+
     public void index(File file, Index[] indices) {
         handler.setIndices(indices);
         try {
@@ -51,46 +45,36 @@ public class XmlIndexer {
             System.err.println(e);
         }
     }
-    
-    
-    //------------------------------------------------------------------------
-    //  Inner classes
-    //------------------------------------------------------------------------
-    
-    
+
+    // ------------------------------------------------------------------------
+    // Inner classes
+    // ------------------------------------------------------------------------
+
     private class XPathHandler extends DefaultHandler {
-        
-        
+
         private final List<String> elements;
-        
+
         private Index[] indices;
-        
+
         private StringBuilder sb;
-        
-        
+
         public XPathHandler() {
             elements = new ArrayList<String>();
         }
-        
-        
+
         public void setIndices(Index[] indices) {
             this.indices = indices;
         }
-        
-        
+
         @Override
-        public void startElement(
-                String uri, String localName, String qName, Attributes attr)
-                throws SAXException {
+        public void startElement(String uri, String localName, String qName, Attributes attr) throws SAXException {
             System.out.println("Start Element: " + localName);
             elements.add(localName);
             sb = new StringBuilder();
         }
-        
-        
+
         @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException {
+        public void endElement(String uri, String localName, String qName) throws SAXException {
             System.out.println("End Element:   " + localName);
             String path = getCurrentPath();
             System.out.println("Path: " + path);
@@ -113,21 +97,18 @@ public class XmlIndexer {
                     }
                 }
                 if (matches) {
-                    
+
                 }
             }
             elements.remove(elements.size() - 1);
             sb = new StringBuilder();
         }
-        
 
         @Override
-        public void characters(char[] buffer, int offset, int length)
-                throws SAXException {
+        public void characters(char[] buffer, int offset, int length) throws SAXException {
             sb.append(buffer, offset, length);
         }
-        
-        
+
         private String getCurrentPath() {
             StringBuilder sb2 = new StringBuilder();
             for (String element : elements) {
@@ -136,9 +117,7 @@ public class XmlIndexer {
             }
             return sb2.toString();
         }
-        
 
     }
-
 
 }
