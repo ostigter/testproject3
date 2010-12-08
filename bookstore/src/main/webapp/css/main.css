@@ -1,0 +1,78 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+	
+body {
+	background: #ffffff;
+	width: 100%;
+    font-family: Arial, SansSerif;
+	font-size: 14px;
+    text-align: center;
+}
+
+div#container {
+	background: #ffffff;
+	margin: 0 auto 0 auto;
+    padding: 0;
+    width:  800px;
+    text-align: left;
+}
+
+div#header {
+    margin: 0;
+    padding: 0;
+	width:  100%;
+}
+
+#logo {
+	float: left;
+}
+
+div#genericLinks {
+	margin: 10px;
+	float: right;
+}
+
+div#center {
+	width: 100%;
+    border-top: 1px solid #c0c0ff;
+	background-color: #ffffff;
+	padding: 10px;
+    float: left;
+}
+
+div#footer {
+	border-top: 1px solid #c0c0ff;
+	padding: 10px;
+	width:  100%;
+    clear: both;
+}
+
+.padded {
+	margin: 10px;
+}
+
+img {
+	border-style: none;
+}
+
+th {
+	background: #c0c0ff;
+	color: #000000;
+	margin: 0;
+	padding: 0;
+	padding-bottom: 30px;
+}
+
+/* JSF info messages */
+.infoMessage {
+	color: 		 green;
+	font-weight: bold;
+}
+
+/* JSF error messages */
+.errorMessage {
+	color:       #ff0000;
+	font-weight: bold;
+}
