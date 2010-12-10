@@ -14,6 +14,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javaee-api-version>6.0</javaee-api-version>
+        <jpa-version>2.0.0</jpa-version>
+        <eclipselink-version>2.0.1</eclipselink-version>
         <derby-version>10.6.2.1</derby-version>
         <log4j-version>1.2.14</log4j-version>
         <commons-codec-version>1.4</commons-codec-version>
@@ -27,14 +29,30 @@
     <dependencies>
     
         <!-- Java EE 6 -->
+        <!--
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>${javaee-api-version}</version>
             <scope>provided</scope>
         </dependency>
+        -->
         
-        <!-- Apache Derby -->
+        <!-- EclipseLink (JPA 2.0) -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>${jpa-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>${eclipselink-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Apache Derby (database) -->
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
@@ -91,9 +109,13 @@
     </dependencies>
 
     <repositories>
-        <repository> <!-- Mojarra (JSF 2.0) -->
+        <repository>
             <id>dev.java.net</id>
             <url>http://download.java.net/maven/2</url>
+        </repository>
+        <repository>
+            <id>eclipselink</id>
+            <url>http://mirror.cc.vt.edu/pub/eclipse/rt/eclipselink/maven.repo</url>
         </repository>
     </repositories>
 
