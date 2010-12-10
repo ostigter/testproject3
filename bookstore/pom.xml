@@ -13,14 +13,34 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <javaee-api-version>6.0</javaee-api-version>
+        <derby-version>10.6.2.1</derby-version>
         <log4j-version>1.2.14</log4j-version>
         <commons-codec-version>1.4</commons-codec-version>
+        <!--
         <servlet-api-version>2.5</servlet-api-version>
         <jsf-version>2.0.2</jsf-version>
-        <junit-version>4.7</junit-version>
+        -->
+        <junit-version>4.8.1</junit-version>
     </properties>
 
     <dependencies>
+    
+        <!-- Java EE 6 -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee-api-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Apache Derby -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>${derby-version}</version>
+            <scope>provided</scope>
+        </dependency>
     
         <!-- Apache Commons -->
         <dependency>
@@ -31,6 +51,7 @@
         </dependency>
 
         <!-- JSF 2.0 (Mojarra) -->
+        <!--
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -49,7 +70,8 @@
             <version>${jsf-version}</version>
             <scope>provided</scope>
         </dependency>
-
+        -->
+        
         <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
