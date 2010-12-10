@@ -12,13 +12,13 @@
         <properties>
             <!-- JPA 2.0 -->
             <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:derby:bookstore;create=true" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:bookstore;create=true" />
             <property name="javax.persistence.jdbc.user" value="app" />
             <property name="javax.persistence.jdbc.password" value="app" />
 
             <!-- EclipseLink -->
             <property name="eclipselink.target-database" value="DERBY"/>
-            <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+            <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="eclipselink.logging.level" value="INFO"/>
         </properties>
 
