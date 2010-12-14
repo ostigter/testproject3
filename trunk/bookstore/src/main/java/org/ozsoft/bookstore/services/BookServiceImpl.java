@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 
 import org.ozsoft.bookstore.entities.Book;
 
-@Stateless(mappedName = "ejb/BookService")
+@Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
 public class BookServiceImpl implements BookService {
     
