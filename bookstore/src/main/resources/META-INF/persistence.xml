@@ -12,7 +12,7 @@
         <class>org.ozsoft.bookstore.entities.Book</class>
         
         <properties>
-            <property name="eclipselink.target-database" value="DERBY"/>
+            <property name="eclipselink.target-database" value="PostgreSQL"/>
             <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="eclipselink.logging.level" value="INFO"/>
         </properties>

@@ -2,6 +2,7 @@ package org.ozsoft.bookstore.services;
 
 import java.util.List;
 
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -13,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import org.ozsoft.bookstore.entities.Book;
 
 @Stateless
+@Local
 @TransactionManagement(TransactionManagementType.CONTAINER)
 public class BookServiceImpl implements BookService {
     
