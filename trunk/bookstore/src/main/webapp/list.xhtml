@@ -8,7 +8,7 @@
 	<ui:define name="content">
         <h:form>
             <fieldset id="addBookPanel">
-                <h:messages errorClass="errorMessage" />
+                <h:messages layout="table" infoClass="infoMessage" errorClass="errorMessage" />
                 <h:panelGrid columns="2">
                     <h:outputLabel value="Author:" for="author" />
                     <h:inputText id="author" value="#{bookController.author}"
