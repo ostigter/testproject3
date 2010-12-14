@@ -22,16 +22,6 @@
     </properties>
 
     <dependencies>
-    
-        <!-- Glassfish v3 -->
-        <!--
-        <dependency>
-            <groupId>org.glassfish.extras</groupId>
-            <artifactId>glassfish-embedded-all</artifactId>
-            <version>${glassfish-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.ejb</artifactId>
@@ -44,8 +34,6 @@
             <version>${jsf-version}</version>
             <scope>provided</scope>
         </dependency>
-        
-        <!-- EclipseLink (JPA 2.0) -->
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
@@ -58,23 +46,12 @@
             <version>${eclipselink-version}</version>
             <scope>provided</scope>
         </dependency>
-        
-        <!-- Apache Derby -->
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>${derby-version}</version>
-            <scope>test</scope>
-        </dependency>
-    
-        <!-- Unit testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <repositories>
