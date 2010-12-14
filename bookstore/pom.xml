@@ -13,31 +13,39 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javaee-api-version>6.0</javaee-api-version>
-        <!--
+        <glassfish-version>3.0.1</glassfish-version>
         <jpa-version>2.0.0</jpa-version>
-        <derby-version>10.6.2.1</derby-version>
         <eclipselink-version>2.0.1</eclipselink-version>
-        <servlet-api-version>2.5</servlet-api-version>
-        <jsf-version>2.0.2</jsf-version>
-        <log4j-version>1.2.14</log4j-version>
-        <commons-codec-version>1.4</commons-codec-version>
-        -->
+        <derby-version>10.6.2.1</derby-version>
+        <jsf-version>2.0</jsf-version>
         <junit-version>4.8.1</junit-version>
     </properties>
 
     <dependencies>
     
-        <!-- Java EE 6 -->
+        <!-- Glassfish v3 -->
+        <!--
         <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee-api-version}</version>
+            <groupId>org.glassfish.extras</groupId>
+            <artifactId>glassfish-embedded-all</artifactId>
+            <version>${glassfish-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.ejb</artifactId>
+            <version>${glassfish-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+            <version>${jsf-version}</version>
             <scope>provided</scope>
         </dependency>
         
         <!-- EclipseLink (JPA 2.0) -->
-        <!--
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
@@ -50,60 +58,15 @@
             <version>${eclipselink-version}</version>
             <scope>provided</scope>
         </dependency>
-        -->
         
-        <!-- Apache Derby (database) -->
-        <!--
+        <!-- Apache Derby -->
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
             <version>${derby-version}</version>
-            <scope>provided</scope>
+            <scope>test</scope>
         </dependency>
-        -->
     
-        <!-- Apache Commons -->
-        <!--
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commons-codec-version}</version>
-            <scope>compile</scope>
-        </dependency>
-        -->
-        
-        <!-- JSF 2.0 (Mojarra) -->
-        <!--
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>${servlet-api-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-api</artifactId>
-            <version>${jsf-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>jsf-impl</artifactId>
-            <version>${jsf-version}</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
-        
-        <!-- Logging -->
-        <!--
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j-version}</version>
-            <scope>compile</scope>
-        </dependency>
-        -->
-        
         <!-- Unit testing -->
         <dependency>
             <groupId>junit</groupId>
@@ -119,12 +82,14 @@
             <id>dev.java.net</id>
             <url>http://download.java.net/maven/2</url>
         </repository>
-        <!--
+        <repository>
+            <id>glassfish</id>
+            <url>http://download.java.net/maven/glassfish</url>
+        </repository>
         <repository>
             <id>eclipselink</id>
             <url>http://mirror.cc.vt.edu/pub/eclipse/rt/eclipselink/maven.repo</url>
         </repository>
-        -->
     </repositories>
 
     <build>

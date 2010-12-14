@@ -1,10 +1,8 @@
 package org.ozsoft.bookstore.services;
 
-import javax.ejb.Local;
-
 import org.ozsoft.bookstore.entities.Book;
 
-@Local
+//@Local
 public interface BookService {
     
     void create(Book book);

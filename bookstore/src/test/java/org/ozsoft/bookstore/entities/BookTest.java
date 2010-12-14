@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class BookTest {
     
-    private static final String PERSISTENCE_UNIT_NAME = "bookstore";
+    private static final String PERSISTENCE_UNIT_NAME = "bookstore-test";
     
     @Test
     public void test() {
