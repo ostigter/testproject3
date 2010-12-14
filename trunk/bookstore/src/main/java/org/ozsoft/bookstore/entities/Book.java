@@ -1,5 +1,7 @@
 package org.ozsoft.bookstore.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,8 +10,10 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQuery(name = "findAllBooks", query = "SELECT b FROM Book b")
-public class Book {
+public class Book implements Serializable {
     
+    private static final long serialVersionUID = 5570102429680369576L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
