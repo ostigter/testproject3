@@ -30,17 +30,18 @@ public class XomExample {
             xpc.addNamespace("foo", "http://www.example.org/foo");
             xpc.addNamespace("gen", "http://www.example.org/generic");
             Nodes nodes = doc.query("/foo:document/gen:header/gen:id", xpc);
-            String id = null;
             if (nodes.size() > 0) {
-                id = nodes.get(0).getValue();
+                String id = nodes.get(0).getValue();
+                System.out.println("ID: " + id);
+            } else {
+                System.err.println("ID not found");
             }
-            System.out.println("ID: " + id);
-        } catch (IOException e) {
-            System.err.println(e);
         } catch (ValidityException e) {
-            System.err.println(e);
+            System.err.println("ERROR: Invalid document: " + e.getMessage());
         } catch (ParsingException e) {
-            System.err.println(e);
+            System.err.println("ERROR: Could not parse XML document: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("ERROR: Could not read file: " + e.getMessage());
         }
     }
 
