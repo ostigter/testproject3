@@ -22,9 +22,9 @@ import org.w3c.dom.Document;
  * @author Oscar Stigter
  */
 public class W3CDomExample {
-    
+
     private static final File DOCS_DIR = new File("src/test/resources/docs");
-    
+
     public static void main(String[] args) {
         File file = new File(DOCS_DIR, "foo-001.xml");
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -37,12 +37,16 @@ public class W3CDomExample {
             transformer.transform(new DOMSource(doc), new StreamResult(System.out));
             XPath xpath = XPathFactory.newInstance().newXPath();
             SimpleNamespaceContext nc = new SimpleNamespaceContext();
-            nc.addNamespaceMapping("foo", "http://www.example.org/foo");
-            nc.addNamespaceMapping("gen", "http://www.example.org/generic");
+            nc.addNamespace("foo", "http://www.example.org/foo");
+            nc.addNamespace("gen", "http://www.example.org/generic");
             xpath.setNamespaceContext(nc);
             XPathExpression xpe = xpath.compile("/foo:document/gen:header/gen:id");
             String id = (String) xpe.evaluate(doc, XPathConstants.STRING);
-            System.out.println("ID: " + id);
+            if (!id.isEmpty()) {
+                System.out.println("ID: " + id);
+            } else {
+                System.err.println("ID not found");
+            }
         } catch (Exception e) {
             System.err.println(e);
         }

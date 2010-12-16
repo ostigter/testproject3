@@ -16,9 +16,9 @@ import org.dom4j.io.XMLWriter;
  * @author Oscar Stigter
  */
 public class Dom4jExample {
-    
+
     private static final File DOCS_DIR = new File("src/test/resources/docs");
-    
+
     public static void main(String[] args) {
         File file = new File(DOCS_DIR, "foo-001.xml");
         SAXReader reader = new SAXReader();
@@ -36,11 +36,12 @@ public class Dom4jExample {
             nc.addNamespace("gen", "http://www.example.org/generic");
             xpath.setNamespaceContext(nc);
             Node node = xpath.selectSingleNode(doc);
-            String id = null;
             if (node != null) {
-                id = node.getText();
+                String id = node.getText();
+                System.out.println("ID: " + id);
+            } else {
+                System.err.println("ID not found");
             }
-            System.out.println("ID: " + id);
         } catch (Exception e) {
             System.err.println(e);
         }
