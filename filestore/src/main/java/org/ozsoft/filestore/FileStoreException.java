@@ -25,11 +25,11 @@ public class FileStoreException extends Exception {
      * 
      * @param message
      *            The message describing the cause.
-     * @param t
-     *            The nested exception.
+     * @param cause
+     *            The causing exception.
      */
-    public FileStoreException(String message, Throwable t) {
-        super(message, t);
+    public FileStoreException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

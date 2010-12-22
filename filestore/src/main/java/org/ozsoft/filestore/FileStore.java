@@ -9,8 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * File system based database for storing files.
@@ -46,7 +45,7 @@ public class FileStore {
     private static final int BUFFER_SIZE = 8192;  // 8 kB
     
     /** Log */
-    private static final Log LOG = LogFactory.getLog(FileStore.class);
+    private static final Logger LOG = Logger.getLogger(FileStore.class);
     
     /** Document entries mapped by the their ID. */
     private final Map<Integer, FileEntry> entries;
