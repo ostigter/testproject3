@@ -22,7 +22,7 @@ package org.ozsoft.xmldb;
  * @author Oscar Stigter
  */
 public class NotFoundException extends XmldbException {
-    
+
     /** Serial version UID. */
     private static final long serialVersionUID = 9118174838396459623L;
 
