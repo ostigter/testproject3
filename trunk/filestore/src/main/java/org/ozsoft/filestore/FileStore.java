@@ -5,9 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
@@ -63,7 +63,7 @@ public class FileStore {
      * Constructor.
      */
     public FileStore() {
-        entries = new HashMap<Integer, FileEntry>();
+        entries = new TreeMap<Integer, FileEntry>();
     }
     
     /**
