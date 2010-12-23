@@ -193,17 +193,16 @@ public class ExistConnectorTest {
             Assert.fail("Incorrect exception type: " + e);
         }
 
-        //FIXME: Disabled because of eXist bug.
-//        // Incorrect password (DBA role).
-//        connector = new ExistConnector(HOST, PORT, "admin", "bar");
-//        try {
-//            connector.retrieveXmlDocument("/db/system/users.xml");
-//            Assert.fail("No exception thrown");
-//        } catch (NotAuthorizedException e) {
-//            // OK
-//        } catch (XmldbException e) {
-//            Assert.fail("Incorrect exception type: " + e);
-//        }
+        // Incorrect password (DBA role).
+        connector = new ExistConnector(HOST, PORT, "admin", "bar");
+        try {
+            connector.retrieveXmlDocument("/db/system/users.xml");
+            Assert.fail("No exception thrown");
+        } catch (NotAuthorizedException e) {
+            // OK
+        } catch (XmldbException e) {
+            Assert.fail("Incorrect exception type: " + e);
+        }
         
         // Authorized access (DBA role).
         connector = new ExistConnector(HOST, PORT, "admin", "admin");
