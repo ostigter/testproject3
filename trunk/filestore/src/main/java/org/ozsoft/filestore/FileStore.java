@@ -5,16 +5,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
 /**
  * File system based database for storing files.
  * 
- * Files are logically stored, retrieved and deleted based on an integer ID.
+ * Files are logically stored, retrieved and deleted based on ID.
  * 
  * The file contents are stored in a binary file (by default "data.dbx") in a
  * configurable directory (by default "data"). If this directory does not
@@ -42,7 +42,7 @@ public class FileStore {
     private static final int HEADER_LENGTH = 8;
     
     /** Buffer size. */
-    private static final int BUFFER_SIZE = 8192;  // 8 kB
+    private static final int BUFFER_SIZE = 8192; // 8 KB
     
     /** Log */
     private static final Logger LOG = Logger.getLogger(FileStore.class);
@@ -63,7 +63,7 @@ public class FileStore {
      * Constructor.
      */
     public FileStore() {
-        entries = new TreeMap<Integer, FileEntry>();
+        entries = new HashMap<Integer, FileEntry>();
     }
     
     /**
@@ -159,6 +159,7 @@ public class FileStore {
         
         LOG.debug("Shutting down");
         
+        isRunning = false;
         try {
             dataFile.close();
         } catch (IOException e) {
@@ -166,7 +167,7 @@ public class FileStore {
             LOG.error(msg, e);
             throw new FileStoreException(msg, e);
         } finally {
-            isRunning = false;
+            dataFile = null;
         }
         
         entries.clear();
@@ -264,7 +265,6 @@ public class FileStore {
      */
     public InputStream retrieve(int id) throws FileStoreException {
         InputStream is = null;
-        
         FileEntry entry = entries.get(id);
         if (entry != null) {
             try {
@@ -277,7 +277,6 @@ public class FileStore {
         } else {
             throw new FileStoreException(String.format("File with ID %d not found", id));
         }
-        
         return is;
     }
     
@@ -416,7 +415,7 @@ public class FileStore {
      * Returns the net used disk space for storing the files without any
      * fragmentation.
      * 
-     * @return  the net used disk space 
+     * @return  The net used disk space 
      */
     private long getUsedSpace() {
         long size = 0L;
