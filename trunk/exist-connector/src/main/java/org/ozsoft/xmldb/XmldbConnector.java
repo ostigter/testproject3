@@ -49,8 +49,8 @@ public interface XmldbConnector {
     /**
      * Retrieves a resource.
      * 
-     * Use this method for non-XML resources (e.g. plain text or binary).
-     * For XML resources, use the retrieveXmlDocument method.
+     * Use this method for non-XML resources (e.g. plain text or binary). For
+     * XML resources, use the retrieveXmlDocument method.
      * 
      * @param uri
      *            The resource URI.
@@ -111,10 +111,11 @@ public interface XmldbConnector {
      *            The input stream with the content.
      * 
      * @throws XmldbException
-     *             If the input stream could not be read or the resource could not be stored.
+     *             If the input stream could not be read or the resource could
+     *             not be stored.
      */
     void storeResource(String uri, InputStream is) throws XmldbException;
-    
+
     /**
      * Imports a resource from a file or directory.
      * 
@@ -128,7 +129,7 @@ public interface XmldbConnector {
      *             resource could not be stored.
      */
     void importResource(String uri, File file) throws XmldbException;
-    
+
     /**
      * Exports a resource to a file or directory.
      * 

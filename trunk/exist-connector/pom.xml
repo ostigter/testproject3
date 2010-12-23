@@ -5,7 +5,7 @@
 
     <groupId>org.ozsoft</groupId>
     <artifactId>exist-connector</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0</version>
 
     <name>exist-connector</name>
     <description>Library to connect to an eXist XML database using the REST and WebDAV interface.</description>
@@ -14,18 +14,16 @@
         <developer>
             <name>Oscar Stigter</name>
             <email>oscar.stigter@gmail.com</email>
-            <roles>
-                <role>Developer</role>
-            </roles>
         </developer>
     </developers>
-
+    <inceptionYear>2009</inceptionYear>
+    
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <httpclient-version>3.1</httpclient-version>
         <dom4j-version>1.6.1</dom4j-version>
-        <log4j-version>1.2.14</log4j-version>
-        <junit-version>4.7</junit-version>
+        <log4j-version>1.2.16</log4j-version>
+        <junit-version>4.8.2</junit-version>
     </properties>
 
     <dependencies>
@@ -39,6 +37,7 @@
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>${dom4j-version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -62,7 +61,6 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                    <compilerVersion>6</compilerVersion>
                 </configuration>
             </plugin>
             <plugin>

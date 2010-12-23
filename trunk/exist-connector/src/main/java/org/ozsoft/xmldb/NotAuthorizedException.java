@@ -23,7 +23,7 @@ package org.ozsoft.xmldb;
  * @author Oscar Stigter
  */
 public class NotAuthorizedException extends XmldbException {
-    
+
     /** Serial version UID. */
     private static final long serialVersionUID = -4506483007291569676L;
 
