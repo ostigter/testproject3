@@ -5,6 +5,7 @@
     <groupId>org.ozsoft.jfind</groupId>
     <artifactId>jfind</artifactId>
     <version>0.1</version>
+    <packaging>jar</packaging>
 
     <name>JFind</name>
     <description>Command line find-and-replace tool to process text files</description>
