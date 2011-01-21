@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
  * 
  * Combines the power of 'find', 'grep' and inline text replacement tools.
  *
- * TODO: Override ignored directories (-D)
  * TODO: File renaming (--rename)
  * TODO: File deletion (--delete)
  * TODO: Custom command execution (-exec)
@@ -91,6 +90,7 @@ public class Main {
         ignoredDirs.add(".svn");
         ignoredDirs.add(".cvs");
         ignoredDirs.add("SCCS");
+        ignoredDirs.add(".parent");
         
         // Define allowed ASCII control characters for text files.
         allowedControlChars = new HashSet<Integer>();
@@ -128,7 +128,7 @@ public class Main {
         System.out.println("Usage:");
         System.out.println("  jfind [<options>]");
         System.out.println("where <options> are:");
-        System.out.println("  -h, --help or -?      = Shows this usage information");
+        System.out.println("  -h, --help            = Shows this usage information");
         System.out.println("  -d                    = Start in directory <dir>");
         System.out.println("  -f <file_pattern>     = Process only files with a name matching <file_pattern>");
         System.out.println("  -s <search_pattern>   = Process only files containing <search_pattern>");
@@ -151,7 +151,7 @@ public class Main {
     private void parseArguments(String[] args) {
         String searchText = null;
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equals("-h") || args[i].equals("--help") || args[i].equals("-?")) {
+            if (args[i].equals("-h") || args[i].equals("--help")) {
                 printUsage();
                 System.exit(0);
             } else if (args[i].equals("-d")) {
@@ -159,20 +159,20 @@ public class Main {
                 if (i < args.length) {
                     dir = new File(args[i]);
                     if (!dir.exists() || !dir.isDirectory()) {
-                        System.err.println("Directory not found: " + dir);
+                        System.err.format("ERROR: Directory not found: '%s'\n", dir);
                         System.exit(2);
                     }
                 } else {
-                    System.err.println("No directory specified.");
+                    System.err.println("ERROR: No directory specified with '-d' option");
                     printUsage();
                     System.exit(1);
                 }
             } else if (args[i].equals("-f")) {
                 i++;
                 if (i < args.length) {
-                    filePattern = Pattern.compile(args[i]);
+                    filePattern = Pattern.compile(wildcardToRegex(args[i], false));
                 } else {
-                    System.err.println("No file pattern specified.");
+                    System.err.println("ERROR: No file pattern specified with '-f' option");
                     printUsage();
                     System.exit(1);
                 }
@@ -181,7 +181,7 @@ public class Main {
                 if (i < args.length) {
                     searchText = args[i];
                 } else {
-                    System.err.println("No search pattern specified.");
+                    System.err.println("ERROR: No search pattern specified with '-s' option");
                     printUsage();
                     System.exit(1);
                 }
@@ -190,7 +190,7 @@ public class Main {
                 if (i < args.length) {
                     replaceText = args[i];
                 } else {
-                    System.err.println("No replace pattern specified.");
+                    System.err.println("ERROR: No replace pattern specified with '-r' option");
                     printUsage();
                     System.exit(1);
                 }
@@ -203,16 +203,17 @@ public class Main {
             } else if (args[i].equals("-c")) {
                 askConfirmation = true;
             } else {
-                System.err.println("Unknown argument: " + args[i]);
+                System.err.format("ERROR: Unknown argument: '%s'\n",  args[i]);
                 printUsage();
                 System.exit(1);
             }
         }
         if (searchText != null) {
+            String regex = wildcardToRegex(searchText, true);
             if (caseSensitive) {
-                searchPattern = Pattern.compile(searchText);
+                searchPattern = Pattern.compile(regex);
             } else {
-                searchPattern = Pattern.compile(searchText, Pattern.CASE_INSENSITIVE);
+                searchPattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
             }
         }
     }
@@ -226,34 +227,49 @@ public class Main {
      *            The path.
      */
     private void processDirectory(File dir, String path) {
-        // First process files...
-        for (File file : dir.listFiles()) {
-            if (file.isFile()) {
-                String name = file.getName();
-                if (filePattern != null) {
-                    if (filePattern.matcher(name).find()) {
-                        processFile(file, path);
-                    }
-                } else {
-                    processFile(file, path);
+        if (dir != null && dir.isDirectory() && dir.canRead()) {
+            if (replaceText != null) {
+                if (!dir.canWrite()) {
+                    System.err.format("WARN: Directory not writable: '%s'\n", dir);
+                    return;
                 }
             }
-        }
-        // ...then recurse into subdirectories.
-        if (recursion) {
-            for (File file : dir.listFiles()) {
-                if (file.isDirectory()) {
-                    String name = file.getName();
-                    if (processAllDirs || !ignoredDirs.contains(name)) {
-                        StringBuilder sb = new StringBuilder(path);
-                        if (path.length() != 0) {
-                            sb.append(File.separatorChar);
+            // First process files...
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile()) {
+                        String name = file.getName();
+                        if (filePattern != null) {
+                            if (filePattern.matcher(name).find()) {
+                                processFile(file, path);
+                            }
+                        } else {
+                            processFile(file, path);
                         }
-                        sb.append(name);
-                        processDirectory(file, sb.toString());
                     }
                 }
+                // ...then recurse into subdirectories.
+                if (recursion) {
+                    for (File file : dir.listFiles()) {
+                        if (file.isDirectory()) {
+                            String name = file.getName();
+                            if (processAllDirs || !ignoredDirs.contains(name)) {
+                                StringBuilder sb = new StringBuilder(path);
+                                if (path.length() > 0) {
+                                    sb.append(File.separatorChar);
+                                }
+                                sb.append(name);
+                                processDirectory(file, sb.toString());
+                            }
+                        }
+                    }
+                }
+            } else {
+                System.err.format("WARN: Could not read directory: '%s'\n", dir);
             }
+        } else {
+            System.err.format("WARN: Could not read directory: '%s'\n", dir);
         }
     }
     
@@ -291,7 +307,7 @@ public class Main {
                             if (matcher.find()) {
                                 boolean replace = true;
                                 if (askConfirmation) {
-                                    System.out.println(String.format("%s%s:%d\t%s", path, file.getName(), lineNumber, line));
+                                    System.out.format("%s%s:%d\t%s\n", path, file.getName(), lineNumber, line);
                                     Response response = getUserResponse("Replace");
                                     replace = (response == Response.YES);
                                 }
@@ -301,7 +317,7 @@ public class Main {
                                     // Do not write line if it became empty.
                                     if (line.trim().length() != 0) {
                                         if (!askConfirmation) {
-                                            System.out.println(String.format("%s%s:%d\t%s", path, file.getName(), lineNumber, line));
+                                            System.out.format("%s%s:%d\t%s\n", path, file.getName(), lineNumber, line);
                                         }
                                         writer.write(line + '\n');
                                     }
@@ -312,14 +328,17 @@ public class Main {
                         } else {
                             // Search only.
                             if (searchPattern.matcher(line).find()) {
-                                System.out.println(String.format(
-                                        "%s%s:%d\t%s", path, file.getName(), lineNumber, line));
+                                System.out.format("%s%s:%d\t%s\n", path, file.getName(), lineNumber, line);
                             }
                         }
                     }
                     reader.close();
                     if (replaceText != null) {
-                        writer.close();
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            // Best effort; ignore.
+                        }
                         if (replaced) {
                             file.delete();
                             tempFile.renameTo(file);
@@ -328,7 +347,22 @@ public class Main {
                         }
                     }
                 } catch (IOException e) {
-                    System.err.println(e);
+                    System.err.format("ERROR: Could not process file '%s': %s\n", file, e.getMessage());
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            // Best effort; ignore.
+                        }
+                    }
+                    if (writer != null) {
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            // Best effort; ignore.
+                        }
+                    }
                 }
             }
         } else {
@@ -395,9 +429,59 @@ public class Main {
             }
             is.close();
         } catch (IOException e) {
-            System.err.println(e);
+            System.err.format("ERROR: Could not read file '%s': %s\n", file, e.getMessage());
         }
         return isTextFile;
+    }
+    
+    /**
+     * Converts a wildcard expression to a Java regex.
+     * 
+     * @param wildcard
+     *            The wildcard expression.
+     * @param openEnded
+     *            True if the expression is open-ended, otherwise false.
+     * 
+     * @return The Java regex.
+     */
+    private static String wildcardToRegex(String wildcard, boolean openEnded){
+        StringBuilder s = new StringBuilder();
+        if (openEnded) {
+            s.append('^');
+        }
+        final int length = wildcard.length();
+        for (int i = 0; i < length; i++) {
+            final char ch = wildcard.charAt(i);
+            switch(ch) {
+                case '*':
+                    s.append(".*");
+                    break;
+                case '?':
+                    s.append(".");
+                    break;
+                    // escape special regexp-characters
+                case '(':
+                case ')':
+                case '[':
+                case ']':
+                case '$':
+                case '^':
+                case '.':
+                case '{':
+                case '}':
+                case '|':
+                case '\\':
+                    s.append("\\");
+                    s.append(ch);
+                    break;
+                default:
+                    s.append(ch);
+            }
+        }
+        if (openEnded) {
+            s.append('$');
+        }
+        return s.toString();
     }
     
     /**
