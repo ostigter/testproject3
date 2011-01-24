@@ -7,6 +7,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -128,7 +130,13 @@ public class TelnetClient {
         serverPanel.add(label, gbc);
 
         hostText = new JTextField(String.valueOf(DEFAULT_HOST));
-        hostText.setPreferredSize(new Dimension(100, 25));
+        hostText.setPreferredSize(new Dimension(200, 25));
+        hostText.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                hostText.selectAll();
+            }
+        });
         hostText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -162,6 +170,12 @@ public class TelnetClient {
         
         portText = new JTextField(String.valueOf(DEFAULT_PORT));
         portText.setPreferredSize(new Dimension(75, 25));
+        portText.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                portText.selectAll();
+            }
+        });
         portText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
