@@ -63,7 +63,7 @@ import org.jboss.netty.handler.codec.frame.FrameDecoder;
  * event-driven abstraction for the multithreaded, multiplexed Java NIO socket
  * handling, for robustness, stability and performance.
  * 
- * @author nlost
+ * @author Oscar Stigter
  */
 public class TcpipClient {
 
@@ -361,10 +361,10 @@ public class TcpipClient {
     }
 
     private void initTcpip() {
-        // Create factory for server channels based on Java NIO.
+        // Create factory for client channels based on Java NIO.
         channelFactory = new NioClientSocketChannelFactory(Executors.newCachedThreadPool(), Executors.newCachedThreadPool());
 
-        // Create a server bootstrap.
+        // Create a client bootstrap.
         bootstrap = new ClientBootstrap(channelFactory);
 
         // Setup message handler for string messages.
