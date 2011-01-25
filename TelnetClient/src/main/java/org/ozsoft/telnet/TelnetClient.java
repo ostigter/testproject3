@@ -50,7 +50,7 @@ public class TelnetClient {
 
     private static final String TITLE = "Telnet client";
 
-    private static final String DEFAULT_HOST = "localhost";
+    private static final String DEFAULT_HOST = "m2091";
 
     private static final int DEFAULT_PORT = 23;
 
@@ -361,18 +361,17 @@ public class TelnetClient {
         buffer.writeByte((byte) TelnetConstants.CR);
         buffer.writeByte((byte) TelnetConstants.LF);
         channel.write(buffer);
-        appendLine(line);
+        appendText(line + NEWLINE);
         sendText.selectAll();
     }
 
-    private void appendText(char ch) {
-        consoleText.append(String.valueOf(ch));
-        consoleText.setCaretPosition(consoleText.getText().length());
-    }
+//    private void appendText(char ch) {
+//        consoleText.append(String.valueOf(ch));
+//        consoleText.setCaretPosition(consoleText.getText().length());
+//    }
 
-    private void appendLine(String line) {
+    private void appendText(String line) {
         consoleText.append(line);
-        consoleText.append(NEWLINE);
         consoleText.setCaretPosition(consoleText.getText().length());
     }
     
@@ -387,6 +386,10 @@ public class TelnetClient {
      */
     private class TelnetHandler extends FrameDecoder {
         
+        private final ChannelBuffer inBuffer = ChannelBuffers.dynamicBuffer();
+        
+        private final ChannelBuffer outBuffer = ChannelBuffers.dynamicBuffer();
+        
         @Override
         public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
             channel = e.getChannel();
@@ -400,6 +403,7 @@ public class TelnetClient {
 
         @Override
         protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer) {
+            inBuffer.clear();
             while (buffer.readable()) {
                 int b = buffer.readUnsignedByte();
                   if (b == TelnetConstants.IAC) {
@@ -419,19 +423,27 @@ public class TelnetClient {
                           System.err.println("WARNING: Incomplete command received");
                       }
                   } else {
-                      appendText((char) b);
+                      inBuffer.writeByte((byte) b);
                   }
+            }
+            
+            if (inBuffer.readableBytes() > 0) {
+                StringBuilder sb = new StringBuilder();
+                while (inBuffer.readable()) {
+                    sb.append((char) inBuffer.readByte()); 
+                }
+                appendText(sb.toString());
             }
             
             return null;
         }
         
         private void sendCommand(int command, int option) {
-            ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
-            buffer.writeByte((byte) TelnetConstants.IAC);
-            buffer.writeByte((byte) command);
-            buffer.writeByte((byte) option);
-            channel.write(buffer);
+            outBuffer.clear();
+            outBuffer.writeByte((byte) TelnetConstants.IAC);
+            outBuffer.writeByte((byte) command);
+            outBuffer.writeByte((byte) option);
+            channel.write(outBuffer);
         }
 
     }
