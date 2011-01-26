@@ -6,6 +6,15 @@
         template="/templates/main.xhtml">
     <ui:define name="title">Home</ui:define>
     <ui:define name="content">
-        <p>Welcome to the IceFaces 2.0 example web application!</p>
+        <p>Welcome to the ICEfaces 2.0 example web application!</p>
+        <h:form>
+            <h:panelGrid columns="3">
+                Please enter your name:
+                <h:inputText id="name" value="#{user.name}">
+                    <f:ajax execute="@this" event="blur" render="greeting" />
+                </h:inputText>
+                <h:outputText id="greeting" value="#{user.greeting}" rendered="not empty ${user.name}" />
+            </h:panelGrid>
+        </h:form>
     </ui:define>
 </ui:composition>

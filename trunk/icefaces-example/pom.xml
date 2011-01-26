@@ -9,7 +9,7 @@
     <packaging>war</packaging>
     
     <name>icefaces-example</name>
-    <description>Example web application with IceFaces 2.0.</description>
+    <description>Example web application with ICEfaces 2.0.</description>
     <inceptionYear>2011</inceptionYear>
     <developers>
         <developer>
