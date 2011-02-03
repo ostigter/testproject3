@@ -3,17 +3,21 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:c="http://java.sun.com/jsp/jstl/core"
+        xmlns:ice="http://www.icefaces.org/icefaces/core"
         template="/templates/main.xhtml">
     <ui:define name="title">Home</ui:define>
     <ui:define name="content">
         <p>Welcome to the ICEfaces 2.0 example web application!</p>
         <h:form>
             <h:panelGrid columns="3">
+                Current time:
+                <h:inputText readonly="true" value="#{timeServer.time}" />
+                <h:panelGroup />
                 Please enter your name:
-                <h:inputText id="name" value="#{user.name}">
+                <h:inputText id="name" value="#{userBean.name}">
                     <f:ajax execute="@this" event="blur" render="greeting" />
                 </h:inputText>
-                <h:outputText id="greeting" value="#{user.greeting}" rendered="not empty ${user.name}" />
+                <h:outputText id="greeting" value="#{userBean.greeting}" />
             </h:panelGrid>
         </h:form>
     </ui:define>

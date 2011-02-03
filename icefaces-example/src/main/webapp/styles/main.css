@@ -25,10 +25,6 @@ div#header {
 	width:  100%;
 }
 
-#logo {
-	float: left;
-}
-
 div#genericLinks {
 	margin: 10px;
 	float: right;
@@ -49,12 +45,12 @@ div#footer {
     clear: both;
 }
 
-.padded {
-	margin: 10px;
+.readonly {
+    background-color: #c0c0c0;
 }
 
-img {
-	border-style: none;
+.padded {
+	margin: 10px;
 }
 
 th {
