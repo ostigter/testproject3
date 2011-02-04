@@ -14,6 +14,7 @@ public interface TelnetConstants {
     int VT      = 11;
     int FF      = 12;
     int CR      = 13;
+    int ESC     = 27;
     
     // Commands.
     int SE      = 240;
