@@ -51,9 +51,7 @@ public class TelnetClient {
     private static final String TITLE = "Telnet client";
 
     private static final String DEFAULT_HOST = "aod.mine.nu";
-    // private static final String DEFAULT_HOST = "m2091";
 
-    // private static final int DEFAULT_PORT = 23;
     private static final int DEFAULT_PORT = 5000;
 
     private static final int APP_WIDTH = 800;
@@ -308,7 +306,7 @@ public class TelnetClient {
         if (isConnected) {
             consoleText.setText("");
             connectDisconnectButton.setText("Disconnect");
-            sendText.selectAll();
+            sendText.setText("");
             sendText.requestFocusInWindow();
         } else {
             sendText.setText("");
@@ -368,11 +366,6 @@ public class TelnetClient {
         sendText.selectAll();
     }
 
-    // private void appendText(char ch) {
-    // consoleText.append(String.valueOf(ch));
-    // consoleText.setCaretPosition(consoleText.getText().length());
-    // }
-
     private void appendText(String line) {
         consoleText.append(line);
         consoleText.setCaretPosition(consoleText.getText().length());
@@ -392,55 +385,105 @@ public class TelnetClient {
         private final ChannelBuffer inBuffer = ChannelBuffers.dynamicBuffer();
 
         private final ChannelBuffer outBuffer = ChannelBuffers.dynamicBuffer();
-
+        
+        private final StringBuilder ansiCode = new StringBuilder();
+        
+        private boolean inAnsi;
+        
+        private boolean inCommand;
+        
+        private int command;
+        
+        private int option;
+        
         @Override
         public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
             channel = e.getChannel();
             setConnected(true);
+            inBuffer.clear();
+            inAnsi = false;
+            inCommand = false;
+            command = -1;
+            option = -1;
+            appendText("### Connected ###\n");
         }
 
         @Override
         public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
             disconnect();
+            appendText("\n### Disconnected ###\n");
         }
 
         @Override
         protected Object decode(ChannelHandlerContext ctx, Channel channel, ChannelBuffer buffer) {
-            inBuffer.clear();
             while (buffer.readable()) {
                 int b = buffer.readUnsignedByte();
-                if (b == TelnetConstants.IAC) {
-                    // Command mode.
-                    if (buffer.readableBytes() >= 2) {
-                        int command = buffer.readUnsignedByte();
-                        int option = buffer.readUnsignedByte();
-                        // System.out.format("Command: %d %d\n", command,
-                        // option);
-                        if (command == TelnetConstants.DO) {
-                            sendCommand(TelnetConstants.WONT, option);
-                        }
-                        if (command == TelnetConstants.WILL) {
-                            sendCommand(TelnetConstants.DONT, option);
+                if (inCommand) {
+                    // Read command and option bytes.
+                    if (command == -1) {
+                        command = b;
+                        if (command == TelnetConstants.GA) {
+                            // No option; exit command.
+                            handleCommand(command, option);
+                            inCommand = false;
+                            command = -1;
                         }
                     } else {
-                        // This should never happen.
-                        System.err.println("WARNING: Incomplete command received");
+                        option = b;
+                        handleCommand(command, option);
+                        inCommand = false;
+                        command = -1;
+                        option = -1;
                     }
+                } else if (inAnsi) {
+                    if (b == '[') {
+                        // Skip
+                    } else if (Character.isLowerCase(b)) {
+                        // End ANSI code.
+                        ansiCode.append((char) b);
+                        handleAnsiCode();
+                        inAnsi = false;
+                        ansiCode.delete(0, ansiCode.length());
+                    } else {
+                        // Collect ANSI code.
+                        ansiCode.append((char) b);
+                    }
+                } else if (b == TelnetConstants.IAC) {
+                    // Begin command.
+                    inCommand = true;
+                } else if (b == TelnetConstants.ESC) {
+                    // Begin ASNI code.
+                    inAnsi = true;
                 } else {
+                    // Collect normal text.
                     inBuffer.writeByte((byte) b);
                 }
             }
 
+            // Send any normal text to console.
             if (inBuffer.readableBytes() > 0) {
                 StringBuilder sb = new StringBuilder();
                 while (inBuffer.readable()) {
                     sb.append((char) inBuffer.readByte());
                 }
-                System.out.format("*** line = '%s'\n", sb.toString());
                 appendText(sb.toString());
             }
 
             return null;
+        }
+        
+        private void handleAnsiCode() {
+//            System.out.format("*** ANSI code: '%s'\n", ansiCode);
+        }
+    
+        private void handleCommand(int command, int option) {
+//            System.out.format("*** Command: %d %d\n", command, option);
+            if (command == TelnetConstants.DO) {
+                sendCommand(TelnetConstants.WONT, option);
+            }
+            if (command == TelnetConstants.WILL) {
+                sendCommand(TelnetConstants.DONT, option);
+            }
         }
 
         private void sendCommand(int command, int option) {
