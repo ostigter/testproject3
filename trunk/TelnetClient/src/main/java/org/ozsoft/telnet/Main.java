@@ -32,9 +32,9 @@ public class Main implements TelnetListener {
 
     private static final String TITLE = "Telnet client";
 
-    private static final String DEFAULT_HOST = "aod.mine.nu";
+    private static final String DEFAULT_HOST = "localhost";
 
-    private static final int DEFAULT_PORT = 5000;
+    private static final int DEFAULT_PORT = 23;
 
     private static final int APP_WIDTH = 800;
 
