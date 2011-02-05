@@ -65,7 +65,7 @@
                             </descriptorRefs>
                             <archive>
                                 <manifest>
-                                    <mainClass>org.ozsoft.telnet.TelnetClient</mainClass>
+                                    <mainClass>org.ozsoft.telnet.Main</mainClass>
                                 </manifest>
                             </archive>
                         </configuration>
