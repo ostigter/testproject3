@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>org.ozsoft.mudbot</groupId>
+    <artifactId>MudBot</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+    
+    <name>MudBot</name>
+    <description>MUD robot implemented with a Telnet client</description>
+    <inceptionYear>2010</inceptionYear>
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@gmail.com</email>
+        </developer>
+    </developers>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <telnet-client-version>1.0</telnet-client-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.ozsoft.telnet</groupId>
+            <artifactId>TelnetClient</artifactId>
+            <version>${telnet-client-version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <id>package-jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>org.ozsoft.mudbot.MudBot</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
