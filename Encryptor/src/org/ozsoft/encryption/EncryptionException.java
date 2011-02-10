@@ -1,4 +1,4 @@
-package encryptor;
+package org.ozsoft.encryption;
 
 /**
  * Exception thrown by the Encryptor class.

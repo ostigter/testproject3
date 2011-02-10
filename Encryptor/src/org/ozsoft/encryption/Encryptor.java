@@ -1,4 +1,4 @@
-package encryptor;
+package org.ozsoft.encryption;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

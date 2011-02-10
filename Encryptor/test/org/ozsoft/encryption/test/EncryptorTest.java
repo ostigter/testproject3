@@ -1,6 +1,6 @@
 package org.ozsoft.encryption.test;
 
-import encryptor.Encryptor;
+import org.ozsoft.encryption.Encryptor;
 
 /**
  * Test driver for the Encryptor class.
