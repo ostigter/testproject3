@@ -41,11 +41,11 @@ public class PortalClient {
      */
     public PortalClient() {
         httpClient = new HttpClient();
-//      httpClient.setUseProxy(true);
-//      httpClient.setProxyHost("146.106.91.10");
-//      httpClient.setProxyPort(8080);
-//      httpClient.setProxyUsername("ostigter");
-//      httpClient.setProxyPassword("Ost1gt2!");
+//        httpClient.setUseProxy(true);
+//        httpClient.setProxyHost("146.106.91.10");
+//        httpClient.setProxyPort(8080);
+//        httpClient.setProxyUsername("");
+//        httpClient.setProxyPassword("");
         
         try {
             encryptor = new Encryptor();
