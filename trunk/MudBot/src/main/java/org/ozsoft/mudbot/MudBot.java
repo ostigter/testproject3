@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,12 +33,14 @@ import org.ozsoft.telnet.TelnetListener;
  * 
  * Implemented as a Telnet client.
  * 
+ * @todo Continue to next area.
+ * @todo Ignore dropped items.
+ * @todo Handle fleeing.
+ * @todo Add ANSI color support.
+ * 
  * @author Oscar Stigter
  */
 public class MudBot implements TelnetListener {
-
-    /** Command delay. */
-    private static final long COMMAND_DELAY = 1000L;
 
     /** Minimum HP % for hunting. */
     private static final double MIN_HP_PERC = 0.4;
@@ -78,6 +81,9 @@ public class MudBot implements TelnetListener {
 
     /** Telnet client. */
     private final TelnetClient telnetClient;
+    
+    /** Random number generator. */
+    private final Random random;
 
     /** Current HP percentage. */
     private double hpPerc;
@@ -134,6 +140,8 @@ public class MudBot implements TelnetListener {
     public MudBot() {
         telnetClient = new TelnetClient();
         telnetClient.addTelnetListener(this);
+        
+        random = new Random();
 
         createMacros();
         
@@ -157,14 +165,13 @@ public class MudBot implements TelnetListener {
 
     @Override
     public void textReceived(String text) {
-//        System.out.format("[TEXT]%s[/TEXT]", text);
         appendText(text);
         processText(text);
     }
 
     @Override
     public void ansiCodeReceived(String code) {
-//        System.out.format("[ANSI]%s[/ASNI]", code);
+        // Not implemented.
     }
 
     @Override
@@ -306,7 +313,7 @@ public class MudBot implements TelnetListener {
         if (!active) {
             nextArea = 0;
             active = true;
-            appendText(">>> Started\n");
+            appendText(">>> Robot started\n");
             sendCommand("hp");
             area = areas.get(nextArea);
             appendText(String.format(">>> Going to area '%s'\n", area));
@@ -319,7 +326,7 @@ public class MudBot implements TelnetListener {
         if (active) {
             state = IDLE;
             active = false;
-            appendText(">>> Stopped\n");
+            appendText(">>> Robot stopped\n");
         }
     }
 
@@ -349,8 +356,10 @@ public class MudBot implements TelnetListener {
                     // This should never happen.
                     System.err.println("ERROR: Invalid state: " + state);
                 }
-
-                sleep(COMMAND_DELAY);
+            }
+            
+            if (state != TRAVELING) {
+                sleep();
             }
         }
     }
@@ -384,6 +393,7 @@ public class MudBot implements TelnetListener {
                 }
             }
         } else {
+            appendText(">>> HP/CP getting low, resting\n");
             state = RESTING;
             sendCommand("camping");
             rest(text);
@@ -396,9 +406,13 @@ public class MudBot implements TelnetListener {
             sendCommand("loot");
             state = CLAIMING_TROPHY;
             sendCommand("ct");
+        } else if (text.contains("You have no target for the skill.")) {
+            appendText(">>> Oops, lost track of monster, resuming the hunt\n");
+            state = HUNTING;
+            sendCommand("l");
         } else if (text.contains("You have finished concentrating on the skill.")) {
             if (cp >= 200) {
-                appendText(">>> Preparing next special attack\n");
+                appendText(">>> Preparing next attack\n");
                 sendCommand("rm " + monster.getAlias());
             }
         } else {
@@ -407,9 +421,11 @@ public class MudBot implements TelnetListener {
     }
 
     private void claimTrophy(String text) {
-        if (text.contains("You have finished concentrating on the skill.")) {
+        if (text.contains("You grab hold of the corpse and lift it's neck up a bit.")) {
             state = HUNTING;
             sendCommand("l");
+        } else {
+            appendText(">>> Claiming trophy\n");
         }
     }
 
@@ -417,7 +433,7 @@ public class MudBot implements TelnetListener {
         if (text.contains("You lie down, praying for the spirits of nature to guard your sleep.")) {
             state = CAMPING;
         } else if (text.contains("You can't camp so soon again.")) {
-            appendText(">>> Too soon to camp agin; resting instead\n");
+            appendText(">>> Too soon to camp agin, resting instead\n");
         } else if (hpPerc >= SAFE_HP_PERC && cp >= MIN_CP) {
             appendText(">>> Done resting, resuming the hunt\n");
             state = HUNTING;
@@ -429,6 +445,7 @@ public class MudBot implements TelnetListener {
 
     private void camp(String text) {
         if (text.contains("You wake from your rest and feel much better.")) {
+            appendText(">>> Done camping, resting until fully healed\n");
             state = RESTING;
             rest(text);
         } else {
@@ -468,10 +485,11 @@ public class MudBot implements TelnetListener {
                                 appendText(String.format(">>> Monster found: '%s'\n", m));
                                 if (monster == null) {
                                     monster = m;
+                                    break;
                                 }
                             } else {
                                 // Unknown object, do NOT attack anything here!
-                                appendText(String.format(">>> Unknown object found: '%s'\n",  name));
+                                appendText(String.format(">>> Unknown object found: '%s', moving on\n",  name));
                                 monster = null;
                                 break;
                             }
@@ -561,7 +579,8 @@ public class MudBot implements TelnetListener {
 //         areas.add(area);
     }
 
-    private void sleep(long delay) {
+    private void sleep() {
+        long delay = 1500 + random.nextInt(2500);
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
