@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>org.ozsoft.portal</groupId>
+    <artifactId>portal-client</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+    
+    <name>portal-client</name>
+    <description>Web portal client application implemented with HTTP requests.</description>
+    <inceptionYear>2011</inceptionYear>
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@gmail.com</email>
+        </developer>
+    </developers>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <httpclient-version>1.0</httpclient-version>
+        <encryptor-version>1.0</encryptor-version>
+    </properties>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.ozsoft.httpclient</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>${httpclient-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ozsoft.encryptor</groupId>
+            <artifactId>Encryptor</artifactId>
+            <version>${encryptor-version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
