@@ -6,6 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -33,8 +37,9 @@ import org.ozsoft.telnet.TelnetListener;
  * 
  * Implemented as a Telnet client.
  * 
- * @todo Continue to next area.
+ * @todo Buffer incoming text.
  * @todo Ignore dropped items.
+ * @todo Continue to next area.
  * @todo Handle fleeing.
  * @todo Add ANSI color support.
  * 
@@ -232,9 +237,29 @@ public class MudBot implements TelnetListener {
 
         commandLine = new JTextField();
         commandLine.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        commandLine.setBackground(Color.black);
-        commandLine.setForeground(Color.yellow);
-        commandLine.setCaretColor(Color.white);
+        commandLine.setBackground(Color.BLACK);
+        commandLine.setForeground(Color.WHITE);
+        commandLine.setCaretColor(Color.WHITE);
+        commandLine.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                commandLine.selectAll();
+            }
+            @Override
+            public void focusLost(FocusEvent e) {
+                commandLine.requestFocusInWindow();
+            }
+        });
+        commandLine.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    sendCommand(commandLine.getText().trim());
+                    commandLine.selectAll();
+                    commandLine.requestFocusInWindow();
+                }
+            }
+        });
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -245,25 +270,6 @@ public class MudBot implements TelnetListener {
         gbc.weighty = 0.0;
         frame.getContentPane().add(commandLine, gbc);
 
-        sendButton = new JButton("Send");
-        sendButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                sendCommand(commandLine.getText().trim());
-                commandLine.selectAll();
-                commandLine.requestFocus();
-            }
-        });
-        sendButton.setFocusable(false);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-        frame.getContentPane().add(sendButton, gbc);
-
         frame.getRootPane().setDefaultButton(sendButton);
 
         frame.pack();
@@ -271,7 +277,7 @@ public class MudBot implements TelnetListener {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        commandLine.requestFocus();
+        commandLine.requestFocusInWindow();
     }
 
     private void appendText(String text) {
@@ -485,7 +491,6 @@ public class MudBot implements TelnetListener {
                                 appendText(String.format(">>> Monster found: '%s'\n", m));
                                 if (monster == null) {
                                     monster = m;
-                                    break;
                                 }
                             } else {
                                 // Unknown object, do NOT attack anything here!
@@ -580,7 +585,7 @@ public class MudBot implements TelnetListener {
     }
 
     private void sleep() {
-        long delay = 1500 + random.nextInt(2500);
+        long delay = 1000 + random.nextInt(2000);
         try {
             Thread.sleep(delay);
         } catch (InterruptedException e) {
