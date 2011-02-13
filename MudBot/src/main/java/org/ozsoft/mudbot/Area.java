@@ -16,12 +16,17 @@ public class Area {
     public String[] directions;
 
     public Set<Monster> monsters;
+    
+    public Set<String> items;
 
     private int directionIndex;
+    
+    private long lastVisited = 0L;
 
     public Area(String name) {
         this.name = name;
         monsters = new HashSet<Monster>();
+        items = new HashSet<String>();
         reset();
     }
 
@@ -45,9 +50,21 @@ public class Area {
 
         return direction;
     }
+    
+    public long getLastVisitedSince() {
+        return System.currentTimeMillis() - lastVisited;
+    }
+    
+    public void updateLastVisisted() {
+        lastVisited = System.currentTimeMillis();
+    }
 
     public void addMonster(Monster monster) {
         monsters.add(monster);
+    }
+    
+    public void addItem(String item) {
+        items.add(item);
     }
 
     public boolean isMonster(String name) {
@@ -57,6 +74,15 @@ public class Area {
             }
         }
 
+        return false;
+    }
+    
+    public boolean isItem(String name) {
+        for (String item : items) {
+            if (name.contains(item)) {
+                return true;
+            }
+        }
         return false;
     }
 
