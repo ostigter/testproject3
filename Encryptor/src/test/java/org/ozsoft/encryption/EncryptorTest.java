@@ -7,7 +7,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 /**
- * Test driver for the Encryptor class.
+ * Test suite for the <code>Encryptor</code> class.
  * 
  * @author Oscar Stigter
  */
@@ -41,7 +41,20 @@ public class EncryptorTest {
         duration = System.currentTimeMillis() - startTime;
         System.out.format("Key generated in %d ms\n", duration);
 
+
         // Encrypt and decrypt a byte array.
+        cleardata = null;
+        cipherdata = encryptor.encrypt(cleardata);
+        Assert.assertNull(cipherdata);
+        cleardata = encryptor.decrypt(cipherdata);
+        Assert.assertNull(cleardata);
+        cleardata = new byte[0];
+        cipherdata = encryptor.encrypt(cleardata);
+        Assert.assertNotNull(cipherdata);
+        Assert.assertEquals(0, cipherdata.length);
+        cleardata = encryptor.decrypt(cipherdata);
+        Assert.assertNotNull(cleardata);
+        Assert.assertEquals(0, cleardata.length);
         startTime = System.currentTimeMillis();
         cleardata = CLEARTEXT.getBytes();
         cipherdata = encryptor.encrypt(cleardata);
@@ -70,6 +83,11 @@ public class EncryptorTest {
         System.out.format("Large data block decrypted in %d ms\n", duration);
 
         // Encypt and decrypt String.
+        cleartext = null;
+        ciphertext = encryptor.encrypt(cleartext);
+        Assert.assertEquals(null, ciphertext);
+        cleartext = encryptor.decrypt(ciphertext);
+        Assert.assertEquals(null, cleartext);
         cleartext = CLEARTEXT;
         System.out.format("cleartext:  '%s'\n", cleartext);
         startTime = System.currentTimeMillis();
