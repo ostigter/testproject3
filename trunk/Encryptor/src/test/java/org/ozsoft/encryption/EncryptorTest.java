@@ -83,16 +83,6 @@ public class EncryptorTest {
         Assert.assertEquals(CLEARTEXT, cleartext);
         System.out.format("Cleartext:  '%s'\n", cleartext);
         System.out.format("String decrypted in %d ms\n", duration);
-
-//        // Encypt and decrypt file.
-//        startTime = System.currentTimeMillis();
-//        encryptor.encryptFile("data/Secret.doc");
-//        duration = System.currentTimeMillis() - startTime;
-//        System.out.println("Encypted file in " + duration + " ms.");
-//        startTime = System.currentTimeMillis();
-//        encryptor.decryptFile("data/Secret.doc.enc");
-//        duration = System.currentTimeMillis() - startTime;
-//        System.out.println("Decypted file in " + duration + " ms.");
     }
 
 }
