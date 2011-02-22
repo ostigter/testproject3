@@ -177,8 +177,8 @@ public class Encryptor {
      *             If the String could not be encrypted.
      */
     public String encrypt(String cleartext) throws EncryptionException {
-        if (cleartext == null || cleartext.length() == 0) {
-            throw new IllegalArgumentException("Null or empty cleartext");
+        if (cleartext == null) {
+            throw new IllegalArgumentException("Null cleartext");
         }
         if (key == null) {
             throw new IllegalStateException("No shared key set");
@@ -186,13 +186,17 @@ public class Encryptor {
         
         String ciphertext = null;
         
-        try {
-            byte[] clearData = cleartext.getBytes("UTF-8");
-            byte[] cipherData = encrypt(clearData);
-            ciphertext = bytesToHex(cipherData);
-        } catch (UnsupportedEncodingException e) {
-            // This should never happen.
-            throw new EncryptionException("Could not encoding UTF-8 string: " + e.getMessage());
+        if (cleartext.length() == 0) {
+            ciphertext = "";
+        } else {
+            try {
+                byte[] clearData = cleartext.getBytes("UTF-8");
+                byte[] cipherData = encrypt(clearData);
+                ciphertext = bytesToHex(cipherData);
+            } catch (UnsupportedEncodingException e) {
+                // This should never happen.
+                throw new EncryptionException("Could not encoding UTF-8 string: " + e.getMessage());
+            }
         }
         
         return ciphertext;
@@ -210,8 +214,8 @@ public class Encryptor {
      *             If the String could not be decrypted.
      */
     public String decrypt(String ciphertext) throws EncryptionException {
-        if (ciphertext == null || ciphertext.length() == 0) {
-            throw new IllegalArgumentException("Null or empty ciphertext");
+        if (ciphertext == null) {
+            throw new IllegalArgumentException("Null ciphertext");
         }
         if (key == null) {
             throw new IllegalStateException("No shared key set");
@@ -219,13 +223,17 @@ public class Encryptor {
         
         String cleartext = null;
         
-        try {
-            byte[] cipherData = hexToBytes(ciphertext);
-            byte[] clearData = decrypt(cipherData);
-            cleartext = new String(clearData, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            // This should never happen.
-            throw new EncryptionException("Could not decoding UTF-8 string: " + e.getMessage());
+        if (ciphertext.length() == 0) {
+            cleartext = "";
+        } else {
+            try {
+                byte[] cipherData = hexToBytes(ciphertext);
+                byte[] clearData = decrypt(cipherData);
+                cleartext = new String(clearData, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                // This should never happen.
+                throw new EncryptionException("Could not decoding UTF-8 string: " + e.getMessage());
+            }
         }
         
         return cleartext;
