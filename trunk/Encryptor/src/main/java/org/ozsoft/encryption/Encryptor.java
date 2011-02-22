@@ -52,15 +52,46 @@ public class Encryptor {
     }
     
     /**
-     * Sets the shared key based on a password.
+     * Sets the shared key based on a byte array. <br />
+     * <br />
+     * 
+     * Uses an MD5 hash of the byte array to generate the key.
+     * 
+     * @param data
+     *            The byte array.
+     * 
+     * @throws IllegalArgumentException
+     *             If the byte array is null or empty.
+     * @throws EncryptionException
+     *             If the key could not be generated.
+     */
+    public void setKey(byte[] data) throws EncryptionException {
+        if (data == null || data.length == 0) {
+            throw new IllegalArgumentException("Null or empty key");
+        }
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            key = new SecretKeySpec(md.digest(data), KEY_ALGORITHM);
+        } catch (Exception e) {
+            throw new EncryptionException("Could not generate key", e);
+        }
+    }
+
+    /**
+     * Sets the shared key based on a password. <br />
+     * <br />
+     * 
+     * Uses an MD5 hash of the UTF-8 bytes of the password String to generate
+     * the key.
      * 
      * @param password
      *            The password.
      * 
      * @throws IllegalArgumentException
-     *             If the byte array is null or empty.
+     *             If the password is null or empty.
      * @throws EncryptionException
-     *             If the shared key could not be generated.
+     *             If the key could not be generated.
      */
     public void setKey(String password) throws EncryptionException {
         if (password == null || password.length() == 0) {
@@ -77,33 +108,6 @@ public class Encryptor {
     }
 
     /**
-     * Sets the shared key based on a byte array. <br />
-     * <br />
-     * 
-     * Uses an MD5 hash of the byte array to generate the shared key.
-     * 
-     * @param data
-     *            The byte array.
-     * 
-     * @throws IllegalArgumentException
-     *             If the byte array is null or empty.
-     * @throws EncryptionException
-     *             If the shared key hash could not be generated.
-     */
-    public void setKey(byte[] data) throws EncryptionException {
-        if (data == null || data.length == 0) {
-            throw new IllegalArgumentException("Null or empty password");
-        }
-
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            key = new SecretKeySpec(md.digest(data), KEY_ALGORITHM);
-        } catch (Exception e) {
-            throw new EncryptionException("Could not generated shared key", e);
-        }
-    }
-
-    /**
      * Encrypts a byte array.
      * 
      * @param cleartext
@@ -111,27 +115,30 @@ public class Encryptor {
      * 
      * @return A byte array with the ciphertext.
      * 
-     * @throws IllegalArgumentException
-     *             If the cleartext is null or empty.
      * @throws IllegalStateException
      *             If no shared key has been set.
      * @throws EncryptionException
-     *             If the byte array could not be encrypted.
+     *             If the encryption process failed.
      */
     public byte[] encrypt(byte[] cleartext) throws EncryptionException {
-        if (cleartext == null || cleartext.length == 0) {
-            throw new IllegalArgumentException("Null or empty cleartext");
-        }
         if (key == null) {
             throw new IllegalStateException("No shared key set");
         }
 
-        try {
-            cipher.init(Cipher.ENCRYPT_MODE, key);
-            return cipher.doFinal(cleartext);
-        } catch (Exception e) {
-            throw new EncryptionException("Could not encrypt data", e);
+        byte[] ciphertext = null;
+        
+        if (cleartext == null || cleartext.length == 0) {
+            ciphertext = cleartext;
+        } else {
+            try {
+                cipher.init(Cipher.ENCRYPT_MODE, key);
+                ciphertext = cipher.doFinal(cleartext);
+            } catch (Exception e) {
+                throw new EncryptionException("Could not encrypt data", e);
+            }
         }
+        
+        return ciphertext;
     }
 
     /**
@@ -142,27 +149,30 @@ public class Encryptor {
      * 
      * @return A byte array with the cleartext.
      * 
-     * @throws IllegalArgumentException
-     *             If the ciphertext is null or empty.
      * @throws IllegalStateException
      *             If no shared key has been set.
      * @throws EncryptionException
-     *             If the byte array could not be decrypted.
+     *             If the decryption process failed.
      */
     public byte[] decrypt(byte[] ciphertext) throws EncryptionException {
-        if (ciphertext == null || ciphertext.length == 0) {
-            throw new IllegalArgumentException("Null or empty ciphertext");
-        }
         if (key == null) {
             throw new IllegalStateException("No shared key set");
         }
 
-        try {
-            cipher.init(Cipher.DECRYPT_MODE, key);
-            return cipher.doFinal(ciphertext);
-        } catch (Exception e) {
-            throw new EncryptionException("Could not decrypt data: " + e.getMessage(), e);
+        byte[] cleartext = null;
+        
+        if (ciphertext == null || ciphertext.length == 0) {
+            cleartext = ciphertext;
+        } else {
+            try {
+                cipher.init(Cipher.DECRYPT_MODE, key);
+                cleartext = cipher.doFinal(ciphertext);
+            } catch (Exception e) {
+                throw new EncryptionException("Could not decrypt data: " + e.getMessage(), e);
+            }
         }
+        
+        return cleartext;
     }
     
     /**
@@ -173,21 +183,20 @@ public class Encryptor {
      * 
      * @return A String with the ciphertext.
      * 
+     * @throws IllegalStateException
+     *             If no shared key has been set.
      * @throws EncryptionException
-     *             If the String could not be encrypted.
+     *             If the encryption process failed.
      */
     public String encrypt(String cleartext) throws EncryptionException {
-        if (cleartext == null) {
-            throw new IllegalArgumentException("Null cleartext");
-        }
         if (key == null) {
             throw new IllegalStateException("No shared key set");
         }
         
         String ciphertext = null;
         
-        if (cleartext.length() == 0) {
-            ciphertext = "";
+        if (cleartext == null || cleartext.length() == 0) {
+            ciphertext = cleartext;
         } else {
             try {
                 byte[] clearData = cleartext.getBytes("UTF-8");
@@ -210,21 +219,20 @@ public class Encryptor {
      * 
      * @return A String with the plaintext.
      * 
+     * @throws IllegalStateException
+     *             If no shared key has been set.
      * @throws EncryptionException
      *             If the String could not be decrypted.
      */
     public String decrypt(String ciphertext) throws EncryptionException {
-        if (ciphertext == null) {
-            throw new IllegalArgumentException("Null ciphertext");
-        }
         if (key == null) {
             throw new IllegalStateException("No shared key set");
         }
         
         String cleartext = null;
         
-        if (ciphertext.length() == 0) {
-            cleartext = "";
+        if (ciphertext == null || ciphertext.length() == 0) {
+            cleartext = ciphertext;
         } else {
             try {
                 byte[] cipherData = hexToBytes(ciphertext);
