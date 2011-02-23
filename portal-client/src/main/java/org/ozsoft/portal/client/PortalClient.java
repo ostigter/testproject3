@@ -407,8 +407,9 @@ public class PortalClient implements TimerListener {
             appendText("\n>>> Disconnected.\n");
             checkTelnetConnected();
         } else {
+            telnetConnectButton.setEnabled(false);
             SwingUtilities.invokeLater(new Runnable() {
-               @Override
+                @Override
                 public void run() {
                    executeRequest(String.format("CONNECT %s %s", telnetHostText.getText(), telnetPortText.getText()));
                    int retries = 10;
@@ -420,7 +421,12 @@ public class PortalClient implements TimerListener {
                            } catch (InterruptedException e) {
                                // Ignore.
                            }
+                           retries--;
                        }
+                   }
+                   if (!isTelnetConnected) {
+                       appendText("\n>>> Failed to connect to Telnet server\n");
+                       telnetConnectButton.setEnabled(true);
                    }
                 } 
             });
@@ -441,22 +447,22 @@ public class PortalClient implements TimerListener {
     }
 
     private String executeRequest(String request) {
-//        System.out.format("Request:  '%s'\n", request);
+        System.out.format("Request:  '%s'\n", request);
         
         String response = null;
         String url = serverUrlText.getText();
         try {
-//            long startTime = System.currentTimeMillis();
+            long startTime = System.currentTimeMillis();
             HttpRequest httpRequest = httpClient.createPostRequest(url, encryptor.encrypt(request));
             try {
                 HttpResponse httpResponse = httpRequest.execute();
-//                long duration = System.currentTimeMillis() - startTime;
+                long duration = System.currentTimeMillis() - startTime;
                 if (httpResponse.getStatusCode() < 400) {
                     response = encryptor.decrypt(httpResponse.getBody());
-//                    if (response != null && response.length() > 0) {
-//                        System.out.format("Response: '%s'\n", response);
-//                    }
-//                    System.out.format("Request took %s ms\n", duration);
+                    if (response != null && response.length() > 0) {
+                        System.out.format("Response: '%s'\n", response);
+                    }
+                    System.out.format("Request took %s ms\n", duration);
                 } else {
                     appendText(String.format("\n>>> ERROR: HTTP status code: %d\n", httpResponse.getStatusCode()));
                     setTelnetConnected(false);
