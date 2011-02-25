@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.ozsoft</groupId>
+	<artifactId>XmlValidator</artifactId>
+	<version>1.0</version>
+
+	<name>XmlValidator</name>
+	<description>Command line tool to validate XML documents against their schema's.</description>
+    <inceptionYear>2008</inceptionYear>
+	<developers>
+		<developer>
+			<name>Oscar Stigter</name>
+			<email>oscar.stigter@gmail.com</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <finalName>XmlValidator</finalName>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.ozsoft.xmlvalidator.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+
+</project>
