@@ -132,8 +132,7 @@ public class FileStore {
         
         try {
             // Open data file.
-            dataFile = new RandomAccessFile(
-                    new File(dataDir, DATA_FILE), "rw");
+            dataFile = new RandomAccessFile(new File(dataDir, DATA_FILE), "rw");
         } catch (IOException e) {
             String msg = String.format("Error opening data file '%s': %s",
                     DATA_FILE, e.getMessage());
@@ -300,8 +299,7 @@ public class FileStore {
                 throw new FileStoreException(msg, e);
             }
         } else {
-            throw new FileStoreException(
-            		String.format("File with ID '%s' not found", id));
+//            throw new FileStoreException(String.format("File with ID '%s' not found", id));
         }
         return content;
     }

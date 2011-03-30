@@ -13,30 +13,30 @@ import java.util.TreeMap;
  * @author Oscar Stigter
  */
 public class Fund {
-    
+
     /** The ID. */
-	private String id;
-    
-	/** The name. */
-	private String name;
-    
-	/** The values mapped by date. */
-	private Map<SmallDate, FundValue> values;
-    
+    private String id;
+
+    /** The name. */
+    private String name;
+
+    /** The values mapped by date. */
+    private Map<SmallDate, FundValue> values;
+
     /**
-	 * Constructor.
-	 * 
-	 * @param id
-	 *            The ID.
-	 * @param name
-	 *            The name.
-	 */
+     * Constructor.
+     * 
+     * @param id
+     *            The ID.
+     * @param name
+     *            The name.
+     */
     public Fund(String id, String name) {
         this.id = id;
         this.name = name;
         this.values = new TreeMap<SmallDate, FundValue>();
     }
-    
+
     /**
      * Returns the ID.
      * 
@@ -54,7 +54,7 @@ public class Fund {
     public String getName() {
         return name;
     }
-    
+
     /**
      * Returns the number of values.
      * 
@@ -63,7 +63,7 @@ public class Fund {
     public int getNoOfValues() {
         return values.size();
     }
-    
+
     /**
      * Returns the values.
      * 
@@ -72,16 +72,17 @@ public class Fund {
     public Collection<FundValue> getValues() {
         return values.values();
     }
-    
+
     /**
      * Adds a new value (only if no value for that date already exists).
      * 
-     * @param fundValue The value.
+     * @param fundValue
+     *            The value.
      * 
      * @return True if added, otherwise false.
      */
     public boolean addValue(FundValue fundValue) {
-    	SmallDate date = fundValue.getDate();
+        SmallDate date = fundValue.getDate();
         if (!values.containsKey(date)) {
             values.put(date, fundValue);
             return true;
@@ -89,28 +90,30 @@ public class Fund {
             return false;
         }
     }
-    
-	/**
-	 * Clears the values.
-	 * 
-	 * Used to free resources when the fund's values are no longer needed to be
-	 * kept in memory.
-	 */
+
+    /**
+     * Clears the values.
+     * 
+     * Used to free resources when the fund's values are no longer needed to be
+     * kept in memory.
+     */
     public void clear() {
-    	values.clear();
+        values.clear();
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
         return id.hashCode();
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -121,51 +124,52 @@ public class Fund {
             return false;
         }
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return name; 
+        return name;
     }
-    
+
     /**
-	 * Serializes this fund to a byte stream.
-	 * 
-	 * Only the values are serialized.
-	 * 
-	 * @param dos
-	 *            The output stream.
-	 * 
-	 * @throws IOException
-	 *             If an I/O error occurs.
-	 */
+     * Serializes this fund to a byte stream.
+     * 
+     * Only the values are serialized.
+     * 
+     * @param dos
+     *            The output stream.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs.
+     */
     public void serialize(DataOutputStream dos) throws IOException {
-    	dos.writeInt(values.size());
-    	for (FundValue value : values.values()) {
-    		value.serialize(dos);
-    	}
+        dos.writeInt(values.size());
+        for (FundValue value : values.values()) {
+            value.serialize(dos);
+        }
     }
-    
+
     /**
-	 * Deserializes this fund from a byte stream.
-	 * 
-	 * Only the values are deserialized.
-	 * 
-	 * @param dis
-	 *            The input stream.
-	 * 
-	 * @throws IOException
-	 *             If an I/O error occurs.
-	 */
+     * Deserializes this fund from a byte stream.
+     * 
+     * Only the values are deserialized.
+     * 
+     * @param dis
+     *            The input stream.
+     * 
+     * @throws IOException
+     *             If an I/O error occurs.
+     */
     public void deserialize(DataInputStream dis) throws IOException {
-    	values.clear();
-    	int noOfValues = dis.readInt();
-    	for (int i = 0; i < noOfValues; i++) {
-    		addValue(FundValue.deserialize(dis));
-    	}
+        values.clear();
+        int noOfValues = dis.readInt();
+        for (int i = 0; i < noOfValues; i++) {
+            addValue(FundValue.deserialize(dis));
+        }
     }
-    
+
 }

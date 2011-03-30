@@ -13,23 +13,23 @@ import org.junit.Test;
 import org.ozsoft.fondsbeheer.entities.SmallDate;
 
 public class SmallDateTest {
-	
-	private static final String DATA_DIR = "target";
-    
+
+    private static final String DATA_DIR = "target";
+
     @Test
     public void testBasics() throws Exception {
-        SmallDate date1 = new SmallDate( 1, 1, 1970);
+        SmallDate date1 = new SmallDate(1, 1, 1970);
 
         Assert.assertEquals(1, date1.getDay());
         Assert.assertEquals(1, date1.getMonth());
         Assert.assertEquals(1970, date1.getYear());
-        
+
         SmallDate date2 = new SmallDate(31, 1, 1970);
         Assert.assertEquals(31, date2.getDay());
         Assert.assertEquals(1, date2.getMonth());
         Assert.assertEquals(1970, date2.getYear());
 
-        SmallDate date3 = new SmallDate( 1, 2, 1970);
+        SmallDate date3 = new SmallDate(1, 2, 1970);
         Assert.assertEquals(1, date3.getDay());
         Assert.assertEquals(2, date3.getMonth());
         Assert.assertEquals(1970, date3.getYear());
@@ -54,7 +54,7 @@ public class SmallDateTest {
         Assert.assertEquals(date2, SmallDate.parseDate("700131"));
         Assert.assertEquals("01-Feb-1970", date3.toString());
         Assert.assertEquals(date3, SmallDate.parseDate("700201"));
-        
+
         // ISO format.
         Assert.assertEquals("1970-01-01", date1.toIsoString());
         Assert.assertEquals(date1, SmallDate.parseIsoDate("1970-01-01"));
@@ -63,20 +63,20 @@ public class SmallDateTest {
         Assert.assertEquals("1970-02-01", date3.toIsoString());
         Assert.assertEquals(date3, SmallDate.parseIsoDate("1970-02-01"));
     }
-    
+
     @Test
     public void testFormatting() {
-    	String s = null;
-    	SmallDate date = null;
-    	
+        String s = null;
+        SmallDate date = null;
+
         // Earliest date.
-    	s = "1970-01-01";
+        s = "1970-01-01";
         date = SmallDate.parseIsoDate(s);
         Assert.assertEquals(1, date.getDay());
         Assert.assertEquals(1, date.getMonth());
         Assert.assertEquals(1970, date.getYear());
         Assert.assertEquals(s, date.toIsoString());
-        
+
         // Latest date.
         s = "2143-03-02";
         date = SmallDate.parseIsoDate(s);
@@ -84,42 +84,42 @@ public class SmallDateTest {
         Assert.assertEquals(3, date.getMonth());
         Assert.assertEquals(2143, date.getYear());
         Assert.assertEquals(s, date.toIsoString());
-        
+
         // Too early.
         try {
-	        s = "1969-05-27";
-	        date = SmallDate.parseIsoDate(s);
-	        Assert.assertEquals(s, date.toIsoString());
+            s = "1969-05-27";
+            date = SmallDate.parseIsoDate(s);
+            Assert.assertEquals(s, date.toIsoString());
         } catch (IllegalArgumentException e) {
-        	// OK
+            // OK
         }
 
         // Too late.
         try {
-	        s = "1969-12-31";
-	        date = SmallDate.parseIsoDate(s);
-	        Assert.assertEquals(s, date.toIsoString());
+            s = "1969-12-31";
+            date = SmallDate.parseIsoDate(s);
+            Assert.assertEquals(s, date.toIsoString());
         } catch (IllegalArgumentException e) {
-        	// OK
+            // OK
         }
-        
+
     }
-    
+
     @Test
     public void serialization() throws IOException {
-        SmallDate date1 = new SmallDate( 1,  1, 1970);
-        SmallDate date2 = new SmallDate(27,  5, 1983);
-        SmallDate date3 = new SmallDate( 2,  3, 2143);
-        
+        SmallDate date1 = new SmallDate(1, 1, 1970);
+        SmallDate date2 = new SmallDate(27, 5, 1983);
+        SmallDate date3 = new SmallDate(2, 3, 2143);
+
         File file = new File(DATA_DIR, "file.bin");
-        
+
         // Serialize to binary file.
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(file));
         date1.serialize(dos);
         date2.serialize(dos);
         date3.serialize(dos);
         dos.close();
-        
+
         // Deserialize from binary file.
         DataInputStream dis = new DataInputStream(new FileInputStream(file));
         date1 = SmallDate.deserialize(dis);

@@ -27,42 +27,42 @@ import org.ozsoft.fondsbeheer.filestore.FileStoreException;
  * @author Oscar Stigter
  */
 public class FundServiceImpl implements FundService {
-	
-	/** The logger. */
-	private static final Logger LOG = Logger.getLogger(FundServiceImpl.class);
-	
-	/** Default data directory. */ 
-	private static final String DEFAULT_DATA_DIR = "./data";
-	
+
+    /** The logger. */
+    private static final Logger LOG = Logger.getLogger(FundServiceImpl.class);
+
+    /** Default data directory. */
+    private static final String DEFAULT_DATA_DIR = "./data";
+
     /** The file with the categories. */
-	private static final String CATEGORY_FILE = "categories.dat";
-    
+    private static final String CATEGORY_FILE = "categories.dat";
+
     /** Regular expression for a fund closing from the internet. */
-	private static final Pattern CLOSING_PATTERN = Pattern.compile("^(\\d{6}):(.*)$");
+    private static final Pattern CLOSING_PATTERN = Pattern.compile("^(\\d{6}):(.*)$");
 
     /** The categories mapping by ID. */
-	private final TreeMap<String, Category> categories;
-    
-	/** The file store. */
-	private final FileStore fileStore;
-    
-	/** The HTTP page reader. */
-	private final HttpPageReader pageReader;
-    
-	/** The data directory. */
-	private File dataDir;
-	
-	/** The category file. */
-	private File categoryFile;
-	
-	/** The number of new categories during the last update. */
-	private int noOfNewCategories;
-    
-	/** The number of new funds during the last update. */
-	private int noOfNewFunds;
-    
-	/** The number of updated funds during the last update. */
-	private int noOfUpdatedFunds;
+    private final TreeMap<String, Category> categories;
+
+    /** The file store. */
+    private final FileStore fileStore;
+
+    /** The HTTP page reader. */
+    private final HttpPageReader pageReader;
+
+    /** The data directory. */
+    private File dataDir;
+
+    /** The category file. */
+    private File categoryFile;
+
+    /** The number of new categories during the last update. */
+    private int noOfNewCategories;
+
+    /** The number of new funds during the last update. */
+    private int noOfNewFunds;
+
+    /** The number of updated funds during the last update. */
+    private int noOfUpdatedFunds;
 
     /**
      * Constructor.
@@ -71,56 +71,61 @@ public class FundServiceImpl implements FundService {
         categories = new TreeMap<String, Category>();
         fileStore = new FileStore();
         pageReader = new HttpPageReader();
-//        pageReader.setUseProxy(true);
-//        pageReader.setProxyHost("www-proxy.nl.int.atosorigin.com");
-//        pageReader.setProxyPort(8080);
-//        pageReader.setProxyUsername("");
-//        pageReader.setProxyPassword("");
+        // pageReader.setUseProxy(true);
+        // pageReader.setProxyHost("www-proxy.nl.int.atosorigin.com");
+        // pageReader.setProxyPort(8080);
+        // pageReader.setProxyUsername("");
+        // pageReader.setProxyPassword("");
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#getDataDirectory()
      */
     @Override
     public String getDataDirectory() {
-		return dataDir.getAbsolutePath();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.ozsoft.fondsbeheer.FundService#setDataDirectory(java.lang.String)
-	 */
-    @Override
-    public void setDataDirectory(String path) {
-    	dataDir = new File(path);
-    	categoryFile = new File(dataDir, CATEGORY_FILE);
-	}
+        return dataDir.getAbsolutePath();
+    }
 
     /*
      * (non-Javadoc)
+     * 
+     * @see
+     * org.ozsoft.fondsbeheer.FundService#setDataDirectory(java.lang.String)
+     */
+    @Override
+    public void setDataDirectory(String path) {
+        dataDir = new File(path);
+        categoryFile = new File(dataDir, CATEGORY_FILE);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#start()
      */
     @Override
     public void start() {
         LOG.debug("Starting");
         try {
-        	if (dataDir == null) {
-        		setDataDirectory(DEFAULT_DATA_DIR);
-        	}
-        	fileStore.setDataDir(dataDir.getPath());
+            if (dataDir == null) {
+                setDataDirectory(DEFAULT_DATA_DIR);
+            }
+            fileStore.setDataDir(dataDir.getPath());
             fileStore.start();
             readCategoryFile();
             LOG.info("Started");
         } catch (FileStoreException e) {
-        	String msg = "Error starting file store";
-        	LOG.error(msg, e);
+            String msg = "Error starting file store";
+            LOG.error(msg, e);
             throw new RuntimeException(msg, e);
         }
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#stop()
      */
     @Override
@@ -130,13 +135,14 @@ public class FundServiceImpl implements FundService {
             fileStore.shutdown();
             LOG.info("Stopped");
         } catch (FileStoreException e) {
-        	String msg = "Error shutting down file store";
-        	LOG.error(msg, e);
+            String msg = "Error shutting down file store";
+            LOG.error(msg, e);
         }
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#getNoOfCategories()
      */
     @Override
@@ -146,6 +152,7 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#getCategories()
      */
     @Override
@@ -155,6 +162,7 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#getCategory(java.lang.String)
      */
     @Override
@@ -164,25 +172,28 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.fondsbeheer.services.FundService#addCategory(org.ozsoft.fondsbeheer.entities.Category)
+     * 
+     * @see org.ozsoft.fondsbeheer.services.FundService#addCategory(org.ozsoft.
+     * fondsbeheer.entities.Category)
      */
     @Override
     public void addCategory(Category category) {
-    	if (category == null) {
-    		throw new IllegalArgumentException("Null category");
-    	}
-    	String id = category.getId();
-    	if (!categories.containsKey(id)) {
-    		categories.put(id, category);
-    		LOG.info(String.format("Added new category '%s'", category));
+        if (category == null) {
+            throw new IllegalArgumentException("Null category");
+        }
+        String id = category.getId();
+        if (!categories.containsKey(id)) {
+            categories.put(id, category);
+            LOG.info(String.format("Added new category '%s'", category));
             writeCategoryFile();
-    	} else {
-    		LOG.warn(String.format("Category '%s' already exists", category));
-    	}
-	}
+        } else {
+            LOG.warn(String.format("Category '%s' already exists", category));
+        }
+    }
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#getNoOfFunds()
      */
     @Override
@@ -196,77 +207,83 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.fondsbeheer.services.FundService#retrieveFund(org.ozsoft.fondsbeheer.entities.Fund)
+     * 
+     * @see org.ozsoft.fondsbeheer.services.FundService#retrieveFund(org.ozsoft.
+     * fondsbeheer.entities.Fund)
      */
     @Override
     public void retrieveFund(Fund fund) {
-    	if (fund == null) {
-    		throw new IllegalArgumentException("Null fund");
-    	}
-    	if (LOG.isDebugEnabled()) {
-    		LOG.debug(String.format("Retrieving fund '%s'", fund));
-    	}
-		String id = fund.getId();
-    	try {
-    		byte[] data = fileStore.retrieve(id);
-    		if (data != null) {
-	    		DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
-	    		fund.deserialize(dis);
-	    		dis.close();
-    		} else {
-    			LOG.warn(String.format("Could not find fund with ID '%s'", id));
-    		}
-    	} catch (FileStoreException e) {
-    		LOG.error(String.format("Could not retrieve fund with ID '%s'", id), e);
-    	} catch (IOException e) {
-    		LOG.error(String.format("Could not deserialize fund with ID '%s'", id), e);
-    	}
-    }
-    
-    /*
-     * (non-Javadoc)
-     * @see org.ozsoft.fondsbeheer.FundService#storeFund(org.ozsoft.fondsbeheer.entities.Fund)
-     */
-    @Override
-    public void storeFund(Fund fund) {
-    	if (fund == null) {
-    		throw new IllegalArgumentException("Null fund");
-    	}
-    	if (LOG.isDebugEnabled()) {
-    		LOG.debug(String.format("Storing fund '%s'", fund.getName()));
-    	}
-    	try {
-    		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    		DataOutputStream dos = new DataOutputStream(baos);
-    		fund.serialize(dos);
-    		byte[] data = baos.toByteArray();
-    		dos.close();
-    		fileStore.store(fund.getId(), data);
-    	} catch (FileStoreException e) {
-    		LOG.error(String.format("Could not retrieve fund with ID '%s'", e));
-    	} catch (IOException e) {
-    		LOG.error(String.format("Could not deserialize fund with ID '%s'", e));
-    	}
+        if (fund == null) {
+            throw new IllegalArgumentException("Null fund");
+        }
+        String id = fund.getId();
+        try {
+            byte[] data = fileStore.retrieve(id);
+            if (data != null) {
+                DataInputStream dis = new DataInputStream(new ByteArrayInputStream(data));
+                fund.deserialize(dis);
+                dis.close();
+            } else {
+                // LOG.warn(String.format("Could not find fund with ID '%s'",
+                // id));
+            }
+        } catch (FileStoreException e) {
+            LOG.error(String.format("Could not retrieve fund with ID '%s'", id), e);
+        } catch (IOException e) {
+            LOG.error(String.format("Could not deserialize fund with ID '%s'", id), e);
+        }
     }
 
     /*
      * (non-Javadoc)
+     * 
+     * @see
+     * org.ozsoft.fondsbeheer.FundService#storeFund(org.ozsoft.fondsbeheer.entities
+     * .Fund)
+     */
+    @Override
+    public void storeFund(Fund fund) {
+        if (fund == null) {
+            throw new IllegalArgumentException("Null fund");
+        }
+
+        // if (LOG.isDebugEnabled()) {
+        // LOG.debug(String.format("Storing fund '%s'", fund.getName()));
+        // }
+
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            DataOutputStream dos = new DataOutputStream(baos);
+            fund.serialize(dos);
+            byte[] data = baos.toByteArray();
+            dos.close();
+            fileStore.store(fund.getId(), data);
+        } catch (FileStoreException e) {
+            LOG.error(String.format("Could not retrieve fund with ID '%s'", e));
+        } catch (IOException e) {
+            LOG.error(String.format("Could not deserialize fund with ID '%s'", e));
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#updateCategories()
      */
     @Override
     public void updateCategories() {
         LOG.info("Updating categories");
-        
+
         noOfNewCategories = 0;
         noOfNewFunds = 0;
-        
+
         LOG.info("Updating NL categories");
         updateCategoriesFromPage("http://www.behr.nl/Beurs/H/index_nl..2.html");
         LOG.info("Updating EU categories");
         updateCategoriesFromPage("http://www.behr.nl/Beurs/H/index_eu..2.html");
         LOG.info("Updating WRLD categories");
         updateCategoriesFromPage("http://www.behr.nl/Beurs/H/index_wrld..2.html");
-        
+
         writeCategoryFile();
 
         LOG.info("Categories updated");
@@ -274,11 +291,12 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.FundService#updateAll()
      */
     @Override
     public void updateAll() {
-    	LOG.info("Updating all funds");
+        LOG.info("Updating all funds");
         for (Category cat : categories.values()) {
             updateFundsInCategory(cat);
         }
@@ -286,7 +304,9 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.fondsbeheer.FundService#updateFundsInCategory(org.ozsoft.fondsbeheer.entities.Category)
+     * 
+     * @see org.ozsoft.fondsbeheer.FundService#updateFundsInCategory(org.ozsoft.
+     * fondsbeheer.entities.Category)
      */
     @Override
     public void updateFundsInCategory(Category category) {
@@ -298,16 +318,19 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
-     * @see org.ozsoft.fondsbeheer.services.FundService#updateFund(org.ozsoft.fondsbeheer.entities.Fund)
+     * 
+     * @see
+     * org.ozsoft.fondsbeheer.services.FundService#updateFund(org.ozsoft.fondsbeheer
+     * .entities.Fund)
      */
     @Override
     public void updateFund(Fund fund) {
-    	if (fund == null) {
-    		throw new IllegalArgumentException("Null fund");
-    	}
+        if (fund == null) {
+            throw new IllegalArgumentException("Null fund");
+        }
         String id = fund.getId();
         if (fileStore.contains(id)) {
-        	retrieveFund(fund);
+            retrieveFund(fund);
         }
         LOG.info(String.format("Updating fund '%s'", fund));
         boolean updated = false;
@@ -321,9 +344,7 @@ public class FundServiceImpl implements FundService {
                 try {
                     date = SmallDate.parseDate(dateString);
                 } catch (Exception ex) {
-                    LOG.error(String.format(
-                    		"Could not parse date '%s' for fund '%s'",
-                    		dateString, fund));
+                    LOG.error(String.format("Could not parse date '%s' for fund '%s'", dateString, fund));
                 }
                 String valueString = m.group(2);
                 valueString = valueString.replaceFirst(",", ".").replaceAll("X", "").replaceAll("\\*", "");
@@ -331,9 +352,7 @@ public class FundServiceImpl implements FundService {
                 try {
                     value = Float.parseFloat(valueString);
                 } catch (Exception ex) {
-                    LOG.error(String.format(
-                            "Could not parse closing value '%s' for fund '%s' on %s",
-                            valueString, fund.getId(), date));
+                    LOG.error(String.format("Could not parse closing value '%s' for fund '%s' on %s", valueString, fund.getId(), date));
                 }
                 if (date != null && value != -1.0f && fund.addValue(new FundValue(date, value))) {
                     if (!updated) {
@@ -344,12 +363,13 @@ public class FundServiceImpl implements FundService {
             }
         }
         if (updated) {
-        	storeFund(fund);
+            storeFund(fund);
         }
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#getNoOfNewCategories()
      */
     @Override
@@ -359,6 +379,7 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#getNoOfNewFunds()
      */
     @Override
@@ -368,15 +389,17 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#getNoOfUpdatedFunds()
      */
     @Override
     public int getNoOfUpdatedFunds() {
         return noOfUpdatedFunds;
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#resetUpdateCounter()
      */
     @Override
@@ -386,22 +409,24 @@ public class FundServiceImpl implements FundService {
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#printDiskUsage()
      */
     @Override
     public void printDiskUsage() {
-    	fileStore.logStatistics();
+        fileStore.logStatistics();
     }
 
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#checkIntegrity()
      */
     @Override
     public void checkIntegrity() {
         int errors = 0;
         int warnings = 0;
-        
+
         LOG.info("Checking file store integrity...");
         for (String fileId : fileStore.getFileIds()) {
             try {
@@ -411,14 +436,12 @@ public class FundServiceImpl implements FundService {
                 errors++;
             }
         }
-        
+
         LOG.info("Checking for dead funds...");
         for (Category cat : categories.values()) {
             for (Fund fund : cat.getFunds()) {
                 if (!fileStore.contains(fund.getId())) {
-                    LOG.warn(String.format(
-                    		"Could not find fund '%s/%s' with ID '%s'",
-                    		cat.getName(), fund.getName(), fund.getId()));
+                    LOG.warn(String.format("Could not find fund '%s/%s' with ID '%s'", cat.getName(), fund.getName(), fund.getId()));
                     warnings++;
                 }
             }
@@ -431,9 +454,10 @@ public class FundServiceImpl implements FundService {
             LOG.info("Warnings found: " + warnings);
         }
     }
-    
+
     /*
      * (non-Javadoc)
+     * 
      * @see org.ozsoft.fondsbeheer.services.FundService#purgeDeadFunds()
      */
     @Override
@@ -454,11 +478,11 @@ public class FundServiceImpl implements FundService {
             writeCategoryFile();
         }
     }
-    
+
     private void readCategoryFile() {
-    	if (LOG.isDebugEnabled()) {
-    		LOG.debug("Reading category file");
-    	}
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Reading category file");
+        }
         categories.clear();
         if (categoryFile.exists() && categoryFile.canRead()) {
             try {
@@ -482,11 +506,11 @@ public class FundServiceImpl implements FundService {
             }
         }
     }
-    
+
     private void writeCategoryFile() {
-    	if (LOG.isDebugEnabled()) {
-    		LOG.debug("Writing category file");
-    	}
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Writing category file");
+        }
         try {
             DataOutputStream dos = new DataOutputStream(new FileOutputStream(categoryFile));
             dos.writeInt(categories.size());
@@ -504,7 +528,7 @@ public class FundServiceImpl implements FundService {
             LOG.error("Could not write categories file", e);
         }
     }
-    
+
     private void updateCategoriesFromPage(String url) {
         String[] lines = pageReader.read(url);
         if (lines != null) {
@@ -556,7 +580,7 @@ public class FundServiceImpl implements FundService {
             }
         }
     }
-    
+
     private static String getXmlText(String s) {
         StringBuilder sb = new StringBuilder();
         boolean inElement = false;
@@ -568,7 +592,7 @@ public class FundServiceImpl implements FundService {
             } else if (!inElement) {
                 sb.append(c);
             } else {
-                // Skip characters in element tag. 
+                // Skip characters in element tag.
             }
         }
         return sb.toString();

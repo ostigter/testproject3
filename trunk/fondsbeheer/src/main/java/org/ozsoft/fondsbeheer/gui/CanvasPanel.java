@@ -14,27 +14,27 @@ import javax.swing.JPanel;
  */
 public class CanvasPanel extends JPanel {
 
-	private static final long serialVersionUID = 1L;
-	
-	private BufferedImage image;
-	
-	public void setImage(BufferedImage image) {
-		if (image == null) {
-			setPreferredSize(new Dimension(100, 100));
-		} else {
-			setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
-		}
-		this.image = image;
-		repaint();
-	}
-	
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		if (image != null) {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.drawImage(image, 0, 0, null);
-		}
-	}
+    private static final long serialVersionUID = 1L;
+
+    private BufferedImage image;
+
+    public void setImage(BufferedImage image) {
+        if (image == null) {
+            setPreferredSize(new Dimension(100, 100));
+        } else {
+            setPreferredSize(new Dimension(image.getWidth(), image.getHeight()));
+        }
+        this.image = image;
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (image != null) {
+            Graphics2D g2 = (Graphics2D) g;
+            g2.drawImage(image, 0, 0, null);
+        }
+    }
 
 }
