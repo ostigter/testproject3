@@ -3,44 +3,27 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ozsoft</groupId>
+    <groupId>org.ozsoft.fondsbeheer</groupId>
     <artifactId>fondsbeheer</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
     <name>Fondsbeheer</name>
     <description>Programma voor het beheren van aandelenfondsen.</description>
-    
+    <inceptionYear>2010</inceptionYear>
     <developers>
         <developer>
             <name>Oscar Stigter</name>
             <email>oscar.stigter@gmail.com</email>
-            <roles>
-                <role>architect</role>
-                <role>developer</role>
-            </roles>
-            <timezone>+1</timezone>
         </developer>
     </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jfreechart-version>1.0.0</jfreechart-version>
-        <log4j-version>1.2.14</log4j-version>
-        <junit-version>4.7</junit-version>
+        <log4j-version>1.2.16</log4j-version>
+        <junit-version>4.8</junit-version>
     </properties>
-
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <compilerVersion>6</compilerVersion>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
@@ -62,5 +45,17 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

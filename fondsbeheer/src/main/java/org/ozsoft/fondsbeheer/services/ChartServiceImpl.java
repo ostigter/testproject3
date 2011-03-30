@@ -17,7 +17,7 @@ import org.ozsoft.fondsbeheer.entities.SmallDate;
 
 public class ChartServiceImpl implements ChartService {
 
-	public BufferedImage createChart(Fund fund, SmallDate from, int width, int height) {
+    public BufferedImage createChart(Fund fund, SmallDate from, int width, int height) {
         TimeSeries series1 = new TimeSeries("Series 1", Month.class);
         series1.add(new Month(7, 2008), 32.0);
         series1.add(new Month(8, 2008), 44.0);
@@ -32,8 +32,7 @@ public class ChartServiceImpl implements ChartService {
         series1.add(new Month(5, 2009), 56.5);
         TimeSeriesCollection dataset = new TimeSeriesCollection();
         dataset.addSeries(series1);
-        JFreeChart chart = ChartFactory.createTimeSeriesChart(
-                null, null, null, dataset, false, false, false);
+        JFreeChart chart = ChartFactory.createTimeSeriesChart(null, null, null, dataset, false, false, false);
         XYPlot plot = (XYPlot) chart.getPlot();
         plot.setBackgroundPaint(Color.WHITE);
         plot.setDomainGridlinePaint(Color.BLACK);
@@ -47,6 +46,6 @@ public class ChartServiceImpl implements ChartService {
         rangeAxis.setRange(0.0, maxValue);
         axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
         return chart.createBufferedImage(width, height);
-	}
+    }
 
 }

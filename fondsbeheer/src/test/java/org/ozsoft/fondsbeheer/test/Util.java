@@ -8,33 +8,33 @@ import java.io.File;
  * @author Oscar Stigter
  */
 public abstract class Util {
-	
-	/**
-	 * Deletes a file or directory recursively.
-	 * 
-	 * @param path
-	 *            The path to the file or directory.
-	 */
-	public static void deleteFile(String path) {
-		File file = new File(path);
-		if (file.exists()) {
-			deleteFile(file);
-		}
-	}
 
-	/**
-	 * Deletes a file or directory recursively.
-	 * 
-	 * @param file
-	 *            The file or directory.
-	 */
-	public static void deleteFile(File file) {
-		if (file.isDirectory()) {
-			for (File f : file.listFiles()) {
-				deleteFile(f);
-			}
-		}
-		file.delete();
-	}
+    /**
+     * Deletes a file or directory recursively.
+     * 
+     * @param path
+     *            The path to the file or directory.
+     */
+    public static void deleteFile(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            deleteFile(file);
+        }
+    }
+
+    /**
+     * Deletes a file or directory recursively.
+     * 
+     * @param file
+     *            The file or directory.
+     */
+    public static void deleteFile(File file) {
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                deleteFile(f);
+            }
+        }
+        file.delete();
+    }
 
 }
