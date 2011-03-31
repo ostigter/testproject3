@@ -8,7 +8,7 @@ import org.ozsoft.jpa.entities.User;
  * @author Oscar Stigter
  */
 public interface UserService {
-    
+
     /**
      * Creates a new user.
      * 
@@ -16,7 +16,7 @@ public interface UserService {
      *            The user.
      */
     void create(User user);
-    
+
     /**
      * Finds and returns a user by her ID.
      * 
@@ -26,7 +26,7 @@ public interface UserService {
      * @return The user.
      */
     User retrieve(long id);
-    
+
     /**
      * Updates a stored user.
      * 
@@ -34,7 +34,7 @@ public interface UserService {
      *            The user.
      */
     void update(User user);
-    
+
     /**
      * Deletes a stored user.
      * 

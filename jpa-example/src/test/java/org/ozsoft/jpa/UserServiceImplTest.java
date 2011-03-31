@@ -14,37 +14,37 @@ import org.ozsoft.jpa.services.UserServiceImpl;
  */
 public class UserServiceImplTest {
 
-	@Test
-	public void testBasicPersistence() throws Exception {
-		UserService userDao = new UserServiceImpl();
+    @Test
+    public void testBasicPersistence() throws Exception {
+        UserService userDao = new UserServiceImpl();
 
-		// Create a user.
-		User user = new User();
-		user.setUsername("alice");
-		user.setPassword("secret");
-		userDao.create(user);
+        // Create a user.
+        User user = new User();
+        user.setUsername("alice");
+        user.setPassword("secret");
+        userDao.create(user);
 
-		// Remember user ID.
-		long id = user.getId();
+        // Remember user ID.
+        long id = user.getId();
 
-		// Retrieve user.
-		user = userDao.retrieve(id);
-		Assert.assertNotNull(user);
-		Assert.assertEquals("alice", user.getUsername());
-		Assert.assertEquals("secret", user.getPassword());
+        // Retrieve user.
+        user = userDao.retrieve(id);
+        Assert.assertNotNull(user);
+        Assert.assertEquals("alice", user.getUsername());
+        Assert.assertEquals("secret", user.getPassword());
 
-		// Update user.
-		user.setPassword("guessme");
-		userDao.update(user);
+        // Update user.
+        user.setPassword("guessme");
+        userDao.update(user);
 
-		// Check update.
-		user = userDao.retrieve(id);
-		Assert.assertNotNull(user);
-		Assert.assertEquals("alice", user.getUsername());
-		Assert.assertEquals("guessme", user.getPassword());
+        // Check update.
+        user = userDao.retrieve(id);
+        Assert.assertNotNull(user);
+        Assert.assertEquals("alice", user.getUsername());
+        Assert.assertEquals("guessme", user.getPassword());
 
-		// Delete user.
-		userDao.delete(user);
-	}
+        // Delete user.
+        userDao.delete(user);
+    }
 
 }
