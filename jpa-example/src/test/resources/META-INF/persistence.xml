@@ -6,6 +6,8 @@
 	<persistence-unit name="jpa-example" transaction-type="RESOURCE_LOCAL">
 
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        
+        <class>org.ozsoft.jpa.entities.User</class>
 
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="create" />
