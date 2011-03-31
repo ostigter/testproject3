@@ -13,7 +13,7 @@ import javax.persistence.Id;
  * 
  * @author Oscar Stigter
  */
-@Entity
+@Entity(name = "USER")
 public class User implements Serializable {
 
     /** Serial version UID. */
@@ -22,17 +22,17 @@ public class User implements Serializable {
     /** ID. */
     @Id
     @GeneratedValue
-    @Column(name = "user_id")
+    @Column(name = "USER_ID")
     private long id;
 
     /** Username. */
     @Basic
-    @Column(nullable = false, unique = true)
+    @Column(name = "NAME", nullable = false, unique = true)
     private String username;
 
     /** Password. */
     @Basic
-    @Column(nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
     /**
