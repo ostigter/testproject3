@@ -1,91 +1,81 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.ozsoft</groupId>
-	<artifactId>jpa-example</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+    <groupId>org.ozsoft</groupId>
+    <artifactId>jpa-example</artifactId>
+    <version>1.0</version>
 
-	<name>jpa-example</name>
-	<description>Example application with JPA, JTA, Hibernate and MySQL.</description>
-	
-	<developers>
-		<developer>
-			<name>Oscar Stigter</name>
-			<email>oscar.stigter@gmail.com</email>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-	</developers>
+    <name>jpa-example</name>
+    <description>Example application with JPA, JTA, Hibernate and MySQL.</description>
+    <inceptionYear>2008</inceptionYear>
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@gmail.com</email>
+        </developer>
+    </developers>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jpa-version>1.0</jpa-version>
+        <hibernate-version>3.4.0.GA</hibernate-version>
+        <hsqldb-version>1.8.0.10</hsqldb-version>
+        <log4j-version>1.2.14</log4j-version>
+        <slf4j-version>1.4.2</slf4j-version>
+        <junit-version>4.8</junit-version>
+    </properties>
 
-	<build>
-		<finalName>jpa-example</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<compilerVersion>6</compilerVersion>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <dependencies>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>${jpa-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>${hsqldb-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j-version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit-version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-	<dependencies>
-		<dependency>
-	      <groupId>javax.persistence</groupId>
-	      <artifactId>persistence-api</artifactId>
-	      <version>1.0</version>
-			<scope>compile</scope>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.hibernate</groupId>
-	      <artifactId>hibernate-entitymanager</artifactId>
-	      <version>3.4.0.GA</version>
-			<scope>compile</scope>
-	    </dependency>
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.10</version>
-			<scope>compile</scope>
-		</dependency>
-		<!--
-		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.10</version>
-			<scope>compile</scope>
-		</dependency>
-		-->
-	    <dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-	      	<version>1.4.2</version>
-			<scope>compile</scope>
-	    </dependency>
-	    <dependency>
-	      <groupId>org.slf4j</groupId>
-	      <artifactId>slf4j-log4j12</artifactId>
-	      <version>1.4.2</version>
-		  <scope>compile</scope>
-	    </dependency>
-	    <dependency>
-	      <groupId>c3p0</groupId>
-	      <artifactId>c3p0</artifactId>
-	      <version>0.9.1.2</version>
-		  <scope>compile</scope>
-	    </dependency>
-	    <dependency>
-	      <groupId>junit</groupId>
-	      <artifactId>junit</artifactId>
-	      <version>4.7</version>
-	      <scope>test</scope>
-	    </dependency>
-	</dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
