@@ -47,15 +47,12 @@ public class UserServiceImplTest {
         // Add projects.
         Project project = new Project();
         project.setName("Foo");
-        project.setUser(user);
         user.addProject(project);
         project = new Project();
         project.setName("Zeta");
-        project.setUser(user);
         user.addProject(project);
         project = new Project();
         project.setName("Bar");
-        project.setUser(user);
         user.addProject(project);
         userService.update(user);
         
@@ -68,6 +65,14 @@ public class UserServiceImplTest {
         Assert.assertEquals("alice", projects[0].getUser().getUsername());
         Assert.assertEquals("Foo", projects[1].getName());
         Assert.assertEquals("Zeta", projects[2].getName());
+        
+        // Delete project.
+        user.removeProject(projects[1]);
+        userService.update(user);
+
+        // Check update.
+        user = userService.retrieve(id);
+        Assert.assertEquals(2, user.getProjects().size());
 
         // Delete user.
         userService.delete(user);

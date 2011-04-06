@@ -7,9 +7,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+/**
+ * A project. <br />
+ * <br />
+ * 
+ * A project belongs to a single user.
+ * 
+ * @author Oscar Stigter
+ */
 @Entity(name = "PROJ")
 public class Project implements Serializable, Comparable<Project> {
 
@@ -28,7 +35,6 @@ public class Project implements Serializable, Comparable<Project> {
     
     /** Owning user. */
     @ManyToOne()
-    @JoinColumn(name = "USER_ID")
     private User user;
 
     public long getId() {
