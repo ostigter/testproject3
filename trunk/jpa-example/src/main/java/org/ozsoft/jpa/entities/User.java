@@ -11,11 +11,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 /**
- * User entity.
+ * User entity. <br />
+ * <br />
+ * 
+ * A user can own zero or more projects.
  * 
  * @author Oscar Stigter
  */
@@ -42,9 +44,12 @@ public class User implements Serializable {
     private String password;
     
     /** Projects. */
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "USER_ID")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Project> projects;
+    
+    public User() {
+        projects = new TreeSet<Project>();
+    }
 
     /**
      * Returns the ID.
@@ -113,16 +118,16 @@ public class User implements Serializable {
     }
 
     public void addProject(Project project) {
-        if (projects == null) {
-            projects = new TreeSet<Project>();
+        if (!projects.contains(project)) {
+            project.setUser(this);
+            projects.add(project);
         }
-        projects.add(project);
     }
     
     public void removeProject(Project project) {
-        projects.remove(project);
-        if (projects.size() == 0) {
-            projects = null;
+        if (projects.contains(project)) {
+            project.setUser(null);
+            projects.remove(project);
         }
     }
 
