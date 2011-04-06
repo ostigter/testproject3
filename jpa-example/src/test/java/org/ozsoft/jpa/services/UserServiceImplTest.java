@@ -1,4 +1,4 @@
-package org.ozsoft.jpa;
+package org.ozsoft.jpa.services;
 
 import junit.framework.Assert;
 
