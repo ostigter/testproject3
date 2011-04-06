@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Entity
+@Entity(name = "PROJ")
 public class Project implements Serializable, Comparable<Project> {
 
     private static final long serialVersionUID = 3485262612752551153L;
@@ -18,7 +18,7 @@ public class Project implements Serializable, Comparable<Project> {
     /** ID. */
     @Id
     @GeneratedValue
-    @Column(name = "PROJECT_ID")
+    @Column(name = "PROJ_ID")
     private long id;
     
     /** Name. */
