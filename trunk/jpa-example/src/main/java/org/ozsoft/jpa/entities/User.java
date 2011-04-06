@@ -117,6 +117,12 @@ public class User implements Serializable {
         return Collections.unmodifiableSet(projects);
     }
 
+    /**
+     * Adds a project.
+     * 
+     * @param project
+     *            The project.
+     */
     public void addProject(Project project) {
         if (!projects.contains(project)) {
             project.setUser(this);
@@ -124,6 +130,12 @@ public class User implements Serializable {
         }
     }
     
+    /**
+     * Removes a project.
+     * 
+     * @param project
+     *            The project.
+     */
     public void removeProject(Project project) {
         if (projects.contains(project)) {
             project.setUser(null);
