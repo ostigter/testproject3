@@ -1,12 +1,18 @@
 package org.ozsoft.jpa.entities;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 /**
  * User entity.
@@ -34,6 +40,11 @@ public class User implements Serializable {
     @Basic
     @Column(name = "PASSWORD", nullable = false)
     private String password;
+    
+    /** Projects. */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "USER_ID")
+    private Set<Project> projects;
 
     /**
      * Returns the ID.
@@ -90,6 +101,29 @@ public class User implements Serializable {
      */
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    /**
+     * Returns the projects.
+     * 
+     * @return The projects.
+     */
+    public Set<Project> getProjects() {
+        return Collections.unmodifiableSet(projects);
+    }
+
+    public void addProject(Project project) {
+        if (projects == null) {
+            projects = new TreeSet<Project>();
+        }
+        projects.add(project);
+    }
+    
+    public void removeProject(Project project) {
+        projects.remove(project);
+        if (projects.size() == 0) {
+            projects = null;
+        }
     }
 
 }
