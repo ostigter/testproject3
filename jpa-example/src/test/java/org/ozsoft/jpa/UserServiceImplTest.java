@@ -3,6 +3,7 @@ package org.ozsoft.jpa;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.ozsoft.jpa.entities.Project;
 import org.ozsoft.jpa.entities.User;
 import org.ozsoft.jpa.services.UserService;
 import org.ozsoft.jpa.services.UserServiceImpl;
@@ -42,6 +43,31 @@ public class UserServiceImplTest {
         Assert.assertNotNull(user);
         Assert.assertEquals("alice", user.getUsername());
         Assert.assertEquals("guessme", user.getPassword());
+        
+        // Add projects.
+        Project project = new Project();
+        project.setName("Foo");
+        project.setUser(user);
+        user.addProject(project);
+        project = new Project();
+        project.setName("Zeta");
+        project.setUser(user);
+        user.addProject(project);
+        project = new Project();
+        project.setName("Bar");
+        project.setUser(user);
+        user.addProject(project);
+        userService.update(user);
+        
+        // Check update.
+        user = userService.retrieve(id);
+        Project[] projects = user.getProjects().toArray(new Project[0]);
+        Assert.assertEquals(3, projects.length);
+        Assert.assertEquals("Bar", projects[0].getName());
+        Assert.assertEquals(user, projects[0].getUser());
+        Assert.assertEquals("alice", projects[0].getUser().getUsername());
+        Assert.assertEquals("Foo", projects[1].getName());
+        Assert.assertEquals("Zeta", projects[2].getName());
 
         // Delete user.
         userService.delete(user);
