@@ -36,14 +36,40 @@ import org.ozsoft.telnet.TelnetListener;
  * 
  * Implemented as a Telnet client.
  * 
- * @todo Selling loot
- * @todo Offering heads
  * @todo Fleeing
  * @todo ANSI colors
  * 
  * @author Oscar Stigter
  */
 public class MudBot implements TelnetListener {
+    
+    /** Robot state. */
+    private enum State {
+        
+        /** Idle (safe). */
+        IDLE,
+        
+        /** Travelling to or from an area. */
+        TRAVELING,
+        
+        /** Hunting for monsters in an area. */
+        HUNTING,
+
+        /** In combat with a monster. */
+        FIGHTING,
+
+        /** Claiming a trophy (get the head of a killed monster). */
+        CLAIMING_TROPHY,
+
+        /** Resting to regenerate HP and CP. */
+        RESTING,
+        
+        /** Camping to regenerate HP and CP faster. */
+        CAMPING,
+        
+        /** Selling loot and offering heads. */
+        DUMPING_STUFF,
+    };
 
     /** Minimum HP % for hunting. */
     private static final double MIN_HP_PERC = 0.4;
@@ -55,7 +81,7 @@ public class MudBot implements TelnetListener {
     private static final int MIN_CP = 220;
     
     /** Delay between commands. */
-    private static final long DELAY = 2000; // 2 sec
+    private static final long DELAY = 1000;
     
     /** Time in ms for area to reset. */
     private static final long AREA_RESET_TIME = 600000; // 10 min
@@ -64,27 +90,6 @@ public class MudBot implements TelnetListener {
     private static final Pattern healthBarPattern =
             Pattern.compile("HP: \\[(\\d+)/(\\d+)\\]  CONC: \\[(\\d+)/(\\d+)\\]");
 
-    /** Idle (not running). */
-    private static final int IDLE = 0;
-
-    /** Travelling to an area. */
-    private static final int TRAVELING = 1;
-
-    /** Hunting for monsters in an area. */
-    private static final int HUNTING = 2;
-
-    /** In combat with a monster. */
-    private static final int FIGHTING = 3;
-
-    /** Claiming a trophy (get the head of a killed monster). */
-    private static final int CLAIMING_TROPHY = 4;
-
-    /** Resting to regenerate HP and CP. */
-    private static final int RESTING = 5;
-
-    /** Camping to regenerate HP and CP faster. */
-    private static final int CAMPING = 6;
-    
     /** NewLine character. */
     private static final String NEWLINE = "\r\n";
 
@@ -118,7 +123,7 @@ public class MudBot implements TelnetListener {
     private boolean active = false;
 
     /** Current robot state. */
-    private int state = IDLE;
+    private State state = State.IDLE;
 
     /** Main frame. */
     private JFrame frame;
@@ -323,6 +328,7 @@ public class MudBot implements TelnetListener {
 
     private void start() {
         if (!active) {
+            clearIncomingText();
             nextArea = -1;
             active = true;
             appendText(">>> Robot started\n");
@@ -333,8 +339,9 @@ public class MudBot implements TelnetListener {
     
     private void stop() {
         if (active) {
-            state = IDLE;
+            state = State.IDLE;
             active = false;
+            clearIncomingText();
             appendText(">>> Robot stopped\n");
         }
     }
@@ -350,27 +357,29 @@ public class MudBot implements TelnetListener {
                 clearIncomingText();
                 stop();
             } else {
-                if (state == IDLE) {
+                if (state == State.IDLE) {
                     huntNextArea();
-                } else if (state == TRAVELING) {
+                } else if (state == State.TRAVELING) {
                     travel(text);
-                } else if (state == HUNTING) {
+                } else if (state == State.HUNTING) {
                     hunt(text);
-                } else if (state == FIGHTING) {
+                } else if (state == State.FIGHTING) {
                     fight(text);
-                } else if (state == CLAIMING_TROPHY) {
+                } else if (state == State.CLAIMING_TROPHY) {
                     claimTrophy(text);
-                } else if (state == RESTING) {
+                } else if (state == State.RESTING) {
                     rest(text);
-                } else if (state == CAMPING) {
+                } else if (state == State.CAMPING) {
                     camp(text);
+                } else if (state == State.DUMPING_STUFF) {
+                    dumpStuff(text);
                 } else {
                     // This should never happen.
                     System.err.println("ERROR: Invalid state: " + state);
                 }
             }
             
-            if (state != IDLE && state != TRAVELING) {
+            if (state != State.IDLE && state != State.TRAVELING) {
                 sleep();
             }
         }
@@ -396,7 +405,7 @@ public class MudBot implements TelnetListener {
         
         if (currentArea != null) {
             appendText(String.format(">>> Going to area '%s'\n", currentArea));
-            state = TRAVELING;
+            state = State.TRAVELING;
             sendCommands(currentArea.toPath);
         } else {
             appendText(">>> No more areas to hunt\n");
@@ -408,23 +417,43 @@ public class MudBot implements TelnetListener {
         if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
             appendText(">>> Arrived home\n");
             clearIncomingText();
-            state = IDLE;
+            state = State.DUMPING_STUFF;
+            appendText(">>> Selling loot and offering heads\n");
+            sleep();
+            sendCommand("sell");
+            sleep();
+            sendCommand("bar");
+            sleep();
+            sendCommand("offer all");
+            sleep();
+            sendCommand("_bar");
+            sleep();
         } else if (text.contains(currentArea.roomDescription)) {
             appendText(String.format(">>> Arrived at area '%s'\n", currentArea));
             clearIncomingText();
             currentArea.reset();
-            state = HUNTING;
+            state = State.HUNTING;
             hunt(text);
         }
     }
     
+    private void dumpStuff(String text) {
+        if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
+            appendText(">>> Arrived home\n");
+            clearIncomingText();
+            state = State.IDLE;
+            //FIXME: Fix DUMPING_STUFF
+            stopRobot();
+        }
+    }
+
     private void hunt(String text) {
         if (hpPerc >= MIN_HP_PERC && cp >= MIN_CP) {
             appendText(">>> Looking for monsters\n");
             scanForMonster(text);
             if (monster != null) {
                 appendText(String.format(">>> Attacking %s\n", monster));
-                state = FIGHTING;
+                state = State.FIGHTING;
                 sendCommand("rm " + monster.getAlias());
             } else {
                 String direction = currentArea.getNextDirection();
@@ -434,13 +463,13 @@ public class MudBot implements TelnetListener {
                 } else {
                     appendText(">>> Area finished, going home\n");
                     currentArea.updateLastVisisted();
-                    state = TRAVELING;
+                    state = State.TRAVELING;
                     sendCommands(currentArea.homePath);
                 }
             }
         } else {
             appendText(">>> HP/CP getting low, resting\n");
-            state = RESTING;
+            state = State.RESTING;
             sendCommand("camping");
             rest(text);
         }
@@ -452,12 +481,12 @@ public class MudBot implements TelnetListener {
             appendText(String.format(">>> Killed %s\n", monster));
             clearIncomingText();
             sendCommand("loot");
-            state = CLAIMING_TROPHY;
+            state = State.CLAIMING_TROPHY;
             sendCommand("ct");
         } else if (text.contains("You have no target for the skill.")) {
             appendText(">>> Oops, lost track of monster, resuming the hunt\n");
             clearIncomingText();
-            state = HUNTING;
+            state = State.HUNTING;
             sendCommand("l");
         } else if (text.contains("You have finished concentrating on the skill.")) {
             clearIncomingText();
@@ -473,7 +502,7 @@ public class MudBot implements TelnetListener {
     private void claimTrophy(String text) {
         if (text.contains("You grab hold of the corpse and lift it's neck up a bit.")) {
             clearIncomingText();
-            state = HUNTING;
+            state = State.HUNTING;
             sendCommand("l");
         } else {
             appendText(">>> Claiming trophy\n");
@@ -483,14 +512,14 @@ public class MudBot implements TelnetListener {
     private void rest(String text) {
         if (text.contains("You lie down, praying for the spirits of nature to guard your sleep.")) {
             clearIncomingText();
-            state = CAMPING;
+            state = State.CAMPING;
         } else if (text.contains("You can't camp so soon again.")) {
             clearIncomingText();
             appendText(">>> Too soon to camp agin, resting instead\n");
         } else if (hpPerc >= SAFE_HP_PERC && cp >= MIN_CP) {
             clearIncomingText();
             appendText(">>> Done resting, resuming the hunt\n");
-            state = HUNTING;
+            state = State.HUNTING;
             sendCommand("l");
         } else {
             appendText(">>> Resting\n");
@@ -501,13 +530,13 @@ public class MudBot implements TelnetListener {
         if (text.contains("You wake from your rest and feel much better.")) {
             appendText(">>> Done camping, resting until fully healed\n");
             clearIncomingText();
-            state = RESTING;
+            state = State.RESTING;
             rest(text);
         } else {
             appendText(">>> Camping\n");
         }
     }
-
+    
     private void checkHealth(String text) {
         Matcher m = healthBarPattern.matcher(text);
         if (m.find()) {
@@ -620,7 +649,7 @@ public class MudBot implements TelnetListener {
         area.addItem("A sturdy leather belt");
         area.addItem("Worker's helmet");
         area.addItem("A white collar");
-        area.addItem("a dress");
+        area.addItem("A dress");
         area.addItem("Information about our theatre");
         areas.add(area);
 
@@ -645,24 +674,14 @@ public class MudBot implements TelnetListener {
         area.addItem(" gold coins");
         area.addItem("The decapitated head of ");
         area.addItem("An orcish axe");
-        area.addItem("An orcish dagger");
+        area.addItem("An orcish club");
         area.addItem("An orcish spear");
-        area.addItem("An orcish axe");
+        area.addItem("An orcish dagger");
+        area.addItem("An orcish throwing dagger");
         areas.add(area);
-
-//         // Rondaran Heights.
-//         area = new Area("heights");
-//         area.toPath = new String[] {"heights"};
-//         area.homePath = new String[] {"_heights"};
-//         area.roomDescription = "You are at the entrance to the Rondaran Heights, ";
-//         area.directions = new String[] {"e", "e", "e", "s", "e", "s", "w", "sw", "nw", "n", "n", "w"};
-//         area.addMonster(new Monster("A white mouse", "mouse"));
-//         area.addMonster(new Monster("A small, cute rabbit", "rabbit"));
-//         area.addMonster(new Monster("A small snake, hissing at you", "snake"));
-//         areas.add(area);
     }
 
-    private void sleep() {
+    private static void sleep() {
         try {
             Thread.sleep(DELAY);
         } catch (InterruptedException e) {
