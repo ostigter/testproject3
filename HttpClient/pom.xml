@@ -20,14 +20,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <commons-io-version>2.0.1</commons-io-version>
+        <commons.io.version>2.0.1</commons.io.version>
     </properties>
     
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons-io-version}</version>
+            <version>${commons.io.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -37,6 +37,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
