@@ -3,45 +3,60 @@ Pages
 
 Home
     Create Account
-    Log in
-    Log out
+    Sign In
+    Sign Out
     Company
-    Enterprises
+    Businesses
     Market
 
+News
+
 Company
+    View Businesses
+    Start New Business
+    Edit Business
+        Edit Employees
+        Edit Suppliers
+        Edit Prices
+
+Technology
+
+Start New Business:
+    Type (Mine, Farm, Factory, Store, R&D Center, Office)
+    City
+    Size
+
+    Natural Resources
+        Type
+            Logging Camp (Timber)
+            Coal Mine (Coal)
+            Iron Mine (Iron)
+            Silver Mine (Silver)
+            Gold Mine (Gold)
+            Oil Drill (Oil)
+            Silica Mine (Silica)
+            Chemical Mine (Chemicals)
     
-Enterprises
-
-Create Enterprise
-
-Edit Enterprise
-
-Edit Employees
-
-Edit Suppliers
-
-Edit Prices
-
-Technologies
-
-
-Create Enterprise:
-    type (mine, farm, factory, store, R&D center, office)
-    city
-    size
-        farm
-            crop growing
-                product (wheat)
-            lifestock raising:
-                animal (chicken (eggs), cows (milk), pigs, sheep (whool))
-        factory
-            flour mill (wheat -> flour)
-            bakery (flour -> bread)
-            slaughterhouse (chicken -> chicken meat; cows -> beef, leather; pigs -> pork, leather; sheep -> lamb, leather)
-            taylor (whool -> cloth)
-            leather workshop (leather -> leather jackets, leather bags)
-            clothing factory (cloth -> clothes)
-        store
-            grocery (bread, milk, eggs, chicken, pork, lamb)
-            
+    Farm
+        Crop Growing
+            Product (raw)
+                Wheat
+                Cotton
+        Lifestock Raising
+            Lifestock
+                Chicken (Eggs)
+                Cows (Milk)
+                Pigs
+                Sheep (Wool)
+    Factory
+        Type
+            Flour Mill (Wheat -> Flour)
+            Bakery (Flour -> Bread)
+            Slaughterhouse (Chicken -> Chicken Meat; Cows -> Beef, Leather; Pigs -> Pork, Leather; Sheep -> Lamb Chops, Leather)
+            Taylor (Wool, Cotton -> Textiles)
+            Leather Workshop (Leather -> Leather Jackets, Leather Bags)
+            Clothing Factory (Textiles -> Clothes)
+    Store
+        Type
+            Grocery (Bread, Milk, Eggs, Chicken Meat, Beef, Pork, Lamb Chops)
+            Boutique (Clothes)
