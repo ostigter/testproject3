@@ -14,13 +14,13 @@
     <developers>
         <developer>
             <name>Oscar Stigter</name>
-            <email>oscar.stigter@vanderlande.com</email>
+            <email>oscar.stigter@gmail.com</email>
         </developer>
     </developers>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <netty-version>3.1.5.GA</netty-version>
+        <netty.version>3.1.5.GA</netty.version>
     </properties>
 
     <dependencies>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.jboss.netty</groupId>
             <artifactId>netty</artifactId>
-            <version>${netty-version}</version>
+            <version>${netty.version}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -36,7 +36,7 @@
     <repositories>
         <repository>
             <id>jboss</id>
-            <url>http://repository.jboss.org/maven2</url>
+            <url>http://repository.jboss.org/nexus/content/groups/public-jboss</url>
         </repository>
     </repositories>
 
@@ -54,7 +54,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2</version>
+                <version>2.2.1</version>
                 <executions>
                     <execution>
                         <id>package-jar-with-dependencies</id>
