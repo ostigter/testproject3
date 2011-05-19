@@ -2,9 +2,9 @@ TODO
 ====
 
 - Home page
-- Log in
-- Log out
 - Create Account
+- Sign In
+- Sign Out
 - Edit Account
 - Delete Account
 - View Cities

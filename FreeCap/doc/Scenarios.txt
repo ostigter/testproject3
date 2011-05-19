@@ -1,0 +1,8 @@
+Scenarios
+=========
+
+* Create Account (Create Company)
+* Sign In
+* Sign Out
+* Delete Account (Foreclose Company)
+* Edit Company Profile

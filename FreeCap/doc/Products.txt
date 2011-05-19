@@ -84,24 +84,23 @@ Frozen Pork
 
 Manufactured Goods
 
-Bread               Wheat (Flour)
-Cake                Cacao, Eggs, Wheat (Flour)
+Bread               Flour (Wheat)
+Cake                Cacao, Eggs, Flour (Wheat)
 Canned Corn         Corn
 Canned Soup         Frozen Chicken
-Chewing Gum         Sugar, Corn (Corn Syrup)
+Chewing Gum         Sugar, Corn Syrup (Corn)
 Chocolate Bar       Cacao, Milk
-Cookies             Sugar, Wheat (Flour)
+Cookies             Sugar, Flour (Wheat)
 Corn Flakes         Corn, Sugar
 Fruit Snack         Strawberry
 Ice Cream           Milk, Strawberry, Sugar
-Leather Bag         Leather, Cotton
-Leather Briefcase   Leather, Cotton (Textiles)
-Leather Jacket      Leather, Cotton (Textiles)
 Leather Wallet      Leather
+Leather Jacket      Leather, Textiles (Cotton)
 Sandals             Rubber
 Shoes               Cotton, Leather
-Socks               Wool
-Yogurt              Strawberry, Milk, Lemon (Citric Acid)
+Woolen Socks        Wool
+Woolen Sweaters     Wool
+Yogurt              Milk, Strawberry, Citric Acid (Lemon)
 
 1x Mined + Grown
 A   Aluminum
@@ -150,10 +149,8 @@ Elegent Watch          Coal + Iron (Steel), Silica (Glass)
 Golf Clubs             Coal + Iron (Steel), Timber
 
 4x Mined + Grown
-Air Conditioner     Chemical Materials + Coal + Iron + Silica (Electronic
-Components), Coal + Iron (Steel)
-Desktop Computer    Chemical Materials, Coal, Iron, Silica (Electronic
-Components+ CPU) Coal + Iron (Steel)
+Air Conditioner     Chemical Materials + Coal + Iron + Silica (Electronic Components), Coal + Iron (Steel)
+Desktop Computer    Chemical Materials, Coal, Iron, Silica (Electronic Components+ CPU) Coal + Iron (Steel)
 
 Car    	Car Body         Coal + Iron (Steal), Silica (Glass), Oil (Plastic)
 	Engine           Coal + Iron (Steel)
@@ -276,6 +273,7 @@ may be of better help with products for consumer purchase.
 In product alphabetical order
 
 Grown (Straight from the Farm)
+
 Eggs
 Frozen Beef
 Frozen Chicken
@@ -468,8 +466,8 @@ Slaughterhouse (Sheep) -> Lamb, Wool
 
 Silica mine -> Silica
 Silica -> Glass
-Milk + Glass -> Bottled milk
+Milk, Glass -> Bottled milk
 Iron mine -> Iron
 Aluminium mine -> Aluminium
 Iron, Aluminium -> Steel
-Cacao + Sugar -> Chocolate
+Cacao, Sugar -> Chocolate

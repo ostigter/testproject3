@@ -52,16 +52,17 @@ company
     description
     CEO (name, picture)
     cash
-    enterprises
-    revenues
-    expenses
+    businesses
+    revenues (income)
+    expenses (costs)
     result (profit/loss)
     shares
     shareholders
     owned stock
+    ownership
     divident
 
-enterprise
+business
     type
         harbor (fresh fish)
         farm (farming)
@@ -119,22 +120,23 @@ mine
     oil drill (oil)
 
 factory
-	flourmill (1 wheat -> 1 flour)
+	flour mill (1 wheat -> 1 flour)
 	bakery (1 flour -> 1 bread)
 	wood mill (1 wood -> 1 planks)
 	carpentry (5 planks -> 1 furnature)
-	cotton mill (1 cotton -> 1 thread)
-	clothing workshop (10 thread -> 1 clothes) 
-	beef workshop (1 cow -> 50 beef)
+	cotton mill (1 cotton -> 1 cotton thread)
+	wool mill (1 wool -> 1 wool thread)
+	clothing workshop (10 cotton thread -> 1 cotton pants, 10 wool thread -> 1 wool sweaters) 
+	beef workshop (1 cow -> 10 beef)
 	dairy workshop (1 milk -> 1 yoghurt/butter/cheese)
 
 store
 	grocery (bread, milk, yoghurt, butter, cheese, meat)
+    bakery (bread, pastry)
+    clothes shop (clothes)
 	funature store (furnature)
-	bakery (bread, pastry)
-	clothes shop (clothes)
 	
-research center
+R&D Center
     technology
 
 game
@@ -164,14 +166,14 @@ Crop farm
 	Technology level: 1
 	Quality: 1
 	
-	Revenue: 100,000 x $1.00 = $100,000 per year =  $1923.08 per week
-	Fixed costs: 								    -$1000.00
-	Salaries:    									 -$500.00
-													---------
-	Profit											  $423.08
-	Profit margin:                                      22.0 %
+	Revenue: 300,000 x $1.00 = $300,000 per year = $6,250.00 per week
+	Fixed costs: 								   $5,000.00-
+	Salaries:    								     $500.00-
+													--------
+	Profit											 $750.00
+	Profit margin:                                     12.0 %
 
-Fourmill
+Four mill
 	Location: Smallville
 	Size: 500 square feet
 	Produces: 100 flour per week
@@ -179,15 +181,15 @@ Fourmill
 		10 x $50.00 = $500.00 salary per week
 		Qualification: 1
 	Technology level: 1
-	Supplier: GreenLand Corp., 1000 units wheat x $1.00 = $1000.00 per week, quality 1
+	Supplier: GreenLand Corp., 1,000 units wheat x $1.00 = $1,000.00 per week, quality 1
 	Quality: 1
 
 	Revenue: 1000 x $2.00 =             $2000.00
 	Fixed costs               $200.00
-	Material costs:          $1000.00
+	Supplier costs:          $1000.00
 	Salaries:    			  $500.00
 							 --------
-	Total costs:                        $1700.00
+	Total costs:                        $1700.00-
 									    --------
 	Profit								 $300.00 (15.0%)
 
@@ -213,7 +215,7 @@ Market
         Avg. quality    Avg. price
         30              $2.25
 
-Enterprise
+Business
     Wheat farm
         Size: 100 acres
         Technology level: 1
@@ -228,7 +230,7 @@ Enterprise
             Wheat       1           $0.15       $0.25           5,000
             Wheat       3           $0.75       -                 100
 
-    Flourmill
+    Flour mill
         Size: 1,000 square feet
         Technology level: 2
         Production: 1,000 units per week
