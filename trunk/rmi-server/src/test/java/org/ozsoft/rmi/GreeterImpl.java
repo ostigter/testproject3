@@ -1,4 +1,4 @@
-package org.example.rmi;
+package org.ozsoft.rmi;
 
 public class GreeterImpl implements Greeter {
 

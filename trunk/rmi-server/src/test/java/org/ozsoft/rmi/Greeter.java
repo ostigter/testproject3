@@ -1,4 +1,4 @@
-package org.example.rmi;
+package org.ozsoft.rmi;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
