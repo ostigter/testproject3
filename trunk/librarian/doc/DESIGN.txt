@@ -1,0 +1,65 @@
+DESIGN
+======
+
+
+class Document {
+    long getId()
+    DocumentType getType()
+    String getTitle()
+    String getDescription()
+    User getOwner()
+    Group getGroup()
+    Map<Integer, DocumentVersion> getVersions()
+    DocumentVersion[] getVersions()
+    DocumentVersion getVersion(int versionNumber)
+    void addVersion(DocumentVersion version)
+}
+
+class DocumentType {
+    long getId()
+    String getCode()  // e.g. "SRD"
+    String getName()  // e.g. "Software Requirements Document"
+}
+
+class DocumentVersion {
+    long getId()
+    int getVersionNumber()
+    DocumentStatus getDocumentStatus()
+    User getAuthor()
+    boolean isCheckedOut()
+    void setCheckedOut(boolean isCheckedOut)
+    Date getCreationDate()
+    Date getModifiedDate()
+    InputStream getContent()
+    void setContent(InputStream is)
+    void promoteStatus()
+}
+
+enum DocumentStatus {
+    DRAFT
+    FOR_REVIEW
+    FINAL
+    OBSOLETE
+}
+
+class User {
+    long getId()
+    String getUsername()
+    String getPassword()
+    String getFullName()
+    String getEmail()
+    String getGroup()
+    UserRole getRole()
+}
+
+class Group {
+    long getId()
+    String getName()
+    User getGroupLead()
+}
+
+enum UserRole {
+    USER     // Create documents, checkout and checkin documents, set status to For_Review
+    MANAGER  // Permission to approve final versions and make documents obsolete
+    ADMIN    // All permissions
+}
