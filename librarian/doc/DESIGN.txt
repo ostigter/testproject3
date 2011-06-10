@@ -2,15 +2,50 @@ DESIGN
 ======
 
 
+Use cases
+---------
+
+* Log In
+* Log Out
+* Manage Users (admin)
+  * List Users
+  * Add User
+  * Edit User    
+  * Delete User
+* Manage Document Types (admin)
+  * List Document Types
+  * Add Document Type
+  * Edit Document Type
+  * Delete Document Type
+* List Documents
+  * List Owned Documents
+  * List Favorite Documents
+  * List Recent Documents
+* Find Documents
+  * Find Document by ID
+  * Find Documents by Title
+  * Find Documents by Owner
+  * Find Documents by Group
+  * Find Documents by Author
+* View Document Details
+  * List Document Versions
+* Download Document Version
+* Check Out Document Version
+* Check In Document Version
+* Change Document Version Status
+* Discard Document Version (only Draft or For Review) 
+
+
+Classes
+-------
+
 class Document {
     long getId()
     DocumentType getType()
     String getTitle()
-    String getDescription()
     User getOwner()
     Group getGroup()
-    Map<Integer, DocumentVersion> getVersions()
-    DocumentVersion[] getVersions()
+    List<DocumentVersion> getVersions()
     DocumentVersion getVersion(int versionNumber)
     void addVersion(DocumentVersion version)
 }
@@ -55,11 +90,11 @@ class User {
 class Group {
     long getId()
     String getName()
-    User getGroupLead()
+    User getManager()
 }
 
 enum UserRole {
-    USER     // Create documents, checkout and checkin documents, set status to For_Review
-    MANAGER  // Permission to approve final versions and make documents obsolete
-    ADMIN    // All permissions
+    USER
+    MANAGER
+    ADMIN
 }
