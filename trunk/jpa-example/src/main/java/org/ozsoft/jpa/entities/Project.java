@@ -34,7 +34,7 @@ public class Project implements Serializable, Comparable<Project> {
     private String name;
     
     /** Owning user. */
-    @ManyToOne()
+    @ManyToOne
     private User user;
 
     public long getId() {
