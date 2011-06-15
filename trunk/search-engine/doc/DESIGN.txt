@@ -1,0 +1,39 @@
+Documents
+    id      title
+    1       "EPS OTAS Document Store"
+    2       "EPS OTAS Data Collector"
+
+Keywords
+    id      keyword
+    101     "eps"
+    102     "otas"
+    103     "document"
+    104     "store"
+    105     "data"
+    106     "collector"
+
+KeywordIndexes
+    document    keyword
+    1           101
+    1           102         
+    1           103
+    1           104
+    2           101
+    2           102
+    2           105
+    2           106
+
+Search documents by title "EPS OTAS Document Store" (Any Words)
+    keywords: "eps" (101), "otas" (102), "document" (103), "store" (104)
+    documents: 101 = {1, 2}, 102 = {1, 2}, 103 = {1}, 104 = {1}
+    ranking: 1 (4), 2 (2)
+
+Search documents by title "EPS OTAS Document Store" (All Words)
+    keywords: "eps" (101), "otas" (102), "document" (103), "store" (104)
+    documents: 101 = {1, 2}, 102 = {1, 2}, 103 = {1}, 104 = {1}
+    ranking: 1 (4)
+
+Search documents by title "Document Store" (Any Words)
+    keywords: "document" (103), "store" (104)
+    documents: 103 = {1}, 104 = {1}
+    ranking: 1 (2)
