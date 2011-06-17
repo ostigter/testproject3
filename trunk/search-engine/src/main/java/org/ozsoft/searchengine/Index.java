@@ -1,21 +1,22 @@
 package org.ozsoft.searchengine;
 
-import javax.persistence.Basic;
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Index {
+public class Index implements Serializable {
     
+    private static final long serialVersionUID = -3450064557416055434L;
+
     @Id
     @GeneratedValue
     private long id;
     
-    @Basic
     private Item item;
     
-    @Basic
     private Tag tag;
 
     public void setId(long id) {
