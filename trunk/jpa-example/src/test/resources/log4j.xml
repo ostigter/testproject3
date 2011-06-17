@@ -13,7 +13,11 @@
     </logger>
 
     <logger name="org.hibernate">
-        <level value="INFO" />
+        <level value="WARN" />
+    </logger>
+
+    <logger name="com.mchange"> <!-- c3p0 -->
+        <level value="WARN" />
     </logger>
 
     <root>
