@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQuery;
 
 @Entity
-@NamedQuery(name = "findAllItems", query = "SELECT i FROM Item i")
+@NamedQuery(name = "findAllItems", query = "SELECT item FROM Item item")
 public class Item implements Serializable {
     
     private static final long serialVersionUID = 5253607267211299872L;

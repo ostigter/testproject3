@@ -6,8 +6,10 @@ public interface ItemService {
     
     void persistItem(Item item);
     
-    Item getItem(long id);
+    Item retrieveItem(long id);
     
-    List<Item> getItems();
+    List<Item> findAllItems();
+    
+    List<Item> findItemsByTitle(String title);
 
 }

@@ -6,8 +6,10 @@ import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(name = "findTag", query = "SELECT tag FROM Tag tag WHERE tag.name = ?1")
 public class Tag implements Serializable {
     
     private static final long serialVersionUID = -6379757184681647853L;

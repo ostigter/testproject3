@@ -5,8 +5,10 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 
 @Entity
+@NamedQuery(name = "findIndex", query = "SELECT index FROM Index index WHERE index.tag = ?1")
 public class Index implements Serializable {
     
     private static final long serialVersionUID = -3450064557416055434L;
