@@ -23,61 +23,35 @@
     </properties>
 
     <dependencies>
-        <!--
-        <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.ejb</artifactId>
-            <version>${glassfish.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>${javaee.version}</version>
             <scope>provided</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>javax.faces</groupId>
-            <artifactId>jsf-api</artifactId>
-            <version>${jsf.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>${jpa.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>${eclipselink.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <!--
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+            <version>${jpa.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>${eclipselink.version}</version>
+            <scope>test</scope>
+        </dependency>
+        -->
     </dependencies>
 
     <repositories>
-        <!-- GlassFish (Java EE)
-        <repository>
-            <id>glassfish</id>
-            <url>http://download.java.net/maven/glassfish</url>
-        </repository>
-        -->
-        <!-- Mojarra (JSF) -->
-        <repository>
-            <id>dev.java.net</id>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-        <!-- EclipseLink (JPA) -->
         <repository>
             <id>eclipselink</id>
             <url>http://mirror.cc.vt.edu/pub/eclipse/rt/eclipselink/maven.repo</url>
@@ -85,6 +59,7 @@
     </repositories>
 
     <build>
+        <finalName>bookstore</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
