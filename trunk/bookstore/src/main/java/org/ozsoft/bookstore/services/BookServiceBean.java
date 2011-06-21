@@ -16,37 +16,37 @@ import org.ozsoft.bookstore.entities.Book;
 @Stateless
 @Local
 @TransactionManagement(TransactionManagementType.CONTAINER)
-public class BookServiceImpl implements BookService {
+public class BookServiceBean implements BookService {
     
     @PersistenceContext(unitName = "bookstore")
     private EntityManager em;
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void create(Book book) {
         em.persist(book);
     }
 
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public List<Book> retrieveAll() {
         return em.createNamedQuery("findAllBooks", Book.class).getResultList();
     }
 
-    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     @Override
+    @TransactionAttribute(TransactionAttributeType.SUPPORTS)
     public Book retrieve(long id) {
         return em.find(Book.class, id);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void update(Book book) {
         em.merge(book);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void delete(Book book) {
         em.remove(book);
     }
