@@ -1,23 +1,42 @@
 package org.ozsoft.scm;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class Directory extends VersionedObject {
     
-    private final List<VersionedObject> children;
+    private final Set<VersionedObject> children;
     
-    public Directory(String name, Stream stream) {
-        super(name, stream);
-        children = new ArrayList<VersionedObject>();
+    public Directory(String name, Directory parent, Stream stream) {
+        super(name, parent, stream);
+        children = new TreeSet<VersionedObject>();
     }
     
-    public List<VersionedObject> getChildren() {
+    public Set<VersionedObject> getChildren() {
         return children;
     }
     
-    public void addChild(VersionedObject child) {
-        children.add(child);
+    public Directory createDirectory(String name) {
+        Directory dir = new Directory(name, this, stream);
+        children.add(dir);
+        return dir;
     }
-
+    
+    public File createFile(String name, String content) {
+        File file = new File(name, this, stream, content);
+        children.add(file);
+        return file;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (parent != null) {
+            sb.append(parent);
+        }
+        sb.append(name);
+        sb.append('/');
+        return sb.toString();
+    }
+    
 }

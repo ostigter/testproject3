@@ -1,22 +1,26 @@
 package org.ozsoft.scm;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 public class Stream {
     
     private final String name;
     
     private final Stream parent;
     
-    private int revision = 1;
+    private final Map<Integer, Directory> rootDirs;
     
-    private Directory rootDir;
+    private int revision = 1;
     
     public Stream(String name, Stream parent) {
         this.name = name;
         this.parent = parent;
+        rootDirs = new TreeMap<Integer, Directory>();
         if (parent == null) {
-            rootDir = new Directory("/", this);
+            rootDirs.put(revision, new Directory("", null, this));
         } else {
-            rootDir = parent.getRootDir();
+            rootDirs.put(revision, parent.getRootDir());
         }
     }
     
@@ -33,7 +37,31 @@ public class Stream {
     }
     
     public Directory getRootDir() {
-        return rootDir;
+        return rootDirs.get(revision);
+    }
+    
+    public void incrementRevision() {
+        revision++;
+        rootDirs.put(revision, new Directory("", null, this));
+    }
+    
+    public void print() {
+        System.out.format("%s:\n", this);
+        print(getRootDir());
+    }
+    
+    private void print(VersionedObject obj) {
+        System.out.format("  %s\n", obj);
+        if (obj instanceof Directory) {
+            for (VersionedObject child : ((Directory) obj).getChildren()) {
+                print(child);
+            }
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
     
     @Override
