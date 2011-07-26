@@ -89,3 +89,61 @@ Commit S1:3
 
 Rebase S1.1:2 from S1:3
     U /D1/F1.1
+
+    
+Example
+-------
+
+Create S1:1
+    A /
+
+S1:1
+    /:S1:1
+
+Commit S1:2
+    A /F1
+
+S1:2
+    /:S1:2
+    /F1:S1:2
+
+Commit S1:3
+    A /F2
+
+S1:3
+    /:S1:3
+    /F1:S1:2
+    /F2:S1:3
+
+Example
+-------
+
+Create S1:1
+    A /
+
+S1:1
+    /:S1:1
+
+Commit S1:2
+    A /D1/
+    A /D1/F1.1
+    A /D2/
+    A /D2/F2.1
+
+S1:2
+    /:S1:2
+    /D1/:S1:2
+    /D1/F1.1:S1:2
+    /D2/:S1:2
+    /D2/F2.1:S1:2
+
+Commit S1:3
+    A /D1/F1.2
+
+S1:3
+    /:S1:3
+    /D1/:S1:3
+    /D1/F1.1:S1:2
+    /D1/F1.2:S1:3
+    /D2/F2.1:S1:2
+    /D2/F2.2:S1:2

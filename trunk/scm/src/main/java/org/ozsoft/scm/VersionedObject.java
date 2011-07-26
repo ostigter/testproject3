@@ -1,21 +1,28 @@
 package org.ozsoft.scm;
 
-public abstract class VersionedObject {
+public abstract class VersionedObject implements Comparable<VersionedObject> {
     
-    private final String name;
+    protected final String name;
     
-    private final Stream stream;
+    protected final Directory parent;
     
-    private final int revision;
+    protected final Stream stream;
     
-    public VersionedObject(String name, Stream stream) {
+    protected final int revision;
+    
+    public VersionedObject(String name, Directory parent, Stream stream) {
         this.name = name;
+        this.parent = parent;
         this.stream = stream;
         this.revision = stream.getRevision();
     }
     
     public String getName() {
         return name;
+    }
+    
+    public Directory getParent() {
+        return parent;
     }
     
     public Stream getStream() {
@@ -25,5 +32,10 @@ public abstract class VersionedObject {
     public int getRevision() {
         return revision;
     }
-
+    
+    @Override
+    public int compareTo(VersionedObject obj) {
+        return name.compareTo(obj.getName());
+    }
+    
 }
