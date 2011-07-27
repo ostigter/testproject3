@@ -10,11 +10,11 @@ public abstract class VersionedObject implements Comparable<VersionedObject> {
     
     protected final int revision;
     
-    public VersionedObject(String name, Directory parent, Stream stream) {
+    public VersionedObject(String name, Directory parent, Stream stream, int revision) {
         this.name = name;
         this.parent = parent;
         this.stream = stream;
-        this.revision = stream.getRevision();
+        this.revision = revision;
     }
     
     public String getName() {
@@ -31,6 +31,16 @@ public abstract class VersionedObject implements Comparable<VersionedObject> {
     
     public int getRevision() {
         return revision;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof VersionedObject) {
+            VersionedObject vo = (VersionedObject) obj;
+            return (vo.getName().equals(name) && vo.getStream().equals(stream) && vo.getRevision() == revision);
+        } else {
+            return false;
+        }
     }
     
     @Override

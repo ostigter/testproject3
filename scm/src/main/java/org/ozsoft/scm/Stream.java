@@ -11,16 +11,17 @@ public class Stream {
     
     private final Map<Integer, Directory> rootDirs;
     
-    private int revision = 1;
+    private int latestRevision = 1;
     
     public Stream(String name, Stream parent) {
         this.name = name;
         this.parent = parent;
         rootDirs = new TreeMap<Integer, Directory>();
         if (parent == null) {
-            rootDirs.put(revision, new Directory("", null, this));
+            rootDirs.put(latestRevision, new Directory("", null, this, latestRevision));
         } else {
-            rootDirs.put(revision, parent.getRootDir());
+            int parentRevision = parent.getLatestRevision();
+            rootDirs.put(latestRevision, parent.getRootDir(parentRevision));
         }
     }
     
@@ -32,22 +33,26 @@ public class Stream {
         return parent;
     }
     
-    public int getRevision() {
-        return revision;
+    public int getLatestRevision() {
+        return latestRevision;
     }
     
-    public Directory getRootDir() {
+    public Directory getRootDir(int revision) {
+        if (revision > latestRevision) {
+            throw new IllegalArgumentException("Invalid revision: " + revision);
+        }
         return rootDirs.get(revision);
     }
     
     public void incrementRevision() {
-        revision++;
-        rootDirs.put(revision, new Directory("", null, this));
+        Directory rootDir = getRootDir(latestRevision);
+        latestRevision++;
+        rootDirs.put(latestRevision, new Directory(rootDir, latestRevision));
     }
     
-    public void print() {
-        System.out.format("%s:\n", this);
-        print(getRootDir());
+    public void print(int revision) {
+        System.out.format("%s:%s:\n", name, revision);
+        print(getRootDir(revision));
     }
     
     private void print(VersionedObject obj) {
@@ -75,7 +80,7 @@ public class Stream {
     
     @Override
     public String toString() {
-        return String.format("%s:%d", name, revision);
+        return name;
     }
 
 }
