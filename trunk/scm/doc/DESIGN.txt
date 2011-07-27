@@ -29,95 +29,6 @@ User roles
 Examples
 --------
 
-New toplevel stream: MyProject_main
-
-Revision 1:
-    A /                     (MyProject_main:1)
-    
-MyProject_main:1
-    /
-
-Revision 2:
-    U /                     (MyProject_main:2)
-    A /Comp1/               (MyProject_main:2)
-    A /Comp1/README.txt     (MyProject_main:2)
-
-MyProject_main:2
-    /Comp1/
-    /Comp1/README.txt
-
-Revision 3:
-    U /Comp1/README.txt     (MyProject_main:3)
-
-MyProject_main:3
-    /Comp1/
-    /Comp1/README.txt
-
-Revision 4:
-    A /Comp1/LICENSE.txt    (MyProject_main:4)
-
-MyProject_main:4
-    /Comp1/
-    /Comp1/README.txt
-    /Comp1/LICENSE.txt
-
-New child stream: MyProject1.0 from MyProject_main:4
-
-MyProject1.0:1 (MyProject_main:4)
-    A /                     (MyProject_main:4)
-    A /Comp1/               (MyProject_main:4)
-    A /Comp1/README.txt     (MyProject_main:4)
-    A /Comp1/LICENSE.txt    (MyProject_main:4)
-
-    
-Create S1:1
-    A /
-
-Commit S1:2
-    A /D1/
-    A /D1/F1.1
-    A /D2/
-    A /D2/D2.1/
-    A /D2/D2.1/F2.1.1
-    A /D3/
-    A /D3/F2.1
-    
-Create S1.1:1 from S1:2
-
-Commit S1:3
-    U /D1/F1.1
-
-Rebase S1.1:2 from S1:3
-    U /D1/F1.1
-
-    
-Example
--------
-
-Create S1:1
-    A /
-
-S1:1
-    /:S1:1
-
-Commit S1:2
-    A /F1
-
-S1:2
-    /:S1:2
-    /F1:S1:2
-
-Commit S1:3
-    A /F2
-
-S1:3
-    /:S1:3
-    /F1:S1:2
-    /F2:S1:3
-
-Example
--------
-
 Create S1:1
     A /
 
@@ -126,24 +37,28 @@ S1:1
 
 Commit S1:2
     A /D1/
-    A /D1/F1.1
     A /D2/
-    A /D2/F2.1
 
 S1:2
     /:S1:2
     /D1/:S1:2
-    /D1/F1.1:S1:2
     /D2/:S1:2
-    /D2/F2.1:S1:2
 
 Commit S1:3
-    A /D1/F1.2
+    A /D1/F1.1
 
 S1:3
     /:S1:3
     /D1/:S1:3
-    /D1/F1.1:S1:2
-    /D1/F1.2:S1:3
-    /D2/F2.1:S1:2
-    /D2/F2.2:S1:2
+    /D1/F1.1:S1:3
+    /D2/:S1:2
+
+Commit S1:4
+    A /D2/F2.1
+
+S1:4
+    /:S1:4
+    /D1/:S1:3
+    /D1/F1.1:S1:3
+    /D2/:S1:4
+    /D2/F2.1:S1:4

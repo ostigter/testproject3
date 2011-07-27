@@ -2,20 +2,21 @@ package org.ozsoft.scm;
 
 public class File extends VersionedObject {
     
-    private final String content;
-    
-    public File(String name, Directory parent, Stream stream, String content) {
-        super(name, parent, stream);
-        this.content = content;
-    }
-    
-    public String getContent() {
-        return content;
+    public File(String name, Directory parent, Stream stream, int revision) {
+        super(name, parent, stream, revision);
     }
     
     @Override
     public String toString() {
-        return String.format("%s%s", parent, name);
+        StringBuilder sb = new StringBuilder();
+        sb.append(parent);
+        sb.append(name);
+        sb.append(" (");
+        sb.append(stream);
+        sb.append(':');
+        sb.append(revision);
+        sb.append(')');
+        return sb.toString();
     }
     
 }
