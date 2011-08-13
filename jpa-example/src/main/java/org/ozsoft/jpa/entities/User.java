@@ -21,7 +21,7 @@ import javax.persistence.OneToMany;
  * 
  * @author Oscar Stigter
  */
-@Entity(name = "USER")
+@Entity(name = "USERS")
 public class User implements Serializable {
 
     /** Serial version UID. */

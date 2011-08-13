@@ -35,10 +35,10 @@ public class DocumentServiceTest {
         Assert.assertEquals("Bar-001.txt", doc.getName());
         Assert.assertEquals(content, doc.getContent());
         
-        // Delete document.
-        documentService.delete(doc);
-        doc = documentService.retrieve(id);
-        Assert.assertNull(doc);
+//        // Delete document.
+//        documentService.delete(doc);
+//        doc = documentService.retrieve(id);
+//        Assert.assertNull(doc);
     }
 
 }
