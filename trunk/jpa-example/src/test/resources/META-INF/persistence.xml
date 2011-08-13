@@ -9,6 +9,7 @@
         
         <class>org.ozsoft.jpa.entities.User</class>
         <class>org.ozsoft.jpa.entities.Project</class>
+        <class>org.ozsoft.jpa.entities.Document</class>
 
 		<properties>
             <!-- H2 Database -->

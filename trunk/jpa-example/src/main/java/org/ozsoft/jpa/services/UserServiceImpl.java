@@ -1,9 +1,7 @@
 package org.ozsoft.jpa.services;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
 import org.ozsoft.jpa.entities.User;
@@ -15,16 +13,13 @@ import org.ozsoft.jpa.entities.User;
  */
 public class UserServiceImpl implements UserService {
 
-    private static final String PU_NAME = "jpa-example";
-
     private final EntityManager em;
 
     /**
      * Constructor.
      */
     public UserServiceImpl() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
-        em = emf.createEntityManager();
+        em = PersistenceService.getEntityManager();
     }
 
     /*

@@ -5,8 +5,6 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.ozsoft.jpa.entities.Project;
 import org.ozsoft.jpa.entities.User;
-import org.ozsoft.jpa.services.UserService;
-import org.ozsoft.jpa.services.UserServiceImpl;
 
 /**
  * Test suite for the User service.
@@ -16,7 +14,7 @@ import org.ozsoft.jpa.services.UserServiceImpl;
 public class UserServiceImplTest {
 
     @Test
-    public void testBasicPersistence() throws Exception {
+    public void testBasicPersistence() {
         UserService userService = new UserServiceImpl();
 
         // Create a user.
