@@ -14,7 +14,7 @@ import org.ozsoft.jpa.entities.User;
 public class UserServiceImplTest {
 
     @Test
-    public void testBasicPersistence() {
+    public void userService() {
         UserService userService = new UserServiceImpl();
 
         // Create a user.

@@ -12,14 +12,14 @@
         <class>org.ozsoft.jpa.entities.Document</class>
 
 		<properties>
-            <!-- H2 Database -->
-			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-			<property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:jpa-example" />
-			<property name="javax.persistence.jdbc.user" value="sa" />
-			<property name="javax.persistence.jdbc.password" value="sa" />
+            <!-- PostgreSQL -->
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/jpa-example" />
+			<property name="javax.persistence.jdbc.user" value="jpa-example" />
+			<property name="javax.persistence.jdbc.password" value="jpa-example" />
 
             <!-- Hibernate -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
             <property name="hibernate.hbm2ddl.auto" value="create" />
             <property name="hibernate.show_sql" value="false" />
 
