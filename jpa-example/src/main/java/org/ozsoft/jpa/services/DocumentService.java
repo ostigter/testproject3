@@ -1,9 +1,5 @@
 package org.ozsoft.jpa.services;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
@@ -11,7 +7,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
-import org.hibernate.Session;
 import org.ozsoft.jpa.entities.Document;
 
 /**
@@ -74,29 +69,30 @@ public class DocumentService {
         }
     }
     
-    public InputStream getContent(long id) throws IOException, SQLException {
-        InputStream is = null;
-        Document doc = retrieve(id);
-        if (doc != null) {
-            Session session = em.unwrap(Session.class);
-            session.refresh(doc);
-            Blob blob = doc.getContent();
-            if (blob != null) {
-                is = blob.getBinaryStream();
-            }
-        }
-        return is;
-    }
+//    public InputStream getContent(long id) throws IOException, SQLException {
+//        InputStream is = null;
+//        Document doc = retrieve(id);
+//        if (doc != null) {
+//            Session session = em.unwrap(Session.class);
+//            session.refresh(doc);
+//            Blob blob = doc.getContent();
+//            if (blob != null) {
+//                is = blob.getBinaryStream();
+//            }
+//        }
+//        return is;
+//    }
+//    
+//    public void setContent(long id, InputStream is) throws IOException, SQLException {
+//        Document doc = retrieve(id);
+//        if (doc != null) {
+//            Session session = em.unwrap(Session.class);
+//            Blob blob = session.getLobHelper().createBlob(is, is.available());
+//            doc.setContent(blob);
+//            update(doc);                
+//        }
+//    }
     
-    public void setContent(long id, InputStream is) throws IOException, SQLException {
-        Document doc = retrieve(id);
-        if (doc != null) {
-            Session session = em.unwrap(Session.class);
-            Blob blob = session.getLobHelper().createBlob(is, is.available());
-            doc.setContent(blob);
-            update(doc);                
-        }
-    }
     public void delete(Document doc) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
