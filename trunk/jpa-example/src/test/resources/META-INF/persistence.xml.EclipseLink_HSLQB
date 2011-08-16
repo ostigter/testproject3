@@ -8,13 +8,17 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         
         <class>org.ozsoft.jpa.entities.User</class>
+        <class>org.ozsoft.jpa.entities.Project</class>
+        <class>org.ozsoft.jpa.entities.Document</class>
 
 		<properties>
+		    <!-- HyperSQL -->
 			<property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:mem:jpa-example" />
 			<property name="javax.persistence.jdbc.user" value="sa" />
 			<property name="javax.persistence.jdbc.password" value="" />
 			
+            <!-- EclipseLink -->
             <property name="eclipselink.target-database" value="HSQL" />
             <property name="eclipselink.ddl-generation" value="create-tables" />
             <property name="eclipselink.logging.level" value="INFO" />

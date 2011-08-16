@@ -1,14 +1,23 @@
 package org.ozsoft.jpa.entities;
 
 import java.io.Serializable;
+import java.sql.Blob;
 
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Table;
 
-@Entity(name = "DOCUMENT")
+/**
+ * Document entity.
+ * 
+ * @author Oscar Stigter
+ */
+@Entity
+@Table(name = "DOCUMENT")
 public class Document implements Serializable {
     
     /** Serial version UID. */
@@ -17,15 +26,18 @@ public class Document implements Serializable {
     /** ID. */
     @Id
     @GeneratedValue
+    @Column(name = "DOC_ID")
     private long id;
     
     /** Name. */
     @Basic
+    @Column(name = "NAME", nullable = false, unique = true)
     private String name;
     
     /** Content. */
     @Lob
-    private byte[] content;
+    @Column(name = "CONTENT")
+    private Blob content;
 
     public long getId() {
         return id;
@@ -43,11 +55,11 @@ public class Document implements Serializable {
         this.name = name;
     }
 
-    public byte[] getContent() {
+    public Blob getContent() {
         return content;
     }
     
-    public void setContent(byte[] content) {
+    public void setContent(Blob content) {
         this.content = content;
     }
 
