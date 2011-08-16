@@ -1,7 +1,10 @@
 package org.ozsoft.jpa.entities;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Blob;
+import java.sql.SQLException;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -10,6 +13,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
+
+import org.hibernate.Session;
+import org.ozsoft.jpa.services.PersistenceService;
 
 /**
  * Document entity.
@@ -55,12 +61,17 @@ public class Document implements Serializable {
         this.name = name;
     }
 
-    public Blob getContent() {
-        return content;
+    public InputStream getContent() throws SQLException {
+        InputStream is = null;
+        if (content != null) {
+            is = content.getBinaryStream();
+        }
+        return is;
     }
     
-    public void setContent(Blob content) {
-        this.content = content;
+    public void setContent(InputStream is) throws IOException {
+        Session session = PersistenceService.getSession();
+        content = session.getLobHelper().createBlob(is, is.available());
     }
 
 }
