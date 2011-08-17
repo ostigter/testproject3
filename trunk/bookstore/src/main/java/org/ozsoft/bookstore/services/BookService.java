@@ -8,7 +8,7 @@ public interface BookService {
     
     void create(Book book);
     
-    List<Book> retrieveAll();
+    List<Book> findAll();
 
     Book retrieve(long id);
     

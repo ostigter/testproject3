@@ -1,5 +1,7 @@
 package org.ozsoft.bookstore.web;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -22,6 +24,10 @@ public class BookController {
     
     public BookController() {
         reset();
+    }
+    
+    public List<Book> getBooks() {
+        return bookService.findAll();
     }
     
     public String getAuthor() {

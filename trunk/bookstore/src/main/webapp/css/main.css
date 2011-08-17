@@ -53,8 +53,27 @@ div#footer {
 	margin: 10px;
 }
 
+h1 {
+	color: #0000ff;
+	font-size: 2.0em;
+}
+
+h2 {
+    color: #0000ff;
+    font-size: 1.5em;
+}
+
+h3 {
+    color: #0000ff;
+    font-size: 1.2em;
+}
+
 img {
 	border-style: none;
+}
+
+table.boxed {
+    width: 100%;
 }
 
 th {
@@ -62,7 +81,37 @@ th {
 	color: #000000;
 	margin: 0;
 	padding: 0;
-	padding-bottom: 30px;
+}
+
+th.id {
+}
+
+td.id {
+    text-align: right;
+}
+
+th.author {
+}
+
+td.author {
+    text-align: left;
+}
+
+th.title {
+}
+
+td.title {
+    text-align: left;
+}
+
+tr.odd {
+    background: #f0f0ff;
+    color: #000000;
+}
+
+tr.even {
+    background: #e0e0ff;
+    color: #000000;
 }
 
 /* JSF info messages */

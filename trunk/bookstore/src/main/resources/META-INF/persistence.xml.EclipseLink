@@ -12,9 +12,9 @@
         <class>org.ozsoft.bookstore.entities.Book</class>
         
         <properties>
-            <property name="eclipselink.target-database" value="PostgreSQL" />
-            <property name="eclipselink.ddl-generation" value="none" />
-            <property name="eclipselink.logging.level" value="INFO" />
+            <property name="eclipselink.target-database" value="PostgreSQL"/>
+            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.logging.level" value="INFO"/>
         </properties>
         
     </persistence-unit>

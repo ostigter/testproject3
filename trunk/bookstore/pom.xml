@@ -17,8 +17,8 @@
         <!--
         <jpa.version>2.0.3</jpa.version>
         <eclipselink.version>2.2.0</eclipselink.version>
-        -->
         <jsf.version>2.0</jsf.version>
+        -->
         <junit.version>4.8</junit.version>
     </properties>
 
@@ -51,12 +51,14 @@
         -->
     </dependencies>
 
+    <!--
     <repositories>
         <repository>
             <id>eclipselink</id>
             <url>http://mirror.cc.vt.edu/pub/eclipse/rt/eclipselink/maven.repo</url>
         </repository>
     </repositories>
+    -->
 
     <build>
         <finalName>bookstore</finalName>
