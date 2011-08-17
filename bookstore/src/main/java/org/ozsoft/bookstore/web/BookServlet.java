@@ -27,7 +27,7 @@ public class BookServlet extends HttpServlet {
         response.setContentType("text/html");
         StringBuilder sb = new StringBuilder();
         sb.append("<h1>Books</h1>");
-        List<Book> books = bookService.retrieveAll();
+        List<Book> books = bookService.findAll();
         if (books.isEmpty()) {
             sb.append("<p>No books available.</p>");
         } else {

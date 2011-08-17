@@ -2,6 +2,7 @@ package org.ozsoft.bookstore.services;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -10,6 +11,7 @@ import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.ozsoft.bookstore.entities.Book;
 
@@ -18,8 +20,17 @@ import org.ozsoft.bookstore.entities.Book;
 @TransactionManagement(TransactionManagementType.CONTAINER)
 public class BookServiceBean implements BookService {
     
+    private static final String FIND_ALL = "SELECT b FROM Book b";
+    
+    private Query findAllQuery;
+    
     @PersistenceContext(unitName = "bookstore")
     private EntityManager em;
+    
+    @PostConstruct
+    public void postConstruct() {
+        findAllQuery = em.createQuery(FIND_ALL, Book.class);
+    }
 
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -29,8 +40,9 @@ public class BookServiceBean implements BookService {
 
     @Override
     @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-    public List<Book> retrieveAll() {
-        return em.createNamedQuery("findAllBooks", Book.class).getResultList();
+    @SuppressWarnings("unchecked")
+    public List<Book> findAll() {
+        return findAllQuery.getResultList();
     }
 
     @Override

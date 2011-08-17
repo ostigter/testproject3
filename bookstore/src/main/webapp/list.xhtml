@@ -7,7 +7,32 @@
 	<ui:define name="title">Books</ui:define>
 	<ui:define name="content">
         <h:form>
-            <fieldset id="addBookPanel">
+            <div id="bookTable" class="padded">
+                <h:dataTable rendered="#{not empty bookController.books}"
+                        value="#{bookController.books}" var="book"
+                        frame="box" rules="all" styleClass="boxed" cellpadding="5"
+                        headerClass="id author title"
+                        columnClasses="id, author, title"
+                        rowClasses="odd, even">
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        <h:commandLink value="#{book.id}" action="editBook.jsf">
+                            <f:setPropertyActionListener target="#{editBookBean.book}" value="${book}" />
+                        </h:commandLink>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Author</f:facet>
+                        <h:outputText value="#{book.author}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Title</f:facet>
+                        <h:outputText value="#{book.title}" />
+                    </h:column>
+                </h:dataTable>
+                <h:outputText style="width: 100%; background: #c0c0ff;" value="No books stored." rendered="#{empty bookController.books}" />
+            </div>
+            <h2>Add new book</h2>
+            <fieldset id="addBookPanel" class="padded">
                 <h:messages layout="table" infoClass="infoMessage" errorClass="errorMessage" />
                 <h:panelGrid columns="2">
                     <h:outputLabel value="Author:" for="author" />
