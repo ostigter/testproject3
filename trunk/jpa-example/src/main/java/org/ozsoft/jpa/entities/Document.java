@@ -63,6 +63,8 @@ public class Document implements Serializable {
 
     public InputStream getContent() throws SQLException {
         InputStream is = null;
+        Session session = PersistenceService.getSession();
+        session.refresh(this);
         if (content != null) {
             is = content.getBinaryStream();
         }

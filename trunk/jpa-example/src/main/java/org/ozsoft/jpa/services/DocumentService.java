@@ -32,7 +32,7 @@ public class DocumentService {
         findByNameQuery = em.createQuery(FIND_BY_NAME, Document.class);
     }
 
-    public void create(Document doc) {
+    public long create(Document doc) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
@@ -42,6 +42,7 @@ public class DocumentService {
             tx.rollback();
             throw e;
         }
+        return doc.getId();
     }
     
     @SuppressWarnings("unchecked")
