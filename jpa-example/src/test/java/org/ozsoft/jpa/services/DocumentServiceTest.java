@@ -24,11 +24,8 @@ public class DocumentServiceTest {
         // Create document.
         Document doc = new Document();
         doc.setName("Foo.txt");
-        docService.create(doc);
-        long id = doc.getId();
-        
-        // Set document content (streaming).
         doc.setContent(IOUtils.toInputStream("Foo"));
+        long id = docService.create(doc);
         
         // List documents.
         Assert.assertEquals(1, docService.list().size());
@@ -36,14 +33,12 @@ public class DocumentServiceTest {
         // Retrieve document.
         doc = docService.retrieve(id);
         Assert.assertEquals("Foo.txt", doc.getName());
-        
-        // Retrieve document content (streaming).
         Assert.assertEquals("Foo", IOUtils.toString(doc.getContent()));
         
         // Update document.
         doc.setName("Bar.txt");
-        docService.update(doc);
         doc.setContent(IOUtils.toInputStream("Bar"));
+        docService.update(doc);
         
         // Retrieve document.
         doc = docService.retrieve(id);
