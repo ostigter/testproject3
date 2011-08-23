@@ -25,30 +25,26 @@ public class W3CDomExample {
 
     private static final File DOCS_DIR = new File("src/test/resources/docs");
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         File file = new File(DOCS_DIR, "foo-001.xml");
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-        try {
-            DocumentBuilder docBuilder = dbf.newDocumentBuilder();
-            Document doc = docBuilder.parse(file);
-            Transformer transformer = TransformerFactory.newInstance().newTransformer();
-            transformer.setOutputProperty("indent", "yes");
-            transformer.transform(new DOMSource(doc), new StreamResult(System.out));
-            XPath xpath = XPathFactory.newInstance().newXPath();
-            SimpleNamespaceContext nc = new SimpleNamespaceContext();
-            nc.addNamespace("foo", "http://www.example.org/foo");
-            nc.addNamespace("gen", "http://www.example.org/generic");
-            xpath.setNamespaceContext(nc);
-            XPathExpression xpe = xpath.compile("/foo:document/gen:header/gen:id");
-            String id = (String) xpe.evaluate(doc, XPathConstants.STRING);
-            if (!id.isEmpty()) {
-                System.out.println("ID: " + id);
-            } else {
-                System.err.println("ID not found");
-            }
-        } catch (Exception e) {
-            System.err.println(e);
+        DocumentBuilder docBuilder = dbf.newDocumentBuilder();
+        Document doc = docBuilder.parse(file);
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty("indent", "yes");
+        transformer.transform(new DOMSource(doc), new StreamResult(System.out));
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        SimpleNamespaceContext nc = new SimpleNamespaceContext();
+        nc.addNamespace("foo", "http://www.example.org/foo");
+        nc.addNamespace("gen", "http://www.example.org/generic");
+        xpath.setNamespaceContext(nc);
+        XPathExpression xpe = xpath.compile("/foo:document/gen:header/gen:id");
+        String id = (String) xpe.evaluate(doc, XPathConstants.STRING);
+        if (!id.isEmpty()) {
+            System.out.println("ID: " + id);
+        } else {
+            System.err.println("ID not found");
         }
     }
 

@@ -9,7 +9,7 @@ import java.util.Set;
 import javax.xml.namespace.NamespaceContext;
 
 /**
- * Simple, generic namespace context.
+ * Generic JAXP namespace context implementation.
  * 
  * @author Oscar Stigter
  */
