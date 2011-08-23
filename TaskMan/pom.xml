@@ -20,7 +20,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jsf-version>2.1.0-SNAPSHOT</jsf-version>
+        <jsf-version>2.1.0</jsf-version>
         <servlet-version>2.5</servlet-version>
         <jpa-version>1.0</jpa-version>
         <hibernate-version>3.4.0.GA</hibernate-version>
@@ -29,7 +29,7 @@
         <c3p0-version>0.9.1.2</c3p0-version>
         <log4j-version>1.2.14</log4j-version>
         <slf4j-version>1.4.2</slf4j-version>
-        <junit-version>4.7</junit-version>
+        <junit-version>4.8</junit-version>
     </properties>
 
     <dependencies>
@@ -128,20 +128,6 @@
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.1.1</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.8</version>
-                <configuration>
-                    <downloadSources>false</downloadSources>
-                    <wtpversion>2.0</wtpversion>
                 </configuration>
             </plugin>
         </plugins>
