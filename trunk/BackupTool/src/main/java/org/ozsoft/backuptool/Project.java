@@ -499,18 +499,18 @@ public class Project {
     private long createFileVersion(File file) throws IOException {
         long offset = archiveFile.length();
         archiveFile.seek(offset);
-        InputStream bis = null;
+        InputStream is = null;
         try {
-            bis = new BufferedInputStream(new FileInputStream(file));
+            is = new BufferedInputStream(new FileInputStream(file));
             byte[] buffer = new byte[BUFFER_SIZE];
             int length = 0;
-            while ((length = bis.read(buffer)) > 0) {
+            while ((length = is.read(buffer)) > 0) {
                 archiveFile.write(buffer, 0, length);
             }
         } finally {
-            if (bis != null) {
+            if (is != null) {
                 try {
-                    bis.close();
+                    is.close();
                 } catch (IOException e) {
                     System.err.println("Could not close input stream");
                 }
