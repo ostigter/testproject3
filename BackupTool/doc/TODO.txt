@@ -1,11 +1,11 @@
 TODO
 ====
 
-- Restore Backup
-- View Backup (list files and versions)
-- Restore File/Directory
-- Delete Project
+- Apache Commons IO
+- Scan files for changes
+- View backup (list files and versions)
+- Restore single file/directory
+- Delete project
 - Compression
-- Use Java NIO
-- Scan Files for Changes
 - Progress bars
+- Project log

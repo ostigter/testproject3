@@ -22,7 +22,7 @@ import java.text.SimpleDateFormat;
 /**
  * Backup.
  * 
- * @author nlost
+ * @author Oscar Stigter
  */
 public class Backup {
     
@@ -72,7 +72,6 @@ public class Backup {
      */
     @Override
     public String toString() {
-//        return String.format("%d: %s", id, DATE_FORMAT.format(date));
         return DATE_FORMAT.format(date);
     }
 
