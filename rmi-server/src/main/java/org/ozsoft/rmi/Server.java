@@ -18,7 +18,6 @@ public class Server {
     
     private ServerState state = ServerState.STOPPED;
     
-    /** The RMI registry. */
     private Registry registry;
     
     public Server(String serviceId, Remote service, int port) {
