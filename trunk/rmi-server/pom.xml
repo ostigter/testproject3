@@ -10,7 +10,6 @@
     
     <name>rmi-server</name>
     <description>Generic RMI server.</description>
-    
     <inceptionYear>2011</inceptionYear>
     <developers>
         <developer>
