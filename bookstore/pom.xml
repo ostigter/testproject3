@@ -10,15 +10,17 @@
 
     <name>bookstore</name>
     <description>Example Java EE 6 web application in the form of an online bookstore.</description>
+    <inceptionYear>2011</inceptionYear>
+    <developers>
+        <developer>
+            <name>Oscar Stigter</name>
+            <email>oscar.stigter@gmail.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <javaee.version>6.0</javaee.version>
-        <!--
-        <jpa.version>2.0.3</jpa.version>
-        <eclipselink.version>2.2.0</eclipselink.version>
-        <jsf.version>2.0</jsf.version>
-        -->
         <junit.version>4.8</junit.version>
     </properties>
 
@@ -35,30 +37,7 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-            <version>${jpa.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>${eclipselink.version}</version>
-            <scope>test</scope>
-        </dependency>
-        -->
     </dependencies>
-
-    <!--
-    <repositories>
-        <repository>
-            <id>eclipselink</id>
-            <url>http://mirror.cc.vt.edu/pub/eclipse/rt/eclipselink/maven.repo</url>
-        </repository>
-    </repositories>
-    -->
 
     <build>
         <finalName>bookstore</finalName>
