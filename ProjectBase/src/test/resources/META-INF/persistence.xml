@@ -5,7 +5,7 @@
 	
 	<persistence-unit name="projectbase" transaction-type="RESOURCE_LOCAL">
 
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
         <class>org.ozsoft.projectbase.entities.User</class>
 
@@ -16,10 +16,17 @@
 			<property name="javax.persistence.jdbc.user" value="sa" />
 			<property name="javax.persistence.jdbc.password" value="" />
 			
-            <!-- EclipseLink -->
-            <property name="eclipselink.target-database" value="HSQL" />
-            <property name="eclipselink.ddl-generation" value="create-tables" />
-            <property name="eclipselink.logging.level" value="INFO" />
+            <!-- Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.show_sql" value="false" />
+
+            <!-- C3P0 connection pool -->
+            <property name="hibernate.c3p0.min_size" value="1" />
+            <property name="hibernate.c3p0.max_size" value="10" />
+            <property name="hibernate.c3p0.timeout" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="50" />
+            <property name="hibernate.c3p0.idle_test_period" value="3000" />
 		</properties>
 
 	</persistence-unit>
