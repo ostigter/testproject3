@@ -1,0 +1,104 @@
+ProjectBase
+===========
+
+
+Use cases
+---------
+
+* Log in
+* Log out
+* Manage users
+* Manage projects
+* Manage components
+* Manage releases
+* Manage sprints
+* Manage stories
+* Manage requirements
+* Manage tasks, change requests, bug reports
+* Manage test suites
+* Manage test cases
+
+
+Concepts
+--------
+
+User
+    username
+    password
+    fullName
+    email
+Project
+    name
+    owners
+    components
+    releases
+    sprints
+Component
+    name
+    owners
+    requirements
+    change requests
+    bug reports
+    parent
+    children
+Release
+    project
+    name (version)
+    owners
+    date
+    status (d/a/b/c)
+    sprints
+Sprint
+    id
+    startDate
+    endDate 
+    developers
+    stories
+    requirements
+    changes
+    tasks
+Story
+    requirements
+    tasks
+Requirement
+    id
+    type (Functional, Interface, Design, Reliability, Usability, Performance, Maintainability, Portability)
+    title
+    description
+    owner
+    version
+    status (Draft, For Review, Final, Obsolete)
+    parent
+    children
+    history 
+Task
+    id
+    title
+    description
+    owner
+    status (New, Investigated, Rejected, Planned, In Progress, For Review, Blocked, Postponed, Closed, Reopened)
+    resolution (Implemented, Duplicate, Not Reproducable, Won't Fix, 
+    attachements
+    parent
+    children
+    history
+Change Request (Task)
+Bug Report (Task)
+Test suite
+    id
+    title
+    test cases
+Test case
+    id
+    type (Unit, Integration, System)
+    status (Not Executed, Passed, Failed)
+    lastExecuted
+    executor
+    steps
+Test step
+    order
+    description
+    action
+    expectedResult
+    actualResult
+    status (Not Executed, Passed, Failed)
