@@ -1,32 +1,30 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
 		xmlns:f="http://java.sun.com/jsf/core"
-		xmlns:h="http://java.sun.com/jsf/html"
 		xmlns:ui="http://java.sun.com/jsf/facelets"
 		xmlns:a4j="http://richfaces.org/a4j"
 		xmlns:rich="http://richfaces.org/rich">
-	<ui:composition>
+	<f:view>
 		<h:head>
-			<title>JSF 2.0 + RichFaces 4 example</title>
+			<title>JSF 2 and RichFaces 4 example</title>
 		</h:head>
 		<h:body>
-			<f:view>
-				<h1>JSF 2.0 + RichFaces 4 example</h1>
-				<h:form>
-					<rich:panel header="RichFaces Example" style="width: 350px">
-						<h:outputText value="Your name:" />
-						<h:inputText value="#{user.name}">
-							<f:validateLength minimum="1" maximum="30" />
-						</h:inputText>
-						<a4j:commandButton value="Get Greeting" render="greeting" />
-					</rich:panel>
-					<br />
-					<h:panelGroup id="greeting">
-						<h:outputText value="#{user.greeting}" rendered="#{not empty user.name}" />
-					</h:panelGroup>
-				</h:form>
-			</f:view>
-		</h:body>
-	</ui:composition>
+			<h1>JSF 2 and RichFaces 4 example</h1>
+			<h:form>
+				<rich:panel header="RichFaces example" style="width: 350px">
+					<h:outputText value="Your name:" />
+					<h:inputText value="#{user.name}">
+						<f:validateLength minimum="1" maximum="30" />
+					</h:inputText>
+					<a4j:commandButton value="Get Greeting" render="greeting" />
+				</rich:panel>
+				<br />
+				<h:panelGroup id="greeting">
+					<h:outputText value="#{user.greeting}" rendered="#{not empty user.name}" />
+				</h:panelGroup>
+			</h:form>
+	    </h:body>
+    </f:view>
 </html>
