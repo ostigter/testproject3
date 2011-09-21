@@ -45,6 +45,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.richfaces.core</groupId>
+            <artifactId>richfaces-core-impl</artifactId>
+            <version>${richfaces.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.richfaces.ui</groupId>
             <artifactId>richfaces-components-ui</artifactId>
             <version>${richfaces.version}</version>
