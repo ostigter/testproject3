@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:p="http://primefaces.prime.com.tr/ui">
+	<h:head>
+		<title>JSF 2 + PrimeFaces example</title>
+		<link rel="StyleSheet" type="text/css" href="styles.css" /> 
+	</h:head>
+	<h:body>
+	   <h1>JSF 2 + PrimeFaces example</h1>
+	   <p:panel header="Pick a number between 1 and 10:">
+		   <p:spinner value="#{myBean.number}" min="1" max="10" size="3" />
+       </p:panel>
+       <p:panel header="Pick a date:">
+		   <p:calendar value="#{myBean.date}" mode="inline" />
+	   </p:panel>
+	</h:body>
+</html>
