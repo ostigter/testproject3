@@ -40,6 +40,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<User> findAll() {
+        return em.createQuery("SELECT user from User user").getResultList();
+    }
+
+    @Override
     public void update(User user) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
