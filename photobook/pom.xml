@@ -23,7 +23,9 @@
         <log4j.version>1.2.14</log4j.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-io.version>2.0.1</commons-io.version>
+        <commons-fileupload.version>1.2.2</commons-fileupload.version>
         <javaee.version>6.0</javaee.version>
+        <primefaces.version>2.2.1</primefaces.version>
         <hibernate.version>3.6.7.Final</hibernate.version>
         <slf4j.version>1.6.1</slf4j.version>
         <postgresql.version>9.0-801.jdbc4</postgresql.version>
@@ -51,10 +53,28 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons-fileupload.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>${javaee.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${primefaces.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>glass-x</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -96,11 +116,15 @@
 
     <repositories>
         <repository>
+            <id>primefaces</id>
+            <url>http://repository.primefaces.org</url>
+        </repository>
+        <repository>
             <id>JBoss</id>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
     </repositories>
-    
+
     <build>
         <plugins>
             <plugin>

@@ -1,11 +1,11 @@
-package org.ozsoft.photobook.services;
+package org.ozsoft.photobook.dal;
 
 import java.io.InputStream;
 
 import org.ozsoft.photobook.entities.Photo;
 
-public interface PhotoService {
-
+public interface PhotoDao {
+    
     void store(Photo photo);
 
     Photo retrieve(long id);

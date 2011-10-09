@@ -1,7 +1,8 @@
-package org.ozsoft.photobook.services;
+package org.ozsoft.photobook.dal;
 
 import java.io.InputStream;
 
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -9,15 +10,19 @@ import javax.persistence.PersistenceContext;
 import org.ozsoft.photobook.entities.Photo;
 
 @Stateless
-public class PhotoServiceImpl implements PhotoService {
+@LocalBean
+public class PhotoDaoBean implements PhotoDao {
 
     @PersistenceContext(unitName = "photobookPU")
     private EntityManager em;
 
     @Override
-    public long persist(Photo photo) {
-        em.persist(photo);
-        return photo.getId();
+    public void store(Photo photo) {
+        if (photo.getId() == null) {
+            em.persist(photo);
+        } else {
+            em.merge(photo);
+        }
     }
 
     @Override
@@ -33,11 +38,6 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public void setContent(Photo photo, InputStream is) {
-    }
-
-    @Override
-    public void update(Photo photo) {
-        em.merge(photo);
     }
 
     @Override
