@@ -10,11 +10,13 @@
 	</h:head>
 	<h:body>
 	   <h1>JSF 2 + PrimeFaces example</h1>
-	   <p:panel header="Pick a number between 1 and 10:">
-		   <p:spinner value="#{myBean.number}" min="1" max="10" size="3" />
-       </p:panel>
-       <p:panel header="Pick a date:">
-		   <p:calendar value="#{myBean.date}" mode="inline" />
-	   </p:panel>
+	   <h:form>
+		   <p:panel header="Pick a number between 1 and 10:">
+			   <p:spinner value="#{myBean.number}" min="1" max="10" size="3" />
+	       </p:panel>
+	       <p:panel header="Pick a date:">
+			   <p:calendar value="#{myBean.date}" mode="inline" />
+		   </p:panel>
+	   </h:form>
 	</h:body>
 </html>
