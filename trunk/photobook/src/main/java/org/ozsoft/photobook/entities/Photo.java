@@ -4,6 +4,7 @@ import java.sql.Blob;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -17,6 +18,7 @@ public class Photo extends BaseEntity {
     @Basic
     private String name;
 
+    @Basic(fetch = FetchType.LAZY)
     @Lob
     private Blob content;
 
