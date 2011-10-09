@@ -8,7 +8,7 @@
         </layout>
     </appender>
 
-    <logger name="org.ozsosft.jpa">
+    <logger name="org.ozsosft.photobook">
         <level value="DEBUG" />
     </logger>
 
@@ -17,7 +17,7 @@
     </logger>
 
     <logger name="com.mchange"> <!-- c3p0 -->
-        <level value="WARN" />
+        <level value="INFO" />
     </logger>
 
     <root>
