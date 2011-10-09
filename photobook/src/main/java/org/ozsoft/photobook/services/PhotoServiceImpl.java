@@ -1,49 +1,48 @@
 package org.ozsoft.photobook.services;
 
+import java.io.InputStream;
+
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.PersistenceException;
+import javax.persistence.PersistenceContext;
 
 import org.ozsoft.photobook.entities.Photo;
 
+@Stateless
 public class PhotoServiceImpl implements PhotoService {
 
-    private final EntityManager em;
-
-    public PhotoServiceImpl() {
-        em = PersistenceService.getEntityManager();
-    }
+    @PersistenceContext(unitName = "photobookPU")
+    private EntityManager em;
 
     @Override
-    public long create(Photo photo) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-        try {
-            em.persist(photo);
-            tx.commit();
-        } catch (PersistenceException e) {
-            tx.rollback();
-            throw e;
-        }
+    public long persist(Photo photo) {
+        em.persist(photo);
         return photo.getId();
     }
 
     @Override
     public Photo retrieve(long id) {
-        // TODO Auto-generated method stub
-        return null;
+        return em.find(Photo.class, id);
+    }
+
+    @Override
+    public InputStream getContent(Photo photo) {
+        InputStream is = null;
+        return is;
+    }
+
+    @Override
+    public void setContent(Photo photo, InputStream is) {
     }
 
     @Override
     public void update(Photo photo) {
-        // TODO Auto-generated method stub
-
+        em.merge(photo);
     }
 
     @Override
     public void delete(Photo photo) {
-        // TODO Auto-generated method stub
-
+        em.remove(photo);
     }
 
 }

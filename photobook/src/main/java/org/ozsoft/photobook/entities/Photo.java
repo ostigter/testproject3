@@ -1,5 +1,7 @@
 package org.ozsoft.photobook.entities;
 
+import java.sql.Blob;
+
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 
@@ -7,13 +9,13 @@ import javax.persistence.Lob;
 public class Photo extends BaseEntity {
 
     @Lob
-    private byte[] content;
+    private Blob content;
 
-    public byte[] getContent() {
+    protected Blob getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    protected void setContent(Blob content) {
         this.content = content;
     }
 
