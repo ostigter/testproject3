@@ -1,17 +1,20 @@
 package org.ozsoft.photobook.services;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 
 import org.ozsoft.photobook.dal.PhotoDao;
 import org.ozsoft.photobook.entities.Photo;
 
-@Stateless
-@LocalBean
+@Singleton
 public class PhotoServiceBean implements PhotoService {
+    
+//    private static final Logger LOG = Logger.getLogger(PhotoServiceBean.class);
 
     @EJB
     private PhotoDao photoDao;
@@ -27,18 +30,23 @@ public class PhotoServiceBean implements PhotoService {
     }
 
     @Override
-    public InputStream getContent(Photo photo) {
-        return photoDao.getContent(photo);
+    public InputStream getContent(long id) throws SQLException {
+        return photoDao.getContent(id);
     }
 
     @Override
-    public void setContent(Photo photo, InputStream is) {
-        photoDao.setContent(photo, is);
+    public void setContent(long id, InputStream is) throws IOException {
+        photoDao.setContent(id, is);
     }
 
     @Override
     public void delete(Photo photo) {
         photoDao.delete(photo);
+    }
+
+    @Override
+    public List<Photo> findAll() {
+        return photoDao.findAll();
     }
 
 }

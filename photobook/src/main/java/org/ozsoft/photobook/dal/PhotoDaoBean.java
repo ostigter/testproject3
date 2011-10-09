@@ -1,18 +1,23 @@
 package org.ozsoft.photobook.dal;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.List;
 
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
+import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.hibernate.Session;
 import org.ozsoft.photobook.entities.Photo;
 
-@Stateless
-@LocalBean
+@Singleton
 public class PhotoDaoBean implements PhotoDao {
 
+//    private static final Logger LOG = Logger.getLogger(PhotoDaoBean.class);
+    
     @PersistenceContext(unitName = "photobookPU")
     private EntityManager em;
 
@@ -31,13 +36,35 @@ public class PhotoDaoBean implements PhotoDao {
     }
 
     @Override
-    public InputStream getContent(Photo photo) {
+    public List<Photo> findAll() {
+        return em.createNamedQuery("Photo.findAll", Photo.class).getResultList();
+    }
+
+    @Override
+    public InputStream getContent(long id) throws SQLException {
         InputStream is = null;
+        Photo photo = retrieve(id);
+        if (photo != null) {
+            Session session = em.unwrap(Session.class);
+            session.refresh(photo);
+            Blob blob = photo.getContent();
+            if (blob != null) {
+                is = blob.getBinaryStream();
+            }
+        }
         return is;
     }
 
     @Override
-    public void setContent(Photo photo, InputStream is) {
+    public void setContent(long id, InputStream is) throws IOException {
+        Photo photo = retrieve(id);
+        if (photo != null) {
+            Session session = em.unwrap(Session.class);
+            session.refresh(photo);
+            Blob blob = session.getLobHelper().createBlob(is, is.available());
+            photo.setContent(blob);
+            store(photo);
+        }
     }
 
     @Override

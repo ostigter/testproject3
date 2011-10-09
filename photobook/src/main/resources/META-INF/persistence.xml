@@ -7,19 +7,14 @@
 
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
+        <jta-data-source>jdbc/photobook</jta-data-source>
+
         <class>org.ozsoft.photobook.entities.Album</class>
         <class>org.ozsoft.photobook.entities.Photo</class>
 
 		<properties>
-            <!-- PostgreSQL -->
-            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/photobook" />
-            <property name="javax.persistence.jdbc.user" value="photobook" />
-            <property name="javax.persistence.jdbc.password" value="photobook" />
-
-            <!-- Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.hbm2ddl.auto" value="none" />
             <property name="hibernate.show_sql" value="false" />
 		</properties>
 
