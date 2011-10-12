@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>org.ozsoft.encryptor</groupId>
-    <artifactId>Encryptor</artifactId>
+    <artifactId>encryptor</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
     
-    <name>Encryptor</name>
+    <name>encryptor</name>
     <description>Encryption library using 128-bit AES cryptography with a shared key.</description>
     <inceptionYear>2011</inceptionYear>
     <developers>
