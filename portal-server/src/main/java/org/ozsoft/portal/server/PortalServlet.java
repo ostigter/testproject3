@@ -70,8 +70,7 @@ public class PortalServlet extends HttpServlet implements TelnetListener {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/plain");
-        response.getWriter().write("PortalServlet\n");
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
     }
 
     /*
