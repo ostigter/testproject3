@@ -96,16 +96,10 @@ public class PortalServlet extends HttpServlet implements TelnetListener {
                             responseBody = receivedText.toString();
                             receivedText.delete(0, receivedText.length());
                         }
-                    } else {
-                        response.setStatus(HttpServletResponse.SC_CONFLICT);
-                        responseBody = "Not connected";
                     }
                 } else if (requestBody.startsWith("SEND ")) {
                     if (isConnected) {
                         telnetClient.sendText(requestBody.substring(5) + NEWLINE);
-                    } else {
-                        response.setStatus(HttpServletResponse.SC_CONFLICT);
-                        responseBody = "Not connected";
                     }
                 } else if (requestBody.equals("STATUS")) {
                     if (isConnected) {
@@ -207,7 +201,7 @@ public class PortalServlet extends HttpServlet implements TelnetListener {
      */
     @Override
     public void telnetExceptionCaught(Throwable t) {
-        System.err.println("PortalServlet: ERROR: " + t);
+        System.err.println("PortalServlet: TelnetException: " + t);
     }
 
 }
