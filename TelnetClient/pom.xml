@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    
+
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>org.ozsoft.telnet</groupId>
-    <artifactId>TelnetClient</artifactId>
+    <artifactId>telnet-client</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    
-    <name>TelnetClient</name>
+
+    <name>telnet-client</name>
     <description>Simple Telnet client with Swing UI.</description>
     <inceptionYear>2010</inceptionYear>
     <developers>
@@ -17,7 +17,7 @@
             <email>oscar.stigter@gmail.com</email>
         </developer>
     </developers>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <netty.version>3.1.5.GA</netty.version>
@@ -32,7 +32,7 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-    
+
     <repositories>
         <repository>
             <id>jboss</id>
