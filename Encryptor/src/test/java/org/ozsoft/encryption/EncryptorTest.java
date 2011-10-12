@@ -20,7 +20,7 @@ public class EncryptorTest {
     private static final int BLOCK_SIZE = 10 * 1024 * 1024; // 10MB
     
     @Test
-    public void encryption() throws Exception {
+    public void encryption() throws EncryptionException {
         Random random = new Random();
         byte[] cleardata = null;
         byte[] cipherdata = null;
