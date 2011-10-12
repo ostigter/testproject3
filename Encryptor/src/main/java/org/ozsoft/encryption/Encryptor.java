@@ -240,7 +240,7 @@ public class Encryptor {
                 cleartext = new String(clearData, "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 // This should never happen.
-                throw new EncryptionException("Could not decoding UTF-8 string: " + e.getMessage());
+                throw new EncryptionException("Could not decode UTF-8 string: " + e.getMessage());
             }
         }
         
@@ -354,11 +354,15 @@ public class Encryptor {
      * 
      * @return The byte array.
      */
-    private static byte[] hexToBytes(String hex) {
+    private static byte[] hexToBytes(String hex) throws EncryptionException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         int length = hex.length();
-        for (int i = 0; i < length; i += 2) {
-            baos.write((byte) Integer.parseInt(hex.substring(i, i + 2), 16));
+        try {
+            for (int i = 0; i < length; i += 2) {
+                baos.write((byte) Integer.parseInt(hex.substring(i, i + 2), 16));
+            }
+        } catch (NumberFormatException e) {
+            throw new EncryptionException(String.format("Invalid ciphertext (no hexadecimal string): '%s'", hex));
         }
         return baos.toByteArray();
     }
