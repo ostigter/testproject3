@@ -42,13 +42,13 @@ import org.ozsoft.timer.TimerListener;
 public class PortalClient implements TimerListener {
     
     /** Portal server URL. */
-    private static final String SERVER_URL = "http://localhost:8080/portal/";
+    private static final String SERVER_URL = "http://localhost:8080/portal-server/";
   
     /** Default Telnet host. */
-    private static final String DEFAULT_HOST = "localhost";
+    private static final String DEFAULT_HOST = "aod.mine.nu";
     
     /** Default Telnet port. */
-    private static final int DEFAULT_PORT = 23;
+    private static final int DEFAULT_PORT = 5000;
     
     /** Interval in ms for polling for incoming Telnet data. */
     private static final int RECEIVE_INTERVAL = 500;
@@ -408,25 +408,27 @@ public class PortalClient implements TimerListener {
             checkTelnetConnected();
         } else {
             telnetConnectButton.setEnabled(false);
+            final String host = telnetHostText.getText();
+            final String port = telnetPortText.getText();
+            appendText(String.format("\n>>> Connecting to host '%s', port %s...\n", host, port));
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                   executeRequest(String.format("CONNECT %s %s", telnetHostText.getText(), telnetPortText.getText()));
-                   int retries = 10;
+                   executeRequest(String.format("CONNECT %s %s", host, port));
+                   int retries = 3;
                    while (!isTelnetConnected && retries > 0) {
                        checkTelnetConnected();
                        if (!isTelnetConnected) {
+                           retries--;
                            try {
-                               Thread.sleep(500L);
+                               Thread.sleep(1000L);
                            } catch (InterruptedException e) {
                                // Ignore.
                            }
-                           retries--;
                        }
                    }
                    if (!isTelnetConnected) {
-                       appendText("\n>>> Failed to connect to Telnet server\n");
-                       telnetConnectButton.setEnabled(true);
+                       appendText(">>> Failed to connect.\n");
                    }
                 } 
             });
@@ -447,22 +449,20 @@ public class PortalClient implements TimerListener {
     }
 
     private String executeRequest(String request) {
-        System.out.format("Request:  '%s'\n", request);
-        
         String response = null;
         String url = serverUrlText.getText();
         try {
-            long startTime = System.currentTimeMillis();
+//            long startTime = System.currentTimeMillis();
             HttpRequest httpRequest = httpClient.createPostRequest(url, encryptor.encrypt(request));
             try {
                 HttpResponse httpResponse = httpRequest.execute();
-                long duration = System.currentTimeMillis() - startTime;
+//                long duration = System.currentTimeMillis() - startTime;
                 if (httpResponse.getStatusCode() < 400) {
                     response = encryptor.decrypt(httpResponse.getBody());
-                    if (response != null && response.length() > 0) {
-                        System.out.format("Response: '%s'\n", response);
-                    }
-                    System.out.format("Request took %s ms\n", duration);
+//                    if (response != null && response.length() > 0) {
+//                        System.out.format("Response: '%s'\n", response);
+//                    }
+//                    System.out.format("Request took %s ms\n", duration);
                 } else {
                     appendText(String.format("\n>>> ERROR: HTTP status code: %d\n", httpResponse.getStatusCode()));
                     setTelnetConnected(false);
