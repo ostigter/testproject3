@@ -60,12 +60,14 @@ public class TelnetClient {
         if (channel != null) {
             disconnect();
         }
-        bootstrap.connect(new InetSocketAddress(host, port));
+        if (bootstrap != null) {
+            bootstrap.connect(new InetSocketAddress(host, port));
+        }
     }
     
     public void disconnect() {
         if (channel != null) {
-            channel.close();
+            channel.close().awaitUninterruptibly();
             channel = null;
         }
     }
@@ -84,6 +86,13 @@ public class TelnetClient {
     
     public void removeTelnetListener(TelnetListener listener) {
         listeners.remove(listener);
+    }
+    
+    public void shutdown() {
+        disconnect();
+        listeners.clear();
+        bootstrap.releaseExternalResources();
+        channelFactory.releaseExternalResources();
     }
     
     /**
@@ -125,6 +134,7 @@ public class TelnetClient {
             for (TelnetListener listener : listeners) {
                 listener.disconnected();
             }
+            channel = null;
         }
         
         @Override
