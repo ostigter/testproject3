@@ -5,8 +5,8 @@ TODO
 * Message filter (All/Bot/Alerts)
 * Time until reboot
 * Log files
-* Log On/Off buttons
-* Bot modes (Single Area / Full Auto)
+* Log On/Off
+* Bot mode (Off, Semi-Auto, Full-Auto)
 * Go Home button
-* Fleeing
 * ANSI colors
+* Fleeing
