@@ -1,0 +1,12 @@
+TODO
+====
+
+* Overview panel
+* Message filter (All/Bot/Alerts)
+* Time until reboot
+* Log files
+* Log On/Off buttons
+* Bot modes (Single Area / Full Auto)
+* Go Home button
+* Fleeing
+* ANSI colors

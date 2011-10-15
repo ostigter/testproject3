@@ -26,7 +26,7 @@
     <dependencies>
         <dependency>
             <groupId>org.ozsoft.telnet</groupId>
-            <artifactId>TelnetClient</artifactId>
+            <artifactId>telnet-client</artifactId>
             <version>${telnet-client.version}</version>
             <scope>compile</scope>
         </dependency>
