@@ -68,7 +68,7 @@ public class MudBot implements TelnetListener {
         DUMPING,
     };
 
-    /** Minimum HP % for hunting. */
+    /** Minimum HP % being safe for hunting. */
     private static final double MIN_HP_PERC = 0.4;
 
     /** Minimum HP % to resume after resting. */
@@ -78,10 +78,10 @@ public class MudBot implements TelnetListener {
     private static final int MIN_CP = 220;
 
     /** Delay between commands. */
-    private static final long DELAY = 1000;
+    private static final long DELAY = 1000L;
 
     /** Time in ms for area to reset. */
-    private static final long AREA_RESET_TIME = 600000; // 10 min
+    private static final long AREA_RESET_TIME = 600000L; // 10 min
 
     /** Regex to parse healthbar. */
     private static final Pattern healthBarPattern = Pattern.compile("HP: \\[(\\d+)/(\\d+)\\]  CONC: \\[(\\d+)/(\\d+)\\]");
@@ -92,6 +92,7 @@ public class MudBot implements TelnetListener {
     /** Telnet client. */
     private final TelnetClient telnetClient;
 
+    /** Buffer for received text from the MUD to be processed. */
     private final StringBuilder receivedText;
 
     /** Current HP percentage. */
@@ -201,7 +202,7 @@ public class MudBot implements TelnetListener {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                exit();
+                close();
             }
         });
         frame.getContentPane().setLayout(new GridBagLayout());
@@ -227,7 +228,7 @@ public class MudBot implements TelnetListener {
         menuItem = new JMenuItem("Exit");
         menuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                exit();
+                close();
             }
         });
         menu.add(menuItem);
@@ -299,9 +300,9 @@ public class MudBot implements TelnetListener {
         stop();
     }
 
-    private void exit() {
+    private void close() {
         stopRobot();
-        telnetClient.disconnect();
+        telnetClient.shutdown();
         frame.dispose();
     }
 
@@ -519,6 +520,8 @@ public class MudBot implements TelnetListener {
             sendCommand("l");
         } else {
             appendText(">>> Resting\n");
+            appendText(String.format(">>> *** hpPerc = %.2f\n", hpPerc));
+            appendText(String.format(">>> *** cp     = %d\n", cp));
         }
     }
 
@@ -558,7 +561,6 @@ public class MudBot implements TelnetListener {
                 boolean isSafe = true;
                 boolean hasLoot = false;
                 for (String line : lines) {
-                    // client.echo(">>> Line: '" + line + "'\n");
                     if (line.length() > 0 && line.charAt(0) != '>') {
                         String name = line.trim();
                         if (!name.startsWith("The corpse of ")) {
