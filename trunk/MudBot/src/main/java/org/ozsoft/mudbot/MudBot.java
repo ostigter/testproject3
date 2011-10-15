@@ -21,9 +21,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 
 import org.ozsoft.telnet.TelnetClient;
@@ -92,8 +89,8 @@ public class MudBot implements TelnetListener {
     /** Telnet client. */
     private final TelnetClient telnetClient;
 
-    /** Buffer for received text from the MUD to be processed. */
-    private final StringBuilder receivedText;
+    /** Buffer for received messages from the MUD to be processed. */
+    private final StringBuilder messageBuffer;
 
     /** Current HP percentage. */
     private double hpPerc;
@@ -117,22 +114,37 @@ public class MudBot implements TelnetListener {
     private Monster monster;
 
     /** Whether the robot is active. */
-    private boolean active = false;
+    private boolean robotStarted = false;
 
     /** Current robot state. */
     private State state = State.IDLE;
 
     /** Main frame. */
     private JFrame frame;
+    
+    /** Start/Stop button. */
+    private JButton startStopButton;
+    
+//    /** Clear button. */
+//    private JButton clearButton;
+//    
+//    /** Status text. */
+//    private JTextField statusText;
+//    
+//    /** Location text. */
+//    private JTextField locationText;
+//    
+//    /** HP text. */
+//    private JTextField hpText;
+//    
+//    /** CP text. */
+//    private JTextField cpText;
+    
+    /** Messages text. */
+    private StyledTextPane messagesText;
 
-    /** Text pane. */
-    private StyledTextPane textPane;
-
-    /** Input text with command line to send. */
-    private JTextField commandLine;
-
-    /** Send button. */
-    private JButton sendButton;
+    /** Command text. */
+    private JTextField commandText;
 
     /**
      * Application's entry point.
@@ -145,13 +157,10 @@ public class MudBot implements TelnetListener {
     }
 
     /**
-     * Constructs the MUD robot.
+     * Constructs the application.
      */
     public MudBot() {
-        telnetClient = new TelnetClient();
-        telnetClient.addTelnetListener(this);
-
-        receivedText = new StringBuilder();
+        messageBuffer = new StringBuilder();
 
         createMacros();
 
@@ -160,43 +169,68 @@ public class MudBot implements TelnetListener {
 
         createUI();
 
+        telnetClient = new TelnetClient();
+        telnetClient.addTelnetListener(this);
         telnetClient.connect("mud.agesofdespair.net", 5000);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.telnet.TelnetListener#connected()
+     */
     @Override
     public void connected() {
-        clearIncomingText();
+        clearMessageBuffer();
         appendText(">>> Connected\n");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.telnet.TelnetListener#disconnected()
+     */
     @Override
     public void disconnected() {
-        clearIncomingText();
+        clearMessageBuffer();
         appendText("\n>>> Disconnected\n");
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.telnet.TelnetListener#textReceived(java.lang.String)
+     */
     @Override
     public void textReceived(String text) {
         appendText(text);
-        if (active) {
-            synchronized (receivedText) {
-                receivedText.append(text);
+        if (robotStarted) {
+            synchronized (messageBuffer) {
+                messageBuffer.append(text);
             }
-            processIncomingText();
+            processMessages();
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.telnet.TelnetListener#ansiCodeReceived(java.lang.String)
+     */
     @Override
     public void ansiCodeReceived(String code) {
-        // Not implemented.
+        // Not implemented yet.
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.ozsoft.telnet.TelnetListener#telnetExceptionCaught(java.lang.Throwable)
+     */
     @Override
     public void telnetExceptionCaught(Throwable t) {
-        stop();
         appendText(String.format(">>> ERROR: %s\n", t.getMessage()));
+        stopRobot();
     }
 
+    /**
+     * Creates the application's GUI.
+     */
     private void createUI() {
         frame = new JFrame("MUD Robot");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -209,103 +243,96 @@ public class MudBot implements TelnetListener {
 
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("File");
-        JMenuItem menuItem = new JMenuItem("Start Robot");
-        menuItem.addActionListener(new ActionListener() {
+        startStopButton = new JButton("Start");
+        startStopButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                startRobot();
-            }
+                startStopButton.setEnabled(false);
+                if (!robotStarted) {
+                    startRobot();
+                } else {
+                    stopRobot();
+                }
+            } 
         });
-        menu.add(menuItem);
-        menuItem = new JMenuItem("Stop Robot");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                stopRobot();
-            }
-        });
-        menu.add(menuItem);
-        menuItem = new JMenuItem("Exit");
-        menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        });
-        menu.add(menuItem);
-        menuBar.add(menu);
-        frame.setJMenuBar(menuBar);
-
-        textPane = new StyledTextPane();
-        textPane.setFocusable(false);
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        frame.getContentPane().add(startStopButton, gbc);
+
+        messagesText = new StyledTextPane();
+        messagesText.setFocusable(false);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        frame.getContentPane().add(textPane, gbc);
+        frame.getContentPane().add(messagesText, gbc);
 
-        commandLine = new JTextField();
-        commandLine.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        commandLine.setBackground(Color.BLACK);
-        commandLine.setForeground(Color.WHITE);
-        commandLine.setCaretColor(Color.WHITE);
-        commandLine.addFocusListener(new FocusAdapter() {
+        commandText = new JTextField();
+        commandText.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        commandText.setBackground(Color.BLACK);
+        commandText.setForeground(Color.WHITE);
+        commandText.setCaretColor(Color.WHITE);
+        commandText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                commandLine.selectAll();
+                commandText.selectAll();
             }
         });
-        commandLine.addKeyListener(new KeyAdapter() {
+        commandText.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    sendCommand(commandLine.getText().trim());
-                    commandLine.selectAll();
-                    commandLine.requestFocusInWindow();
+                    sendCommand(commandText.getText().trim());
+                    commandText.selectAll();
+                    commandText.requestFocusInWindow();
                 }
             }
         });
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
-        frame.getContentPane().add(commandLine, gbc);
-
-        frame.getRootPane().setDefaultButton(sendButton);
+        frame.getContentPane().add(commandText, gbc);
 
         frame.pack();
         frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        commandLine.requestFocusInWindow();
+        commandText.requestFocusInWindow();
     }
 
+    
+    /**
+     * Append message text to the messages log.
+     * 
+     * @param text
+     *            The message text.
+     */
     private void appendText(String text) {
-        textPane.append(text);
+        messagesText.append(text);
     }
 
-    private void startRobot() {
-        start();
-    }
-
-    private void stopRobot() {
-        stop();
-    }
-
-    private void close() {
-        stopRobot();
-        telnetClient.shutdown();
-        frame.dispose();
-    }
-
+    /**
+     * Sends a single command to the MUD.
+     * 
+     * @param command
+     *            The command.
+     */
     private void sendCommand(String command) {
         String[] macro = macros.get(command);
         if (macro != null) {
@@ -317,42 +344,61 @@ public class MudBot implements TelnetListener {
         }
     }
 
+    /**
+     * Sends multiple commands as a single compound command.
+     * 
+     * @param commands
+     *            The commands.
+     */
     private void sendCommands(String[] commands) {
         for (String command : commands) {
             sendCommand(command);
         }
     }
 
-    private void start() {
-        if (!active) {
-            clearIncomingText();
+    /**
+     * Starts the robot.
+     */
+    private void startRobot() {
+        if (!robotStarted) {
+            clearMessageBuffer();
             nextArea = -1;
-            active = true;
+            robotStarted = true;
             appendText(">>> Robot started\n");
             sendCommand("hp");
             huntNextArea();
+            startStopButton.setText("Stop");
+            startStopButton.setEnabled(true);
         }
     }
 
-    private void stop() {
-        if (active) {
+    /**
+     * Stops the robot immediately.
+     */
+    private void stopRobot() {
+        if (robotStarted) {
             state = State.IDLE;
-            active = false;
-            clearIncomingText();
+            robotStarted = false;
+            clearMessageBuffer();
             appendText(">>> Robot stopped\n");
+            startStopButton.setText("Start");
+            startStopButton.setEnabled(true);
         }
     }
 
-    private void processIncomingText() {
-        String text = receivedText.toString();
+    /**
+     * Processes incoming text from the MUD.
+     */
+    private void processMessages() {
+        String text = messageBuffer.toString();
 
         checkHealth(text);
 
-        if (active) {
+        if (robotStarted) {
             if (text.contains("You can't go that way!")) {
                 appendText(">>> Oops, we got lost!\n");
-                clearIncomingText();
-                stop();
+                clearMessageBuffer();
+                stopRobot();
             } else {
                 if (state == State.IDLE) {
                     huntNextArea();
@@ -367,9 +413,9 @@ public class MudBot implements TelnetListener {
                 } else if (state == State.RESTING) {
                     rest(text);
                 } else if (state == State.SLEEPING) {
-                    camp(text);
+                    sleep(text);
                 } else if (state == State.DUMPING) {
-                    dumpStuff(text);
+                    dump(text);
                 } else {
                     // This should never happen.
                     System.err.println("ERROR: Invalid state: " + state);
@@ -377,17 +423,34 @@ public class MudBot implements TelnetListener {
             }
 
             if (state != State.IDLE && state != State.TRAVELING) {
-                sleep();
+                delay();
             }
         }
     }
 
-    private void clearIncomingText() {
-        synchronized (receivedText) {
-            receivedText.delete(0, receivedText.length());
+    /**
+     * Scan incoming messages for an HP/CP update.
+     * 
+     * @param text
+     *            The message text.
+     */
+    private void checkHealth(String text) {
+        Matcher m = healthBarPattern.matcher(text);
+        if (m.find()) {
+            try {
+                int hp = Integer.parseInt(m.group(1));
+                int maxHp = Integer.parseInt(m.group(2));
+                hpPerc = (double) hp / (double) maxHp;
+                cp = Integer.parseInt(m.group(3));
+            } catch (NumberFormatException e) {
+                System.err.println("ERROR: " + e);
+            }
         }
     }
 
+    /**
+     * Let the robot hunt the next area.
+     */
     private void huntNextArea() {
         // Determine next area;
         currentArea = null;
@@ -406,48 +469,50 @@ public class MudBot implements TelnetListener {
             sendCommands(currentArea.toPath);
         } else {
             appendText(">>> No more areas to hunt\n");
-            stop();
+            stopRobot();
         }
     }
 
+    /**
+     * Handles incoming messages while traveling.
+     * 
+     * @param text
+     *            The message text.
+     */
     private void travel(String text) {
         if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
             appendText(">>> Arrived home\n");
-            clearIncomingText();
+            clearMessageBuffer();
             state = State.DUMPING;
             appendText(">>> Selling loot and offering heads\n");
-            sleep();
+            delay();
             sendCommand("sell");
-            sleep();
+            delay();
             sendCommand("bar");
-            sleep();
+            delay();
             sendCommand("offer all");
-            sleep();
+            delay();
             sendCommand("_bar");
-            sleep();
+            delay();
         } else if (text.contains(currentArea.roomDescription)) {
             appendText(String.format(">>> Arrived at area '%s'\n", currentArea));
-            clearIncomingText();
+            clearMessageBuffer();
             currentArea.reset();
             state = State.HUNTING;
             hunt(text);
         }
     }
 
-    private void dumpStuff(String text) {
-        if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
-            appendText(">>> Arrived home\n");
-            clearIncomingText();
-            state = State.IDLE;
-            // FIXME: Fix DUMPING_STUFF
-            stopRobot();
-        }
-    }
-
+    /**
+     * Handles incoming messages while hunting.
+     * 
+     * @param text
+     *            The message text.
+     */
     private void hunt(String text) {
         if (hpPerc >= MIN_HP_PERC && cp >= MIN_CP) {
             appendText(">>> Looking for monsters\n");
-            scanForMonster(text);
+            lookForMonster(text);
             if (monster != null) {
                 appendText(String.format(">>> Attacking %s\n", monster));
                 state = State.FIGHTING;
@@ -470,23 +535,29 @@ public class MudBot implements TelnetListener {
             sendCommand("camping");
             rest(text);
         }
-        clearIncomingText();
+        clearMessageBuffer();
     }
 
+    /**
+     * Handles incoming messages while in combat.
+     * 
+     * @param text
+     *            The message text.
+     */
     private void fight(String text) {
         if (text.contains(" falls lifeless to the ground.")) {
             appendText(String.format(">>> Killed %s\n", monster));
-            clearIncomingText();
+            clearMessageBuffer();
             sendCommand("loot");
             state = State.CLAIMING_TROPHY;
             sendCommand("ct");
         } else if (text.contains("You have no target for the skill.")) {
             appendText(">>> Oops, lost track of monster, resuming the hunt\n");
-            clearIncomingText();
+            clearMessageBuffer();
             state = State.HUNTING;
             sendCommand("l");
         } else if (text.contains("You have finished concentrating on the skill.")) {
-            clearIncomingText();
+            clearMessageBuffer();
             if (cp >= 200) {
                 appendText(">>> Preparing next attack\n");
                 sendCommand("rm " + monster.getAlias());
@@ -496,9 +567,15 @@ public class MudBot implements TelnetListener {
         }
     }
 
+    /**
+     * Handles incoming messages while claiming a throphy.
+     * 
+     * @param text
+     *            The message text.
+     */
     private void claimTrophy(String text) {
         if (text.contains("You grab hold of the corpse and lift it's neck up a bit.")) {
-            clearIncomingText();
+            clearMessageBuffer();
             state = State.HUNTING;
             sendCommand("l");
         } else {
@@ -506,15 +583,22 @@ public class MudBot implements TelnetListener {
         }
     }
 
+    /**
+     * Handles incoming messages while resting.
+     * 
+     * @param text
+     *            The message text.
+     */
     private void rest(String text) {
         if (text.contains("You lie down, praying for the spirits of nature to guard your sleep.")) {
-            clearIncomingText();
+            clearMessageBuffer();
             state = State.SLEEPING;
+            appendText(">>> Sleeping\n");
         } else if (text.contains("You can't camp so soon again.")) {
-            clearIncomingText();
-            appendText(">>> Too soon to camp agin, resting instead\n");
+            clearMessageBuffer();
+            appendText(">>> Too soon to sleep agin, resting instead\n");
         } else if (hpPerc >= SAFE_HP_PERC && cp >= MIN_CP) {
-            clearIncomingText();
+            clearMessageBuffer();
             appendText(">>> Done resting, resuming the hunt\n");
             state = State.HUNTING;
             sendCommand("l");
@@ -525,32 +609,55 @@ public class MudBot implements TelnetListener {
         }
     }
 
-    private void camp(String text) {
+    /**
+     * Handles incoming messages while sleeping.
+     * 
+     * @param text
+     *            The message text.
+     */
+    private void sleep(String text) {
         if (text.contains("You wake from your rest and feel much better.")) {
             appendText(">>> Done camping, resting until fully healed\n");
-            clearIncomingText();
+            clearMessageBuffer();
             state = State.RESTING;
             rest(text);
         } else {
-            appendText(">>> Camping\n");
+            appendText(">>> Sleeping\n");
         }
     }
 
-    private void checkHealth(String text) {
-        Matcher m = healthBarPattern.matcher(text);
-        if (m.find()) {
-            try {
-                int hp = Integer.parseInt(m.group(1));
-                int maxHp = Integer.parseInt(m.group(2));
-                hpPerc = (double) hp / (double) maxHp;
-                cp = Integer.parseInt(m.group(3));
-            } catch (NumberFormatException e) {
-                System.err.println("ERROR: " + e);
-            }
+    /**
+     * Handles incoming messages while dumping items.
+     * 
+     * @param text
+     *            The message text.
+     */
+    private void dump(String text) {
+        if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
+            appendText(">>> Arrived home\n");
+            clearMessageBuffer();
+            state = State.IDLE;
+            // FIXME: Fix DUMPING; in the meanwhile stop the robot for safety reasons.
+            stopRobot();
         }
     }
 
-    private void scanForMonster(String text) {
+    /**
+     * Clears the buffer for incoming messages.
+     */
+    private void clearMessageBuffer() {
+        synchronized (messageBuffer) {
+            messageBuffer.delete(0, messageBuffer.length());
+        }
+    }
+
+    /**
+     * Parse the room description, looking for monsters to kill.
+     * 
+     * @param text
+     *            The room description.
+     */
+    private void lookForMonster(String text) {
         monster = null;
         int pos = text.lastIndexOf("Obvious exit");
         if (pos != -1) {
@@ -597,6 +704,9 @@ public class MudBot implements TelnetListener {
         }
     }
 
+    /**
+     * Creates the MUD-specific macros.
+     */
     private void createMacros() {
         macros = new HashMap<String, String[]>();
         macros.put("start", new String[]{"brief", "house", "valenthos", "get_eq", "hall", "login", "3 n", "14 e", "brief", "bstance lion", "party create", "l"});
@@ -624,6 +734,9 @@ public class MudBot implements TelnetListener {
         macros.put("_treants", new String[]{"brief", "out", "5 w", "6 sw", "s", "4 w", "7 sw", "5 w", "brief", "l"});
     }
 
+    /**
+     * Creates the MUD-specific areas.
+     */
     private void createAreas() {
         Area area = null;
 
@@ -674,7 +787,19 @@ public class MudBot implements TelnetListener {
         areas.add(area);
     }
 
-    private static void sleep() {
+    /**
+     * Closes the application.
+     */
+    private void close() {
+        stopRobot();
+        telnetClient.shutdown();
+        frame.dispose();
+    }
+
+    /**
+     * Delays the current thread.
+     */
+    private static void delay() {
         try {
             Thread.sleep(DELAY);
         } catch (InterruptedException e) {
