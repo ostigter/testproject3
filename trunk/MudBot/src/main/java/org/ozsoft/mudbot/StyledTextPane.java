@@ -19,7 +19,7 @@ import javax.swing.text.StyledDocument;
  */
 public class StyledTextPane extends JPanel {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5311151074593998126L;
 
     private final JTextPane textPane;
 
