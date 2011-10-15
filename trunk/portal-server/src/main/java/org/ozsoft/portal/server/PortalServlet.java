@@ -150,8 +150,9 @@ public class PortalServlet extends HttpServlet implements TelnetListener {
      */
     @Override
     public void destroy() {
-        telnetClient.disconnect();
-        telnetClient.removeTelnetListener(this);
+//        telnetClient.disconnect();
+//        telnetClient.removeTelnetListener(this);
+        telnetClient.shutdown();
         receivedText.delete(0, receivedText.length());
     }
     
