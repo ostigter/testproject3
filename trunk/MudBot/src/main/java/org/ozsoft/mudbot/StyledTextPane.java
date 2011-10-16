@@ -60,5 +60,9 @@ public class StyledTextPane extends JPanel {
             System.err.println("StyledTextPane: ERROR appending text: " + e);
         }
     }
+    
+    public void clear() {
+        textPane.setText("");
+    }
 
 }
