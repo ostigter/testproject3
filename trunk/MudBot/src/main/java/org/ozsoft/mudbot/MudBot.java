@@ -195,7 +195,7 @@ public class MudBot implements TelnetListener {
     public void connected() {
         clearMessageBuffer();
         clearMessages();
-        appendText("[Bot] Connected\n");
+        setStatus("Connected");
     }
 
     /*
@@ -205,7 +205,10 @@ public class MudBot implements TelnetListener {
     @Override
     public void disconnected() {
         clearMessageBuffer();
-        appendText("\n[Bot] Disconnected\n");
+        setStatus("Disconnected");
+        locationText.setText("");
+        hpText.setText("");
+        cpText.setText("");
     }
 
     /*
@@ -591,8 +594,6 @@ public class MudBot implements TelnetListener {
             appendText("[Bot] Stopped\n");
             setStatus("Stopped");
             locationText.setText("");
-            hpText.setText("");
-            cpText.setText("");
             startStopButton.setText("Start");
             startStopButton.setEnabled(true);
         }
@@ -656,8 +657,8 @@ public class MudBot implements TelnetListener {
                 cp = Integer.parseInt(m.group(3));
                 int maxCp = Integer.parseInt(m.group(4));
                 double cpPerc = (double) cp / (double) maxCp;
-                hpText.setText(String.format("%d / %d (%.0f %%)", hp, maxHp, hpPerc * 100));
-                cpText.setText(String.format("%d / %d (%.0f %%)", cp, maxCp, cpPerc * 100));
+                hpText.setText(String.format("%d / %d (%.0f%%)", hp, maxHp, hpPerc * 100));
+                cpText.setText(String.format("%d / %d (%.0f%%)", cp, maxCp, cpPerc * 100));
             } catch (NumberFormatException e) {
                 logError("Could not update health", e);
             }
@@ -943,8 +944,8 @@ public class MudBot implements TelnetListener {
         macros = new HashMap<String, String[]>();
         macros.put("start", new String[]{"brief", "house", "valenthos", "get_eq", "hall", "login", "3 n", "14 e", "brief", "bstance lion", "party create", "l", "hp"});
         macros.put("end", new String[]{"brief", "w", "house", "valenthos", "store_eq", "brief", "l", "l me"});
-        macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get pass", "keep all", "wear all", "wield axe", "wield axe 2 in left hand"});
-        macros.put("store_eq", new String[]{"unkeep all", "drop all", "remove all", "unkeep all", "open valenthos1", "put all in valenthos1", "close valenthos1", "open valenthos2", "put all in valenthos2", "close valenthos2"});
+        macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get all", "keep all", "wear all", "wield axe", "wield axe 2 in left hand"});
+        macros.put("store_eq", new String[]{"remove all", "unkeep all", "open valenthos1", "put all in valenthos1", "close valenthos1", "open valenthos2", "put all in valenthos2", "close valenthos2", "drop all"});
         macros.put("sell", new String[]{"brief", "13 w", "3 n", "sell all", "2 s", "e", "deposit all", "w", "s", "13 e", "brief", "l", "money"});
         macros.put("bar", new String[]{"brief", "5 e", "5 ne", "7 n", "7 nw", "enter path", "n", "brief", "l"});
         macros.put("_bar", new String[]{"brief", "2 s", "7 se", "7 s", "5 sw", "5 w", "brief", "l"});
