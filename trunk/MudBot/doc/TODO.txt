@@ -1,6 +1,8 @@
 TODO
 ====
 
+* Add area Malux
+* Add area Raja Village
 * Show current experience
 * Show time until next reboot
 * Message filter (All/Bot/Alerts)
