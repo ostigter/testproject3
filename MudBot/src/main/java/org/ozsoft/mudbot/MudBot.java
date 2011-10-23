@@ -13,10 +13,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,9 +50,15 @@ public class MudBot implements TelnetListener {
 
     /** Robot state. */
     private enum State {
+        
+        /** Disconnected. */
+        DISCONNECTED,
+        
+        /** Logging on. */
+        LOGGING_ON,
 
-        /** Idle (home). */
-        IDLE,
+        /** Logged on, at home (safe). */
+        HOME,
 
         /** Traveling to an area. */
         TRAVELING_TO_AREA,
@@ -70,7 +83,13 @@ public class MudBot implements TelnetListener {
 
         /** Selling loot and offering heads. */
         DUMPING,
+
+        /** Logging off. */
+        LOGGING_OFF,
     };
+    
+    /** Properties file. */
+    private static final File PROPERTIES_FILE = new File("MudBot.ini");
     
     /** Default window width. */
     private static final int DEFAULT_WIDTH = 800;
@@ -80,9 +99,12 @@ public class MudBot implements TelnetListener {
     
     /** Font used by text components. */
     private static final Font FONT = new Font("Monospaced", Font.PLAIN, 12);
+    
+    /** Minimum allowed time in minutes until next reboot. */ 
+    private static final int MIN_TIME_UNTIL_REBOOT = 60;
 
     /** Minimum HP % being safe for hunting. */
-    private static final double MIN_HP_PERC = 0.4;
+    private static final double MIN_HP_PERC = 0.6;
 
     /** Minimum HP % to resume after resting. */
     private static final double SAFE_HP_PERC = 0.9;
@@ -90,23 +112,38 @@ public class MudBot implements TelnetListener {
     /** Minimum CP for hunting. */
     private static final int MIN_CP = 220;
 
-    /** Delay between commands. */
-    private static final long DELAY = 1000L;
-
     /** Time in ms for area to reset. */
     private static final long AREA_RESET_TIME = 600000L; // 10 min
+    
+    /** Regex to parse result of 'uptime' command. */
+    private static final Pattern uptimePattern = Pattern.compile("The next reboot is scheduled for .* \\(in (.*)\\)");
 
     /** Regex to parse healthbar. */
     private static final Pattern healthBarPattern = Pattern.compile("HP: \\[(\\d+)/(\\d+)\\]  CONC: \\[(\\d+)/(\\d+)\\]");
 
     /** NewLine character. */
     private static final String NEWLINE = "\r\n";
-
+    
     /** Telnet client. */
     private final TelnetClient telnetClient;
 
     /** Buffer for received messages from the MUD to be processed. */
     private final StringBuilder messageBuffer;
+
+    /** MUD host. */
+    private String host;
+    
+    /** MUD port number. */
+    private int port;
+    
+    /** MUD username. */
+    private String username;
+    
+    /** MUD password. */
+    private String password;
+    
+    /** Time of the next MUD reboot. */
+    private Calendar rebootTime;
 
     /** Current HP percentage. */
     private double hpPerc;
@@ -121,7 +158,7 @@ public class MudBot implements TelnetListener {
     private List<Area> areas;
 
     /** Next area index to travel to. */
-    private int nextArea;
+    private int nextArea = -1;
 
     /** Current area. */
     private Area currentArea;
@@ -176,6 +213,8 @@ public class MudBot implements TelnetListener {
      * Constructs the application.
      */
     public MudBot() {
+        readPropertiesFile();
+        
         messageBuffer = new StringBuilder();
 
         createMacros();
@@ -187,18 +226,19 @@ public class MudBot implements TelnetListener {
 
         telnetClient = new TelnetClient();
         telnetClient.addTelnetListener(this);
-        telnetClient.connect("mud.agesofdespair.net", 5000);
+        
+        state = State.DISCONNECTED;
+        setStatus("Disconnected");
     }
-
+    
     /*
      * (non-Javadoc)
      * @see org.ozsoft.telnet.TelnetListener#connected()
      */
     @Override
     public void connected() {
-        clearMessageBuffer();
-        clearMessages();
-        setStatus("Connected");
+        appendText("[Bot] Connected\n");
+        setStatus("Logging on");
     }
 
     /*
@@ -208,6 +248,7 @@ public class MudBot implements TelnetListener {
     @Override
     public void disconnected() {
         clearMessageBuffer();
+        state = State.DISCONNECTED;
         setStatus("Disconnected");
         locationText.setText("");
         hpText.setText("");
@@ -247,6 +288,41 @@ public class MudBot implements TelnetListener {
     public void telnetExceptionCaught(Throwable t) {
         logError("Connection error", t);
         stopRobot();
+    }
+
+    /**
+     * Reads the properties file.
+     */
+    private void readPropertiesFile() {
+        if (!PROPERTIES_FILE.isFile()) {
+            System.err.println("ERROR: Could not find properties file");
+            System.exit(1);
+        }
+        Properties properties = new Properties();
+        try {
+            properties.load(new BufferedReader(new FileReader(PROPERTIES_FILE)));
+        } catch (IOException e) {
+            System.err.println("ERROR: Could not read properties file: " + e);
+            System.exit(1);
+        }
+        host = properties.getProperty("mud.host");
+        port = -1;
+        try {
+            port = Integer.parseInt(properties.getProperty("mud.port", "23"));
+        } catch (NumberFormatException e) {
+            // Ignore; caught below.
+        }
+        if (host != null && port != -1) {
+        } else {
+            System.err.println(String.format("Invalid MUD host ('%s') or port number (%d) in properties file", host, port));
+            System.exit(1);
+        }
+        username = properties.getProperty("mud.username");
+        password = properties.getProperty("mud.password");
+        if (username == null || password == null) {
+            System.err.println("Missing username or password in properties file");
+            System.exit(1);
+        }
     }
 
     /**
@@ -577,13 +653,16 @@ public class MudBot implements TelnetListener {
     private void startRobot() {
         if (!robotStarted) {
             clearMessageBuffer();
-            state = State.IDLE;
-            nextArea = -1;
             robotStarted = true;
             appendText("[Bot] Started\n");
             startStopButton.setText("Stop");
             startStopButton.setEnabled(true);
-            sendCommand("hp");
+            if (state == State.DISCONNECTED) {
+                connect();
+            } else {
+                state = State.HOME;
+                sendCommand("hp");
+            }
         }
     }
 
@@ -594,11 +673,18 @@ public class MudBot implements TelnetListener {
         if (robotStarted) {
             robotStarted = false;
             clearMessageBuffer();
-            appendText("[Bot] Stopped\n");
             setStatus("Stopped");
             locationText.setText("");
             startStopButton.setText("Start");
             startStopButton.setEnabled(true);
+        }
+    }
+    
+    private void connect() {
+        if (state == State.DISCONNECTED) {
+            appendText("[Bot] Connecting\n");
+            state = State.LOGGING_ON;
+            telnetClient.connect(host, port);
         }
     }
 
@@ -615,32 +701,49 @@ public class MudBot implements TelnetListener {
                 locationText.setText(String.format("%s (LOST!)", currentArea));
                 stopRobot();
             } else {
-                if (state == State.IDLE) {
-                    huntNextArea();
-                } else if (state == State.TRAVELING_TO_AREA) {
-                    travelToArea(text);
-                } else if (state == State.HUNTING) {
-                    hunt(text);
-                } else if (state == State.IN_COMBAT) {
-                    fight(text);
-                } else if (state == State.LOOTING) {
-                    loot(text);
-                } else if (state == State.RESTING) {
-                    rest(text);
-                } else if (state == State.SLEEPING) {
-                    sleep(text);
-                } else if (state == State.GOING_HOME) {
-                    goHome(text);
-                } else if (state == State.DUMPING) {
-                    dump(text);
-                } else {
-                    // This should never happen.
-                    logError("Invalid bot status: " + state);
+                switch (state) {
+                    case DISCONNECTED:
+                        // This should never happen.
+                        logError("Received text while disconnected");
+                        break;
+                    case LOGGING_ON:
+                        logOn(text);
+                        break;
+                    case HOME:
+                        huntNextArea();
+                        break;
+                    case TRAVELING_TO_AREA:
+                        travelToArea(text);
+                        break;
+                    case HUNTING:
+                        hunt(text);
+                        break;
+                    case IN_COMBAT:
+                        fight(text);
+                        break;
+                    case LOOTING:
+                        loot(text);
+                        break;
+                    case RESTING:
+                        rest(text);
+                        break;
+                    case SLEEPING:
+                        sleep(text);
+                        break;
+                    case GOING_HOME:
+                        goHome(text);
+                        break;
+                    case DUMPING:
+                        dump(text);
+                        break;
+                    default:
+                        // This should never happen.
+                        logError("Invalid bot status: " + state);
                 }
             }
 
-            if (state != State.IDLE && state != State.TRAVELING_TO_AREA) {
-                delay();
+            if (state == State.HUNTING || state == State.IN_COMBAT) {
+                delay(1000L);
             }
         }
     }
@@ -676,7 +779,7 @@ public class MudBot implements TelnetListener {
         } else {
             errorText = String.format("ERROR: %s");
         }
-        appendText("[Alert] >>> " + errorText);
+        appendText(String.format("\n[Alert] >>> %s\n", errorText));
         System.err.println(errorText);
     }
 
@@ -688,6 +791,66 @@ public class MudBot implements TelnetListener {
     private void setStatus(String status) {
         appendText(String.format("[Bot] %s\n", status));
         statusText.setText(status);
+    }
+    
+    /**
+     * Handles incoming message while logging on.
+     * 
+     * @param text
+     *            The message text.
+     */
+    private void logOn(String text) {
+        if (text.contains("By what name do you wish to be known?")) {
+            clearMessageBuffer();
+            delay(2000L);
+            telnetClient.sendText(username + NEWLINE);
+            appendText(username + "\n");
+        } else if (text.contains("Please enter your password:")) {
+            clearMessageBuffer();
+            delay(2000L);
+            telnetClient.sendText(password + NEWLINE);
+        } else if (text.contains("This is a small courtyard paved with flagstones ")) {
+            clearMessageBuffer();
+            setStatus("Logged on");
+            delay(2000L);
+            sendCommand("uptime");
+        } else if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
+            clearMessageBuffer();
+            setStatus("Home");
+            delay(2000L);
+            huntNextArea();
+        } else if (text.contains("The next reboot is scheduled for ")) {
+            clearMessageBuffer();
+            Matcher m = uptimePattern.matcher(text);
+            if (m.find()) {
+                String time = m.group(1);
+                rebootTime = new GregorianCalendar();
+                for (String part : time.split(" ")) {
+                    int len = part.length();
+                    int number = Integer.parseInt(part.substring(0, len - 1));
+                    char unit = part.charAt(len - 1);
+                    if (unit == 'h') {
+                        rebootTime.add(Calendar.HOUR, number);
+                    } else if (unit == 'm') {
+                        rebootTime.add(Calendar.MINUTE, number);
+                    } else {
+                        rebootTime.add(Calendar.SECOND, number);
+                    }
+                }
+                appendText(String.format("[Bot] Next reboot will be on: %s\n", rebootTime.getTime()));
+                long timeRemaining = (rebootTime.getTimeInMillis() - System.currentTimeMillis()) / 60000; 
+                appendText(String.format("[Bot] Time until next reboot: %d minutes\n", timeRemaining));
+                if (timeRemaining >= MIN_TIME_UNTIL_REBOOT) {
+                    delay(2000L);
+                    sendCommand("start");
+                } else {
+                    appendText(String.format("[Alert] Only %d minutes until next reboot; logging off\n", timeRemaining));
+                    stopRobot();
+                    delay(2000L);
+                    sendCommands(new String[] {"house", "quit"});
+                }
+            }
+        }
     }
 
     /**
@@ -709,6 +872,7 @@ public class MudBot implements TelnetListener {
         if (currentArea != null) {
             setStatus(String.format("Traveling to %s", currentArea));
             state = State.TRAVELING_TO_AREA;
+            delay(2000L);
             sendCommands(currentArea.toPath);
         } else {
             appendText("[Bot] No more areas to hunt\n");
@@ -755,14 +919,14 @@ public class MudBot implements TelnetListener {
                 } else {
                     currentArea.updateLastVisisted();
                     state = State.GOING_HOME;
-                    setStatus("Area finished, traveling home");
+                    setStatus("Area finished; traveling home");
                     locationText.setText("");
                     sendCommands(currentArea.homePath);
                 }
             }
         } else {
             state = State.RESTING;
-            setStatus("Health getting low, resting");
+            setStatus("Health getting low; resting");
             sendCommand("camping");
             rest(text);
         }
@@ -855,16 +1019,7 @@ public class MudBot implements TelnetListener {
             clearMessageBuffer();
             state = State.DUMPING;
             setStatus("Dumping items");
-            delay();
-            sendCommand("sell");
-            delay();
-            sendCommand("bar");
-            delay();
-            sendCommand("offer all");
-            delay();
-            sendCommand("_bar");
-            delay();
-            sendCommand("l");
+            sendCommand("dump");
         }
     }
 
@@ -877,7 +1032,7 @@ public class MudBot implements TelnetListener {
     private void dump(String text) {
         if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
             clearMessageBuffer();
-            state = State.IDLE;
+            state = State.HOME;
             setStatus("Home");
             sendCommand("l");
         }
@@ -952,21 +1107,24 @@ public class MudBot implements TelnetListener {
         macros.put("end", new String[]{"brief", "w", "house", "valenthos", "store_eq", "brief", "l", "l me"});
         macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get all", "keep all", "wear all", "wield axe", "wield axe 2 in left hand"});
         macros.put("store_eq", new String[]{"remove all", "unkeep all", "open valenthos1", "put all in valenthos1", "close valenthos1", "open valenthos2", "put all in valenthos2", "close valenthos2", "drop all"});
-        macros.put("sell", new String[]{"brief", "13 w", "3 n", "sell all", "2 s", "e", "deposit all", "w", "s", "13 e", "brief", "l", "money"});
         macros.put("bar", new String[]{"brief", "5 e", "5 ne", "7 n", "7 nw", "enter path", "n", "brief", "l"});
         macros.put("_bar", new String[]{"brief", "2 s", "7 se", "7 s", "5 sw", "5 w", "brief", "l"});
+        macros.put("sell", new String[]{"brief", "13 w", "3 n", "sell all", "2 s", "e", "deposit all", "w", "s", "13 e", "brief", "l", "money"});
+        macros.put("dump", new String[]{"sell", "bar", "offer all", "_bar"});
         macros.put("heights", new String[]{"brief", "3 e", "s", "climb", "brief", "l"});
         macros.put("_heights", new String[]{"brief", "down", "n", "3 w", "brief", "l"});
         macros.put("farm", new String[]{"brief", "e", "ne", "n", "path", "brief", "l"});
         macros.put("_farm", new String[]{"brief", "leave", "s", "sw", "w", "brief", "l"});
         macros.put("library", new String[]{"brief", "e", "2 se", "2 s", "enter path", "n", "ne", "n", "enter", "brief", "l"});
         macros.put("_library", new String[]{"brief", "out", "s", "sw", "s", "leave", "2 n", "2 nw", "brief", "l"});
+        macros.put("lostcity", new String[]{"brief", "ne", "4 nw", "6 n", "brief", "l"});
+        macros.put("_lostcity", new String[]{"brief", "6 s", "4 se", "sw", "brief", "l"});
         macros.put("treetown", new String[]{"brief", "e", "13 se", "4 e", "3 s", "se", "path", "n", "climb tree", "brief", "l"});
         macros.put("_treetown", new String[]{"brief", "d", "s", "s", "nw", "3 n", "4 w", "13 nw", "w", "brief", "l"});
-        macros.put("raja", new String[]{"brief", "5 e", "13 ne", "enter village", "brief", "l"});
-        macros.put("_raja", new String[]{"brief", "leave", "13 sw", "5 w", "brief", "l"});
         macros.put("orcs", new String[]{"brief", "e", "2 se", "s", "7 sw", "16 w", "sw", "s", "path", "brief", "l"});
         macros.put("_orcs", new String[]{"brief", "w", "n", "ne", "16 e", "7 ne", "n", "2 nw", "w", "brief", "l"});
+        macros.put("raja", new String[]{"brief", "5 e", "13 ne", "enter village", "brief", "l"});
+        macros.put("_raja", new String[]{"brief", "leave", "13 sw", "5 w", "brief", "l"});
         macros.put("unicorns", new String[]{"brief", "6 e", "3 se", "enter opening", "3 n", "brief", "l"});
         macros.put("_unicorns", new String[]{"brief", "3 s", "s", "3 nw", "6 w", "brief", "l"});
         macros.put("treants", new String[]{"brief", "5 e", "7 ne", "4 e", "n", "6 ne", "5 e", "enter path", "brief", "l"});
@@ -979,6 +1137,20 @@ public class MudBot implements TelnetListener {
     private void createAreas() {
         Area area = null;
 
+        // The Lost City
+        area = new Area("The Lost City");
+        area.toPath = new String[]{"lostcity"};
+        area.homePath = new String[]{"_lostcity"};
+        area.roomDescription = "You step into the southern gate with great care, ";
+        area.directions = new String[] {"n", "e", "e", "s", "n", "w", "w", "w", "w", "e", "e", "n", "n", "e", "e", "w", "w", "w", "w", "e", "e", "n", "n", "e", "e", "w", "w", "w", "w", "e", "e", "n", "s", "s", "s", "s", "s", "s"};
+        area.addMonster(new Monster("A vicious guard dog", "dog"));
+        area.addMonster(new Monster("A small ghost hovers here", "ghost"));
+        area.addMonster(new Monster("A medium ghost hovers here", "ghost"));
+        area.addMonster(new Monster("A big ghost hovers here", "ghost"));
+        area.addMonster(new Monster("An adept ghost hovers here", "ghost"));
+        area.addItem("A meaty bone");
+        areas.add(area);
+        
         // Treetown
         area = new Area("Treetown");
         area.toPath = new String[]{"treetown"};
@@ -1045,10 +1217,13 @@ public class MudBot implements TelnetListener {
 
     /**
      * Delays the current thread.
+     * 
+     * @param duration
+     *            The duration of the delay in milliseconds.
      */
-    private static void delay() {
+    private static void delay(long duration) {
         try {
-            Thread.sleep(DELAY);
+            Thread.sleep(duration);
         } catch (InterruptedException e) {
             // Ignore.
         }

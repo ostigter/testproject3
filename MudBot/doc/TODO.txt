@@ -1,15 +1,17 @@
 TODO
 ====
 
-* Add area Malux
+* Add area Ravenfolk
 * Add area Raja Village
+* Only dump when carrying loot
+* Check time until reboot
+* Continue hunting after area respawn
 * Show current experience
-* Show time until next reboot
 * Message filter (All/Bot/Alerts)
-* Log files
-* Properties file (non-versioned)
-* Log On/Off
+* Write log files
+* Log off before reboot 
 * Bot mode (Off, Semi-Auto, Full-Auto)
 * Go Home button
 * ANSI colors
 * Handle fleeing
+* Add area Malux
