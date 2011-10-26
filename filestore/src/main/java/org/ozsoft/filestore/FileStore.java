@@ -313,7 +313,7 @@ public class FileStore {
                 // Remove file entry.
                 entries.remove(id);
             } catch (IOException e) {
-                LOG.error(String.format("Error making file %d as deleted", id), e);
+                LOG.error(String.format("Error marking file %d as deleted", id), e);
             }
         }
     }
