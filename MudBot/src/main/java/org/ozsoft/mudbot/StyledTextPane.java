@@ -35,7 +35,7 @@ public class StyledTextPane extends JPanel {
         textPane = new JTextPane();
         textPane.setBackground(Color.BLACK);
         textPane.setForeground(Color.LIGHT_GRAY);
-        textPane.setFont(new Font(Font.MONOSPACED, Font.BOLD, 14));
+        textPane.setFont(new Font(Font.MONOSPACED, Font.BOLD, 12));
         textPane.setEditable(false);
         add(BorderLayout.CENTER, new JScrollPane(textPane));
 
