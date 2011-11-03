@@ -1003,7 +1003,7 @@ public class MudBot implements TelnetListener {
             } else {
                 String direction = currentArea.getNextDirection();
                 if (direction != null) {
-                    appendText(String.format("[Bot] Nothing here; proceeding '%s'\n", direction));
+//                    appendText(String.format("[Bot] Nothing here; proceeding '%s'\n", direction));
                     sendCommand(direction);
                 } else {
                     currentArea.updateLastVisisted();
@@ -1204,7 +1204,7 @@ public class MudBot implements TelnetListener {
      */
     private void createMacros() {
         macros = new HashMap<String, String[]>();
-        macros.put("start", new String[]{"brief", "house", "valenthos", "bhead", "bmode wolf", "bstance wolf", "get_eq", "hall", "login", "3 n", "14 e", "brief", "party create", "l"});
+        macros.put("start", new String[]{"brief", "house", "valenthos", "bhead", "bmode wolf", "bstance lion", "get_eq", "hall", "login", "3 n", "14 e", "brief", "party create", "l"});
         macros.put("end", new String[]{"brief", "w", "house", "valenthos", "store_eq", "brief", "l", "l me"});
         macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get all", "keep all", "wear all", "wield axe", "wield axe 2 in left hand"});
         macros.put("store_eq", new String[]{"remove all", "unkeep all", "open valenthos1", "put all in valenthos1", "close valenthos1", "open valenthos2", "put all in valenthos2", "close valenthos2", "drop all"});
@@ -1231,8 +1231,8 @@ public class MudBot implements TelnetListener {
         macros.put("_treants", new String[]{"brief", "out", "5 w", "6 sw", "s", "4 w", "7 sw", "5 w", "brief", "l"});
         macros.put("avalon", new String[]{"brief", "13 se", "3 e", "18 se", "s", "se", "8 e", "3 ne", "brief", "l"});
         macros.put("_avalon", new String[]{"brief", "3 sw", "8 w", "nw", "n", "18 nw", "3 w", "13 nw", "brief", "l"});
-        macros.put("demons", new String[]{"brief", "se", "sw", "20 w", "7 w", "3 sw", "enter path", "brief", "l"});
-        macros.put("_demons", new String[]{"brief", "s", "4 ne", "20 e", "6 e", "ne", "nw", "brief", "l"});
+        macros.put("outpost", new String[]{"brief", "se", "sw", "20 w", "7 w", "3 sw", "enter path", "brief", "l"});
+        macros.put("_outpost", new String[]{"brief", "s", "4 ne", "20 e", "6 e", "ne", "nw", "brief", "l"});
     }
 
     /**
@@ -1241,7 +1241,6 @@ public class MudBot implements TelnetListener {
     private void createAreas() {
         Area area = null;
 
-        // Treetown
         area = new Area("Treetown");
         area.toPath = new String[]{"treetown"};
         area.homePath = new String[]{"_treetown"};
@@ -1260,7 +1259,6 @@ public class MudBot implements TelnetListener {
         area.addItem("Information about our theatre");
         areas.add(area);
 
-        // Oz'ikel Forest.
         area = new Area("Oz'ikel Forest");
         area.toPath = new String[]{"orcs"};
         area.homePath = new String[]{"_orcs"};
@@ -1285,8 +1283,17 @@ public class MudBot implements TelnetListener {
         area.addItem("An orcish dagger");
         area.addItem("An orcish throwing dagger");
         areas.add(area);
+
+        area = new Area("Demon Outpost");
+        area.toPath = new String[]{"outpost"};
+        area.homePath = new String[]{"_outpost"};
+        area.roomDescription = "You are outside a small outpost.";
+        area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
+        area.addMonster(new Monster("Demon sentry", "sentry"));
+        area.addMonster(new Monster("Demon guard", "guard"));
+        area.addMonster(new Monster("Demon soldier", "soldier"));
+        areas.add(area);
         
-//        // The Lost City
 //        area = new Area("The Lost City");
 //        area.toPath = new String[]{"lostcity"};
 //        area.homePath = new String[]{"_lostcity"};
