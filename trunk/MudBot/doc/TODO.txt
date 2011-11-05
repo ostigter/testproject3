@@ -1,16 +1,13 @@
 TODO
 ====
 
-* Show time until reboot
 * Message filter (All/Bot/Alerts)
-* Write log files
 * Continue hunting after area respawn
 * Log off before reboot 
 * Command history with auto-complete
+* Communications panel
 * Flag whether to ignore monsters (never attack)
 * Flag whether to sacrifice monters
-* Communications panel
-* Handle fleeing
 * Add area The Lost City
 * Add area Raja Village
 * Add area Ravenfolk
@@ -18,4 +15,5 @@ TODO
 * Add area Black Orc Camp
 * Add area Elven Forest (Avalon)
 * ANSI colors
+* Handle fleeing
 * Go Home button
