@@ -14,11 +14,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +96,9 @@ public class MudBot implements TelnetListener {
     /** Properties file. */
     private static final File PROPERTIES_FILE = new File("MudBot.ini");
     
+    /** Log directory. */
+    private static final File LOG_DIR = new File("log");
+    
     /** Default window width. */
     private static final int DEFAULT_WIDTH = 800;
 
@@ -104,7 +112,7 @@ public class MudBot implements TelnetListener {
     private static final int MIN_TIME_UNTIL_REBOOT = 60;
 
     /** Minimum HP % being safe for hunting. */
-    private static final double MIN_HP_PERC = 0.4;
+    private static final double MIN_HP_PERC = 0.6;
 
     /** Minimum HP % to resume after resting. */
     private static final double SAFE_HP_PERC = 0.95;
@@ -119,10 +127,16 @@ public class MudBot implements TelnetListener {
     private static final Pattern uptimePattern = Pattern.compile("The next reboot is scheduled for .* \\(in (.*)\\)");
 
     /** Regex to parse result of 'exp' command. */
-    private static final Pattern expPattern = Pattern.compile("Exp: ([\\d,]+  \\(Total: [\\d,]+\\))");
+    private static final Pattern expPattern = Pattern.compile("Exp: (-?[\\d,]+  \\(Total: [\\d,]+\\))");
 
     /** Regex to parse health bar. */
     private static final Pattern healthBarPattern = Pattern.compile("HP: \\[(\\d+)/(\\d+)\\]  CONC: \\[(\\d+)/(\\d+)\\]");
+
+    /** Regex to detect an ambush. */
+    private static final Pattern ambushedPattern = Pattern.compile(" grins as .* successfully ambushes ");
+
+    /** Regex to detect a failed ambush attempt. */
+    private static final Pattern failedAmbushPattern = Pattern.compile("You deftly dodge .* attempt of ambush.");
 
     /** NewLine character. */
     private static final String NEWLINE = "\r\n";
@@ -132,6 +146,9 @@ public class MudBot implements TelnetListener {
 
     /** Buffer for received messages from the MUD to be processed. */
     private final StringBuilder messageBuffer;
+    
+    /** Log file writer. */
+    private final Writer logWriter;
 
     /** MUD host. */
     private String host;
@@ -147,9 +164,6 @@ public class MudBot implements TelnetListener {
     
     /** Time of the next MUD reboot. */
     private Calendar rebootTime;
-    
-    /** Whether we are blind. */
-    private boolean isBlind = false;
     
     /** Whether we've collected any loot. */
     private boolean hasLoot = false;
@@ -225,6 +239,8 @@ public class MudBot implements TelnetListener {
      * Constructs the application.
      */
     public MudBot() {
+        logWriter = createLogWriter();
+        
         readPropertiesFile();
         
         messageBuffer = new StringBuilder();
@@ -281,7 +297,6 @@ public class MudBot implements TelnetListener {
         if (robotStarted) {
             synchronized (messageBuffer) {
                 messageBuffer.append(text);
-                checkBlinded(text);
                 processMessages();
             }
         }
@@ -304,6 +319,22 @@ public class MudBot implements TelnetListener {
     public void telnetExceptionCaught(Throwable t) {
         logError("Connection error", t);
         stopRobot();
+    }
+    
+    private Writer createLogWriter() {
+        if (!LOG_DIR.isDirectory()) {
+            LOG_DIR.mkdirs();
+        }
+        String filename = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + ".log";
+        File file = new File(LOG_DIR, filename); 
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(file));
+        } catch (IOException e) {
+            System.err.format("ERROR: Could not create log file ('%s'): %s\n", file, e);
+            System.exit(1);
+        }
+        return writer;
     }
 
     /**
@@ -651,7 +682,15 @@ public class MudBot implements TelnetListener {
      *            The message text.
      */
     private void appendText(String text) {
-        messagesText.append(text);
+        synchronized (messagesText) {
+            messagesText.append(text);
+            try {
+                logWriter.write(text);
+                logWriter.flush();
+            } catch (IOException e) {
+                System.err.format("ERROR: Could not write to log file: " + e);
+            }
+        }
     }
     
     /**
@@ -736,13 +775,21 @@ public class MudBot implements TelnetListener {
      */
     private void processMessages() {
         String text = messageBuffer.toString();
-
         if (robotStarted) {
-            if (text.contains("You can't go that way!")) {
+            if (text.contains("You flee to the ")) {
+                clearMessageBuffer();
+                appendText("[Alert] Fleeing!\n");
+                stopRobot();
+            } else if (text.contains("You can't go that way!")) {
                 clearMessageBuffer();
                 appendText(String.format("[Alert] Got lost in area '%s'\n", currentArea));
                 locationText.setText(String.format("%s (LOST!)", currentArea));
                 stopRobot();
+            } else if (ambushedPattern.matcher(text).find() || failedAmbushPattern.matcher(text).find()) {
+                clearMessageBuffer();
+                state = State.IN_COMBAT;
+                setStatus("Ambushed; fighting back");
+                sendCommand("rm");
             } else {
                 switch (state) {
                     case DISCONNECTED:
@@ -759,14 +806,10 @@ public class MudBot implements TelnetListener {
                         travelToArea(text);
                         break;
                     case HUNTING:
-                        if (!isBlind) {
-                            hunt(text);
-                        }
+                        hunt(text);
                         break;
                     case IN_COMBAT:
-                        if (!isBlind) {
-                            fight(text);
-                        }
+                        fight(text);
                         break;
                     case LOOTING:
                         loot(text);
@@ -775,9 +818,7 @@ public class MudBot implements TelnetListener {
                         rest(text);
                         break;
                     case SLEEPING:
-                        if (!isBlind) {
-                            sleep(text);
-                        }
+                        sleep(text);
                         break;
                     case GOING_HOME:
                         goHome(text);
@@ -831,8 +872,6 @@ public class MudBot implements TelnetListener {
         Matcher m = expPattern.matcher(text);
         if (m.find()) {
             try {
-//                String freeExp = m.group(1);
-//                expText.setText(String.format("%s %s", freeExp, totalExp));
                 expText.setText(m.group(1));
             } catch (NumberFormatException e) {
                 logError("Could not update experience", e);
@@ -840,24 +879,18 @@ public class MudBot implements TelnetListener {
         }
     }
     
-    private void checkBlinded(String text) {
-        if (!isBlind) {
-            if (text.contains("You have become blind!")) {
-                isBlind = true;
-                appendText("[Bot] Blinded; waiting\n");
-            }
-        } else {
-            if (text.contains("You can see again.")) {
-                isBlind = false;
-                appendText("[Bot] Blind effect faded; resuming\n");
-            }
-        }
-    }
-    
+    /**
+     * Logs an error.
+     * 
+     * @param message
+     *            The error text.
+     * @param cause
+     *            The cause of the error (optional).
+     */
     private void logError(String message, Throwable ... cause) {
         String errorText = null;
-        if (cause != null) {
-            errorText = String.format("ERROR: %s; exception: %s" , message, cause);
+        if (cause.length > 0) {
+            errorText = String.format("ERROR: %s; exception: %s" , message, cause[0]);
         } else {
             errorText = String.format("ERROR: %s");
         }
@@ -892,12 +925,11 @@ public class MudBot implements TelnetListener {
         } else if (text.contains("This is a small courtyard paved with flagstones ")) {
             clearMessageBuffer();
             setStatus("Logged on");
+            delay(2000L);
             sendCommand("uptime");
         } else if (text.contains("You stand at the massive eastern gates of the city of Loriah.")) {
             clearMessageBuffer();
-//            setStatus("Home");
-//            delay(2000L);
-//            huntNextArea();
+            setStatus("Home");
             stopRobot();
             sendCommands(new String[]{"uptime", "exp", "hp"});
         } else if (text.contains("The next reboot is scheduled for ")) {
@@ -956,7 +988,6 @@ public class MudBot implements TelnetListener {
         if (currentArea != null) {
             setStatus(String.format("Traveling to %s", currentArea));
             state = State.TRAVELING_TO_AREA;
-            delay(2000L);
             sendCommands(currentArea.toPath);
         } else {
             appendText("[Bot] No more areas to hunt\n");
@@ -973,9 +1004,9 @@ public class MudBot implements TelnetListener {
     private void travelToArea(String text) {
         if (text.contains(currentArea.roomDescription)) {
             clearMessageBuffer();
+            appendText(String.format("[Bot] Arrived at %s\n", currentArea));
             currentArea.reset();
             state = State.HUNTING;
-            appendText(String.format("[Bot] Arrived at %s\n", currentArea));
             setStatus("Hunting");
             locationText.setText(currentArea.getName());
             sendCommand("l");
@@ -1003,7 +1034,6 @@ public class MudBot implements TelnetListener {
             } else {
                 String direction = currentArea.getNextDirection();
                 if (direction != null) {
-//                    appendText(String.format("[Bot] Nothing here; proceeding '%s'\n", direction));
                     sendCommand(direction);
                 } else {
                     currentArea.updateLastVisisted();
@@ -1017,7 +1047,6 @@ public class MudBot implements TelnetListener {
             state = State.RESTING;
             setStatus("Health getting low; resting");
             sendCommand("camping");
-            rest(text);
         }
         clearMessageBuffer();
     }
@@ -1119,6 +1148,9 @@ public class MudBot implements TelnetListener {
                 state = State.SELLING;
                 setStatus("Selling items");
                 sendCommand("sell");
+            } else {
+                state = State.HOME;
+                setStatus("Home");
             }
         }
     }
@@ -1241,6 +1273,16 @@ public class MudBot implements TelnetListener {
     private void createAreas() {
         Area area = null;
 
+        area = new Area("Demon Outpost");
+        area.toPath = new String[]{"outpost"};
+        area.homePath = new String[]{"_outpost"};
+        area.roomDescription = "You are outside a small outpost.";
+        area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
+        area.addMonster(new Monster("Demon sentry", "sentry"));
+        area.addItem("A black spear");
+        area.addItem("A pair of black bracers");
+        areas.add(area);
+        
         area = new Area("Treetown");
         area.toPath = new String[]{"treetown"};
         area.homePath = new String[]{"_treetown"};
@@ -1284,16 +1326,6 @@ public class MudBot implements TelnetListener {
         area.addItem("An orcish throwing dagger");
         areas.add(area);
 
-        area = new Area("Demon Outpost");
-        area.toPath = new String[]{"outpost"};
-        area.homePath = new String[]{"_outpost"};
-        area.roomDescription = "You are outside a small outpost.";
-        area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
-        area.addMonster(new Monster("Demon sentry", "sentry"));
-        area.addMonster(new Monster("Demon guard", "guard"));
-        area.addMonster(new Monster("Demon soldier", "soldier"));
-        areas.add(area);
-        
 //        area = new Area("The Lost City");
 //        area.toPath = new String[]{"lostcity"};
 //        area.homePath = new String[]{"_lostcity"};
@@ -1324,6 +1356,11 @@ public class MudBot implements TelnetListener {
         stopRobot();
         telnetClient.shutdown();
         frame.dispose();
+        try {
+            logWriter.close();
+        } catch (IOException e) {
+            // Best effort; safe to ignore.
+        }
     }
 
     /**
