@@ -112,7 +112,7 @@ public class MudBot implements TelnetListener {
     private static final int MIN_TIME_UNTIL_REBOOT = 60;
 
     /** Minimum HP % being safe for hunting. */
-    private static final double MIN_HP_PERC = 0.6;
+    private static final double MIN_HP_PERC = 0.5;
 
     /** Minimum HP % to resume after resting. */
     private static final double SAFE_HP_PERC = 0.95;
@@ -1273,16 +1273,6 @@ public class MudBot implements TelnetListener {
     private void createAreas() {
         Area area = null;
 
-        area = new Area("Demon Outpost");
-        area.toPath = new String[]{"outpost"};
-        area.homePath = new String[]{"_outpost"};
-        area.roomDescription = "You are outside a small outpost.";
-        area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
-        area.addMonster(new Monster("Demon sentry", "sentry"));
-        area.addItem("A black spear");
-        area.addItem("A pair of black bracers");
-        areas.add(area);
-        
         area = new Area("Treetown");
         area.toPath = new String[]{"treetown"};
         area.homePath = new String[]{"_treetown"};
@@ -1326,6 +1316,16 @@ public class MudBot implements TelnetListener {
         area.addItem("An orcish throwing dagger");
         areas.add(area);
 
+//        area = new Area("Demon Outpost");
+//        area.toPath = new String[]{"outpost"};
+//        area.homePath = new String[]{"_outpost"};
+//        area.roomDescription = "You are outside a small outpost.";
+//        area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
+//        area.addMonster(new Monster("Demon sentry", "sentry"));
+//        area.addItem("A black spear");
+//        area.addItem("A pair of black bracers");
+//        areas.add(area);
+//        
 //        area = new Area("The Lost City");
 //        area.toPath = new String[]{"lostcity"};
 //        area.homePath = new String[]{"_lostcity"};
