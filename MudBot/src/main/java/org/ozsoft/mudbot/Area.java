@@ -5,7 +5,13 @@ import java.util.Set;
 
 public class Area {
 
-    private String name;
+    private final String name;
+
+    public final Set<Monster> monsters;
+    
+    private final Set<String> items;
+    
+    private final Set<String> ignores;
 
     public String[] toPath;
 
@@ -15,10 +21,6 @@ public class Area {
 
     public String[] directions;
 
-    public Set<Monster> monsters;
-    
-    public Set<String> items;
-
     private int directionIndex;
     
     private long lastVisited = 0L;
@@ -27,6 +29,7 @@ public class Area {
         this.name = name;
         monsters = new HashSet<Monster>();
         items = new HashSet<String>();
+        ignores = new HashSet<String>();
         reset();
     }
 
@@ -66,6 +69,10 @@ public class Area {
     public void addItem(String item) {
         items.add(item);
     }
+    
+    public void addIgnore(String ignore) {
+        ignores.add(ignore);
+    }
 
     public boolean isMonster(String name) {
         for (Monster m : monsters) {
@@ -84,6 +91,10 @@ public class Area {
             }
         }
         return false;
+    }
+    
+    public boolean isIgnore(String name) {
+        return ignores.contains(name);
     }
 
     public Monster getMonster(String name) {

@@ -6,10 +6,10 @@ TODO
 * Log off before reboot 
 * Command history with auto-complete
 * Communications panel
-* Flag whether to ignore monsters (never attack)
-* Flag whether to sacrifice monters
-* Add area The Lost City
+* Flag whether a monster is mobile (immediate 'kill')
+* Flag whether monter can be sacrificed (e.g. ghosts)
 * Add area Raja Village
+* Add area The Lost City
 * Add area Ravenfolk
 * Add area Malux
 * Add area Black Orc Camp
