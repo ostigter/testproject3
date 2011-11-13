@@ -74,16 +74,15 @@ public class Area {
         ignores.add(ignore);
     }
 
-    public boolean isMonster(String name) {
-        for (Monster m : monsters) {
-            if (m.getName().equals(name)) {
-                return true;
+    public Monster getMonster(String name) {
+        for (Monster monster : monsters) {
+            if (name.contains(monster.getName())) {
+                return monster;
             }
         }
-
-        return false;
+        return null;
     }
-    
+
     public boolean isItem(String name) {
         for (String item : items) {
             if (name.contains(item)) {
@@ -94,16 +93,12 @@ public class Area {
     }
     
     public boolean isIgnore(String name) {
-        return ignores.contains(name);
-    }
-
-    public Monster getMonster(String name) {
-        for (Monster monster : monsters) {
-            if (monster.getName().equals(name)) {
-                return monster;
+        for (String ignore : ignores) {
+            if (name.contains(ignore)) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     @Override
