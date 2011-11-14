@@ -1274,6 +1274,8 @@ public class MudBot implements TelnetListener {
         macros.put("_avalon", new String[]{"brief", "3 sw", "8 w", "nw", "n", "18 nw", "3 w", "13 nw", "brief", "l"});
         macros.put("outpost", new String[]{"brief", "se", "sw", "20 w", "7 w", "3 sw", "enter path", "brief", "l"});
         macros.put("_outpost", new String[]{"brief", "s", "4 ne", "20 e", "6 e", "ne", "nw", "brief", "l"});
+        macros.put("thorbal", new String[]{"brief", "14 ne", "n", "path", "brief", "l"});
+        macros.put("_thorbal", new String[]{"brief", "2 s", "14 sw", "brief", "l"});
     }
 
     /**
