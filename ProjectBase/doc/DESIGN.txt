@@ -10,15 +10,23 @@ Use cases
 * Manage users
 * Manage projects
 * Manage components
-* Manage releases
-* Manage sprints
 * Manage stories
 * Manage requirements
+* Manage releases
 * Manage tasks, change requests, bug reports
 * Manage test suites
 * Manage test cases
+* Manage sprints
+* Report requirements
+	* per project
+	* per component
+	* per release
+	* per sprint
+	* test coverage
+* Report test cases
+	* per requirement
 
-
+	
 Concepts
 --------
 
