@@ -2,58 +2,58 @@ package customui;
 
 public abstract class AbstractComponent implements Component {
 
-	private AbstractComponent parent;
+    private AbstractComponent parent;
 
-	private int x = 0;
+    private int x = 0;
 
-	private int y = 0;
+    private int y = 0;
 
-	private int width = -1;
+    private int width = -1;
 
-	private int height = -1;
-	
-	private boolean isValid = false;
+    private int height = -1;
 
-	public AbstractComponent getParent() {
-		return parent;
-	}
+    private boolean isValid = false;
 
-	/* package */void setParent(AbstractComponent parent) {
-		this.parent = parent;
-	}
+    public AbstractComponent getParent() {
+        return parent;
+    }
 
-	public int getX() {
-		return x;
-	}
+    /* package */void setParent(AbstractComponent parent) {
+        this.parent = parent;
+    }
 
-	public int getY() {
-		return y;
-	}
+    public int getX() {
+        return x;
+    }
 
-	/* package */void setLocation(int x, int y) {
-		this.x = x;
-		this.y = y;
-	}
+    public int getY() {
+        return y;
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    /* package */void setLocation(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public int getWidth() {
+        return width;
+    }
 
-	/* package */void setSize(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
-	
-	/* package */ boolean isValid() {
-		return isValid;
-	}
-	
-	/* package */ void setValid(boolean isValid) {
-		this.isValid = isValid;
-	}
-	
+    public int getHeight() {
+        return height;
+    }
+
+    /* package */void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    /* package */boolean isValid() {
+        return isValid;
+    }
+
+    /* package */void setValid(boolean isValid) {
+        this.isValid = isValid;
+    }
+
 }

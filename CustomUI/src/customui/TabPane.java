@@ -8,20 +8,20 @@ import java.util.List;
 public class TabPane extends AbstractComponent {
 
     private static final long serialVersionUID = 8104646596178421453L;
-    
+
     private final List<String> titles;
-    
+
     private final List<Panel> panels;
-    
+
     private int selectedIndex = -1;
-    
+
     private Panel selectedPanel;
-    
+
     public TabPane() {
         titles = new ArrayList<String>();
         panels = new ArrayList<Panel>();
     }
-    
+
     public void addTab(String title, Panel panel) {
         titles.add(title);
         panels.add(panel);
@@ -30,11 +30,11 @@ public class TabPane extends AbstractComponent {
             setSelectedIndex(0);
         }
     }
-    
+
     public int getSelectedIndex() {
         return selectedIndex;
     }
-    
+
     public void setSelectedIndex(int selectedIndex) {
         this.selectedIndex = selectedIndex;
         selectedPanel = panels.get(selectedIndex);
@@ -56,10 +56,10 @@ public class TabPane extends AbstractComponent {
         if (!isValid()) {
             doLayout(g);
         }
-        
+
         g.setColor(Color.RED);
         g.drawRect(0, 0, getWidth(), 49);
-        
+
         if (selectedPanel != null) {
             selectedPanel.paint(g);
         }
