@@ -1,4 +1,4 @@
-package customui;
+package org.ozsoft.customui;
 
 import java.awt.Color;
 import java.awt.Font;
