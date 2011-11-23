@@ -58,8 +58,6 @@ public class Frame extends AbstractComponent {
             if (content != null) {
                 content.doLayout(g);
                 setSize(content.getWidth() + 1, content.getHeight() + 1);
-//            } else {
-//                setSize(100, 50);
             }
             setValid(true);
         }
@@ -70,7 +68,9 @@ public class Frame extends AbstractComponent {
         doLayout(g);
 
         g.setColor(Color.LIGHT_GRAY);
-        g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+        g.drawRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.DARK_GRAY);
+        g.drawRect(1, 1, getWidth() - 1, getHeight() - 1);
 
         if (content != null) {
             content.paint(g);
