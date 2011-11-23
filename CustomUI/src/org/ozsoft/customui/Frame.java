@@ -20,6 +20,7 @@ public class Frame extends AbstractComponent {
 
     public void setTitle(String title) {
         frame.setTitle(title);
+        setValid(false);
     }
 
     public void setContent(Component content) {
@@ -41,28 +42,32 @@ public class Frame extends AbstractComponent {
     public void setSize(int width, int height) {
         super.setSize(width, height);
         frame.setSize(width, height);
+        setValid(false);
     }
 
     @Override
     public void setLocation(int x, int y) {
         super.setLocation(x, y);
         frame.setLocation(x, y);
+        setValid(false);
     }
 
     @Override
     public void doLayout(Graphics2D g) {
-        if (content != null) {
-            content.doLayout(g);
+        if (!isValid()) {
+            if (content != null) {
+                content.doLayout(g);
+                setSize(content.getWidth() + 1, content.getHeight() + 1);
+//            } else {
+//                setSize(100, 50);
+            }
+            setValid(true);
         }
-        setSize(content.getWidth() + 1, content.getHeight() + 1);
-        setValid(true);
     }
 
     @Override
     public void paint(Graphics2D g) {
-        if (!isValid()) {
-            doLayout(g);
-        }
+        doLayout(g);
 
         g.setColor(Color.LIGHT_GRAY);
         g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);

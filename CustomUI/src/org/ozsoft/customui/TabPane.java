@@ -29,6 +29,7 @@ public class TabPane extends AbstractComponent {
         if (selectedIndex == -1) {
             setSelectedIndex(0);
         }
+        setValid(false);
     }
 
     public int getSelectedIndex() {
@@ -43,23 +44,31 @@ public class TabPane extends AbstractComponent {
 
     @Override
     public void doLayout(Graphics2D g) {
-        if (selectedPanel != null) {
-            selectedPanel.setLocation(getX(), getY() + 50);
-            selectedPanel.doLayout(g);
-            setSize(selectedPanel.getWidth(), selectedPanel.getHeight() + 50);
+        if (!isValid()) {
+            String title = (selectedIndex != -1) ? titles.get(selectedIndex) : "(No title)";
+            Dimension titleDimension = Utils.getTextDimension(title, getFont(), g);
+            if (selectedPanel != null) {
+                selectedPanel.doLayout(g);
+                selectedPanel.setLocation(getX(), getY() + titleDimension.getHeight());
+                int width = Math.max(titleDimension.getWidth(), selectedPanel.getWidth());
+                int height = titleDimension.getHeight() + selectedPanel.getHeight();
+                setSize(width, height);
+            }
+            setValid(true);
         }
-        setValid(true);
     }
 
     @Override
     public void paint(Graphics2D g) {
-        if (!isValid()) {
-            doLayout(g);
-        }
-
+        doLayout(g);
+        
+        String title = (selectedIndex != -1) ? titles.get(selectedIndex) : "(No title)";
+        Dimension titleDimension = Utils.getTextDimension(title, getFont(), g);
         g.setColor(Color.RED);
-        g.drawRect(0, 0, getWidth(), 49);
-
+        g.drawRect(getX(), getY(), getX() + titleDimension.getWidth(), getY() + titleDimension.getHeight());
+        g.setColor(Color.BLACK);
+        g.drawString(title, getX(), getY());
+        
         if (selectedPanel != null) {
             selectedPanel.paint(g);
         }
