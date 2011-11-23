@@ -1,4 +1,4 @@
-package customui;
+package org.ozsoft.customui;
 
 public enum UIConstants {
 
