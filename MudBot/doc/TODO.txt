@@ -1,6 +1,7 @@
 TODO
 ====
 
+* Use brief descriptions
 * Message filter (All/Bot/Alerts)
 * Continue hunting after area respawn
 * Log off before reboot 
