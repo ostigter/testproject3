@@ -4,16 +4,16 @@ import java.awt.Font;
 
 public class Main {
 
-    private static final int WIDTH = 600;
+    private static final int WIDTH = 800;
 
-    private static final int HEIGHT = 400;
+    private static final int HEIGHT = 600;
 
     public static void main(String[] args) {
         Frame frame = new Frame("Test Application");
         frame.setSize(WIDTH, HEIGHT);
 
     	Panel seriesPanel = new Panel(1, 3);
-        Font font = new Font("SansSerif", Font.PLAIN, 36);
+        Font font = new Font("SansSerif", Font.PLAIN, 20);
         seriesPanel.addComponent(0, 0, new Label("Breaking Bad", font));
         seriesPanel.addComponent(0, 1, new Label("CSI: New York", font));
         seriesPanel.addComponent(0, 2, new Label("Dog Whisperer, the", font));

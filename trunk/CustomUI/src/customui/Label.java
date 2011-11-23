@@ -8,13 +8,13 @@ import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 
 public class Label extends AbstractComponent {
-    
+
     private String text;
-    
+
     private Font font;
 
     private int ascend;
-    
+
     public Label(String text, Font font) {
         setText(text);
         setFont(font);
@@ -28,13 +28,13 @@ public class Label extends AbstractComponent {
         this.text = text;
         setValid(false);
     }
-    
+
     public Font getFont() {
-    	return font;
+        return font;
     }
-    
+
     public void setFont(Font font) {
-    	this.font = font;
+        this.font = font;
         setValid(false);
     }
 
@@ -50,21 +50,14 @@ public class Label extends AbstractComponent {
         setValid(true);
     }
 
-	@Override
-	public void paint(Graphics2D g) {
-	    doLayout(g);
-	    
+    @Override
+    public void paint(Graphics2D g) {
+        doLayout(g);
         int x = getX();
         int y = getY();
-//        int width = getWidth();
-//        int height = getHeight();
-        
-//        g.setColor(Color.CYAN);
-//        g.drawRect(x, y, width, height);
-
         g.setColor(Color.BLACK);
         g.setFont(font);
         g.drawString(text, x, y + ascend);
-	}
-	
+    }
+
 }
