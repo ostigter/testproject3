@@ -37,8 +37,7 @@ Component
     name
     owners
     requirements
-    change requests
-    bug reports
+	tasks
     parent
     children
 Release
@@ -54,33 +53,44 @@ Sprint
     endDate 
     developers
     stories
-    requirements
-    changes
     tasks
 Story
     requirements
     tasks
 Requirement
     id
-    type (Functional, Interface, Design, Reliability, Usability, Performance, Maintainability, Portability)
+	project
+	component
+	release
+    sprint
+    type (Functional, Interface, Design, Reliability, Performance, Usability, Maintainability, Portability)
     title
     description
     owner
-    version
     status (Draft, For Review, Final, Obsolete)
     parent
     children
-    history 
+	tasks
+	testCases
+    history
 Task
     id
+	project
+	component
+	release
+	sprint
     title
     description
     owner
-    status (New, Investigated, Rejected, Planned, In Progress, For Review, Blocked, Postponed, Closed, Reopened)
-    resolution (Implemented, Duplicate, Not Reproducable, Won't Fix, 
+    status (New, Reopened, Investigated, Planned, In Progress, For Review, Verified, Integrated, Blocked, Postponed, Closed)
+    resolution (Integrated, Duplicate, Not Reproducable, Won't Fix)
+	comments
     attachements
     parent
     children
+	dependsOn
+	blocks
+	related
     history
 Change Request (Task)
 Bug Report (Task)
@@ -90,15 +100,23 @@ Test suite
     test cases
 Test case
     id
-    type (Unit, Integration, System)
-    status (Not Executed, Passed, Failed)
-    lastExecuted
-    executor
+	project
+	component
+	release
+	sprint
+    type (Unit, Integration, System, Acceptance)
+	title
+    description
     steps
+    status (Not Executed, Passed, Failed)
+	executions
+		date
+		tester
+		comments
 Test step
     order
-    description
     action
     expectedResult
     actualResult
     status (Not Executed, Passed, Failed)
+	comment
