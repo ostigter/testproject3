@@ -1,23 +1,16 @@
 package org.ozsoft.customui;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineMetrics;
-import java.awt.geom.Rectangle2D;
 
 public class Label extends AbstractComponent {
 
     private String text;
 
-    private Font font;
-
     private int ascend;
 
-    public Label(String text, Font font) {
+    public Label(String text) {
         setText(text);
-        setFont(font);
     }
 
     public String getText() {
@@ -29,25 +22,13 @@ public class Label extends AbstractComponent {
         setValid(false);
     }
 
-    public Font getFont() {
-        return font;
-    }
-
-    public void setFont(Font font) {
-        this.font = font;
-        setValid(false);
-    }
-
     @Override
     public void doLayout(Graphics2D g) {
-        FontRenderContext frc = g.getFontRenderContext();
-        LineMetrics lm = font.getLineMetrics(text, g.getFontRenderContext());
-        ascend = (int) lm.getAscent();
-        Rectangle2D bounds = font.getStringBounds(text, frc);
-        int width = (int) Math.round(bounds.getWidth());
-        int height = (int) Math.round(lm.getHeight());
-        setSize(width, height);
-        setValid(true);
+        if (!isValid()) {
+            Dimension dimension = Utils.getTextDimension(text, getFont(), g);
+            setSize(dimension.getWidth(), dimension.getHeight());
+            setValid(true);
+        }
     }
 
     @Override
@@ -56,7 +37,7 @@ public class Label extends AbstractComponent {
         int x = getX();
         int y = getY();
         g.setColor(Color.BLACK);
-        g.setFont(font);
+        g.setFont(getFont());
         g.drawString(text, x, y + ascend);
     }
 

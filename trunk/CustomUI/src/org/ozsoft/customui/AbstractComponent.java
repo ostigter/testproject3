@@ -1,5 +1,7 @@
 package org.ozsoft.customui;
 
+import java.awt.Font;
+
 public abstract class AbstractComponent implements Component {
 
     private AbstractComponent parent;
@@ -11,9 +13,11 @@ public abstract class AbstractComponent implements Component {
     private int width = -1;
 
     private int height = -1;
+    
+    private Font font = new Font("SansSarif", Font.PLAIN, 12);
 
     private boolean isValid = false;
-
+    
     public AbstractComponent getParent() {
         return parent;
     }
@@ -41,6 +45,15 @@ public abstract class AbstractComponent implements Component {
 
     public int getHeight() {
         return height;
+    }
+    
+    public Font getFont() {
+        return font;
+    }
+    
+    public void setFont(Font font) {
+        this.font = font;
+        setValid(false);
     }
 
     /* package */void setSize(int width, int height) {

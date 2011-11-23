@@ -1,34 +1,34 @@
 package org.ozsoft.customui;
 
-import java.awt.Font;
-
 public class Main {
 
-    private static final int WIDTH = 800;
+    private static final int WIDTH = 400;
 
-    private static final int HEIGHT = 600;
+    private static final int HEIGHT = 150;
 
     public static void main(String[] args) {
         Frame frame = new Frame("Test Application");
         frame.setSize(WIDTH, HEIGHT);
 
-    	Panel seriesPanel = new Panel(1, 3);
-        Font font = new Font("SansSerif", Font.PLAIN, 20);
-        seriesPanel.addComponent(0, 0, new Label("Breaking Bad", font));
-        seriesPanel.addComponent(0, 1, new Label("CSI: New York", font));
-        seriesPanel.addComponent(0, 2, new Label("Dog Whisperer, the", font));
+//        Panel seriesPanel = new Panel(1, 3);
+//        seriesPanel.addComponent(0, 0, new Label("Breaking Bad"));
+//        seriesPanel.addComponent(0, 1, new Label("CSI: New York"));
+//        seriesPanel.addComponent(0, 2, new Label("Dog Whisperer, the"));
+//
+//        Panel moviesPanel = new Panel(1, 3);
+//        moviesPanel.addComponent(0, 0, new Label("Ratatouille"));
+//        moviesPanel.addComponent(0, 1, new Label("Up in the air"));
+//        moviesPanel.addComponent(0, 2, new Label("Sleuth"));
+//
+//        TabPane tabPane = new TabPane();
+//        tabPane.addTab("Series", seriesPanel);
+//        tabPane.addTab("Movies", moviesPanel);
+//        tabPane.setSelectedIndex(0);
+//
+//        frame.setContent(tabPane);
         
-        Panel moviesPanel = new Panel(1, 3);
-        moviesPanel.addComponent(0, 0, new Label("Ratatouille", font));
-        moviesPanel.addComponent(0, 1, new Label("Up in the air", font));
-        moviesPanel.addComponent(0, 2, new Label("Sleuth", font));
-        
-        TabPane tabPane = new TabPane();
-        tabPane.addTab("Series", seriesPanel);
-        tabPane.addTab("Movies", moviesPanel);
-        tabPane.setSelectedIndex(0);
-
-        frame.setContent(tabPane);
+        Label label = new Label("This is a label");
+        frame.setContent(label);
         
         frame.center();
         frame.setVisible(true);
