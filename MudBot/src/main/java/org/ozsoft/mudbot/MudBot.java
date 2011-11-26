@@ -121,7 +121,7 @@ public class MudBot implements TelnetListener {
     private static final int MIN_CP = 220;
 
     /** Time in ms for area to reset. */
-    private static final long AREA_RESET_TIME = 600000L; // 10 min
+    private static final long AREA_RESET_TIME = 900000L; // 15 min
     
     /** Regex to parse result of 'uptime' command. */
     private static final Pattern uptimePattern = Pattern.compile("The next reboot is scheduled for .* \\(in (.*)\\)");
@@ -1247,7 +1247,7 @@ public class MudBot implements TelnetListener {
         macros = new HashMap<String, String[]>();
         macros.put("start", new String[]{"brief", "house", "valenthos", "bhead", "bmode overall", "bstance wolf", "get_eq", "hall", "login", "3 n", "14 e", "brief", "party create", "l"});
         macros.put("end", new String[]{"brief", "w", "house", "valenthos", "store_eq", "brief", "l", "l me"});
-        macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get all", "keep all", "wear all", "wield axe", "wield axe 2 in left hand"});
+        macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get all", "keep all", "wear all", "wield skullbash", "wield great axe in left hand"});
         macros.put("store_eq", new String[]{"remove all", "unkeep all", "open valenthos1", "put all in valenthos1", "close valenthos1", "open valenthos2", "put all in valenthos2", "close valenthos2", "drop all"});
         macros.put("bar", new String[]{"brief", "5 e", "5 ne", "7 n", "7 nw", "enter path", "n", "brief", "l"});
         macros.put("_bar", new String[]{"brief", "2 s", "7 se", "7 s", "5 sw", "5 w", "brief", "l"});
@@ -1284,6 +1284,28 @@ public class MudBot implements TelnetListener {
     private void createAreas() {
         Area area = null;
 
+        area = new Area("Thor Bal");
+        area.toPath = new String[]{"thorbal"};
+        area.homePath = new String[]{"_thorbal"};
+        area.roomDescription = "The trail seems to have appeared magically from the surrounding forest.";
+        area.directions = new String[]{"n", "e", "e", "n", "n", "n", "e", "n", "w", "w", "n", "w", "sw", "e", "s", "e", "s", "s", "w", "w", "n", "n", "w", "s", "w", "s", "e", "s", "e", "e", "s"};
+        area.addMonster(new Monster("woodsman", "woodsman"));
+        area.addMonster(new Monster("brigand", "brigand"));
+        area.addItem("gold coins");
+        area.addItem("dark leather armour");
+        area.addItem("dark leather boots");
+        area.addItem(" pelt");
+        area.addIgnore("ranger");
+        area.addIgnore("thief");
+        area.addIgnore("owl");
+        area.addIgnore("fox");
+        area.addIgnore("lynx");
+        area.addIgnore("deer");
+        area.addIgnore("wolf");
+        area.addIgnore("bear");
+        area.addIgnore("The decapitated head of");
+        areas.add(area);
+        
         area = new Area("Treetown");
         area.toPath = new String[]{"treetown"};
         area.homePath = new String[]{"_treetown"};
@@ -1298,8 +1320,8 @@ public class MudBot implements TelnetListener {
         area.addItem("Worker's helmet");
         area.addItem("A white collar");
         area.addItem("A dress");
-        area.addIgnore("The decapitated head of");
         area.addIgnore("Information about our theatre");
+        area.addIgnore("The decapitated head of");
         areas.add(area);
 
         area = new Area("Raja Village");
@@ -1315,7 +1337,6 @@ public class MudBot implements TelnetListener {
         area.addItem("A pass");
         area.addItem("A noble's ");
         area.addItem("A lady's ");
-        area.addIgnore("The decapitated head of");
         area.addIgnore("A sign");
         area.addIgnore("Raja Village comment board");
         area.addIgnore("nekonohito peddler");
@@ -1323,6 +1344,7 @@ public class MudBot implements TelnetListener {
         area.addIgnore("nekonohito guard");
         area.addIgnore("mother");
         area.addIgnore("nekonohito child");
+        area.addIgnore("The decapitated head of");
         areas.add(area);
         
         area = new Area("Oz'ikel Forest");
@@ -1369,8 +1391,8 @@ public class MudBot implements TelnetListener {
 //        area.addMonster(new Monster("A big ghost hovers here", "ghost"));
 //        area.addMonster(new Monster("An adept ghost hovers here", "ghost"));
 //        area.addItem("gold coins");
-//        area.addIgnore("The decapitated head of");
 //        area.addIgnore("A meaty bone");
+//        area.addIgnore("The decapitated head of");
 //        areas.add(area);
 //        
 //        area = new Area("Glade of the Unicorns");
