@@ -1,20 +1,17 @@
 TODO
 ====
 
-* Use brief descriptions
-* Message filter (All/Bot/Alerts)
+* Message filtering (All/Bot/Alerts/Comm)
 * Continue hunting after area respawn
 * Log off before reboot 
+* ANSI colors
 * Command history with auto-complete
-* Communications panel
+* Use brief room descriptions
 * Flag whether a monster is mobile (immediate 'kill')
 * Flag whether monter can be sacrificed (e.g. ghosts)
-* Add area Raja Village
-* Add area The Lost City
 * Add area Ravenfolk
 * Add area Malux
 * Add area Black Orc Camp
 * Add area Elven Forest (Avalon)
-* ANSI colors
 * Handle fleeing
 * Go Home button
