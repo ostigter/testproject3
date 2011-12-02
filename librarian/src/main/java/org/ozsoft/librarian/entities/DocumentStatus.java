@@ -7,5 +7,7 @@ public enum DocumentStatus {
     FOR_REVIEW,
     
     FINAL,
+    
+    OBSOLETE,
 
 }
