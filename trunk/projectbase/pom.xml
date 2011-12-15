@@ -23,9 +23,6 @@
         <java.version>1.6</java.version>
         <javaee.version>6.0-RC2</javaee.version>
         <primefaces.version>3.0.RC1</primefaces.version>
-        <hibernate.version>3.6.7.Final</hibernate.version>
-        <slf4j.version>1.6.1</slf4j.version>
-        <postgresql.version>9.0-801.jdbc4</postgresql.version>
     </properties>
 
     <dependencies>
@@ -47,37 +44,9 @@
             <version>1.0.2</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-c3p0</artifactId>
-            <version>${hibernate.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <repositories>
-        <repository>
-            <id>jboss</id>
-            <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
         <repository>
             <id>primefaces</id>
             <url>http://repository.primefaces.org</url>
