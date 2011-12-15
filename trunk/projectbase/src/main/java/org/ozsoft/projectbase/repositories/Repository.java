@@ -9,7 +9,7 @@ import javax.persistence.Query;
 
 import org.ozsoft.projectbase.entities.BaseEntity;
 
-public abstract class BaseRepository<T extends BaseEntity> {
+public abstract class Repository<T extends BaseEntity> {
     
     private static final String PU_NAME = "projectbasePU";
     
@@ -20,7 +20,7 @@ public abstract class BaseRepository<T extends BaseEntity> {
     @PersistenceContext(unitName = PU_NAME)
     private EntityManager em;
     
-    protected BaseRepository(Class<T> entityClass) {
+    protected Repository(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
     
