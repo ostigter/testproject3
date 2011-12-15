@@ -1,6 +1,7 @@
 package org.ozsoft.projectbase.web;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -38,6 +39,10 @@ public class ProjectBean implements Serializable {
             System.out.println("*** Created project with ID " + id);
             project = projectRepository.retrieve(id);
             System.out.println("*** Retrieved project with ID " + project.getId());
+            List<Project> projects = projectRepository.findAll();
+            for (Project proj : projects) {
+            	System.out.println(proj);
+            }
         }
     }
 
