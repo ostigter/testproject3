@@ -7,7 +7,7 @@ import org.ozsoft.projectbase.entities.Project;
 
 @Stateless
 @Local
-public class ProjectRepository extends BaseRepository<Project> {
+public class ProjectRepository extends Repository<Project> {
 
 	public ProjectRepository() {
 		super(Project.class);
