@@ -9,8 +9,8 @@ import org.ozsoft.projectbase.entities.Project;
 @Local
 public class ProjectRepository extends Repository<Project> {
 
-	public ProjectRepository() {
-		super(Project.class);
-	}
-    
+    public ProjectRepository() {
+        super(Project.class);
+    }
+
 }
