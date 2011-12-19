@@ -12,8 +12,8 @@
         <h2>Add Project</h2>
 		<h:form>
             Name: <p:inputText value="#{projectBean.name}" /><br />
-            <p:commandButton value="Save" action="#{projectBean.save}" />
-            <p:commandLink value="Cancel" action="index.xhtml" />
+            <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
+            <p:commandLink value="Cancel" action="index.xhtml" ajax="false" />
         </h:form>
 	</h:body>
 </html>
