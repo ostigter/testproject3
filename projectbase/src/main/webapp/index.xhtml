@@ -15,8 +15,7 @@
 			<p:tabView dynamic="true">
 	            <p:tab title="Projects">
 	                <h2>Projects</h2>
-	                <h:commandButton value="Add Project" action="addProject.xhtml" /><br />
-	                <p:commandButton value="Add Project" action="addProject.xhtml" /><br />
+	                <p:commandButton value="Add Project" action="addProject.xhtml" ajax="false" />
 	                <p:dataTable value="#{projectBean.projects}" var="project">
 	                    <p:column>
 	                        <f:facet name="header">ID</f:facet>
