@@ -3,7 +3,7 @@ package org.example.jsf;
 import javax.faces.bean.ManagedBean;
 
 @ManagedBean
-public class User {
+public class UserBean {
     
     private String username;
 
