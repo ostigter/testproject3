@@ -22,12 +22,4 @@ public class LoginService {
         this.password = password;
     }
 
-    public String login(String username, String password) {
-        if (username.equals("oscar") && password.equals("appel")) {
-            return "home.xhtml";
-        } else {
-            return "login_failed.xhtml";
-        }
-    }
-
 }
