@@ -3,8 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
         xmlns:h="http://java.sun.com/jsf/html">
 	<h:head>
-		<title>Status</title>
-		<link href="./css/styles.css" rel="stylesheet" type="text/css" />
+		<title>Login</title>
 	</h:head>
 	<h:body>
 		<h:form>
@@ -20,7 +19,7 @@
                        <td><h:inputSecret value="#{user.password}" /></td>
                    </tr>
 	            </table>
-	            <h:commandButton value="Login" action="#{loginService.login}" />
+	            <h:commandButton value="Login" action="#{user.login}" />
 			</fieldset>
 		</h:form>
 	</h:body>

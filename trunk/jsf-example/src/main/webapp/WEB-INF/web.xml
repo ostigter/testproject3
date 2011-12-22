@@ -4,6 +4,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
       http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
     version="2.5">
+    
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -12,11 +13,14 @@
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
+    
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
     </context-param>
+    
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
+    
 </web-app>

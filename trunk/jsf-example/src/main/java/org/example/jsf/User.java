@@ -25,4 +25,12 @@ public class User {
         this.password = password;
     }
 
+    public String login() {
+        if (username.equals("oscar") && password.equals("appel")) {
+            return "home.xhtml";
+        } else {
+            return "login_failed.xhtml";
+        }
+    }
+
 }
