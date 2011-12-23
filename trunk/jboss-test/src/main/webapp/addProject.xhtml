@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:f="http://java.sun.com/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>JBoss AS Test</title>
+        <link rel="StyleSheet" type="text/css" href="styles.css" />
+    </h:head>
+    <h:body>
+        <h2>Add Project</h2>
+        <h:form>
+            <h:panelGrid columns="2">
+                <h:outputLabel for="code" value="Code:" />
+                <p:inputText id="code" value="#{projectBean.code}" />
+                <h:outputLabel for="name" value="Name:" />
+                <p:inputText id="name" value="#{projectBean.name}" />
+                <f:facet name="footer">
+                    <h:panelGroup>
+                        <p:commandButton value="Save" action="#{projectBean.doAdd}" ajax="false" />
+                        <p:commandLink value="Cancel" action="#{projectBean.cancel}" ajax="false" />
+                    </h:panelGroup>
+                </f:facet>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
+</html>
