@@ -5,31 +5,32 @@
        xmlns:f="http://java.sun.com/jsf/core"
        xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>JBoss AS Test</title>
+        <title>ProjectBase</title>
         <link rel="StyleSheet" type="text/css" href="styles.css" />
     </h:head>
     <h:body>
+        <h1>ProjectBase</h1>
         <h2>Projects</h2>
-        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 500px">
-            <p:column style="width: 25%">
-                <f:facet name="header">
-                    <h:outputText value="Code" />
-                </f:facet>
-                <h:outputLink value="editProject.xhtml">
-                    <h:outputText value="#{project.code}" />
-                </h:outputLink>
-            </p:column>
-            <p:column>
-                <f:facet name="header">
-                    <h:outputText value="Name" />
-                </f:facet>
-                <h:outputText value="#{project.name}" />
-            </p:column>
-        </p:dataTable>
-        <h:outputText value="No projects defined." rendered="#{empty projectBean.projects}" />
-        <br />
-        <h:outputLink value="addProject.xhtml">
-            <h:outputText value="Add Project" />
-        </h:outputLink>
+        <h:form>
+	        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 500px">
+	            <p:column style="width: 25%">
+	                <f:facet name="header">
+	                    <h:outputText value="Code" />
+	                </f:facet>
+	                <h:commandLink value="#{project.code}" action="#{projectBean.edit}">
+	                    <f:setPropertyActionListener target="#{projectBean.project}" value="${project}" />
+	                </h:commandLink>
+	            </p:column>
+	            <p:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Name" />
+	                </f:facet>
+	                <h:outputText value="#{project.name}" />
+	            </p:column>
+	        </p:dataTable>
+	        <h:outputText value="No projects defined." rendered="#{empty projectBean.projects}" />
+	        <br />
+            <p:commandButton value="Add Project" action="#{projectBean.add}" ajax="false" />
+	    </h:form>
     </h:body>
 </html>
