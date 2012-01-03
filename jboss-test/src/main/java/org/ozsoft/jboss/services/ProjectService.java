@@ -30,8 +30,15 @@ public class ProjectService {
         return em.find(Project.class, id);
     }
     
+    public void delete(long id) {
+    	Project project = retrieve(id);
+    	if (project != null) {
+    		delete(project);
+    	}
+    }
+
     public void delete(Project project) {
         em.remove(project);
     }
-
+    
 }

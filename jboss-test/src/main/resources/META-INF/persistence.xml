@@ -7,13 +7,13 @@
 
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
-        <jta-data-source>jdbc/test</jta-data-source>
+        <jta-data-source>jdbc/projectbase</jta-data-source>
 
         <class>org.ozsoft.jboss.entities.Project</class>
 
 		<properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
 		</properties>
 
 	</persistence-unit>
