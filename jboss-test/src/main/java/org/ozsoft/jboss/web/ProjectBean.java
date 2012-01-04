@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 
 import org.ozsoft.jboss.entities.Project;
 import org.ozsoft.jboss.services.ProjectService;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class ProjectBean implements Serializable {
     
     private static final long serialVersionUID = 4728584552025654369L;

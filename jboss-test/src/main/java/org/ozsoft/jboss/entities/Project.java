@@ -1,11 +1,17 @@
 package org.ozsoft.jboss.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Project implements Serializable {
@@ -21,6 +27,13 @@ public class Project implements Serializable {
     
     @Basic
     private String name;
+    
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Release> releases;
+    
+    public Project() {
+    	releases = new ArrayList<Release>();
+    }
     
     public Long getId() {
         return id;
@@ -40,6 +53,17 @@ public class Project implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+    
+    public List<Release> getReleases() {
+    	return Collections.unmodifiableList(releases);
+    }
+    
+    public void addRelease(String name) {
+    	Release release = new Release();
+    	release.setName(name);
+    	release.setProject(this);
+    	releases.add(release);
     }
     
     @Override
