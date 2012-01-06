@@ -15,9 +15,9 @@
             <p:commandButton value="Delete Project" action="#{projectBean.delete}" ajax="false" rendered="#{not empty projectBean.project}" />
             <h:panelGrid columns="2">
                 <h:outputLabel for="code" value="Code:" />
-                <p:inputText id="code" value="#{projectBean.code}" />
+                <p:inputText id="code" value="#{projectBean.code}" styleClass="inputText" />
                 <h:outputLabel for="name" value="Name:" />
-                <p:inputText id="name" value="#{projectBean.name}" />
+                <p:inputText id="name" value="#{projectBean.name}" styleClass="inputText" />
                 <f:facet name="footer">
                     <h:panelGroup>
                         <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
