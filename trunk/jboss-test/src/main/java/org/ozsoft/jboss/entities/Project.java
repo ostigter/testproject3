@@ -2,7 +2,6 @@ package org.ozsoft.jboss.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -28,7 +27,7 @@ public class Project implements Serializable {
     @Basic
     private String name;
     
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Release> releases;
     
     public Project() {
@@ -56,14 +55,7 @@ public class Project implements Serializable {
     }
     
     public List<Release> getReleases() {
-    	return Collections.unmodifiableList(releases);
-    }
-    
-    public void addRelease(String name) {
-    	Release release = new Release();
-    	release.setName(name);
-    	release.setProject(this);
-    	releases.add(release);
+    	return releases;
     }
     
     @Override
