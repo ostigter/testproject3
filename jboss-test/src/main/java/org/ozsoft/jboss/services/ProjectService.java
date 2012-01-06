@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.ozsoft.jboss.entities.Project;
 
@@ -28,6 +29,18 @@ public class ProjectService {
 
     public Project retrieve(long id) {
         return em.find(Project.class, id);
+    }
+    
+    @SuppressWarnings("unchecked")
+	public Project retrieveByName(String name) {
+    	Project project = null;
+    	Query query = em.createQuery("SELECT p FROM Project p WHERE p.name = :name", Project.class);
+    	query.setParameter("name", name);
+    	List<Project> projects = query.getResultList();
+    	if (projects.size() > 0) {
+    		project = projects.get(0);
+    	}
+    	return project;
     }
 
     public void delete(long id) {
