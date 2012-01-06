@@ -12,12 +12,12 @@
         <h1>ProjectBase</h1>
         <h2>Projects</h2>
         <h:form>
-	        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 500px">
+	        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" styleClass="table">
 	            <p:column style="width: 25%">
 	                <f:facet name="header">
 	                    <h:outputText value="Code" />
 	                </f:facet>
-	                <h:commandLink value="#{project.code}" action="#{projectBean.edit}">
+	                <h:commandLink value="#{project.code}" action="#{projectBean.edit}" ajax="false">
 	                    <f:setPropertyActionListener target="#{projectBean.project}" value="${project}" />
 	                </h:commandLink>
 	            </p:column>

@@ -1,3 +1,11 @@
 .ui-widget {
    font-size: 12px;
 }
+
+.inputText {
+	width: 300px;
+}
+
+.table {
+	width: 50%;
+}
