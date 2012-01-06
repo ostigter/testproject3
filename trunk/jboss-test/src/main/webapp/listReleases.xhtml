@@ -14,7 +14,7 @@
         <h:form>
             <h:panelGrid columns="2">
                 <h:outputText value="Project:" />                
-	            <p:selectOneMenu value="#{releaseBean.project}">
+	            <p:selectOneMenu value="#{releaseBean.projectName}" effectDuration="1" styleClass="selectOneMenu">
 	                <f:selectItems value="#{projectBean.projects}" />
 	            </p:selectOneMenu>
             </h:panelGrid>
