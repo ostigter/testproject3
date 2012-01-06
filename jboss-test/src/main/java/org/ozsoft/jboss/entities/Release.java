@@ -32,7 +32,7 @@ public class Release implements Serializable {
         return project;
     }
     
-    /* package */ void setProject(Project project) {
+    public void setProject(Project project) {
     	this.project = project;
     }
 
