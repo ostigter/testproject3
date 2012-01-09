@@ -27,7 +27,7 @@ public class Project implements Serializable {
     @Basic
     private String name;
     
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Release> releases;
     
     public Project() {

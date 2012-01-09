@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.event.ValueChangeEvent;
 
 import org.ozsoft.jboss.entities.Project;
 import org.ozsoft.jboss.entities.Release;
@@ -16,28 +17,25 @@ import org.ozsoft.jboss.services.ProjectService;
 public class ReleaseBean implements Serializable {
 
     private static final long serialVersionUID = 8246447601649350345L;
-    
+
     @EJB
     private ProjectService projectService;
-    
-//    @ManagedProperty(value = "#{releaseBean}")
-//    private ReleaseBean releaseBean;
 
     private String title;
 
     private String projectName;
-    
+
     private Project project;
-    
+
     private Release release;
-    
+
     private String name;
 
     public String getTitle() {
         return title;
     }
 
-   public String getProjectName() {
+    public String getProjectName() {
         return projectName;
     }
 
@@ -45,14 +43,14 @@ public class ReleaseBean implements Serializable {
         this.projectName = projectName;
     }
 
-	public Project getProject() {
-		return project;
-	}
+    public Project getProject() {
+        return project;
+    }
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
-    
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     public String getName() {
         return name;
     }
@@ -70,14 +68,21 @@ public class ReleaseBean implements Serializable {
     }
 
     public List<Release> getReleases() {
-    	List<Release> releases = null;
+        List<Release> releases = null;
         if (projectName != null && projectName.length() > 0) {
             project = projectService.retrieveByName(projectName);
             if (project != null) {
-            	releases = project.getReleases();
+                releases = project.getReleases();
             }
         }
         return releases;
+    }
+    
+    public void projectChanged(ValueChangeEvent e) {
+        project = projectService.retrieveByName(projectName);
+        if (project != null) {
+            System.out.format("*** Project changed: '%s'\n", project);
+        }
     }
 
     public String add() {
@@ -91,14 +96,14 @@ public class ReleaseBean implements Serializable {
             return "listReleases.xhtml";
         }
     }
-    
+
     public String edit() {
-        if (projectName != null && projectName.length() > 0) {
+        if (release != null) {
             title = "Edit Release";
             name = release.getName();
             return "editRelease.xhtml";
         } else {
-            System.out.println("*** Project not set");
+            System.out.println("*** Release not set");
             return "listReleases.xhtml";
         }
     }
@@ -110,17 +115,13 @@ public class ReleaseBean implements Serializable {
             release.setProject(project);
             project.getReleases().add(release);
             projectService.store(project);
-            System.out.format("Release '%s' of project '%s' stored\n", release, project);
         }
         return "listReleases.xhtml";
     }
 
     public String delete() {
         if (release != null) {
-        	release.setProject(null);
-            project = projectService.retrieveByName(projectName);
-        	project.getReleases().remove(release);
-        	projectService.store(project);
+            projectService.deleteRelease(release.getId());
         }
         return "listReleases.xhtml";
     }
