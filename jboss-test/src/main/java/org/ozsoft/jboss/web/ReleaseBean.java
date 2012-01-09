@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.event.ValueChangeEvent;
 
 import org.ozsoft.jboss.entities.Project;
 import org.ozsoft.jboss.entities.Release;
@@ -78,17 +77,9 @@ public class ReleaseBean implements Serializable {
         return releases;
     }
     
-    public void projectChanged(ValueChangeEvent e) {
-        project = projectService.retrieveByName(projectName);
-        if (project != null) {
-            System.out.format("*** Project changed: '%s'\n", project);
-        }
-    }
-
     public String add() {
         if (projectName != null && projectName.length() > 0) {
             title = "Add Release";
-            release = new Release();
             name = "";
             return "editRelease.xhtml";
         } else {
@@ -109,13 +100,14 @@ public class ReleaseBean implements Serializable {
     }
 
     public String save() {
-        if (release != null) {
-            release.setName(name);
-            project = projectService.retrieveByName(projectName);
-            release.setProject(project);
-            project.getReleases().add(release);
-            projectService.store(project);
+        if (release == null) {
+            release = new Release();
         }
+        release.setName(name);
+        project = projectService.retrieveByName(projectName);
+        release.setProject(project);
+        project.getReleases().add(release);
+        projectService.store(project);
         return "listReleases.xhtml";
     }
 

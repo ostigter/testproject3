@@ -14,7 +14,8 @@
         <h:form>
             <h:panelGrid columns="2">
                 <h:outputText value="Project:" />                
-	            <p:selectOneMenu value="#{releaseBean.projectName}" valueChangeListener="#{releaseBean.projectChanged}" onchange="submit()" effectDuration="1" styleClass="selectOneMenu">
+	            <p:selectOneMenu value="#{releaseBean.projectName}" onchange="submit()" effectDuration="1" styleClass="selectOneMenu">
+                    <f:selectItem itemLabel="--Select--" itemValue="" />
 	                <f:selectItems value="#{projectBean.projects}" />
 	            </p:selectOneMenu>
             </h:panelGrid>
@@ -28,9 +29,9 @@
                     </h:commandLink>
                 </p:column>
             </p:dataTable>
-            <h:outputText value="No releases defined." rendered="#{empty releaseBean.releases}" />
+            <h:outputText value="No releases defined." rendered="#{not empty releaseBean.projectName and empty releaseBean.releases}" />
 	        <br />
-            <p:commandButton value="Add Release" action="#{releaseBean.add}" ajax="false" />
+            <p:commandButton value="Add Release" action="#{releaseBean.add}" ajax="false" rendered="#{not empty releaseBean.projectName}" />
 	    </h:form>
     </h:body>
 </html>
