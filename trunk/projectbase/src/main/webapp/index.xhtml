@@ -1,48 +1,48 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	   xmlns:h="http://java.sun.com/jsf/html"
-	   xmlns:f="http://java.sun.com/jsf/core"
-	   xmlns:p="http://primefaces.org/ui">
-	<h:head>
-		<title>ProjectBase</title>
-		<link rel="StyleSheet" type="text/css" href="styles.css" />
-	</h:head>
-	<h:body>
-		<h1>ProjectBase</h1>
-		<p>Welcome to ProjectBase, the open source software project management tool!</p>
-		<h:form>
-			<p:tabView dynamic="true">
-	            <p:tab title="Projects">
-	                <h2>Projects</h2>
-	                <p:commandButton value="Add Project" action="addProject.xhtml" ajax="false" />
-	                <p:dataTable value="#{projectBean.projects}" var="project">
-	                    <p:column>
-	                        <f:facet name="header">ID</f:facet>
-	                        <h:outputText value="#{project.id}" />
-	                    </p:column>
-	                    <p:column>
-	                        <f:facet name="header">Name</f:facet>
-	                        <h:outputText value="#{project.name}" />
-	                    </p:column>
-	                </p:dataTable>
-	            </p:tab>
-	            <p:tab title="Releases">
-	                <h2>Releases</h2>
-	            </p:tab>
-	            <p:tab title="Sprints">
-	                <h2>Sprints</h2>
-	            </p:tab>
-	            <p:tab title="Stories">
-	                <h2>Stories</h2>
-	            </p:tab>
-	            <p:tab title="Requirements">
-	                <h2>Requirements</h2>
-	            </p:tab>
-	            <p:tab title="Tasks">
-	                <h2>Tasks</h2>
-	            </p:tab>
-			</p:tabView>
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:f="http://java.sun.com/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>ProjectBase</title>
+        <link rel="StyleSheet" type="text/css" href="styles.css" />
+    </h:head>
+    <h:body>
+        <h1>ProjectBase</h1>
+        <p>Welcome to ProjectBase, the open source software project management tool!</p>
+        <h:form>
+            <p:tabView dynamic="true">
+                <p:tab title="Projects">
+                    <h2>Projects</h2>
+                    <p:commandButton value="Add Project" action="addProject.xhtml" ajax="false" />
+                    <p:dataTable value="#{projectBean.projects}" var="project">
+                        <p:column>
+                            <f:facet name="header">ID</f:facet>
+                            <h:outputText value="#{project.id}" />
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Name</f:facet>
+                            <h:outputText value="#{project.name}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:tab>
+                <p:tab title="Releases">
+                    <h2>Releases</h2>
+                </p:tab>
+                <p:tab title="Sprints">
+                    <h2>Sprints</h2>
+                </p:tab>
+                <p:tab title="Stories">
+                    <h2>Stories</h2>
+                </p:tab>
+                <p:tab title="Requirements">
+                    <h2>Requirements</h2>
+                </p:tab>
+                <p:tab title="Tasks">
+                    <h2>Tasks</h2>
+                </p:tab>
+            </p:tabView>
         </h:form>
-	</h:body>
+    </h:body>
 </html>

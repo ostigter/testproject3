@@ -11,13 +11,11 @@ import org.ozsoft.projectbase.entities.BaseEntity;
 
 public abstract class Repository<T extends BaseEntity> {
 
-    private static final String PU_NAME = "projectbasePU";
-
     private final Class<T> entityClass;
 
     private Query FIND_ALL_QUERY;
 
-    @PersistenceContext(unitName = PU_NAME)
+    @PersistenceContext
     private EntityManager em;
 
     protected Repository(Class<T> entityClass) {
