@@ -5,16 +5,15 @@
 	
 	<persistence-unit name="projectbasePU" transaction-type="JTA">
 
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
         <jta-data-source>jdbc/projectbase</jta-data-source>
 
         <class>org.ozsoft.projectbase.entities.Project</class>
 
 		<properties>
-            <property name="eclipselink.target-database" value="PostgreSQL" />
-            <property name="eclipselink.ddl-generation" value="none" />
-            <property name="eclipselink.logging.level" value="INFO" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
 		</properties>
 
 	</persistence-unit>
