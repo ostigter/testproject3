@@ -9,9 +9,10 @@
         <link rel="StyleSheet" type="text/css" href="styles.css" />
     </h:head>
     <h:body>
-        <h1>ProjectBase</h1>
-        <p:separator />
-        <div id="menu">
+        <div class="ui-widget ui-widget-header">
+            <h1>ProjectBase</h1>
+        </div>
+        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
             <h:outputLink value="listProjects.xhtml">
                 <h:outputText value="Projects" />
             </h:outputLink>
@@ -20,29 +21,30 @@
                 <h:outputText value="Releases" />
             </h:outputLink>
         </div>
-        <p:separator />
-        <h2>Releases</h2>
-        <h:form>
-            <h:panelGrid columns="2">
-                <h:outputText value="Project:" />                
-	            <p:selectOneMenu value="#{releaseBean.projectName}" onchange="submit()" effectDuration="1" styleClass="selectOneMenu">
-                    <f:selectItem itemLabel="--Select--" itemValue="" />
-	                <f:selectItems value="#{projectBean.projects}" />
-	            </p:selectOneMenu>
-            </h:panelGrid>
-            <p:dataTable value="#{releaseBean.releases}" var="release" rendered="#{not empty releaseBean.releases}" style="width: 25%">
-                <p:column>
-                    <f:facet name="header">
-                        <h:outputText value="Name" />
-                    </f:facet>
-                    <h:commandLink value="#{release.name}" action="#{releaseBean.edit}">
-                        <f:setPropertyActionListener target="#{releaseBean.release}" value="${release}" />
-                    </h:commandLink>
-                </p:column>
-            </p:dataTable>
-            <h:outputText value="No releases defined." rendered="#{not empty releaseBean.projectName and empty releaseBean.releases}" />
-	        <br />
-            <p:commandButton value="Add Release" action="#{releaseBean.add}" ajax="false" rendered="#{not empty releaseBean.projectName}" />
-	    </h:form>
+        <div class="ui-widget ui-widget-content ui-corner-all">
+	        <h2>Releases</h2>
+	        <h:form>
+	            <h:panelGrid columns="2">
+	                <h:outputText value="Project:" />                
+		            <p:selectOneMenu value="#{releaseBean.projectName}" onchange="submit()" effectDuration="1" styleClass="selectOneMenu">
+	                    <f:selectItem itemLabel="--Select--" itemValue="" />
+		                <f:selectItems value="#{projectBean.projects}" />
+		            </p:selectOneMenu>
+	            </h:panelGrid>
+	            <p:dataTable value="#{releaseBean.releases}" var="release" rendered="#{not empty releaseBean.releases}" style="width: 25%">
+	                <p:column>
+	                    <f:facet name="header">
+	                        <h:outputText value="Name" />
+	                    </f:facet>
+	                    <h:commandLink value="#{release.name}" action="#{releaseBean.edit}">
+	                        <f:setPropertyActionListener target="#{releaseBean.release}" value="${release}" />
+	                    </h:commandLink>
+	                </p:column>
+	            </p:dataTable>
+	            <h:outputText value="No releases defined." rendered="#{not empty releaseBean.projectName and empty releaseBean.releases}" />
+		        <br />
+	            <p:commandButton value="Add Release" action="#{releaseBean.add}" ajax="false" rendered="#{not empty releaseBean.projectName}" />
+		    </h:form>
+        </div>
     </h:body>
 </html>
