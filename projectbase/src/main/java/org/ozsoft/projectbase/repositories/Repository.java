@@ -2,7 +2,6 @@ package org.ozsoft.projectbase.repositories;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -11,25 +10,20 @@ import org.ozsoft.projectbase.entities.BaseEntity;
 
 public abstract class Repository<T extends BaseEntity> {
 
-    private final Class<T> entityClass;
+    protected final Class<T> entityClass;
 
-    private Query FIND_ALL_QUERY;
+    protected String className;
 
     @PersistenceContext
-    private EntityManager em;
-
+    protected EntityManager em;
+    
     protected Repository(Class<T> entityClass) {
         this.entityClass = entityClass;
-    }
-
-    @PostConstruct
-    protected void postConstruct() {
-        String className = entityClass.getName();
+        className = entityClass.getName();
         int p = className.lastIndexOf('.');
         if (p >= 0) {
             className = className.substring(p + 1);
         }
-        FIND_ALL_QUERY = em.createQuery("SELECT e FROM " + className + " e", entityClass);
     }
 
     public void store(T entity) {
@@ -40,13 +34,27 @@ public abstract class Repository<T extends BaseEntity> {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public List<T> findAll() {
-        return FIND_ALL_QUERY.getResultList();
+    	return em.createQuery("SELECT e FROM " + className + " e", entityClass).getResultList();
     }
 
-    public T retrieve(long id) {
+    public T retrieveById(long id) {
         return em.find(entityClass, id);
+    }
+    
+    @SuppressWarnings("unchecked")
+	public T retrieveByName(String name) {
+    	Query query = em.createQuery("SELECT e FROM " + className + " e WHERE e.name = :name", entityClass);
+    	query.setParameter("name", name);
+    	List<T> entities = query.getResultList();
+    	return (entities.size() > 0) ? entities.get(0) : null;
+    }
+    
+    public void delete(long id) {
+    	T entity = retrieveById(id);
+    	if (entity != null) {
+    		delete(entity);
+    	}
     }
 
     public void delete(T entity) {

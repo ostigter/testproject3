@@ -5,21 +5,47 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 import org.ozsoft.projectbase.entities.Project;
 import org.ozsoft.projectbase.repositories.ProjectRepository;
 
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class ProjectBean implements Serializable {
 
-    private static final long serialVersionUID = -8503605436811062379L;
+    private static final long serialVersionUID = 4728584552025654369L;
 
     @EJB
     private ProjectRepository projectRepository;
 
+    private String title;
+
+    private Project project;
+
+    private String code;
+
     private String name;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
 
     public String getName() {
         return name;
@@ -33,15 +59,40 @@ public class ProjectBean implements Serializable {
         return projectRepository.findAll();
     }
 
-    public String addProject() {
-        return "addProject.xhtml";
+    public String add() {
+        title = "Add Project";
+        project = null;
+        code = "";
+        name = "";
+        return "editProject.xhtml";
+    }
+
+    public String edit() {
+        title = "Edit Project";
+        code = project.getCode();
+        name = project.getName();
+        return "editProject.xhtml";
     }
 
     public String save() {
-        Project project = new Project();
+        if (project == null) {
+            project = new Project();
+        }
+        project.setCode(code);
         project.setName(name);
         projectRepository.store(project);
-        return "index.xhtml";
+        return "listProjects.xhtml";
     }
 
+    public String delete() {
+        if (project != null) {
+            projectRepository.delete(project.getId());
+        }
+        return "listProjects.xhtml";
+    }
+
+    public String cancel() {
+        return "listProjects.xhtml";
+    }
+    
 }

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:f="http://java.sun.com/jsf/core"
+       xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>ProjectBase</title>
+        <link rel="StyleSheet" type="text/css" href="styles.css" />
+    </h:head>
+    <h:body>
+        <h1>ProjectBase</h1>
+        <p:separator />
+        <div id="menu">
+            <h:outputLink value="listProjects.xhtml">
+                <h:outputText value="Projects" />
+            </h:outputLink>
+            |
+            <h:outputLink value="listReleases.xhtml">
+                <h:outputText value="Releases" />
+            </h:outputLink>
+        </div>
+        <p:separator />
+        <h2><h:outputText value="#{projectBean.title}" /></h2>
+        <h:form>
+            <p:commandButton value="Delete Project" action="#{projectBean.delete}" ajax="false" rendered="#{not empty projectBean.project}" />
+            <h:panelGrid columns="2">
+                <h:outputLabel for="code" value="Code:" />
+                <p:inputText id="code" value="#{projectBean.code}" />
+                <h:outputLabel for="name" value="Name:" />
+                <p:inputText id="name" value="#{projectBean.name}" />
+                <f:facet name="footer">
+                    <h:panelGroup>
+                        <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
+                        <p:commandLink value="Cancel" action="#{projectBean.cancel}" ajax="false" />
+                    </h:panelGroup>
+                </f:facet>
+            </h:panelGrid>
+        </h:form>
+    </h:body>
+</html>
