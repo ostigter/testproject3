@@ -1,3 +1,16 @@
+body {
+	margin-left: 20%;
+	margin-right: 20%;
+}
+
 .ui-widget {
    font-size: 12px;
+}
+
+.ui-inputtext {
+	width: 200px;
+}
+
+.ui-selectonemenu {
+	width: 200px;
 }
