@@ -9,9 +9,10 @@
         <link rel="StyleSheet" type="text/css" href="styles.css" />
     </h:head>
     <h:body>
-        <h1>ProjectBase</h1>
-        <p:separator />
-        <div id="menu">
+        <div class="ui-widget ui-widget-header">
+            <h1>ProjectBase</h1>
+        </div>
+        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
             <h:outputLink value="listProjects.xhtml">
                 <h:outputText value="Projects" />
             </h:outputLink>
@@ -20,28 +21,29 @@
                 <h:outputText value="Releases" />
             </h:outputLink>
         </div>
-        <p:separator />
-        <h2>Projects</h2>
-        <h:form>
-	        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 50%">
-	            <p:column style="width: 50px">
-	                <f:facet name="header">
-	                    <h:outputText value="Code" />
-	                </f:facet>
-	                <h:commandLink value="#{project.code}" action="#{projectBean.edit}" ajax="false">
-	                    <f:setPropertyActionListener target="#{projectBean.project}" value="${project}" />
-	                </h:commandLink>
-	            </p:column>
-	            <p:column>
-	                <f:facet name="header">
-	                    <h:outputText value="Name" />
-	                </f:facet>
-	                <h:outputText value="#{project.name}" />
-	            </p:column>
-	        </p:dataTable>
-	        <h:outputText value="No projects defined." rendered="#{empty projectBean.projects}" />
-	        <br />
-            <p:commandButton value="Add Project" action="#{projectBean.add}" ajax="false" />
-	    </h:form>
+        <div class="ui-widget ui-widget-content ui-corner-all">
+	        <h2>Projects</h2>
+	        <h:form>
+		        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 50%">
+		            <p:column style="width: 50px">
+		                <f:facet name="header">
+		                    <h:outputText value="Code" />
+		                </f:facet>
+		                <h:commandLink value="#{project.code}" action="#{projectBean.edit}" ajax="false">
+		                    <f:setPropertyActionListener target="#{projectBean.project}" value="${project}" />
+		                </h:commandLink>
+		            </p:column>
+		            <p:column>
+		                <f:facet name="header">
+		                    <h:outputText value="Name" />
+		                </f:facet>
+		                <h:outputText value="#{project.name}" />
+		            </p:column>
+		        </p:dataTable>
+		        <h:outputText value="No projects defined." rendered="#{empty projectBean.projects}" />
+		        <br />
+	            <p:commandButton value="Add Project" action="#{projectBean.add}" ajax="false" />
+		    </h:form>
+        </div>
     </h:body>
 </html>

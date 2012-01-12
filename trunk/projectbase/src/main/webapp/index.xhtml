@@ -9,20 +9,22 @@
         <link rel="StyleSheet" type="text/css" href="styles.css" />
     </h:head>
     <h:body>
-        <h1>ProjectBase</h1>
-        <p:separator />
-        <div id="menu">
-	        <h:outputLink value="listProjects.xhtml">
-	            <h:outputText value="Projects" />
-	        </h:outputLink>
-	        |
-	        <h:outputLink value="listReleases.xhtml">
-	            <h:outputText value="Releases" />
-	        </h:outputLink>
+        <div class="ui-widget ui-widget-header">
+            <h1>ProjectBase</h1>
         </div>
-        <p:separator />
-        <p>
-            Welcome to ProjectBase, the open source project management tool!
-        </p>
+        <div class="ui-widget ui-widget-content ui-corner-all">
+            <h:outputLink value="listProjects.xhtml">
+                <h:outputText value="Projects" />
+            </h:outputLink>
+            |
+            <h:outputLink value="listReleases.xhtml">
+                <h:outputText value="Releases" />
+            </h:outputLink>
+        </div>
+        <div class="ui-widget ui-widget-content ui-corner-all">
+	        <p>
+	            <b>Welcome to ProjectBase, the open source project management tool!</b>
+	        </p>
+        </div>
     </h:body>
 </html>
