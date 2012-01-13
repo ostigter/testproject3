@@ -9,9 +9,10 @@
         <link rel="StyleSheet" type="text/css" href="styles.css" />
     </h:head>
     <h:body>
-        <h1>ProjectBase</h1>
-        <p:separator />
-        <div id="menu">
+        <div class="ui-widget ui-widget-header">
+            <h1>ProjectBase</h1>
+        </div>
+        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
             <h:outputLink value="listProjects.xhtml">
                 <h:outputText value="Projects" />
             </h:outputLink>
@@ -20,22 +21,23 @@
                 <h:outputText value="Releases" />
             </h:outputLink>
         </div>
-        <p:separator />
-        <h2><h:outputText value="#{projectBean.title}" /></h2>
-        <h:form>
-            <p:commandButton value="Delete Project" action="#{projectBean.delete}" ajax="false" rendered="#{not empty projectBean.project}" />
-            <h:panelGrid columns="2">
-                <h:outputLabel for="code" value="Code:" />
-                <p:inputText id="code" value="#{projectBean.code}" />
-                <h:outputLabel for="name" value="Name:" />
-                <p:inputText id="name" value="#{projectBean.name}" />
-                <f:facet name="footer">
-                    <h:panelGroup>
-                        <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
-                        <p:commandLink value="Cancel" action="#{projectBean.cancel}" ajax="false" />
-                    </h:panelGroup>
-                </f:facet>
-            </h:panelGrid>
-        </h:form>
+        <div class="ui-widget ui-widget-content ui-corner-all">
+            <h2><h:outputText value="#{projectBean.title}" /></h2>
+            <h:form>
+                <p:commandButton value="Delete Project" action="#{projectBean.delete}" ajax="false" rendered="#{not empty projectBean.project}" />
+                <h:panelGrid columns="2">
+                    <h:outputLabel for="code" value="Code:" />
+                    <p:inputText id="code" value="#{projectBean.code}" />
+                    <h:outputLabel for="name" value="Name:" />
+                    <p:inputText id="name" value="#{projectBean.name}" />
+                    <f:facet name="footer">
+                        <h:panelGroup>
+                            <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
+                            <p:commandLink value="Cancel" action="#{projectBean.cancel}" ajax="false" />
+                        </h:panelGroup>
+                    </f:facet>
+                </h:panelGrid>
+            </h:form>
+        </div>
     </h:body>
 </html>
