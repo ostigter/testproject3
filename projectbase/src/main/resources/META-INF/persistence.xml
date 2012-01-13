@@ -10,6 +10,7 @@
         <jta-data-source>jdbc/projectbase</jta-data-source>
 
         <class>org.ozsoft.projectbase.entities.Project</class>
+        <class>org.ozsoft.projectbase.entities.Release</class>
 
 		<properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
