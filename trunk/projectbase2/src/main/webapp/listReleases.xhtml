@@ -41,8 +41,9 @@
 	                    </h:commandLink>
 	                </p:column>
 	            </p:dataTable>
-	            <h:outputText value="No releases defined." rendered="#{not empty releaseBean.projectName and empty releaseBean.releases}" />
-		        <br />
+                <h:panelGroup rendered="#{not empty releaseBean.projectName and empty releaseBean.releases}">
+                    <p>No releases defined.</p>
+                </h:panelGroup>
 	            <p:commandButton value="Add Release" action="#{releaseBean.add}" ajax="false" rendered="#{not empty releaseBean.projectName}" />
 		    </h:form>
         </div>

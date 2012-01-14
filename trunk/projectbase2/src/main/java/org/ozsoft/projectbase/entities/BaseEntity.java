@@ -3,7 +3,6 @@ package org.ozsoft.projectbase.entities;
 import java.io.Serializable;
 
 import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -22,7 +21,6 @@ public abstract class BaseEntity implements Serializable {
     private int version;
 
     @Basic
-    @Column(nullable = false, unique = true)
     protected String name;
 
     public Long getId() {

@@ -83,11 +83,12 @@ public class ReleaseBean implements Serializable {
     
     public String add() {
         if (projectName != null && projectName.length() > 0) {
+            project = projectRepository.retrieveByName(projectName);
             title = "Add Release";
+            release = null;
             name = "";
             return "editRelease.xhtml";
         } else {
-            System.out.println("*** Project not set");
             return "listReleases.xhtml";
         }
     }
@@ -98,26 +99,25 @@ public class ReleaseBean implements Serializable {
             name = release.getName();
             return "editRelease.xhtml";
         } else {
-            System.out.println("*** Release not set");
             return "listReleases.xhtml";
         }
     }
 
     public String save() {
         if (release == null) {
-            release = new Release();
+        	release = new Release();
+            release.setProject(project);
+            project.getReleases().add(release);
         }
         release.setName(name);
-        project = projectRepository.retrieveByName(projectName);
-        release.setProject(project);
-        project.getReleases().add(release);
         projectRepository.store(project);
         return "listReleases.xhtml";
     }
 
     public String delete() {
         if (release != null) {
-            projectRepository.deleteRelease(release.getId());
+        	project.getReleases().remove(release);
+        	projectRepository.store(project);
         }
         return "listReleases.xhtml";
     }

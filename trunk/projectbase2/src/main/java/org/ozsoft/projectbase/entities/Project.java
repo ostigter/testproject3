@@ -1,11 +1,11 @@
 package org.ozsoft.projectbase.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -16,8 +16,12 @@ public class Project extends BaseEntity {
     @Basic
     private String code;
 
-    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Release> releases;
+    
+    public Project() {
+    	releases = new ArrayList<Release>();
+    }
 
     public String getCode() {
         return code;
