@@ -4,8 +4,17 @@ body {
 	padding: 0;
 }
 
-div {
-	padding: 10px;
+div.menu {
+	height: 30px;
+}
+
+div.message {
+	font-weight: bold;
+}
+
+div.footer {
+    font-size: 60%;
+    text-align: right;
 }
 
 .ui-widget {
