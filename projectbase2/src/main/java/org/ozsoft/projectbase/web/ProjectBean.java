@@ -90,7 +90,7 @@ public class ProjectBean implements Serializable {
 
     public String delete() {
         if (project != null) {
-            projectRepository.delete(project.getId());
+            projectRepository.delete(project);
         }
         return "listProjects.xhtml";
     }

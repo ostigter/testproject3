@@ -41,13 +41,13 @@ public abstract class Repository<T extends BaseEntity> {
             }
             tx.commit();
         } catch (PersistenceException e) {
-            tx.rollback();
             LOGGER.error("Could not store entity into database", e);
+            tx.rollback();
         }
     }
 
     public List<T> findAll() {
-        return em.createQuery("SELECT e FROM " + className + " e", entityClass).getResultList();
+        return em.createQuery("SELECT e FROM " + className + " e ORDER BY e.name", entityClass).getResultList();
     }
 
     public T retrieveById(long id) {
@@ -62,13 +62,6 @@ public abstract class Repository<T extends BaseEntity> {
         return (entities.size() > 0) ? entities.get(0) : null;
     }
 
-    public void delete(long id) {
-        T entity = retrieveById(id);
-        if (entity != null) {
-            delete(entity);
-        }
-    }
-
     public void delete(T entity) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -76,8 +69,8 @@ public abstract class Repository<T extends BaseEntity> {
             em.remove(entity);
             tx.commit();
         } catch (PersistenceException e) {
-            tx.rollback();
             LOGGER.error("Could not delete entity from database", e);
+            tx.rollback();
         }
     }
 
