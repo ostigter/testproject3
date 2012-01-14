@@ -23,9 +23,9 @@
         <java.version>1.6</java.version>
         <log4j.version>1.2.14</log4j.version>
         <servlet-version>2.5</servlet-version>
-        <jsf-version>2.0.6</jsf-version>
-        <primefaces.version>3.0.RC1</primefaces.version>
-        <hibernate.version>3.6.6.Final</hibernate.version>
+        <jsf-version>2.1.6</jsf-version>
+        <primefaces.version>3.0</primefaces.version>
+        <hibernate.version>4.0.1.Final</hibernate.version>
         <slf4j.version>1.6.1</slf4j.version>
         <postgresql.version>9.0-801.jdbc4</postgresql.version>
     </properties>
