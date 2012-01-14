@@ -25,6 +25,7 @@
         <servlet-version>2.5</servlet-version>
         <jsf-version>2.1.6</jsf-version>
         <primefaces.version>3.0</primefaces.version>
+        <primefaces.themes.version>1.0.2</primefaces.themes.version>
         <hibernate.version>4.0.1.Final</hibernate.version>
         <slf4j.version>1.6.1</slf4j.version>
         <postgresql.version>9.0-801.jdbc4</postgresql.version>
@@ -64,7 +65,7 @@
         <dependency>
             <groupId>org.primefaces.themes</groupId>
             <artifactId>glass-x</artifactId>
-            <version>1.0.2</version>
+            <version>${primefaces.themes.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
