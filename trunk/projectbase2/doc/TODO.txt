@@ -1,0 +1,14 @@
+ProjectBase TODO
+================
+
+* Release date
+* Release version number
+* Sprints
+* Stories
+* Requirements
+* Tasks
+* Nested stories/requirements/tasks
+* Change requests
+* Bug reports
+* Tests
+* Effort
