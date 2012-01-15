@@ -1,30 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:f="http://java.sun.com/jsf/core"
-       xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <title>ProjectBase</title>
-        <link rel="StyleSheet" type="text/css" href="styles.css" />
-    </h:head>
-    <h:body>
-        <div class="ui-widget ui-widget-header">
-            <h1>ProjectBase</h1>
-        </div>
-        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-            <h:outputLink value="listProjects.xhtml">
-                <h:outputText value="Projects" />
-            </h:outputLink>
-            |
-            <h:outputLink value="listReleases.xhtml">
-                <h:outputText value="Releases" />
-            </h:outputLink>
-        </div>
-        <div class="ui-widget ui-widget-content ui-corner-all">
-	        <h2>Projects</h2>
-	        <h:form>
-		        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 350px">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="template.xhtml">
+    <ui:define name="content">
+        <div class="content ui-widget ui-widget-content ui-corner-all">
+            <h2>Projects</h2>
+            <h:form>
+                <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 350px">
                     <p:column style="width: 50px">
                         <f:facet name="header">
                             <h:outputText value="Code" />
@@ -39,12 +23,13 @@
                         </f:facet>
                         <h:outputText value="#{project.name}" />
                     </p:column>
-		        </p:dataTable>
-		        <h:panelGroup rendered="#{empty projectBean.projects}">
+                </p:dataTable>
+                <h:panelGroup rendered="#{empty projectBean.projects}">
                     <p>No projects defined.</p>
-		        </h:panelGroup>
-	            <p:commandButton value="Add Project" action="#{projectBean.add}" ajax="false" />
-		    </h:form>
+                </h:panelGroup>
+                <br />
+                <p:commandButton value="Add Project" action="#{projectBean.add}" ajax="false" />
+            </h:form>
         </div>
-    </h:body>
-</html>
+    </ui:define>
+</ui:composition>

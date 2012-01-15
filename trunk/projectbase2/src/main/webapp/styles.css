@@ -1,31 +1,22 @@
+.ui-widget {
+   font-size: 12px;
+}
+
 body {
     margin-left:  20%;
     margin-right: 20%;
 	padding: 0;
 }
 
-div.menu {
-	height: 30px;
+h1 {
+	padding: 10px;
 }
 
-div.message {
-	font-weight: bold;
+div.content {
+    padding: 10px;
 }
 
 div.footer {
     font-size: 60%;
     text-align: right;
-}
-
-.ui-widget {
-   font-size: 12px;
-}
-
-.ui-inputtext {
-	width: 200px;
-}
-
-.ui-selectonemenu {
-	width: 200px;
-	padding: 0;
 }
