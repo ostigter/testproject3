@@ -14,6 +14,9 @@ public class Project extends BaseEntity {
     private static final long serialVersionUID = -3674896318075447666L;
 
     @Basic
+    protected String name;
+
+    @Basic
     private String code;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -21,6 +24,14 @@ public class Project extends BaseEntity {
     
     public Project() {
     	releases = new ArrayList<Release>();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getCode() {
@@ -37,6 +48,11 @@ public class Project extends BaseEntity {
 
     public void setReleases(List<Release> releases) {
         this.releases = releases;
+    }
+    
+    @Override
+    public String toString() {
+        return name;
     }
 
 }
