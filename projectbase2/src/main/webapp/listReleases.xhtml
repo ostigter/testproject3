@@ -19,9 +19,9 @@
 	            <p:dataTable value="#{releaseBean.releases}" var="release" rendered="#{not empty releaseBean.releases}" style="width: 25%">
 	                <p:column>
 	                    <f:facet name="header">
-	                        <h:outputText value="Version number" />
+	                        <h:outputText value="Name" />
 	                    </f:facet>
-	                    <h:commandLink value="#{release.versionNumber}" action="#{releaseBean.edit}">
+	                    <h:commandLink value="#{release.name}" action="#{releaseBean.edit}">
 	                        <f:setPropertyActionListener target="#{releaseBean.release}" value="${release}" />
 	                    </h:commandLink>
 	                </p:column>

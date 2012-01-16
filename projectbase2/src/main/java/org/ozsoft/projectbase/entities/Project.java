@@ -11,48 +11,32 @@ import javax.persistence.OneToMany;
 @Entity
 public class Project extends BaseEntity {
 
-    private static final long serialVersionUID = -3674896318075447666L;
+	private static final long serialVersionUID = -3674896318075447666L;
 
-    @Basic
-    protected String name;
+	@Basic
+	private String code;
 
-    @Basic
-    private String code;
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Release> releases;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Release> releases;
-    
-    public Project() {
-    	releases = new ArrayList<Release>();
-    }
+	public Project() {
+		releases = new ArrayList<Release>();
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public String getCode() {
-        return code;
-    }
+	public List<Release> getReleases() {
+		return releases;
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public List<Release> getReleases() {
-        return releases;
-    }
-
-    public void setReleases(List<Release> releases) {
-        this.releases = releases;
-    }
-    
-    @Override
-    public String toString() {
-        return name;
-    }
+	public void setReleases(List<Release> releases) {
+		this.releases = releases;
+	}
 
 }
