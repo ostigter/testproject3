@@ -26,6 +26,8 @@ public class ProjectBean implements Serializable {
 	private String code;
 
 	private String name;
+	
+	private String description;
 
 	public void setProjectRepository(ProjectRepository projectRepository) {
 		this.projectRepository = projectRepository;
@@ -59,6 +61,14 @@ public class ProjectBean implements Serializable {
 		this.name = name;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public List<Project> getProjects() {
 		return projectRepository.findAll();
 	}
@@ -68,6 +78,7 @@ public class ProjectBean implements Serializable {
 		project = null;
 		code = "";
 		name = "";
+		description = "";
 		return "editProject.xhtml";
 	}
 
@@ -75,6 +86,7 @@ public class ProjectBean implements Serializable {
 		title = "Edit Project";
 		code = project.getCode();
 		name = project.getName();
+		description = project.getDescription();
 		return "editProject.xhtml";
 	}
 
@@ -84,6 +96,7 @@ public class ProjectBean implements Serializable {
 		}
 		project.setCode(code);
 		project.setName(name);
+		project.setDescription(description);
 		projectRepository.store(project);
 		return "listProjects.xhtml";
 	}

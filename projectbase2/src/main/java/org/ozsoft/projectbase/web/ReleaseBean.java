@@ -1,6 +1,7 @@
 package org.ozsoft.projectbase.web;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -29,6 +30,10 @@ public class ReleaseBean implements Serializable {
     private Release release;
 
     private String name;
+    
+    private Date date;
+    
+    private String description;
 
     public void setProjectRepository(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
@@ -62,7 +67,23 @@ public class ReleaseBean implements Serializable {
         this.name = name;
     }
 
-    public Release getRelease() {
+    public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Release getRelease() {
         return release;
     }
 
@@ -87,6 +108,8 @@ public class ReleaseBean implements Serializable {
             title = "Add Release";
             release = null;
             name = "";
+            date = new Date();
+            description= "";
             return "editRelease.xhtml";
         } else {
             return "listReleases.xhtml";
@@ -97,6 +120,8 @@ public class ReleaseBean implements Serializable {
         if (release != null) {
             title = "Edit Release";
             name = release.getName();
+            date = release.getDate();
+            description = release.getDescription();
             return "editRelease.xhtml";
         } else {
             return "listReleases.xhtml";
@@ -110,6 +135,8 @@ public class ReleaseBean implements Serializable {
             project.getReleases().add(release);
         }
         release.setName(name);
+        release.setDate(date);
+        release.setDescription(description);
         projectRepository.store(project);
         return "listReleases.xhtml";
     }

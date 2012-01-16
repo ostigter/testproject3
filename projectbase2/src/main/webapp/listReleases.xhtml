@@ -16,15 +16,23 @@
 		            </p:selectOneMenu>
 	            </h:panelGrid>
 	            <br />
-	            <p:dataTable value="#{releaseBean.releases}" var="release" rendered="#{not empty releaseBean.releases}" style="width: 25%">
-	                <p:column>
-	                    <f:facet name="header">
-	                        <h:outputText value="Name" />
-	                    </f:facet>
+	            <p:dataTable value="#{releaseBean.releases}" var="release" rendered="#{not empty releaseBean.releases}" style="width: 100%">
+	                <p:column style="width: 100px">
+	                    <f:facet name="header">Name</f:facet>
 	                    <h:commandLink value="#{release.name}" action="#{releaseBean.edit}">
 	                        <f:setPropertyActionListener target="#{releaseBean.release}" value="${release}" />
 	                    </h:commandLink>
 	                </p:column>
+                    <p:column style="width: 100px">
+                        <f:facet name="header">Date</f:facet>
+                        <h:outputText value="#{release.date}">
+                            <f:convertDateTime type="date" pattern="dd-MMM-yyyy" timeZone="#{dateBean.timeZone}" />
+                        </h:outputText>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Description</f:facet>
+                        <h:outputText value="#{release.description}" />
+                    </p:column>
 	            </p:dataTable>
                 <h:panelGroup rendered="#{not empty releaseBean.projectName and empty releaseBean.releases}">
                     <p>No releases defined.</p>

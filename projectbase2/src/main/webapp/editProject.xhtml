@@ -17,13 +17,16 @@
                     <p:inputText id="code" value="#{projectBean.code}" style="width: 50px" />
                     <h:outputLabel for="name" value="Name:" />
                     <p:inputText id="name" value="#{projectBean.name}" style="width: 200px" />
-                </h:panelGrid>
-                <br />
-                <div style="margin-left: 50px">
-                    <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
+                    <h:outputLabel for="description" value="Description:" />
+                    <p:inputTextarea id="description" value="#{projectBean.description}" autoResize="false" styleClass="textarea" />
                     &#160;
-                    <p:commandLink value="Cancel" action="#{projectBean.cancel}" ajax="false" />
-                </div>
+                    <h:panelGroup>
+                        <br />
+	                    <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
+	                    &#160;
+	                    <p:commandLink value="Cancel" action="#{projectBean.cancel}" ajax="false" />
+                    </h:panelGroup>
+                </h:panelGrid>
             </h:form>
         </div>
     </ui:define>
