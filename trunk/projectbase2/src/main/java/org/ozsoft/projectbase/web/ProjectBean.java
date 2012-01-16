@@ -14,89 +14,89 @@ import org.ozsoft.projectbase.repositories.ProjectRepository;
 @SessionScoped
 public class ProjectBean implements Serializable {
 
-    private static final long serialVersionUID = 4728584552025654369L;
+	private static final long serialVersionUID = 4728584552025654369L;
 
-    @ManagedProperty(value = "#{projectRepository}")
-    private ProjectRepository projectRepository;
-    
-    private String title;
+	@ManagedProperty(value = "#{projectRepository}")
+	private ProjectRepository projectRepository;
 
-    private Project project;
+	private String title;
 
-    private String code;
+	private Project project;
 
-    private String name;
-    
-    public void setProjectRepository(ProjectRepository projectRepository) {
-        this.projectRepository = projectRepository;
-    }
+	private String code;
 
-    public String getTitle() {
-        return title;
-    }
+	private String name;
 
-    public Project getProject() {
-        return project;
-    }
+	public void setProjectRepository(ProjectRepository projectRepository) {
+		this.projectRepository = projectRepository;
+	}
 
-    public void setProject(Project project) {
-        this.project = project;
-    }
+	public String getTitle() {
+		return title;
+	}
 
-    public String getCode() {
-        return code;
-    }
+	public Project getProject() {
+		return project;
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public void setProject(Project project) {
+		this.project = project;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public List<Project> getProjects() {
-        return projectRepository.findAll();
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String add() {
-        title = "Add Project";
-        project = null;
-        code = "";
-        name = "";
-        return "editProject.xhtml";
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String edit() {
-        title = "Edit Project";
-        code = project.getCode();
-        name = project.getName();
-        return "editProject.xhtml";
-    }
+	public List<Project> getProjects() {
+		return projectRepository.findAll();
+	}
 
-    public String save() {
-        if (project == null) {
-            project = new Project();
-        }
-        project.setCode(code);
-        project.setName(name);
-        projectRepository.store(project);
-        return "listProjects.xhtml";
-    }
+	public String add() {
+		title = "Add Project";
+		project = null;
+		code = "";
+		name = "";
+		return "editProject.xhtml";
+	}
 
-    public String delete() {
-        if (project != null) {
-            projectRepository.delete(project);
-        }
-        return "listProjects.xhtml";
-    }
+	public String edit() {
+		title = "Edit Project";
+		code = project.getCode();
+		name = project.getName();
+		return "editProject.xhtml";
+	}
 
-    public String cancel() {
-        return "listProjects.xhtml";
-    }
-    
+	public String save() {
+		if (project == null) {
+			project = new Project();
+		}
+		project.setCode(code);
+		project.setName(name);
+		projectRepository.store(project);
+		return "listProjects.xhtml";
+	}
+
+	public String delete() {
+		if (project != null) {
+			projectRepository.delete(project);
+		}
+		return "listProjects.xhtml";
+	}
+
+	public String cancel() {
+		return "listProjects.xhtml";
+	}
+
 }
