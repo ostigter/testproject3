@@ -1,6 +1,7 @@
 package org.ozsoft.projectbase.web;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -9,6 +10,7 @@ import javax.faces.bean.SessionScoped;
 
 import org.ozsoft.projectbase.entities.Project;
 import org.ozsoft.projectbase.entities.Release;
+import org.ozsoft.projectbase.entities.VersionNumber;
 import org.ozsoft.projectbase.repositories.ProjectRepository;
 
 @ManagedBean
@@ -28,7 +30,7 @@ public class ReleaseBean implements Serializable {
 
     private Release release;
 
-    private String name;
+    private String versionNumber;
 
     public void setProjectRepository(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
@@ -54,20 +56,20 @@ public class ReleaseBean implements Serializable {
         this.project = project;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Release getRelease() {
         return release;
     }
 
     public void setRelease(Release release) {
         this.release = release;
+    }
+
+    public String getVersionNumber() {
+        return versionNumber;
+    }
+
+    public void setVersionNumber(String versionNumber) {
+        this.versionNumber = versionNumber;
     }
 
     public List<Release> getReleases() {
@@ -80,13 +82,13 @@ public class ReleaseBean implements Serializable {
         }
         return releases;
     }
-    
+
     public String add() {
         if (projectName != null && projectName.length() > 0) {
             project = projectRepository.retrieveByName(projectName);
             title = "Add Release";
             release = null;
-            name = "";
+            versionNumber = "";
             return "editRelease.xhtml";
         } else {
             return "listReleases.xhtml";
@@ -96,7 +98,7 @@ public class ReleaseBean implements Serializable {
     public String edit() {
         if (release != null) {
             title = "Edit Release";
-            name = release.getName();
+            versionNumber = release.getVersionNumber().toString();
             return "editRelease.xhtml";
         } else {
             return "listReleases.xhtml";
@@ -104,20 +106,28 @@ public class ReleaseBean implements Serializable {
     }
 
     public String save() {
-        if (release == null) {
-        	release = new Release();
-            release.setProject(project);
-            project.getReleases().add(release);
+        VersionNumber vn = null;
+        try {
+            vn = VersionNumber.parse(versionNumber);
+            System.out.format("Version number: '%s'\n", vn);
+            if (release == null) {
+                release = new Release();
+                release.setProject(project);
+                project.getReleases().add(release);
+            }
+            release.setVersionNumber(vn);
+            projectRepository.store(project);
+        } catch (ParseException e) {
+            // TODO: Handle invalid version number
+            System.out.println(e);
         }
-        release.setName(name);
-        projectRepository.store(project);
         return "listReleases.xhtml";
     }
 
     public String delete() {
         if (release != null) {
-        	project.getReleases().remove(release);
-        	projectRepository.store(project);
+            project.getReleases().remove(release);
+            projectRepository.store(project);
         }
         return "listReleases.xhtml";
     }
