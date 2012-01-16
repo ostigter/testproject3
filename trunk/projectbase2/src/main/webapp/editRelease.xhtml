@@ -14,14 +14,19 @@
                 </h:panelGroup>
                 <h:panelGrid columns="2">
                     <h:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name" value="#{releaseBean.name}" style="width: 75px" />
-                </h:panelGrid>
-                <br />
-                <div style="margin-left: 50px">
-	                <p:commandButton value="Save" action="#{releaseBean.save}" ajax="false" />
+                    <p:inputText id="name" value="#{releaseBean.name}" style="width: 154px" />
+                    <h:outputLabel for="date" value="Date:" />
+                    <p:calendar id="date" value="#{releaseBean.date}" pattern="dd-MMM-yyyy" timeZone="#{dateBean.timeZone}" navigator="true" showWeek="true" />
+                    <h:outputLabel for="description" value="Description:" />
+                    <p:inputTextarea id="description" value="#{releaseBean.description}" autoResize="false" styleClass="textarea" />
                     &#160;
-	                <p:commandLink value="Cancel" action="#{releaseBean.cancel}" ajax="false" />
-                </div>
+                    <h:panelGroup>
+                        <br />
+	                    <p:commandButton value="Save" action="#{releaseBean.save}" ajax="false" />
+	                    &#160;
+	                    <p:commandLink value="Cancel" action="#{releaseBean.cancel}" ajax="false" />
+                    </h:panelGroup>                    
+                </h:panelGrid>
             </h:form>
         </div>
     </ui:define>

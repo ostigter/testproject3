@@ -8,20 +8,20 @@
         <div class="content ui-widget ui-widget-content ui-corner-all">
             <h2>Projects</h2>
             <h:form>
-                <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 350px">
+                <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 100%">
                     <p:column style="width: 50px">
-                        <f:facet name="header">
-                            <h:outputText value="Code" />
-                        </f:facet>
+                        <f:facet name="header">Code</f:facet>
                         <h:commandLink value="#{project.code}" action="#{projectBean.edit}" ajax="false">
                             <f:setPropertyActionListener target="#{projectBean.project}" value="${project}" />
                         </h:commandLink>
                     </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <h:outputText value="Name" />
-                        </f:facet>
+                    <p:column style="width: 200px">
+                        <f:facet name="header">Name</f:facet>
                         <h:outputText value="#{project.name}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Description</f:facet>
+                        <h:outputText value="#{project.description}" />
                     </p:column>
                 </p:dataTable>
                 <h:panelGroup rendered="#{empty projectBean.projects}">

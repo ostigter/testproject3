@@ -15,6 +15,9 @@ public class Project extends BaseEntity {
 
 	@Basic
 	private String code;
+	
+	@Basic
+	private String description;
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Release> releases;
@@ -29,6 +32,14 @@ public class Project extends BaseEntity {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public List<Release> getReleases() {
