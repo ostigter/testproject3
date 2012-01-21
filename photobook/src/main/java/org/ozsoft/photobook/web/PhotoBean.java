@@ -1,10 +1,8 @@
 package org.ozsoft.photobook.web;
 
 import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
@@ -40,14 +38,9 @@ public class PhotoBean implements Serializable {
     public StreamedContent getPhotoContent(long id) {
         StreamedContent content = null;
         try {
-            OutputStream os = new FileOutputStream("D:/Temp/out.jpg");
-            IOUtils.copy(photoService.getContent(id), os);
-            os.close();
             content = new DefaultStreamedContent(photoService.getContent(id));
         } catch (SQLException e) {
             LOG.error("Could not get content of photo with ID " + id, e);
-        } catch (IOException e) {
-            LOG.error("Could not stream content of photo with ID " + id, e);
         }
         return content;
     }
