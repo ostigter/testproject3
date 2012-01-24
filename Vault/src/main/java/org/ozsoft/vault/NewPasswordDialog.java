@@ -8,15 +8,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
 public class NewPasswordDialog extends Dialog {
 
     private static final long serialVersionUID = -3601949060145211322L;
 
-    private JTextField passwordText;
+    private JPasswordField passwordText;
 
-    private JTextField againText;
+    private JPasswordField againText;
     
     private JButton okButton;
     
@@ -27,7 +28,7 @@ public class NewPasswordDialog extends Dialog {
     }
     
     public String getPassword() {
-        return passwordText.getText();
+        return new String(passwordText.getPassword());
     }
 
     @Override
@@ -41,17 +42,21 @@ public class NewPasswordDialog extends Dialog {
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 5, 5, 5);
         getContentPane().add(label, gbc);
         
-        passwordText = new JTextField();
+        passwordText = new JPasswordField(10);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 5, 5, 10);
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(10, 5, 5, 5);
         getContentPane().add(passwordText, gbc);
         
         label = new JLabel("Again:");
@@ -61,16 +66,20 @@ public class NewPasswordDialog extends Dialog {
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         gbc.insets = new Insets(5, 5, 5, 5);
         getContentPane().add(label, gbc);
         
-        againText = new JTextField();
+        againText = new JPasswordField(10);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
         gbc.insets = new Insets(5, 5, 5, 5);
         getContentPane().add(againText, gbc);
         
@@ -110,13 +119,13 @@ public class NewPasswordDialog extends Dialog {
     @Override
     protected boolean validationOK() {
         boolean validationOK = false;
-        String password = passwordText.getText();
-        String again = againText.getText();
+        String password = new String(passwordText.getPassword());
+        String again = new String(againText.getPassword());
         if (password.length() == 0) {
-            //TODO
+            JOptionPane.showMessageDialog(this, "No password specified. Please enter a password.", "Vault", JOptionPane.ERROR_MESSAGE);
         } else {
             if (!again.equals(password)) {
-                //TODO
+                JOptionPane.showMessageDialog(this, "Passwords are not identical. Please check the passwords.", "Vault", JOptionPane.ERROR_MESSAGE);
             } else {
                 validationOK = true;
             }

@@ -25,6 +25,7 @@ public abstract class Dialog extends JDialog {
         });
         initUI();
         pack();
+        setResizable(false);
         setLocationRelativeTo(parent);
     }
     
