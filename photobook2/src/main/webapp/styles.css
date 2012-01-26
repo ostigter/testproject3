@@ -1,0 +1,27 @@
+.ui-widget {
+   font-size: 12px;
+}
+
+.textarea {
+	width: 400px;
+	height: 100px;
+}
+
+body {
+    margin-left:  20%;
+    margin-right: 20%;
+	padding: 0;
+}
+
+h1 {
+	padding: 10px;
+}
+
+div.content {
+    padding: 10px;
+}
+
+div.footer {
+    font-size: 60%;
+    text-align: right;
+}
