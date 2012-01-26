@@ -6,17 +6,17 @@ import javax.persistence.Lob;
 @Entity
 public class Photo extends BaseEntity {
 
-	private static final long serialVersionUID = -3625810657812632685L;
-	
-	@Lob
-	private byte[] contents;
+    private static final long serialVersionUID = -3625810657812632685L;
 
-	public byte[] getContents() {
-		return contents;
-	}
+    @Lob
+    private byte[] content;
 
-	public void setContents(byte[] contents) {
-		this.contents = contents;
-	} 
+    public byte[] getContent() {
+        return content;
+    }
+
+    public void setContent(byte[] content) {
+        this.content = content;
+    }
 
 }

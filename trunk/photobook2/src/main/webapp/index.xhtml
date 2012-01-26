@@ -9,6 +9,18 @@
         <div class="content ui-widget ui-widget-content ui-corner-all">
             <h2>Welcome</h2>
             <p>Welcome to Photobook, the online photobook to store, organize, view and share your personal photos!</p>
+            <h:form>
+                <p:dataTable var="photo" value="#{photoBean.photos}">
+                    <p:column headerText="ID">
+                        <h:outputText value="#{photo.id}" />
+                    </p:column>
+                    <p:column headerText="Photo">
+                        <p:graphicImage value="#{photoBean.getPhotoContent(photo.id)}" />
+                    </p:column>
+                </p:dataTable>
+                <br />
+                <p:fileUpload label="Upload photo" fileUploadListener="#{photoBean.handleFileUpload}" auto="true" />
+            </h:form>
         </div>
     </ui:define>
 </ui:composition>

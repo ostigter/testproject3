@@ -22,6 +22,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.6</java.version>
         <log4j.version>1.2.14</log4j.version>
+        <commons-io.version>2.0.1</commons-io.version>
+        <commons-fileupload.version>1.2.2</commons-fileupload.version>
         <servlet-version>2.5</servlet-version>
         <jsf-version>2.1.6</jsf-version>
         <primefaces.version>3.0.1</primefaces.version>
@@ -36,6 +38,18 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons-fileupload.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
