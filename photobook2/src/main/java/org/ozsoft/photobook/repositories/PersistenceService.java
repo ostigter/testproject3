@@ -15,7 +15,7 @@ public class PersistenceService {
     private static final String PU_NAME = "photobookPU";
 
     /** Entity manager. */
-    private static final EntityManager entityManager;
+    private static final EntityManager ENTITY_MANAGER;
 
     /**
      * Static initializer.
@@ -24,7 +24,7 @@ public class PersistenceService {
      */
     static {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
-        entityManager = emf.createEntityManager();
+        ENTITY_MANAGER = emf.createEntityManager();
     }
 
     /**
@@ -33,7 +33,7 @@ public class PersistenceService {
      * @return The entity manager.
      */
     public static EntityManager getEntityManager() {
-        return entityManager;
+        return ENTITY_MANAGER;
     }
 
 }
