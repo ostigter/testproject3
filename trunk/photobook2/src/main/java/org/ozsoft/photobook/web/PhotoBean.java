@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -21,9 +22,11 @@ import org.primefaces.model.UploadedFile;
 
 @ManagedBean
 @SessionScoped
-public class PhotoBean {
+public class PhotoBean implements Serializable {
     
-    private static final Logger LOGGER = Logger.getLogger(PhotoBean.class);
+	private static final long serialVersionUID = -7768597734064601558L;
+
+	private static final Logger LOGGER = Logger.getLogger(PhotoBean.class);
     
     @ManagedProperty(value = "#{photoRepository}")
     private PhotoRepository photoRepository;
@@ -40,20 +43,22 @@ public class PhotoBean {
         StreamedContent content = null;
         Photo photo = photoRepository.retrieveById(id);
         if (photo != null) {
-            content = new DefaultStreamedContent(new ByteArrayInputStream(photo.getContent()));
+            content = new DefaultStreamedContent(new ByteArrayInputStream(photo.getContent()), "image/jpeg");
         }
         return content;
     }
     
     public void handleFileUpload(FileUploadEvent e) {
+    	System.out.println("*** handleFileUpload");
         UploadedFile file = e.getFile();
         String filename = file.getFileName();
         Photo photo = new Photo();
         InputStream is = null;        
         try {
             is = new BufferedInputStream(file.getInputstream());
-            photo.setContent(IOUtils.toByteArray(is));
+            byte[] content = IOUtils.toByteArray(is);
             is.close();
+            photo.setContent(content);
             photoRepository.store(photo);
             LOGGER.debug(String.format("Photo uploaded: '%s' (%d bytes)", file.getFileName(), file.getSize()));
         } catch (IOException ex) {

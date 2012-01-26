@@ -47,7 +47,7 @@ public abstract class Repository<T extends BaseEntity> {
     }
 
     public List<T> findAll() {
-        return em.createQuery("SELECT e FROM " + className + " e ORDER BY e.name", entityClass).getResultList();
+        return em.createQuery("SELECT e FROM " + className + " e", entityClass).getResultList();
     }
 
     public T retrieveById(long id) {
