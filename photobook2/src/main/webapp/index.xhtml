@@ -15,7 +15,7 @@
                         <h:outputText value="#{photo.id}" />
                     </p:column>
                     <p:column headerText="Photo">
-                        <p:graphicImage value="#{photoBean.getPhotoContent(photo.id)}" />
+                        <h:graphicImage value="photo/#{photo.id}" />
                     </p:column>
                 </p:dataTable>
                 <br />

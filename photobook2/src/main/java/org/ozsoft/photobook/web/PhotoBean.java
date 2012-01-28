@@ -49,7 +49,6 @@ public class PhotoBean implements Serializable {
     }
     
     public void handleFileUpload(FileUploadEvent e) {
-    	System.out.println("*** handleFileUpload");
         UploadedFile file = e.getFile();
         String filename = file.getFileName();
         Photo photo = new Photo();
@@ -60,7 +59,6 @@ public class PhotoBean implements Serializable {
             is.close();
             photo.setContent(content);
             photoRepository.store(photo);
-            LOGGER.debug(String.format("Photo uploaded: '%s' (%d bytes)", file.getFileName(), file.getSize()));
         } catch (IOException ex) {
             LOGGER.error(String.format("Could not set photo content from file '%s'", filename), ex);
         } finally {

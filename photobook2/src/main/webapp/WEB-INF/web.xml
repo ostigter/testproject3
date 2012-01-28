@@ -16,6 +16,15 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>PhotoServlet</servlet-name>
+        <servlet-class>org.ozsoft.photobook.web.PhotoServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PhotoServlet</servlet-name>
+        <url-pattern>/photo/*</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
