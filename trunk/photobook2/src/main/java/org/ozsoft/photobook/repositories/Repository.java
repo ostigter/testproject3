@@ -16,18 +16,22 @@ public abstract class Repository<T extends BaseEntity> {
 
     protected final Class<T> entityClass;
 
-    protected String className;
+    protected final String className;
 
-    protected EntityManager em;
+    protected final EntityManager em;
+    
+    private final Query findAllQuery; 
 
     protected Repository(Class<T> entityClass) {
         this.entityClass = entityClass;
-        className = entityClass.getName();
-        int p = className.lastIndexOf('.');
+        int p = entityClass.getName().lastIndexOf('.');
         if (p >= 0) {
-            className = className.substring(p + 1);
+            className = entityClass.getName().substring(p + 1);
+        } else {
+        	className = entityClass.getName();
         }
         em = PersistenceService.getEntityManager();
+        findAllQuery = em.createQuery("SELECT e FROM " + className + " e", entityClass);
     }
 
     public void store(T entity) {
@@ -46,20 +50,13 @@ public abstract class Repository<T extends BaseEntity> {
         }
     }
 
-    public List<T> findAll() {
-        return em.createQuery("SELECT e FROM " + className + " e", entityClass).getResultList();
+    @SuppressWarnings("unchecked")
+	public List<T> findAll() {
+    	return findAllQuery.getResultList();
     }
 
     public T retrieveById(long id) {
         return em.find(entityClass, id);
-    }
-
-    @SuppressWarnings("unchecked")
-    public T retrieveByName(String name) {
-        Query query = em.createQuery("SELECT e FROM " + className + " e WHERE e.name = :name", entityClass);
-        query.setParameter("name", name);
-        List<T> entities = query.getResultList();
-        return (entities.size() > 0) ? entities.get(0) : null;
     }
 
     public void delete(T entity) {
