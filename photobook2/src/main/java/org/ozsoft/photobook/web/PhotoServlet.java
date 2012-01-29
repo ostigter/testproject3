@@ -28,6 +28,7 @@ public class PhotoServlet extends HttpServlet {
 		query = em.createQuery("SELECT p FROM Photo p WHERE p.id = :id");
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String pathInfo = request.getPathInfo();
@@ -35,7 +36,6 @@ public class PhotoServlet extends HttpServlet {
 			if (pathInfo.length() > 1 && pathInfo.charAt(0) == '/') {
 				try {
 					long photoId = Integer.parseInt(pathInfo.substring(1));
-					System.out.println("photoId = " + photoId);
 					query.setParameter("id", photoId);
 					List<Photo> photos = query.getResultList();
 					if (photos.size() > 0) {

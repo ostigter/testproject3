@@ -1,7 +1,6 @@
 package org.ozsoft.photobook.web;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -16,8 +15,6 @@ import org.apache.log4j.Logger;
 import org.ozsoft.photobook.entities.Photo;
 import org.ozsoft.photobook.repositories.PhotoRepository;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 @ManagedBean
@@ -39,15 +36,6 @@ public class PhotoBean implements Serializable {
         return photoRepository.findAll();
     }
 
-    public StreamedContent getPhotoContent(long id) {
-        StreamedContent content = null;
-        Photo photo = photoRepository.retrieveById(id);
-        if (photo != null) {
-            content = new DefaultStreamedContent(new ByteArrayInputStream(photo.getContent()), "image/jpeg");
-        }
-        return content;
-    }
-    
     public void handleFileUpload(FileUploadEvent e) {
         UploadedFile file = e.getFile();
         String filename = file.getFileName();
