@@ -15,7 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.ozsoft.photobook.entities.Photo;
 import org.ozsoft.photobook.repositories.PersistenceService;
 
-public class PhotoServlet extends HttpServlet {
+public class ThumbnailServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6280329522978416221L;
 	
@@ -23,7 +23,7 @@ public class PhotoServlet extends HttpServlet {
 	
 	private final Query query;
 	
-	public PhotoServlet() {
+	public ThumbnailServlet() {
 		em = PersistenceService.getEntityManager();
 		query = em.createQuery("SELECT p FROM Photo p WHERE p.id = :id");
 	}
@@ -40,7 +40,7 @@ public class PhotoServlet extends HttpServlet {
 					List<Photo> photos = query.getResultList();
 					if (photos.size() > 0) {
 						Photo photo = photos.get(0);
-						byte[] content = photo.getContent();
+						byte[] content = photo.getThumbnail();
 						response.setContentType("image/jpeg");
 						response.setContentLength(content.length);
 						InputStream is = new ByteArrayInputStream(content);

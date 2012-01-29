@@ -25,6 +25,15 @@
         <url-pattern>/photo/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ThumbnailServlet</servlet-name>
+        <servlet-class>org.ozsoft.photobook.web.ThumbnailServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ThumbnailServlet</servlet-name>
+        <url-pattern>/thumbnail/*</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
