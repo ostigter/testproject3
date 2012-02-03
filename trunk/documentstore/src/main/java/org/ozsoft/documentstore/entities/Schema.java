@@ -4,6 +4,7 @@ import java.sql.Blob;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 
 @Entity
@@ -15,6 +16,7 @@ public class Schema extends BaseEntity {
     private String namespace;
     
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     private Blob content;
 
     public String getNamespace() {
