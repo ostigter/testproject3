@@ -1,5 +1,9 @@
 package org.ozsoft.documentstore;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.ozsoft.documentstore.entities.Schema;
@@ -13,18 +17,33 @@ public class DocumentStore {
         schemaRepository = new SchemaRepository();
     }
     
-    public void storeSchema(String namespace) {
+    public void storeSchema(String namespace, InputStream is) throws IOException {
         Schema schema = new Schema();
         schema.setNamespace(namespace);
         schemaRepository.store(schema);
+        schemaRepository.setContent(schema.getId(), is);
     }
     
-    public List<Schema> listSchemas() {
-        return schemaRepository.findAll();
+    public List<String> listSchemas() {
+    	List<String> namespaces = new ArrayList<String>();
+    	for (Schema schema : schemaRepository.findAll()) {
+    		namespaces.add(schema.getNamespace());
+    	}
+        return namespaces;
     }
     
-    public Schema retrieveSchema(String namespace) {
-        return schemaRepository.retrieve(namespace);
+    public boolean hasSchema(String namespace) {
+    	Schema schema = schemaRepository.retrieve(namespace);
+    	return (schema != null);
+    }
+    
+    public InputStream retrieveSchema(String namespace) throws SQLException {
+    	InputStream is = null;
+    	Schema schema = schemaRepository.retrieve(namespace);
+    	if (schema != null) {
+			is = schemaRepository.getContent(schema.getId());
+    	}
+        return is;
     }
     
     public void deleteSchema(String namespace) {
