@@ -10,6 +10,8 @@ import org.ozsoft.documentstore.entities.Schema;
 import org.ozsoft.documentstore.repositories.SchemaRepository;
 
 public class DocumentStore {
+
+//	private static final Logger LOG = Logger.getLogger(DocumentStore.class);
     
     private SchemaRepository schemaRepository;
     
