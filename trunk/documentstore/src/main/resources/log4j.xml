@@ -15,7 +15,12 @@
     <logger name="org.hibernate">
         <level value="WARN" />
     </logger>
-
+    
+    <!-- Suppress warning auto-commit disabled (PostgreSQL LOBs) -->
+    <logger name="org.hibernate.ejb">
+        <level value="ERROR" />
+    </logger>
+    
     <root>
         <priority value="INFO" />
         <appender-ref ref="console" />
