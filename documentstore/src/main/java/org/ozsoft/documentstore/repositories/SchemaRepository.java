@@ -14,6 +14,8 @@ import org.ozsoft.documentstore.entities.Schema;
 
 public class SchemaRepository extends Repository<Schema> {
     
+//	private static final Logger LOG = Logger.getLogger(SchemaRepository.class);
+    
     private final EntityManager em;
     
     private final Query retrieveByNamespaceQuery;
