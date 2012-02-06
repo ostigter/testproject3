@@ -16,8 +16,6 @@ import org.ozsoft.photobook.entities.Photo;
 @Singleton
 public class PhotoDaoBean implements PhotoDao {
 
-//    private static final Logger LOG = Logger.getLogger(PhotoDaoBean.class);
-    
     @PersistenceContext(unitName = "photobookPU")
     private EntityManager em;
 

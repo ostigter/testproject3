@@ -9,13 +9,15 @@
         
         <jta-data-source>jdbc/photobook</jta-data-source>
 
-        <class>org.ozsoft.photobook.entities.Album</class>
         <class>org.ozsoft.photobook.entities.Photo</class>
 
 		<properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
             <property name="hibernate.hbm2ddl.auto" value="create" />
             <property name="hibernate.show_sql" value="false" />
+            <!--
+            <property name="hibernate.connection.autocommit" value="false" />
+            -->
 		</properties>
 
 	</persistence-unit>
