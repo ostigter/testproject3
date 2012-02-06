@@ -4,26 +4,26 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:p="http://primefaces.org/ui">
-<h:head>
-	<title>Photobook</title>
-	<link rel="StyleSheet" type="text/css" href="styles.css" />
-</h:head>
-<h:body>
-	<h1>Photobook</h1>
-	<h:form>
-		<p:dataTable var="photo" value="#{photoBean.photos}" rows="10">
-			<p:column headerText="ID">
-				<h:outputText value="#{photo.id}" />
-			</p:column>
-               <p:column headerText="Name">
-                   <h:outputText value="#{photo.name}" />
-               </p:column>
-               <p:column headerText="Photo">
-                    <p:graphicImage value="#{photoBean.getPhotoContent(photo.id)}" />
-               </p:column>
-		</p:dataTable>
-		<br />
-        <p:fileUpload label="Upload photo" fileUploadListener="#{photoBean.handleFileUpload}" auto="true" />
-	</h:form>
-</h:body>
+	<h:head>
+		<title>Photobook</title>
+		<link rel="StyleSheet" type="text/css" href="styles.css" />
+	</h:head>
+	<h:body>
+		<h1>Photobook</h1>
+		<h:form>
+			<p:dataTable var="photo" value="#{photoBean.photos}">
+				<p:column headerText="ID">
+					<h:outputText value="#{photo.id}" />
+				</p:column>
+	               <p:column headerText="Name">
+	                   <h:outputText value="#{photo.name}" />
+	               </p:column>
+	               <p:column headerText="Photo">
+	                    <h:graphicImage value="photo/#{photo.id}" />
+	               </p:column>
+			</p:dataTable>
+			<br />
+	        <p:fileUpload label="Upload photo" fileUploadListener="#{photoBean.handleFileUpload}" auto="true" />
+		</h:form>
+	</h:body>
 </html>

@@ -14,14 +14,17 @@ import org.ozsoft.photobook.entities.Photo;
 @Singleton
 public class PhotoServiceBean implements PhotoService {
     
-//    private static final Logger LOG = Logger.getLogger(PhotoServiceBean.class);
-
     @EJB
     private PhotoDao photoDao;
     
     @Override
     public void store(Photo photo) {
         photoDao.store(photo);
+    }
+
+    @Override
+    public List<Photo> findAll() {
+        return photoDao.findAll();
     }
 
     @Override
@@ -42,11 +45,6 @@ public class PhotoServiceBean implements PhotoService {
     @Override
     public void delete(Photo photo) {
         photoDao.delete(photo);
-    }
-
-    @Override
-    public List<Photo> findAll() {
-        return photoDao.findAll();
     }
 
 }
