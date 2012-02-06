@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
@@ -31,7 +31,7 @@ import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifDirectory;
 
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class PhotoBean implements Serializable {
 	
 	private static final int THUMBNAIL_SIZE = 150;
