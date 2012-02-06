@@ -7,12 +7,12 @@
     <display-name>photobook</display-name>
 
     <servlet>
-        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-name>FacesServlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-name>FacesServlet</servlet-name>
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
@@ -35,12 +35,12 @@
     </servlet-mapping>
 
     <filter>
-        <filter-name>PrimeFaces FileUpload Filter</filter-name>
+        <filter-name>FileUploadFilter</filter-name>
         <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>PrimeFaces FileUpload Filter</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
+        <filter-name>FileUploadFilter</filter-name>
+        <servlet-name>FacesServlet</servlet-name>
     </filter-mapping>
 
     <context-param>

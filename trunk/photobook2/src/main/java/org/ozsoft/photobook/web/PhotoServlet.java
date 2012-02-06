@@ -28,8 +28,8 @@ public class PhotoServlet extends HttpServlet {
 		query = em.createQuery("SELECT p FROM Photo p WHERE p.id = :id");
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String pathInfo = request.getPathInfo();
 		if (pathInfo != null) {
@@ -44,8 +44,11 @@ public class PhotoServlet extends HttpServlet {
 						response.setContentType("image/jpeg");
 						response.setContentLength(content.length);
 						InputStream is = new ByteArrayInputStream(content);
-						IOUtils.copy(is, response.getOutputStream());
-						IOUtils.closeQuietly(is);
+						try {
+							IOUtils.copy(is, response.getOutputStream());
+						} finally {
+							IOUtils.closeQuietly(is);
+						}
 					} else {
 						response.sendError(HttpServletResponse.SC_NOT_FOUND);
 					}
