@@ -1,0 +1,28 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+	
+	<persistence-unit name="documentstorePU" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        
+        <class>org.ozsoft.documentstore.entities.Schema</class>
+
+		<properties>
+            <!-- PostgreSQL -->
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/documentstore" />
+            <property name="javax.persistence.jdbc.user" value="documentstore" />
+            <property name="javax.persistence.jdbc.password" value="documentstore" />
+            
+            <!-- Hibernate -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.connection.autocommit" value="false" /> <!-- Streaming LOB support -->
+		</properties>
+
+	</persistence-unit>
+
+</persistence>

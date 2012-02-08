@@ -10,24 +10,16 @@
         <class>org.ozsoft.documentstore.entities.Schema</class>
 
 		<properties>
-            <!-- PostgreSQL -->
-            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/documentstore" />
-            <property name="javax.persistence.jdbc.user" value="documentstore" />
-            <property name="javax.persistence.jdbc.password" value="documentstore" />
-            
-            <!-- H2 Database
+            <!-- H2 Database -->
 			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:documentstore" />
 			<property name="javax.persistence.jdbc.user" value="sa" />
 			<property name="javax.persistence.jdbc.password" value="" />
-            -->
 			
             <!-- Hibernate -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
-            <property name="hibernate.hbm2ddl.auto" value="validate" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+            <property name="hibernate.hbm2ddl.auto" value="create" />
             <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.connection.autocommit" value="false" /> <!-- PostgreSQL LOB support -->
 		</properties>
 
 	</persistence-unit>

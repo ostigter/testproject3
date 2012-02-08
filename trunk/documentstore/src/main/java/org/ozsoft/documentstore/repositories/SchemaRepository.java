@@ -13,26 +13,24 @@ import org.hibernate.Session;
 import org.ozsoft.documentstore.entities.Schema;
 
 public class SchemaRepository extends Repository<Schema> {
-    
-//	private static final Logger LOG = Logger.getLogger(SchemaRepository.class);
-    
+
     private final EntityManager em;
-    
+
     private final Query retrieveByNamespaceQuery;
-    
+
     public SchemaRepository() {
         super(Schema.class);
         em = PersistenceService.getEntityManager();
-        retrieveByNamespaceQuery = em.createQuery("SELECT s FROM Schema s WHERE s.namespace = :namespace", Schema.class); 
+        retrieveByNamespaceQuery = em.createQuery("SELECT s FROM Schema s WHERE s.namespace = :namespace", Schema.class);
     }
-    
+
     @SuppressWarnings("unchecked")
     public Schema retrieve(String namespace) {
         retrieveByNamespaceQuery.setParameter("namespace", namespace);
         List<Schema> schemas = retrieveByNamespaceQuery.getResultList();
         return !schemas.isEmpty() ? schemas.get(0) : null;
     }
-    
+
     public InputStream getContent(long id) throws SQLException {
         InputStream is = null;
         Schema schema = retrieveById(id);
@@ -57,7 +55,7 @@ public class SchemaRepository extends Repository<Schema> {
             store(schema);
         }
     }
-    
+
     public void delete(String namespace) {
         Schema schema = retrieve(namespace);
         if (schema != null) {
