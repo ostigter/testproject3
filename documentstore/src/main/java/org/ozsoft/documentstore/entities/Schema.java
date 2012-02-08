@@ -11,10 +11,10 @@ import javax.persistence.Lob;
 public class Schema extends BaseEntity {
 
     private static final long serialVersionUID = -8448681026062862451L;
-    
+
     @Basic
     private String namespace;
-    
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private Blob content;
