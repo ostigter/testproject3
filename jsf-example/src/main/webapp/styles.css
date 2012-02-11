@@ -1,0 +1,19 @@
+body {
+	background: #f0f0f0;
+    margin-left:  5%;
+    margin-right: 5%;
+	padding: 0;
+}
+
+h1 {
+	color: #0000ff;
+}
+
+p {
+	color: #000000;
+}
+
+.greeting {
+    font-size: 120%;
+	color: #ff0000;
+}
