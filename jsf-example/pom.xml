@@ -3,13 +3,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.ozsoft</groupId>
+    <groupId>org.ozsoft.jsf</groupId>
     <artifactId>jsf-example</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
     <name>jsf-example</name>
-    <description>JSF 2.x (Mojarra) example application</description>
+    <description>Example web application with JSF 2.x (Mojarra)</description>
     <inceptionYear>2009</inceptionYear>
     <developers>
         <developer>
@@ -17,10 +17,11 @@
             <email>oscar.stigter@gmail.com</email>
         </developer>
     </developers>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jsf.version>2.1.2</jsf.version>
+        <java.version>1.6</java.version>
+        <jsf.version>2.1.6</jsf.version>
     </properties>
 
     <dependencies>
@@ -46,9 +47,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <compilerVersion>6</compilerVersion>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
         </plugins>
