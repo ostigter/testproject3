@@ -8,6 +8,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
         <class>org.ozsoft.documentstore.entities.Schema</class>
+        <class>org.ozsoft.documentstore.entities.DocumentType</class>
 
 		<properties>
             <!-- PostgreSQL -->
