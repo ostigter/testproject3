@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
+import org.ozsoft.documentstore.entities.DocumentType;
 
 public class DocumentStoreTest {
 
@@ -21,8 +22,9 @@ public class DocumentStoreTest {
     public void schemas() throws Exception {
         LOG.info("Test 'schemas' started");
 
-        // Verify no schemas are available.
         DocumentStore docs = new DocumentStore();
+
+        // Verify no schemas are available.
         Assert.assertTrue(docs.listSchemas().isEmpty());
 
         // Get content of first schema.
@@ -70,6 +72,33 @@ public class DocumentStoreTest {
         Assert.assertTrue(docs.listSchemas().isEmpty());
 
         LOG.info("Test 'schemas' finished");
+    }
+    
+    @Test
+    public void documentTypes() {
+        LOG.info("Test 'documentTypes' started");
+
+        DocumentStore docs = new DocumentStore();
+        
+        // Verify no document types are available.
+        Assert.assertTrue(docs.getDocumentTypes().isEmpty());
+        
+        // Add first document type.
+        DocumentType docType = new DocumentType();
+        docType.setName("Foo");
+        docs.addDocumentType(docType);
+        Assert.assertEquals(1, docs.getDocumentTypes().size());
+        
+        // Retrieve first document type.
+        docType = docs.retrieveDocumentType("Foo");
+        Assert.assertNotNull(docType);
+        Assert.assertEquals("Foo", docType.getName());
+        
+        // Delete first document type.
+        docs.deleteDocumentType("Foo");
+        Assert.assertTrue(docs.getDocumentTypes().isEmpty());
+
+        LOG.info("Test 'documentTypes' finished");
     }
 
 }
