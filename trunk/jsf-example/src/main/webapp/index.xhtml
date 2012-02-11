@@ -4,10 +4,20 @@
         xmlns:f="http://java.sun.com/jsf/core"
         xmlns:h="http://java.sun.com/jsf/html">
     <h:head>
-        <title>Photobook</title>
+        <title>JSF 2.x example</title>
         <link rel="stylesheet" type="text/css" href="styles.css" />
     </h:head>
     <h:body>
         <h1>JSF 2.x example</h1>
+        <h:form>
+            Please enter your name:
+            <h:inputText id="name" value="#{greetingBean.name}" />
+            <h:commandButton value="Get greeting">
+                <f:ajax execute="name" render="greeting" />
+            </h:commandButton>
+            <p>
+                <h:outputText id="greeting" value="#{greetingBean.greeting}" styleClass="greeting" />
+            </p>
+        </h:form>
     </h:body>
 </html>
