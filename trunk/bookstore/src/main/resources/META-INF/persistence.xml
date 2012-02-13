@@ -5,16 +5,14 @@
         
     <persistence-unit name="bookstore" transaction-type="JTA">
     
-        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
         <jta-data-source>jdbc/bookstore</jta-data-source>
         
         <class>org.ozsoft.bookstore.entities.Book</class>
         
         <properties>
-            <property name="eclipselink.target-database" value="PostgreSQL" />
-            <property name="eclipselink.ddl-generation" value="none" />
-            <property name="eclipselink.logging.level" value="INFO" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
         </properties>
         
     </persistence-unit>

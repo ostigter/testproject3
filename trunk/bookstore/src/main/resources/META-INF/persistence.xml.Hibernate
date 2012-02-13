@@ -7,7 +7,7 @@
     
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
-        <jta-data-source>bookstoreDS</jta-data-source>
+        <jta-data-source>jdbc/bookstore</jta-data-source>
         
         <class>org.ozsoft.bookstore.entities.Book</class>
         
