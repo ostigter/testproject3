@@ -4,13 +4,17 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -75,6 +79,42 @@ public class Vault {
     }
     
     private void load() {
+        if (DATA_FILE.isFile()) {
+            // Read encrypted file header.
+            String cipherHeader = null;
+            try {
+                Reader reader = new BufferedReader(new FileReader(DATA_FILE));
+                char[] buffer = new char[FILE_HEADER.length()];
+                reader.read(buffer);
+                reader.close();
+                cipherHeader = new String(buffer);
+                
+                // Check password using file header.
+                boolean passwordOK = false;
+                while (!passwordOK) {
+                    RequestPasswordDialog dialog = new RequestPasswordDialog(frame);
+                    if (dialog.showDialog()) {
+                        try {
+                            encryptor.setKey(dialog.getPassword());
+                            if (encryptor.encrypt(FILE_HEADER).equals(cipherHeader)) {
+                                // Password matches; read encrypted text.
+                                passwordOK = true;
+                            } else {
+                                JOptionPane.showMessageDialog(frame, "Invalid password, please try again.", "Vault", JOptionPane.ERROR_MESSAGE);
+                            }
+                        } catch (EncryptionException e) {
+                            System.err.println("Could not decrypt file: " + e);
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                System.out.println("passwordOK = " + passwordOK);
+            } catch (IOException e) {
+                System.err.println("Could not read file: " + e);
+            }
+        }
     }
     
     private void save() {
