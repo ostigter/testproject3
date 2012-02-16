@@ -1,46 +1,52 @@
 package org.ozsoft.librarian.entities;
 
 import java.util.Map;
+import java.util.TreeMap;
 
-public class Document {
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToMany;
+
+@Entity
+public class Document extends BaseEntity {
     
-    private long id;
+    private static final long serialVersionUID = 6533376308020034563L;
     
-    private User owner;
+    @Basic
+    private String title;
     
-    private Group group;
-    
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @MapKeyColumn(name = "versionNumber")
     private Map<Integer, DocumentVersion> versions;
-
-    public void setId(long id) {
-        this.id = id;
+    
+    public Document() {
+        versions = new TreeMap<Integer, DocumentVersion>();
     }
 
-    public long getId() {
-        return id;
+    public String getTitle() {
+        return title;
     }
 
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    public void addVersion(DocumentVersion version) {
+        versions.put(version.getVersionNumber(), version);
+    }
+    
+    public DocumentVersion getVersion(long versionNumber) {
+        return versions.get(versionNumber);
     }
 
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setGroup(Group group) {
-        this.group = group;
-    }
-
-    public Group getGroup() {
-        return group;
-    }
-
-    public void setVersions(Map<Integer, DocumentVersion> versions) {
+    /* package */ void setVersions(Map<Integer, DocumentVersion> versions) {
         this.versions = versions;
     }
 
-    public Map<Integer, DocumentVersion> getVersions() {
+    /* package */ Map<Integer, DocumentVersion> getVersions() {
         return versions;
     }
 

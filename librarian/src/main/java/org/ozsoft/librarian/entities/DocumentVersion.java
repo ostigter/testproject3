@@ -2,27 +2,29 @@ package org.ozsoft.librarian.entities;
 
 import java.util.Date;
 
-public class DocumentVersion {
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+public class DocumentVersion extends BaseEntity {
     
-    private long id;
-    
+    private static final long serialVersionUID = -5157261270180628917L;
+
+    @Basic
     private int versionNumber;
     
-    private User author;
-    
+    @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
     
+    @Temporal(TemporalType.TIMESTAMP)
     private Date modificationDate;
 
+    @Enumerated(EnumType.STRING)
     private DocumentStatus status;
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public long getId() {
-        return id;
-    }
 
     public void setVersionNumber(int versionNumber) {
         this.versionNumber = versionNumber;
@@ -30,14 +32,6 @@ public class DocumentVersion {
 
     public int getVersionNumber() {
         return versionNumber;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public User getAuthor() {
-        return author;
     }
 
     public void setCreationDate(Date creationDate) {
