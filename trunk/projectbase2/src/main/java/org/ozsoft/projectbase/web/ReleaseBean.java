@@ -30,9 +30,9 @@ public class ReleaseBean implements Serializable {
     private Release release;
 
     private String name;
-    
+
     private Date date;
-    
+
     private String description;
 
     public void setProjectRepository(ProjectRepository projectRepository) {
@@ -68,22 +68,22 @@ public class ReleaseBean implements Serializable {
     }
 
     public Date getDate() {
-		return date;
-	}
+        return date;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Release getRelease() {
+    public Release getRelease() {
         return release;
     }
 
@@ -101,7 +101,7 @@ public class ReleaseBean implements Serializable {
         }
         return releases;
     }
-    
+
     public String add() {
         if (projectName != null && projectName.length() > 0) {
             project = projectRepository.retrieveByName(projectName);
@@ -109,7 +109,7 @@ public class ReleaseBean implements Serializable {
             release = null;
             name = "";
             date = new Date();
-            description= "";
+            description = "";
             return "editRelease.xhtml";
         } else {
             return "listReleases.xhtml";
@@ -130,7 +130,7 @@ public class ReleaseBean implements Serializable {
 
     public String save() {
         if (release == null) {
-        	release = new Release();
+            release = new Release();
             release.setProject(project);
             project.getReleases().add(release);
         }
@@ -143,8 +143,8 @@ public class ReleaseBean implements Serializable {
 
     public String delete() {
         if (release != null) {
-        	project.getReleases().remove(release);
-        	projectRepository.store(project);
+            project.getReleases().remove(release);
+            projectRepository.store(project);
         }
         return "listReleases.xhtml";
     }

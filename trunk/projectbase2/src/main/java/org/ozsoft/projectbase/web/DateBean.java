@@ -9,15 +9,15 @@ import javax.faces.bean.ManagedBean;
 @ManagedBean
 @ApplicationScoped
 public class DateBean {
-	
-	private final TimeZone timeZone;
-	
-	public DateBean() {
-		timeZone = new GregorianCalendar().getTimeZone();
-	}
-	
-	public TimeZone getTimeZone() {
-		return timeZone;
-	}
+
+    private final TimeZone timeZone;
+
+    public DateBean() {
+        timeZone = new GregorianCalendar().getTimeZone();
+    }
+
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
 
 }
