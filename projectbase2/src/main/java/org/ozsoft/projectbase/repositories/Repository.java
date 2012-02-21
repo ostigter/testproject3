@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.ozsoft.projectbase.entities.BaseEntity;
 
 public abstract class Repository<T extends BaseEntity> {
-    
+
     private static final Logger LOGGER = Logger.getLogger(Repository.class);
 
     protected final Class<T> entityClass;

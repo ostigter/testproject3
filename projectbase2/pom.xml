@@ -100,11 +100,6 @@
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
         <repository>
-            <id>dev.java.net</id>
-            <name>dev.java.net Maven2 repository</name>
-            <url>http://download.java.net/maven/2</url>
-        </repository>
-        <repository>
             <id>PrimeFaces</id>
             <url>http://repository.primefaces.org</url>
         </repository>

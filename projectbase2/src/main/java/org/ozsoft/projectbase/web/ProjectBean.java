@@ -14,102 +14,102 @@ import org.ozsoft.projectbase.repositories.ProjectRepository;
 @SessionScoped
 public class ProjectBean implements Serializable {
 
-	private static final long serialVersionUID = 4728584552025654369L;
+    private static final long serialVersionUID = 4728584552025654369L;
 
-	@ManagedProperty(value = "#{projectRepository}")
-	private ProjectRepository projectRepository;
+    @ManagedProperty(value = "#{projectRepository}")
+    private ProjectRepository projectRepository;
 
-	private String title;
+    private String title;
 
-	private Project project;
+    private Project project;
 
-	private String code;
+    private String code;
 
-	private String name;
-	
-	private String description;
+    private String name;
 
-	public void setProjectRepository(ProjectRepository projectRepository) {
-		this.projectRepository = projectRepository;
-	}
+    private String description;
 
-	public String getTitle() {
-		return title;
-	}
+    public void setProjectRepository(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
 
-	public Project getProject() {
-		return project;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
+    public Project getProject() {
+        return project;
+    }
 
-	public String getCode() {
-		return code;
-	}
+    public void setProject(Project project) {
+        this.project = project;
+    }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public List<Project> getProjects() {
-		return projectRepository.findAll();
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String add() {
-		title = "Add Project";
-		project = null;
-		code = "";
-		name = "";
-		description = "";
-		return "editProject.xhtml";
-	}
+    public List<Project> getProjects() {
+        return projectRepository.findAll();
+    }
 
-	public String edit() {
-		title = "Edit Project";
-		code = project.getCode();
-		name = project.getName();
-		description = project.getDescription();
-		return "editProject.xhtml";
-	}
+    public String add() {
+        title = "Add Project";
+        project = null;
+        code = "";
+        name = "";
+        description = "";
+        return "editProject.xhtml";
+    }
 
-	public String save() {
-		if (project == null) {
-			project = new Project();
-		}
-		project.setCode(code);
-		project.setName(name);
-		project.setDescription(description);
-		projectRepository.store(project);
-		return "listProjects.xhtml";
-	}
+    public String edit() {
+        title = "Edit Project";
+        code = project.getCode();
+        name = project.getName();
+        description = project.getDescription();
+        return "editProject.xhtml";
+    }
 
-	public String delete() {
-		if (project != null) {
-			projectRepository.delete(project);
-		}
-		return "listProjects.xhtml";
-	}
+    public String save() {
+        if (project == null) {
+            project = new Project();
+        }
+        project.setCode(code);
+        project.setName(name);
+        project.setDescription(description);
+        projectRepository.store(project);
+        return "listProjects.xhtml";
+    }
 
-	public String cancel() {
-		return "listProjects.xhtml";
-	}
+    public String delete() {
+        if (project != null) {
+            projectRepository.delete(project);
+        }
+        return "listProjects.xhtml";
+    }
+
+    public String cancel() {
+        return "listProjects.xhtml";
+    }
 
 }

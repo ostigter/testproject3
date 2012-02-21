@@ -15,10 +15,10 @@ public class Release extends BaseEntity {
 
     @ManyToOne
     private Project project;
-    
+
     @Temporal(TemporalType.DATE)
     private Date date;
-    
+
     @Basic
     private String description;
 
@@ -30,20 +30,20 @@ public class Release extends BaseEntity {
         this.project = project;
     }
 
-	public Date getDate() {
-		return date;
-	}
+    public Date getDate() {
+        return date;
+    }
 
-	public void setDate(Date date) {
-		this.date = date;
-	}
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 }
