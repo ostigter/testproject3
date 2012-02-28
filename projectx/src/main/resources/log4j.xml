@@ -24,6 +24,10 @@
         <level value="WARN" />
     </logger>
 
+    <logger name="com.mchange"> <!-- C3P0 -->
+        <level value="WARN"/>
+    </logger>
+    
     <root>
         <priority value="INFO" />
         <appender-ref ref="console" />
