@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 import org.ozsoft.photobook.entities.BaseEntity;
 
 public abstract class Repository<T extends BaseEntity> {
-    
+
     private static final Logger LOGGER = Logger.getLogger(Repository.class);
 
     protected final Class<T> entityClass;
@@ -19,8 +19,8 @@ public abstract class Repository<T extends BaseEntity> {
     protected final String className;
 
     protected final EntityManager em;
-    
-    private final Query findAllQuery; 
+
+    private final Query findAllQuery;
 
     protected Repository(Class<T> entityClass) {
         this.entityClass = entityClass;
@@ -28,7 +28,7 @@ public abstract class Repository<T extends BaseEntity> {
         if (p >= 0) {
             className = entityClass.getName().substring(p + 1);
         } else {
-        	className = entityClass.getName();
+            className = entityClass.getName();
         }
         em = PersistenceService.getEntityManager();
         findAllQuery = em.createQuery("SELECT e FROM " + className + " e", entityClass);
@@ -51,8 +51,8 @@ public abstract class Repository<T extends BaseEntity> {
     }
 
     @SuppressWarnings("unchecked")
-	public List<T> findAll() {
-    	return findAllQuery.getResultList();
+    public List<T> findAll() {
+        return findAllQuery.getResultList();
     }
 
     public T retrieveById(long id) {

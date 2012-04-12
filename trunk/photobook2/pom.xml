@@ -20,7 +20,7 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.6</java.version>
+        <java.version>1.7</java.version>
         <log4j.version>1.2.14</log4j.version>
         <commons-io.version>2.0.1</commons-io.version>
         <commons-fileupload.version>1.2.2</commons-fileupload.version>
@@ -119,11 +119,6 @@
         <repository>
             <id>JBoss</id>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>dev.java.net</id>
-            <name>dev.java.net Maven2 repository</name>
-            <url>http://download.java.net/maven/2</url>
         </repository>
         <repository>
             <id>PrimeFaces</id>

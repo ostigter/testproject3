@@ -14,16 +14,16 @@ public class Photo extends BaseEntity {
 
     @Basic(fetch = FetchType.LAZY)
     private byte[] content;
-    
+
     public byte[] getThumbnail() {
-		return thumbnail;
-	}
+        return thumbnail;
+    }
 
-	public void setThumbnail(byte[] thumbnail) {
-		this.thumbnail = thumbnail;
-	}
+    public void setThumbnail(byte[] thumbnail) {
+        this.thumbnail = thumbnail;
+    }
 
-	public byte[] getContent() {
+    public byte[] getContent() {
         return content;
     }
 
