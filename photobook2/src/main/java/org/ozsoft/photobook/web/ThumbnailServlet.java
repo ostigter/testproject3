@@ -17,45 +17,45 @@ import org.ozsoft.photobook.repositories.PersistenceService;
 
 public class ThumbnailServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 6280329522978416221L;
-	
-	private final EntityManager em;
-	
-	private final Query query;
-	
-	public ThumbnailServlet() {
-		em = PersistenceService.getEntityManager();
-		query = em.createQuery("SELECT p FROM Photo p WHERE p.id = :id");
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		String pathInfo = request.getPathInfo();
-		if (pathInfo != null) {
-			if (pathInfo.length() > 1 && pathInfo.charAt(0) == '/') {
-				try {
-					long photoId = Integer.parseInt(pathInfo.substring(1));
-					query.setParameter("id", photoId);
-					List<Photo> photos = query.getResultList();
-					if (photos.size() > 0) {
-						Photo photo = photos.get(0);
-						byte[] content = photo.getThumbnail();
-						response.setContentType("image/jpeg");
-						response.setContentLength(content.length);
-						InputStream is = new ByteArrayInputStream(content);
-						IOUtils.copy(is, response.getOutputStream());
-						IOUtils.closeQuietly(is);
-					} else {
-						response.sendError(HttpServletResponse.SC_NOT_FOUND);
-					}
-				} catch (NumberFormatException e) {
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-				}
-			}
-		} else {
-			response.sendError(HttpServletResponse.SC_NOT_FOUND);
-		}
-	}
-	
+    private static final long serialVersionUID = 6280329522978416221L;
+
+    private final EntityManager em;
+
+    private final Query query;
+
+    public ThumbnailServlet() {
+        em = PersistenceService.getEntityManager();
+        query = em.createQuery("SELECT p FROM Photo p WHERE p.id = :id");
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null) {
+            if (pathInfo.length() > 1 && pathInfo.charAt(0) == '/') {
+                try {
+                    long photoId = Integer.parseInt(pathInfo.substring(1));
+                    query.setParameter("id", photoId);
+                    List<Photo> photos = query.getResultList();
+                    if (photos.size() > 0) {
+                        Photo photo = photos.get(0);
+                        byte[] content = photo.getThumbnail();
+                        response.setContentType("image/jpeg");
+                        response.setContentLength(content.length);
+                        InputStream is = new ByteArrayInputStream(content);
+                        IOUtils.copy(is, response.getOutputStream());
+                        IOUtils.closeQuietly(is);
+                    } else {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    }
+                } catch (NumberFormatException e) {
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                }
+            }
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
 }
