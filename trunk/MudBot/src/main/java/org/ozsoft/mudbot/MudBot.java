@@ -1324,29 +1324,6 @@ public class MudBot implements TelnetListener {
         area.addIgnore("The decapitated head of");
         areas.add(area);
 
-        area = new Area("Raja Village");
-        area.toPath = new String[]{"raja"};
-        area.homePath = new String[]{"_raja"};
-        area.roomDescription = "You stand high above the forest floor at the entrance to the quaint,";
-        area.directions = new String[]{"n", "n", "s", "s", "se", "e", "s", "s", "sw", "se", "u", "sw", "se", "d", "u", "nw", "w", "w", "sw", "d", "u", "ne", "nw", "d", "ne", "sw", "u", "se", "e", "e", "ne", "d", "nw", "ne", "n", "n", "w", "nw"};
-        area.addMonster(new Monster("visitor", "visitor"));
-        area.addMonster(new Monster("nekonohito villager", "villager"));
-        area.addMonster(new Monster("nekonohito noble", "noble"));
-        area.addMonster(new Monster("nekonohito lady", "lady"));
-        area.addItem("gold coins");
-        area.addItem("A pass");
-        area.addItem("A noble's ");
-        area.addItem("A lady's ");
-        area.addIgnore("A sign");
-        area.addIgnore("Raja Village comment board");
-        area.addIgnore("nekonohito peddler");
-        area.addIgnore("A statue");
-        area.addIgnore("nekonohito guard");
-        area.addIgnore("mother");
-        area.addIgnore("nekonohito child");
-        area.addIgnore("The decapitated head of");
-        areas.add(area);
-        
         area = new Area("Oz'ikel Forest");
         area.toPath = new String[]{"orcs"};
         area.homePath = new String[]{"_orcs"};
@@ -1368,6 +1345,29 @@ public class MudBot implements TelnetListener {
         area.addIgnore("The decapitated head of");
         areas.add(area);
 
+//        area = new Area("Raja Village");
+//        area.toPath = new String[]{"raja"};
+//        area.homePath = new String[]{"_raja"};
+//        area.roomDescription = "You stand high above the forest floor at the entrance to the quaint,";
+//        area.directions = new String[]{"n", "n", "s", "s", "se", "e", "s", "s", "sw", "se", "u", "sw", "se", "d", "u", "nw", "w", "w", "sw", "d", "u", "ne", "nw", "d", "ne", "sw", "u", "se", "e", "e", "ne", "d", "nw", "ne", "n", "n", "w", "nw"};
+//        area.addMonster(new Monster("visitor", "visitor"));
+//        area.addMonster(new Monster("nekonohito villager", "villager"));
+//        area.addMonster(new Monster("nekonohito noble", "noble"));
+//        area.addMonster(new Monster("nekonohito lady", "lady"));
+//        area.addItem("gold coins");
+//        area.addItem("A pass");
+//        area.addItem("A noble's ");
+//        area.addItem("A lady's ");
+//        area.addIgnore("A sign");
+//        area.addIgnore("Raja Village comment board");
+//        area.addIgnore("nekonohito peddler");
+//        area.addIgnore("A statue");
+//        area.addIgnore("nekonohito guard");
+//        area.addIgnore("mother");
+//        area.addIgnore("nekonohito child");
+//        area.addIgnore("The decapitated head of");
+//        areas.add(area);
+//        
 //        area = new Area("Demon Outpost");
 //        area.toPath = new String[]{"outpost"};
 //        area.homePath = new String[]{"_outpost"};
