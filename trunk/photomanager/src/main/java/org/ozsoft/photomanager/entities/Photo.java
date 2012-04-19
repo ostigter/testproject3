@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,6 +25,10 @@ public class Photo extends BaseEntity {
     
     @Basic
     private String fileType;
+    
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] thumbnail;
     
     public int getWidth() {
         return width;
@@ -54,6 +60,14 @@ public class Photo extends BaseEntity {
 
     public void setFileType(String fileType) {
         this.fileType = fileType;
+    }
+
+    public byte[] getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(byte[] thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
 }
