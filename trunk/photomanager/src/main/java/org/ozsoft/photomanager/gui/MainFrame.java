@@ -27,7 +27,9 @@ public class MainFrame extends JFrame {
     
     private final PhotoService photoService;
 
-    private JButton uploadButton;
+    private final JButton uploadButton;
+    
+    private final PhotoPanel photoPanel;
 
     public MainFrame() {
         super("PhotoManager");
@@ -62,6 +64,18 @@ public class MainFrame extends JFrame {
         gbc.weighty = 1.0;
         gbc.insets = new Insets(10, 10, 10, 10);
         getContentPane().add(uploadButton, gbc);
+        
+        photoPanel = new PhotoPanel();
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        getContentPane().add(photoPanel, gbc);
 
         setSize(800, 600);
         setLocationRelativeTo(null);
@@ -84,6 +98,8 @@ public class MainFrame extends JFrame {
             album.setDate(new Date());
             photoService.storeAlbum(album);
             photoService.uploadPhotos(album, fileChooser.getSelectedFiles());
+            byte[] thumbnail = photoService.retrieveThumbnail(1L);
+            photoPanel.setPhoto(thumbnail);
         }
     }
 
