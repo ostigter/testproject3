@@ -35,8 +35,11 @@ import com.drew.metadata.jpeg.JpegDirectory;
 
 public class PhotoService {
 
-    /** Photo store on file system. */
+    /** Data directory. */
     private static final File DATA_DIR = new File("data");
+
+    /** Photo store on file system. */
+    private static final File ALBUM_ROOT = new File(DATA_DIR, "albums");
 
     /** Thumbnail width in pixels. */
     private static final int THUMBNAIL_WIDTH = 200;
@@ -129,7 +132,7 @@ public class PhotoService {
     }
 
     public void uploadPhotos(Album album, File[] files) {
-        File albumDir = new File(DATA_DIR, String.format("A%07d", album.getId()));
+        File albumDir = new File(ALBUM_ROOT, String.format("A%07d", album.getId()));
         albumDir.mkdirs();
         List<Photo> photos = album.getPhotos();
         for (File file : files) {
