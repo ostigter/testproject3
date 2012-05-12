@@ -1,0 +1,45 @@
+JobRunner
+=========
+
+
+class Job {
+    long getId()
+    JobState getState()
+    void execute() throws JobException
+}
+
+class JobException extends Exception {
+}
+
+enum JobState {
+    CREATED
+    SCHEDULED
+    RUNNING
+    COMPLETED
+    FAILED
+    ABORTED
+}
+
+class JobGroup extends Job {
+    void split(Set<Job> jobs) throws JobException
+    void aggregate()
+}
+
+class JobController extends Server {
+    <T extends Job> T createJob(Class<T> clazz) throws JobException
+    long scheduleJob(Job job) throws JobException
+    Job queryJob(long id) throws JobException
+    void abortJob(long id) throws JobException
+}
+
+class JobRunner extends Server {
+    executeJob(Job job) throws JobException
+    Job queryJob(long id) throws JobException
+    void abortJob(long id) throws JobException
+}
+
+class Server {
+    ServerState getState()
+    start()
+    stop()
+}
