@@ -71,7 +71,7 @@ public class TcpipClient {
 
     private static final String DEFAULT_HOST = "localhost";
 
-    private static final int DEFAULT_PORT = 3000;
+    private static final int DEFAULT_PORT = 5000;
 
     private static final int LINEFEED = 0x0a;
 
@@ -111,9 +111,9 @@ public class TcpipClient {
 
     private JButton connectDisconnectButton;
 
-    private JComboBox messagesComboBox;
+    private JComboBox<String> messagesComboBox;
 
-    private DefaultComboBoxModel messages;
+    private DefaultComboBoxModel<String> messages;
 
     private JButton sendButton;
 
@@ -219,11 +219,11 @@ public class TcpipClient {
         serverPanel.add(delimiterPanel, gbc);
 
         linefeedButton = new JRadioButton("LineFeed");
+        linefeedButton.setSelected(true);
         delimiterPanel.add(linefeedButton);
 
         stxEtxButton = new JRadioButton("STX/ETX");
         delimiterPanel.add(stxEtxButton, gbc);
-        stxEtxButton.setSelected(true);
 
         ButtonGroup delimiterButtonGroup = new ButtonGroup();
         delimiterButtonGroup.add(linefeedButton);
@@ -260,9 +260,9 @@ public class TcpipClient {
         gbc.insets = new Insets(5, 5, 5, 5);
         frame.getContentPane().add(sendPanel, gbc);
 
-        messages = new DefaultComboBoxModel();
+        messages = new DefaultComboBoxModel<String>();
 
-        messagesComboBox = new JComboBox(messages);
+        messagesComboBox = new JComboBox<String>(messages);
         messagesComboBox.setFont(CODE_FONT);
         messagesComboBox.setEditable(true);
         gbc.gridx = 0;
@@ -454,11 +454,7 @@ public class TcpipClient {
 
     private void log(String message) {
         String timestamp = DATE_FORMAT.format(new Date());
-
-        logText.append(String.format("%s %s", timestamp, message));
-        logText.append("\n");
-
-        // Force JTextArea to scroll down to last line.
+        logText.append(String.format("%s %s\n", timestamp, message));
         logText.setCaretPosition(logText.getText().length());
     }
 
