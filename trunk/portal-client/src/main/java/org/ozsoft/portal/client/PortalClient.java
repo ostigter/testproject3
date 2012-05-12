@@ -42,7 +42,7 @@ import org.ozsoft.timer.TimerListener;
 public class PortalClient implements TimerListener {
     
     /** Portal server URL. */
-    private static final String SERVER_URL = "http://localhost:8080/portal-server/";
+    private static final String SERVER_URL = "http://localhost:8080/portal/";
   
     /** Default Telnet host. */
     private static final String DEFAULT_HOST = "aod.mine.nu";
