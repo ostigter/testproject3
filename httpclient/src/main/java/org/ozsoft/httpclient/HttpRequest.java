@@ -1,7 +1,11 @@
 package org.ozsoft.httpclient;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * HTTP request.
@@ -19,31 +23,33 @@ public abstract class HttpRequest {
     /** The URL. */
     protected String url;
     
-    /** The request body. */
-    protected String body;
-    
     /* package */ HttpRequest(HttpClient client, String url) {
-        this(client, url, null);
-    }
-    
-    /* package */ HttpRequest(HttpClient client, String url, String body) {
         this.client = client;
         this.url = url;
-        this.body = body;
     }
     
     public String getUrl() {
         return url;
     }
     
-    public String getBody() {
-        return body;
-    }
-    
-    public void setBody(String body) {
-        this.body = body;
-    }
-    
     public abstract HttpResponse execute() throws MalformedURLException, IOException;
+    
+    protected String getResponseBody(int statusCode, HttpURLConnection con) {
+        String responseBody = null;
+        try {
+            InputStream is = null;
+            if (statusCode < 400) {
+                is = con.getInputStream();
+            } else {
+                is = con.getErrorStream();
+            }
+            if (is != null) {
+                responseBody = IOUtils.toString(is);
+            }
+        } catch (IOException e) {
+            System.err.println("ERROR: Could not read HTTP response body: " + e);
+        }
+        return responseBody;
+    }
 
 }
