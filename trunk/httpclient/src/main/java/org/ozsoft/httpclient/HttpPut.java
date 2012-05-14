@@ -10,17 +10,16 @@ import java.net.URL;
 import org.apache.commons.io.IOUtils;
 
 /**
- * HTTP POST request.
+ * HTTP PUT request.
  * 
  * @author Oscar Stigter
  */
-public class HttpPost extends HttpRequest {
+public class HttpPut extends HttpRequest {
     
     private final InputStream body;
 
     /**
-     * Constructs an HTTP POST request with a <code>String</code> as request
-     * body.
+     * Constructs an HTTP PUT request.
      * 
      * @param client
      *            The HTTP client.
@@ -29,22 +28,7 @@ public class HttpPost extends HttpRequest {
      * @param body
      *            The request body.
      */
-    HttpPost(HttpClient client, String url, String body) {
-        this(client, url, IOUtils.toInputStream(body));
-    }
-
-    /**
-     * Constructs an HTTP POST request with an <code>InputStream</code> as request
-     * body.
-     * 
-     * @param client
-     *            The HTTP client.
-     * @param url
-     *            The URL.
-     * @param body
-     *            The request body.
-     */
-    HttpPost(HttpClient client, String url, InputStream body) {
+    HttpPut(HttpClient client, String url, InputStream body) {
         super(client, url);
         this.body = body;
     }
@@ -59,7 +43,7 @@ public class HttpPost extends HttpRequest {
         client.updateProxySettings();
         URL url = new URL(this.url);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestMethod("POST");
+        con.setRequestMethod("PUT");
         con.setConnectTimeout(TIMEOUT);
         con.setReadTimeout(TIMEOUT);
         con.setDoOutput(true);

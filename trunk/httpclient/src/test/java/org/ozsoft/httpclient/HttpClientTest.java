@@ -2,10 +2,6 @@ package org.ozsoft.httpclient;
 
 import java.io.IOException;
 
-import org.ozsoft.httpclient.HttpClient;
-import org.ozsoft.httpclient.HttpRequest;
-import org.ozsoft.httpclient.HttpResponse;
-
 /**
  * Test driver for the HttpClient library.
  * 
@@ -21,9 +17,15 @@ public class HttpClientTest {
 //        client.setProxyUsername("");
 //        client.setProxyPassword("");
         
-        String url = "http://localhost:8080/portal-server/";
+        String url = "http://www.google.com/";
+//        String url = "http://localhost:8080/portal/";
+//        InputStream body = IOUtils.toInputStream("STATUS");
+//        HttpRequest request = client.createOptionsRequest(url);
+//        HttpRequest request = client.createHeadRequest(url);
         HttpRequest request = client.createGetRequest(url);
-//        HttpRequest request = client.createPostRequest(url, "STATUS");
+//        HttpRequest request = client.createPostRequest(url, body);
+//        HttpRequest request = client.createPutRequest(url, body);
+//        HttpRequest request = client.createDeleteRequest(url);
         try {
             HttpResponse response = request.execute();
             System.out.println(response.getStatusCode() + " " + response.getStatusMessage());

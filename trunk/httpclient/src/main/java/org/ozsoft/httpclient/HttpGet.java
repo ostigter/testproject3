@@ -5,8 +5,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  * HTTP GET request.
  * 
@@ -36,20 +34,12 @@ public class HttpGet extends HttpRequest {
         client.updateProxySettings();
         URL url = new URL(this.url);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
         con.setConnectTimeout(TIMEOUT);
         con.setReadTimeout(TIMEOUT);
         int statusCode = con.getResponseCode();
         String statusMessage = con.getResponseMessage();
-        String responseBody = null;
-        if (statusCode < 400) {
-            responseBody = IOUtils.toString(con.getInputStream());
-        } else {
-            try {
-                responseBody = IOUtils.toString(con.getErrorStream());
-            } catch (IOException e) {
-                // No error message available; aafe to ignore.
-            }
-        }
+        String responseBody = getResponseBody(statusCode, con);
         con.disconnect();
         return new HttpResponse(statusCode, statusMessage, responseBody);
     }

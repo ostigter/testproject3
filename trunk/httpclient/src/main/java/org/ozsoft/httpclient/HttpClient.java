@@ -1,5 +1,6 @@
 package org.ozsoft.httpclient;
 
+import java.io.InputStream;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.util.Properties;
@@ -94,6 +95,30 @@ public class HttpClient {
     }
 
     /**
+     * Creates and returns an HTTP OPTIONS request.
+     * 
+     * @param url
+     *            The URL.
+     * 
+     * @return The OPTIONS request.
+     */
+    public HttpRequest createOptionsRequest(String url) {
+        return new HttpOptions(this, url);
+    }
+
+    /**
+     * Creates and returns an HTTP HEAD request.
+     * 
+     * @param url
+     *            The URL.
+     * 
+     * @return The HEAD request.
+     */
+    public HttpRequest createHeadRequest(String url) {
+        return new HttpHead(this, url);
+    }
+
+    /**
      * Creates and returns an HTTP GET request.
      * 
      * @param url
@@ -115,8 +140,32 @@ public class HttpClient {
      * 
      * @return The POST request.
      */
-    public HttpRequest createPostRequest(String url, String body) {
+    public HttpRequest createPostRequest(String url, InputStream body) {
         return new HttpPost(this, url, body);
+    }
+
+    /**
+     * Creates and returns an HTTP PUT request.
+     * 
+     * @param url
+     *            The URL.
+     * 
+     * @return The DELETE request.
+     */
+    public HttpRequest createPutRequest(String url, InputStream body) {
+        return new HttpPut(this, url, body);
+    }
+
+    /**
+     * Creates and returns an HTTP DELETE request.
+     * 
+     * @param url
+     *            The URL.
+     * 
+     * @return The DELETE request.
+     */
+    public HttpRequest createDeleteRequest(String url) {
+        return new HttpDelete(this, url);
     }
 
     /**

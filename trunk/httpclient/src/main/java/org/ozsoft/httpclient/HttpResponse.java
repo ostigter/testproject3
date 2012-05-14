@@ -7,11 +7,11 @@ package org.ozsoft.httpclient;
  */
 public class HttpResponse {
     
-    private int statusCode;
+    private final int statusCode;
     
-    private String statusMessage;
+    private final String statusMessage;
     
-    private String body;
+    private final String body;
     
     /* package */ HttpResponse(int statusCode, String statusMessage, String body) {
         this.statusCode = statusCode;
