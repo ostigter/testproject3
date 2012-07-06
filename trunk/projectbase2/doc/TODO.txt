@@ -1,14 +1,20 @@
 ProjectBase TODO
 ================
 
-* Release date
-* Release version number
 * Sprints
 * Stories
+* Features
 * Requirements
+* Test cases
 * Tasks
+* Traceability
 * Nested stories/requirements/tasks
+* Defects
 * Change requests
-* Bug reports
-* Tests
-* Effort
+* Remaining effort
+* Versioning
+* Reviews
+* Document generation
+* Reports
+* User management
+* Import/export
