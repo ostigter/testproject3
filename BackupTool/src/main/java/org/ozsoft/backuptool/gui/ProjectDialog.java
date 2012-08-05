@@ -52,13 +52,11 @@ public class ProjectDialog extends Dialog {
     
     private static final Font MONOSPACED_FONT = new Font("Monospaced", Font.PLAIN, 14);
     
-//    private final boolean editMode;
-    
     private JTextField nameTextField;
     
-    private DefaultListModel sourceFolders; 
+    private DefaultListModel<String> sourceFolders; 
     
-    private JList sourceFolderList;
+    private JList<String> sourceFolderList;
     
     private JButton addButton;
     
@@ -144,8 +142,8 @@ public class ProjectDialog extends Dialog {
         JPanel sourceFolderPanel = new JPanel(new GridBagLayout());
         sourceFolderPanel.setBorder(new TitledBorder("Source folders"));
         
-        sourceFolders = new DefaultListModel();
-        sourceFolderList = new JList(sourceFolders);
+        sourceFolders = new DefaultListModel<String>();
+        sourceFolderList = new JList<String>(sourceFolders);
         sourceFolderList.setBorder(new EtchedBorder());
         sourceFolderList.setFont(MONOSPACED_FONT);
         sourceFolderList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

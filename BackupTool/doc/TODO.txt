@@ -1,6 +1,7 @@
 TODO
 ====
 
+- Bug fixing (unit tests sometimes fail!)
 - Apache Commons IO
 - Scan files for changes
 - View backup (list files and versions)
