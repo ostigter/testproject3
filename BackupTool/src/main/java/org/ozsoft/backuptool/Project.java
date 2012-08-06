@@ -46,7 +46,7 @@ import java.util.TreeMap;
 public class Project {
     
     /** Size of the file buffer. */
-    private static final int BUFFER_SIZE = 8192;
+    private static final int BUFFER_SIZE = 4096;
     
     /** Project name. */
     private final String name;
@@ -205,6 +205,13 @@ public class Project {
             closeArchiveFile();
             writeIndexFile();
         }
+        
+        //FIXME: Get rid of required delay!
+        try {
+			Thread.sleep(10L);
+		} catch (InterruptedException e) {
+			// Safe to ignore.
+		}
     }
     
     /**
