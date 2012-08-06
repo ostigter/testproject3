@@ -18,8 +18,6 @@ package org.ozsoft.backup;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +31,6 @@ import org.junit.Test;
 import org.ozsoft.backup.util.FileHelper;
 import org.ozsoft.backuptool.Backup;
 import org.ozsoft.backuptool.BackupFile;
-import org.ozsoft.backuptool.BackupFileVersion;
 import org.ozsoft.backuptool.Project;
 
 /**
@@ -44,7 +41,9 @@ import org.ozsoft.backuptool.Project;
 public class ProjectTest {
     
     /** Temporary test directory. */
-    private static final String TEST_DIR = "target/test"; 
+    private static final String TEST_DIR = "target/test";
+    
+//    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     
     /**
      * Sets up the environment before any test is run.
@@ -73,11 +72,63 @@ public class ProjectTest {
         FileHelper.cleanDir(new File(TEST_DIR));
     }
     
+    @Test
+    public void singleFile() throws IOException {
+        Project project = new Project("Project1");
+        Set<String> sourceFolders = new HashSet<String>();
+        sourceFolders.add(TEST_DIR + "/folder1");
+        project.setSourceFolders(sourceFolders);
+        project.setDestinationFolder(TEST_DIR + "/backup");
+        
+        File folder1 = new File(TEST_DIR, "folder1");
+        folder1.mkdir();
+        
+        FileHelper.writeTextFile(new File(folder1, "test.txt"), "v1");
+        project.createBackup();
+
+        FileHelper.writeTextFile(new File(folder1, "test.txt"), "v2");
+        project.createBackup();
+
+        FileHelper.writeTextFile(new File(folder1, "test.txt"), "v3");
+        project.createBackup();
+
+        FileHelper.writeTextFile(new File(folder1, "test.txt"), "v4");
+        project.createBackup();
+
+//        printBackups(project);
+        
+        File file = new File(folder1, "test.txt");
+        file.delete();
+        project.restoreFile(file.getAbsolutePath(), -1);
+        Assert.assertTrue("File not restored", file.exists());
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("v4"));
+
+        file.delete();
+        project.restoreFile(file.getAbsolutePath(), 4);
+        Assert.assertTrue("File not restored", file.exists());
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("v4"));
+
+        file.delete();
+        project.restoreFile(file.getAbsolutePath(), 3);
+        Assert.assertTrue("File not restored", file.exists());
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("v3"));
+
+        file.delete();
+        project.restoreFile(file.getAbsolutePath(), 2);
+        Assert.assertTrue("File not restored", file.exists());
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("v2"));
+
+        file.delete();
+        project.restoreFile(file.getAbsolutePath(), 1);
+        Assert.assertTrue("File not restored", file.exists());
+        Assert.assertTrue(FileHelper.readTextFile(file).contains("v1"));
+    }
+    
     /**
      * Tests creating and restoring backups.
      */
     @Test
-    public void backup() throws IOException {
+    public void multipleFiles() throws IOException {
         Project project = new Project("Project1");
         Set<String> sourceFolders = new HashSet<String>();
         sourceFolders.add(TEST_DIR + "/folder1");
@@ -121,19 +172,7 @@ public class ProjectTest {
         // Create backup with ID 4 (no changes).
         project.createBackup();
         
-        // Test backups.
-        backups = project.getBackups();
-        Assert.assertEquals(4, backups.length);
-        backupFiles = project.getBackupFiles();
-        Assert.assertEquals(4, backupFiles.size());
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        for (BackupFile file : backupFiles.values()) {
-            System.out.println(file);
-            for (BackupFileVersion version : file.getVersions()) {
-                System.out.format("  %s, %s, %d, %d\n",
-                        version.getBackupId(), dateFormat.format(version.getDate()), version.getOffset(), version.getLength());
-            }
-        }
+//        printBackups(project);
         
         // Delete all files.
         FileHelper.deleteFile(folder1);
@@ -181,5 +220,17 @@ public class ProjectTest {
         backups = project.getBackups();
         Assert.assertEquals(0, backups.length);
     }
+    
+//    private static void printBackups(Project project) {
+//        Backup[] backups = project.getBackups();
+//        Map<String, BackupFile>backupFiles = project.getBackupFiles();
+//        for (BackupFile file : backupFiles.values()) {
+//            System.out.println(file);
+//            for (BackupFileVersion version : file.getVersions()) {
+//                System.out.format("  %s, %s, %d, %d\n",
+//                        version.getBackupId(), DATE_FORMAT.format(version.getDate()), version.getOffset(), version.getLength());
+//            }
+//        }
+//    }
     
 }
