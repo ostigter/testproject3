@@ -1,5 +1,6 @@
 package org.ozsoft.photomanager.entities;
 
+import java.sql.Blob;
 import java.util.Date;
 
 import javax.persistence.Basic;
@@ -29,6 +30,10 @@ public class Photo extends BaseEntity {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] thumbnail;
+    
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private Blob content;
     
     public int getWidth() {
         return width;
@@ -69,5 +74,13 @@ public class Photo extends BaseEntity {
     public void setThumbnail(byte[] thumbnail) {
         this.thumbnail = thumbnail;
     }
+
+	public Blob getContent() {
+		return content;
+	}
+
+	public void setContent(Blob content) {
+		this.content = content;
+	}
 
 }

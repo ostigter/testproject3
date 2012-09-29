@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 
 /**
  * Singleton with the ORM entity manager.
@@ -16,12 +17,15 @@ public class PersistenceService {
     /** Persistency unit name. */
     private static final String PU_NAME = "photomanagerPU";
 
-    /** Entity manager. */
-    private static final EntityManager entityManager;
-    
     /** Logger. */
     private static final Logger LOGGER = Logger.getLogger(PersistenceService.class);
 
+    /** Entity manager. */
+    private static final EntityManager entityManager;
+    
+    /** JPA session. */
+    private static final Session session;
+    
     /**
      * Static initializer.
      * 
@@ -31,6 +35,7 @@ public class PersistenceService {
         LOGGER.debug("Creating entity manager");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
         entityManager = emf.createEntityManager();
+        session = entityManager.unwrap(Session.class);
     }
 
     /**
@@ -40,6 +45,10 @@ public class PersistenceService {
      */
     public static EntityManager getEntityManager() {
         return entityManager;
+    }
+
+    public static Session getSession() {
+        return session;
     }
 
 }
