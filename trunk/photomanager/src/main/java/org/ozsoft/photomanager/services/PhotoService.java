@@ -4,14 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +21,7 @@ import javax.persistence.PersistenceException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.ozsoft.photomanager.entities.Album;
 import org.ozsoft.photomanager.entities.Photo;
 
@@ -34,12 +34,6 @@ import com.drew.metadata.exif.ExifDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
 
 public class PhotoService {
-
-    /** Data directory. */
-    private static final File DATA_DIR = new File("data");
-
-    /** Photo store on file system. */
-    private static final File ALBUM_ROOT = new File(DATA_DIR, "albums");
 
     /** Thumbnail width in pixels. */
     private static final int THUMBNAIL_WIDTH = 200;
@@ -131,17 +125,6 @@ public class PhotoService {
         return em.find(Photo.class, id);
     }
 
-    public void uploadPhotos(Album album, File[] files) {
-        File albumDir = new File(ALBUM_ROOT, String.format("A%07d", album.getId()));
-        albumDir.mkdirs();
-        List<Photo> photos = album.getPhotos();
-        for (File file : files) {
-            Photo photo = uploadPhoto(file, albumDir);
-            photos.add(photo);
-        }
-        storeAlbum(album);
-    }
-    
     public byte[] retrieveThumbnail(long id) {
         byte[] thumbnail = null;
         Photo photo = retrievePhoto(id);
@@ -150,8 +133,35 @@ public class PhotoService {
         }
         return thumbnail;
     }
+    
+    public InputStream retrieveContent(long id) {
+    	InputStream is = null;
+        Photo photo = retrievePhoto(id);
+        if (photo != null) {
+	        Session session = PersistenceService.getSession();
+	        session.refresh(photo);
+            Blob blob = photo.getContent();
+            if (blob != null) {
+                try {
+					is = blob.getBinaryStream();
+				} catch (SQLException e) {
+		            LOGGER.error(String.format("Could not retrieve content of photo [%d]\n", id));
+				}
+            }
+        }
+    	return is;
+    }
 
-    private Photo uploadPhoto(File sourceFile, File albumDir) {
+    public void uploadPhotos(Album album, File[] files) {
+        List<Photo> photos = album.getPhotos();
+        for (File file : files) {
+            Photo photo = uploadPhoto(file);
+            photos.add(photo);
+        }
+        storeAlbum(album);
+    }
+    
+    private Photo uploadPhoto(File sourceFile) {
         LOGGER.debug(String.format("Upload photo from file '%s'", sourceFile.getAbsolutePath()));
         InputStream is = null;
         Photo photo = null;
@@ -208,22 +218,10 @@ public class PhotoService {
                     photo.setFileType(extension);
                     storePhoto(photo);
 
-                    File destFile = new File(albumDir, String.format("P%07d.%s", photo.getId(), extension));
-                    LOGGER.debug(String.format("Storing photo content as '%s'", destFile));
-                    OutputStream os = null;
-                    try {
-                        is = new BufferedInputStream(new FileInputStream(sourceFile));
-                        os = new BufferedOutputStream(new FileOutputStream(destFile));
-                        IOUtils.copy(is, os);
-                    } catch (IOException e) {
-                        LOGGER.error("Error storing photo content", e);
-                    } finally {
-                        IOUtils.closeQuietly(is);
-                        IOUtils.closeQuietly(os);
-                    }
-
-                    storeThumbnail(destFile, photo);
-
+                    storeThumbnail(sourceFile, photo);
+                    
+                    storeContent(sourceFile, photo);
+                    
                 } catch (MetadataException e1) {
                     LOGGER.error(e1);
                 }
@@ -255,11 +253,30 @@ public class PhotoService {
             ImageIO.write(thumbnail, "jpg", baos);
             photo.setThumbnail(baos.toByteArray());
             baos.close();
+            LOGGER.debug("Storing thumbnail of photo " + photo.getId());
             storePhoto(photo);
         } catch (IOException e) {
             LOGGER.error("Could not create thumbnail of photo " + photoFile, e);
         }
-
+    }
+    
+    private void storeContent(File file, Photo photo) {
+    	long id = photo.getId();
+        LOGGER.debug("Storing content of photo " + id);
+    	InputStream is = null;
+    	try {
+			is = new BufferedInputStream(new FileInputStream(file));
+	        Session session = PersistenceService.getSession();
+	        session.refresh(photo);
+            Blob blob = session.getLobHelper().createBlob(is, is.available());
+            photo.setContent(blob);
+            storePhoto(photo);
+		} catch (IOException e) {
+            LOGGER.error("Could not store content of photo " + id);
+		} finally {
+			IOUtils.closeQuietly(is);
+		}
+    	
     }
 
 }
