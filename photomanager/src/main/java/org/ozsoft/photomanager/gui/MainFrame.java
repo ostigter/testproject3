@@ -26,11 +26,11 @@ public class MainFrame extends JFrame {
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
     
     private final PhotoService photoService;
-
+    
     private final JButton uploadButton;
     
-    private final PhotoPanel photoPanel;
-
+    private final AlbumIcon albumIcon;
+    
     public MainFrame() {
         super("PhotoManager");
         
@@ -60,23 +60,23 @@ public class MainFrame extends JFrame {
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.NORTH;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 10, 10, 10);
         getContentPane().add(uploadButton, gbc);
         
-        photoPanel = new PhotoPanel();
+        albumIcon = new AlbumIcon();
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.insets = new Insets(10, 10, 10, 10);
-        getContentPane().add(photoPanel, gbc);
-
+        getContentPane().add(albumIcon, gbc);
+        
         setSize(800, 600);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -98,8 +98,7 @@ public class MainFrame extends JFrame {
             album.setDate(new Date());
             photoService.storeAlbum(album);
             photoService.uploadPhotos(album, fileChooser.getSelectedFiles());
-            byte[] thumbnail = photoService.retrieveThumbnail(1L);
-            photoPanel.setPhoto(thumbnail);
+            albumIcon.setAlbum(album);
         }
     }
 

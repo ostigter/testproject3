@@ -158,11 +158,17 @@ public class PhotoService {
             Photo photo = uploadPhoto(file);
             photos.add(photo);
         }
+
+        // In no album cover photo set, use first photo.
+        if (album.getCoverPhoto() == null && !photos.isEmpty()) {
+            album.setCoverPhoto(photos.get(0));
+        }
+        
         storeAlbum(album);
     }
     
     private Photo uploadPhoto(File sourceFile) {
-        LOGGER.debug(String.format("Upload photo from file '%s'", sourceFile.getAbsolutePath()));
+        LOGGER.debug(String.format("Store photo from file '%s'", sourceFile.getAbsolutePath()));
         InputStream is = null;
         Photo photo = null;
         try {
@@ -176,7 +182,7 @@ public class PhotoService {
                 if (p >= 0) {
                     extension = sourceFile.getName().substring(p + 1).toLowerCase();
                 } else {
-                    LOGGER.warn("Uploading image file without extension: " + sourceFile.getAbsolutePath());
+                    LOGGER.warn("Storing image file without extension: " + sourceFile.getAbsolutePath());
                     extension = "jpg";
                 }
                 Metadata metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(new FileInputStream(sourceFile)));
