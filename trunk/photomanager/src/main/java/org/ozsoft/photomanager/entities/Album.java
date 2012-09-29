@@ -6,7 +6,9 @@ import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,6 +25,9 @@ public class Album extends BaseEntity {
     
     @OneToMany
     private List<Photo> photos;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    private Photo coverPhoto;
     
     public Album() {
         setPhotos(new ArrayList<Photo>());
@@ -50,6 +55,14 @@ public class Album extends BaseEntity {
 
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
+    }
+
+    public Photo getCoverPhoto() {
+        return coverPhoto;
+    }
+
+    public void setCoverPhoto(Photo coverPhoto) {
+        this.coverPhoto = coverPhoto;
     }
     
 }
