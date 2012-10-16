@@ -133,23 +133,23 @@ public class PhotoService {
         }
         return thumbnail;
     }
-    
+
     public InputStream retrieveContent(long id) {
-    	InputStream is = null;
+        InputStream is = null;
         Photo photo = retrievePhoto(id);
         if (photo != null) {
-	        Session session = PersistenceService.getSession();
-	        session.refresh(photo);
+            Session session = PersistenceService.getSession();
+            session.refresh(photo);
             Blob blob = photo.getContent();
             if (blob != null) {
                 try {
-					is = blob.getBinaryStream();
-				} catch (SQLException e) {
-		            LOGGER.error(String.format("Could not retrieve content of photo [%d]\n", id));
-				}
+                    is = blob.getBinaryStream();
+                } catch (SQLException e) {
+                    LOGGER.error(String.format("Could not retrieve content of photo [%d]\n", id));
+                }
             }
         }
-    	return is;
+        return is;
     }
 
     public void uploadPhotos(Album album, File[] files) {
@@ -163,10 +163,10 @@ public class PhotoService {
         if (album.getCoverPhoto() == null && !photos.isEmpty()) {
             album.setCoverPhoto(photos.get(0));
         }
-        
+
         storeAlbum(album);
     }
-    
+
     private Photo uploadPhoto(File sourceFile) {
         LOGGER.debug(String.format("Store photo from file '%s'", sourceFile.getAbsolutePath()));
         InputStream is = null;
@@ -225,9 +225,9 @@ public class PhotoService {
                     storePhoto(photo);
 
                     storeThumbnail(sourceFile, photo);
-                    
+
                     storeContent(sourceFile, photo);
-                    
+
                 } catch (MetadataException e1) {
                     LOGGER.error(e1);
                 }
@@ -265,24 +265,24 @@ public class PhotoService {
             LOGGER.error("Could not create thumbnail of photo " + photoFile, e);
         }
     }
-    
+
     private void storeContent(File file, Photo photo) {
-    	long id = photo.getId();
+        long id = photo.getId();
         LOGGER.debug("Storing content of photo " + id);
-    	InputStream is = null;
-    	try {
-			is = new BufferedInputStream(new FileInputStream(file));
-	        Session session = PersistenceService.getSession();
-	        session.refresh(photo);
+        InputStream is = null;
+        try {
+            is = new BufferedInputStream(new FileInputStream(file));
+            Session session = PersistenceService.getSession();
+            session.refresh(photo);
             Blob blob = session.getLobHelper().createBlob(is, is.available());
             photo.setContent(blob);
             storePhoto(photo);
-		} catch (IOException e) {
+        } catch (IOException e) {
             LOGGER.error("Could not store content of photo " + id);
-		} finally {
-			IOUtils.closeQuietly(is);
-		}
-    	
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+
     }
 
 }

@@ -1,19 +1,14 @@
 package org.ozsoft.photomanager.gui;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -90,14 +85,7 @@ public class AlbumIcon extends JPanel implements MouseListener {
     public void setAlbum(Album album) {
         Photo coverPhoto = album.getCoverPhoto();
         if (coverPhoto != null) {
-            // Use album's cover photo.
-            try {
-                BufferedImage image = ImageIO.read(new ByteArrayInputStream(coverPhoto.getThumbnail()));
-                thumbnailLabel.setIcon(new ImageIcon(image));
-                setSize(new Dimension(image.getWidth(), image.getHeight()));
-            } catch (IOException e) {
-                System.err.println("ERROR: Could not set ImageItem for album");
-            }
+            thumbnailLabel.setIcon(new ImageIcon(coverPhoto.getThumbnail()));
         } else {
             // No cover photo set; use placeholder icon.
             //TODO: Use placeholder album icon.

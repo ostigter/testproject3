@@ -22,20 +22,20 @@ import org.ozsoft.photomanager.services.PhotoService;
 public class MainFrame extends JFrame {
 
     private static final long serialVersionUID = 5613649607058463832L;
-    
+
     private static final Logger LOGGER = Logger.getLogger(MainFrame.class);
-    
+
     private final PhotoService photoService;
-    
+
     private final JButton uploadButton;
-    
+
     private final AlbumIcon albumIcon;
-    
+
     public MainFrame() {
         super("PhotoManager");
-        
+
         photoService = new PhotoService();
-        
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override
@@ -44,7 +44,7 @@ public class MainFrame extends JFrame {
             }
         });
         getContentPane().setLayout(new GridBagLayout());
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
 
         uploadButton = new JButton("Upload Photos");
@@ -64,7 +64,7 @@ public class MainFrame extends JFrame {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 10, 10, 10);
         getContentPane().add(uploadButton, gbc);
-        
+
         albumIcon = new AlbumIcon();
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -76,11 +76,11 @@ public class MainFrame extends JFrame {
         gbc.weighty = 1.0;
         gbc.insets = new Insets(10, 10, 10, 10);
         getContentPane().add(albumIcon, gbc);
-        
+
         setSize(800, 600);
         setLocationRelativeTo(null);
         setVisible(true);
-        
+
         LOGGER.info("Started");
     }
 
@@ -90,8 +90,8 @@ public class MainFrame extends JFrame {
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(true);
-        //TODO: Remember recently used directory.
-        fileChooser.setCurrentDirectory(new File("D:/Pictures"));
+        // TODO: Remember recently used directory.
+        fileChooser.setCurrentDirectory(new File("."));
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             Album album = new Album();
             album.setName("Test album");
