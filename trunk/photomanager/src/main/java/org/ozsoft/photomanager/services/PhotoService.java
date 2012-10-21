@@ -36,7 +36,7 @@ import com.drew.metadata.jpeg.JpegDirectory;
 public class PhotoService {
 
     /** Thumbnail width in pixels. */
-    private static final int THUMBNAIL_WIDTH = 200;
+    private static final int THUMBNAIL_WIDTH = 150;
 
     /** Logger. */
     private static final Logger LOGGER = Logger.getLogger(PhotoService.class);

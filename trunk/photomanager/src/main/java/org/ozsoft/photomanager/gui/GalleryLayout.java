@@ -9,23 +9,40 @@ public class GalleryLayout implements LayoutManager {
     
     @Override
     public void layoutContainer(Container container) {
-        container.setLocation(0, 0);
-        int maxWidth = container.getWidth();
+        int totalWidth = container.getParent().getWidth();
+        int totalHeight = 0;
+        int rowHeight = 0;
         int x = 0;
         int y = 0;
+        boolean newRow = false;
         for (Component component : container.getComponents()) {
             Dimension size = component.getPreferredSize();
             int width = (int) Math.floor(size.getWidth());
             int height = (int) Math.floor(size.getHeight());
-            if ((x + width) > maxWidth) {
-                x = 0;
-                y += height;
-                component.setBounds(x, y, width, height);
-            } else {
+            if ((x + width) < totalWidth) {
+                // Component fits on current row.
                 component.setBounds(x, y, width, height);
                 x += width;
+                if (newRow) {
+                    totalHeight += rowHeight;
+                    newRow = false;
+                }
+            } else {
+                // Add component to new row.
+                newRow = true;
+                x = 0;
+                y += rowHeight;
+                totalHeight += rowHeight;
+                component.setBounds(x, y, width, height);
+            }
+            if (height > rowHeight) {
+                rowHeight = height;
             }
         }
+        if (!newRow) {
+            totalHeight += rowHeight;
+        }
+        container.setPreferredSize(new Dimension(totalWidth, totalHeight));
     }
 
     @Override
