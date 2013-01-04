@@ -24,7 +24,7 @@ public class NewPasswordDialog extends Dialog {
     private JButton cancelButton;
     
     public NewPasswordDialog(JFrame parent) {
-        super(parent);
+        super(parent, "Set password");
     }
     
     public String getPassword() {
@@ -114,6 +114,8 @@ public class NewPasswordDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.insets = new Insets(5, 5, 10, 10);
         getContentPane().add(cancelButton, gbc);
+        
+        getRootPane().setDefaultButton(okButton);
     }
 
     @Override
