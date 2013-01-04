@@ -22,7 +22,7 @@ public class RequestPasswordDialog extends Dialog {
     private JButton cancelButton;
     
     public RequestPasswordDialog(JFrame parent) {
-        super(parent);
+        super(parent, "Enter password");
     }
     
     public String getPassword() {
@@ -88,6 +88,8 @@ public class RequestPasswordDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.insets = new Insets(5, 5, 10, 10);
         getContentPane().add(cancelButton, gbc);
+        
+        getRootPane().setDefaultButton(okButton);
     }
 
     @Override

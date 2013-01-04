@@ -4,34 +4,37 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.InputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
+import org.apache.commons.io.IOUtils;
 import org.ozsoft.encryption.EncryptionException;
 import org.ozsoft.encryption.Encryptor;
 
-public class Vault {
+public class Main {
     
     private static final String APPLICATION_TITLE = "Vault";
     
-    private static final int WIDTH = 400;
+    private static final int WIDTH = 800;
 
-    private static final int HEIGHT = 300;
+    private static final int HEIGHT = 600;
 
     private static final File DATA_FILE = new File("vault.dat");
     
-    private static final String FILE_HEADER = "XXXXXXXXXXXXXXXXXXXX";
+    private static final String HEADER = "XXXXXXXXXXXXXXXXXXXX";
     
     private JFrame frame;
     
@@ -42,12 +45,14 @@ public class Vault {
     private Encryptor encryptor;
     
     private boolean isKeySet = false;
+    
+    private boolean isModified = false;
 
     public static void main(String[] args) {
-        new Vault();
+        new Main();
     }
     
-    public Vault() {
+    public Main() {
         initUI();
         passwordDialog = new NewPasswordDialog(frame);
         try {
@@ -71,6 +76,22 @@ public class Vault {
 
         textArea = new JTextArea();
         textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        textArea.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                isModified = true;
+            }
+            
+            @Override
+            public void insertUpdate(DocumentEvent arg0) {
+                isModified = true;
+            }
+            
+            @Override
+            public void removeUpdate(DocumentEvent arg0) {
+                isModified = true;
+            }
+        });
         frame.getContentPane().add(BorderLayout.CENTER, new JScrollPane(textArea));
         
         frame.setSize(WIDTH, HEIGHT);
@@ -80,25 +101,26 @@ public class Vault {
     
     private void load() {
         if (DATA_FILE.isFile()) {
-            // Read encrypted file header.
-            String cipherHeader = null;
+            DataInputStream dis = null;
             try {
-                Reader reader = new BufferedReader(new FileReader(DATA_FILE));
-                char[] buffer = new char[FILE_HEADER.length()];
-                reader.read(buffer);
-                reader.close();
-                cipherHeader = new String(buffer);
-                
-                // Check password using file header.
+                dis = new DataInputStream(new FileInputStream(DATA_FILE));
+                String cipherHeader = dis.readUTF();
+                IOUtils.closeQuietly(dis);
                 boolean passwordOK = false;
                 while (!passwordOK) {
                     RequestPasswordDialog dialog = new RequestPasswordDialog(frame);
                     if (dialog.showDialog()) {
                         try {
                             encryptor.setKey(dialog.getPassword());
-                            if (encryptor.encrypt(FILE_HEADER).equals(cipherHeader)) {
-                                // Password matches; read encrypted text.
+                            if (encryptor.encrypt(HEADER).equals(cipherHeader)) {
                                 passwordOK = true;
+                                isKeySet = true;
+                                dis = new DataInputStream(new FileInputStream(DATA_FILE));
+                                dis.readUTF(); // skip header
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                encryptor.decrypt(dis, baos);
+                                textArea.setText(baos.toString());
+                                IOUtils.closeQuietly(baos);
                             } else {
                                 JOptionPane.showMessageDialog(frame, "Invalid password, please try again.", "Vault", JOptionPane.ERROR_MESSAGE);
                             }
@@ -110,9 +132,10 @@ public class Vault {
                         break;
                     }
                 }
-                System.out.println("passwordOK = " + passwordOK);
             } catch (IOException e) {
                 System.err.println("Could not read file: " + e);
+            } finally {
+                IOUtils.closeQuietly(dis);
             }
         }
     }
@@ -120,26 +143,37 @@ public class Vault {
     private void save() {
         if (!isKeySet) {
             if (passwordDialog.showDialog()) {
-                String password = passwordDialog.getPassword();
                 try {
-                    encryptor.setKey(password);
-                    try {
-                        Writer writer = new BufferedWriter(new FileWriter(DATA_FILE));
-                        writer.write(encryptor.encrypt(FILE_HEADER));
-                        writer.write(encryptor.encrypt(textArea.getText()));
-                        writer.close();
-                    } catch (IOException e) {
-                        System.err.println("ERROR: Could not write file: " + e);
-                    }
+                    encryptor.setKey(passwordDialog.getPassword());
+                    isKeySet = true;
                 } catch (EncryptionException e) {
-                    System.err.println("ERROR: Could not encrypt file: " + e);
+                    System.err.println("ERROR: Could not set encryption key: " + e);
                 }
+            }
+        }
+        
+        if (isKeySet) { 
+            DataOutputStream dos = null;
+            try {
+                dos = new DataOutputStream(new FileOutputStream(DATA_FILE));
+                dos.writeUTF(encryptor.encrypt(HEADER));
+                InputStream plainIn = IOUtils.toInputStream(textArea.getText());
+                encryptor.encrypt(plainIn, dos);
+                IOUtils.closeQuietly(plainIn);
+            } catch (EncryptionException e) {
+                System.err.println("ERROR: Could not encrypt data: " + e);
+            } catch (IOException e) {
+                System.err.println("ERROR: Could not write file: " + e);
+            } finally {
+                IOUtils.closeQuietly(dos);
             }
         }
     }
 
     private void close() {
-        save();
+        if (isModified) {
+            save();
+        }
         frame.dispose();
     }
     
