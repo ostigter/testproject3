@@ -14,6 +14,8 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * Encryption library using 128-bit AES cryptography with a shared key. <br />
  * <br />
@@ -50,7 +52,7 @@ public class Encryptor {
             throw new EncryptionException("Could not create cipher", e);
         }
     }
-    
+
     /**
      * Sets the shared key based on a byte array. <br />
      * <br />
@@ -97,7 +99,7 @@ public class Encryptor {
         if (password == null || password.length() == 0) {
             throw new IllegalArgumentException("Null or empty password");
         }
-        
+
         try {
             byte[] passwordData = password.getBytes("UTF-8");
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -126,7 +128,7 @@ public class Encryptor {
         }
 
         byte[] ciphertext = null;
-        
+
         if (cleartext == null || cleartext.length == 0) {
             ciphertext = cleartext;
         } else {
@@ -137,7 +139,7 @@ public class Encryptor {
                 throw new EncryptionException("Could not encrypt data", e);
             }
         }
-        
+
         return ciphertext;
     }
 
@@ -160,7 +162,7 @@ public class Encryptor {
         }
 
         byte[] cleartext = null;
-        
+
         if (ciphertext == null || ciphertext.length == 0) {
             cleartext = ciphertext;
         } else {
@@ -171,10 +173,10 @@ public class Encryptor {
                 throw new EncryptionException("Could not decrypt data: " + e.getMessage(), e);
             }
         }
-        
+
         return cleartext;
     }
-    
+
     /**
      * Encrypts a String.
      * 
@@ -192,9 +194,9 @@ public class Encryptor {
         if (key == null) {
             throw new IllegalStateException("No shared key set");
         }
-        
+
         String ciphertext = null;
-        
+
         if (cleartext == null || cleartext.length() == 0) {
             ciphertext = cleartext;
         } else {
@@ -207,10 +209,10 @@ public class Encryptor {
                 throw new EncryptionException("Could not encoding UTF-8 string: " + e.getMessage());
             }
         }
-        
+
         return ciphertext;
     }
-    
+
     /**
      * Decrypts a String.
      * 
@@ -228,9 +230,9 @@ public class Encryptor {
         if (key == null) {
             throw new IllegalStateException("No shared key set");
         }
-        
+
         String cleartext = null;
-        
+
         if (ciphertext == null || ciphertext.length() == 0) {
             cleartext = ciphertext;
         } else {
@@ -243,10 +245,66 @@ public class Encryptor {
                 throw new EncryptionException("Could not decode UTF-8 string: " + e.getMessage());
             }
         }
-        
+
         return cleartext;
     }
-    
+
+    /**
+     * Encrypts an <code>InputStream</code>.
+     * 
+     * @param plaintext
+     *            The <code>InputStream</code> with the plaintext.
+     * @param ciphertext
+     *            The <code>OutputStream</code> with the ciphertext.
+     * 
+     * @throws EncryptionException
+     *             If the stream could not be encrypted.
+     */
+    public void encrypt(InputStream plaintext, OutputStream ciphertext) throws EncryptionException {
+        if (key == null) {
+            throw new IllegalStateException("No shared key set");
+        }
+
+        CipherOutputStream cos = null;
+        try {
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+            cos = new CipherOutputStream(ciphertext, cipher);
+            IOUtils.copy(plaintext, cos);
+        } catch (Exception e) {
+            throw new EncryptionException("Could not encrypt stream", e);
+        } finally {
+            IOUtils.closeQuietly(cos);
+        }
+    }
+
+    /**
+     * Decrypts an <code>InputStream</code>.
+     * 
+     * @param ciphertext
+     *            The <code>InputStream</code> with the ciphertext.
+     * @param plaintext
+     *            The <code>OutputStream</code> with the plaintext.
+     * 
+     * @throws EncryptionException
+     *             If the stream could not be decrypted.
+     */
+    public void decrypt(InputStream ciphertext, OutputStream plaintext) throws EncryptionException {
+        if (key == null) {
+            throw new IllegalStateException("No shared key set");
+        }
+
+        CipherOutputStream cos = null;
+        try {
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            cos = new CipherOutputStream(plaintext, cipher);
+            IOUtils.copy(ciphertext, cos);
+        } catch (Exception e) {
+            throw new EncryptionException("Could not decrypt stream", e);
+        } finally {
+            IOUtils.closeQuietly(cos);
+        }
+    }
+
     /**
      * Encrypts a file. <br />
      * <br />
@@ -345,7 +403,7 @@ public class Encryptor {
         }
         return sb.toString();
     }
-    
+
     /**
      * Converts a hexadecimal String to a byte array.
      * 

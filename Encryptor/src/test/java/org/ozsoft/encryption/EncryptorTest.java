@@ -1,9 +1,13 @@
 package org.ozsoft.encryption;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Random;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
 /**
@@ -20,7 +24,7 @@ public class EncryptorTest {
     private static final int BLOCK_SIZE = 10 * 1024 * 1024; // 10MB
     
     @Test
-    public void encryption() throws EncryptionException {
+    public void encryption() throws Exception {
         Random random = new Random();
         byte[] cleardata = null;
         byte[] cipherdata = null;
@@ -40,7 +44,6 @@ public class EncryptorTest {
         encryptor.setKey(PASSWORD);
         duration = System.currentTimeMillis() - startTime;
         System.out.format("Key generated in %d ms\n", duration);
-
 
         // Encrypt and decrypt a byte array.
         cleardata = null;
@@ -89,18 +92,22 @@ public class EncryptorTest {
         cleartext = encryptor.decrypt(ciphertext);
         Assert.assertEquals(null, cleartext);
         cleartext = CLEARTEXT;
-        System.out.format("cleartext:  '%s'\n", cleartext);
-        startTime = System.currentTimeMillis();
         ciphertext = encryptor.encrypt(cleartext);
-        duration = System.currentTimeMillis() - startTime;
-        System.out.format("Ciphertext: '%s'\n", ciphertext);
-        System.out.format("String encrypted in %d ms\n", duration);
-        startTime = System.currentTimeMillis();
         cleartext = encryptor.decrypt(ciphertext);
-        duration = System.currentTimeMillis() - startTime;
         Assert.assertEquals(CLEARTEXT, cleartext);
-        System.out.format("Cleartext:  '%s'\n", cleartext);
-        System.out.format("String decrypted in %d ms\n", duration);
+        
+        // Encrypt and decrypt stream.
+        cleartext = "This is a test with streaming encryption and decryption.";
+        InputStream clearIn = IOUtils.toInputStream(cleartext);
+        ByteArrayOutputStream cipherOut = new ByteArrayOutputStream();
+        encryptor.encrypt(clearIn, cipherOut);
+        cipherdata = cipherOut.toByteArray();
+        cipherOut.close();
+        clearIn.close();
+        InputStream cipherIn = new ByteArrayInputStream(cipherdata);
+        ByteArrayOutputStream clearOut = new ByteArrayOutputStream();
+        encryptor.decrypt(cipherIn, clearOut);
+        Assert.assertEquals("Streaming encryption/decryption failed", cleartext, clearOut.toString()); 
     }
 
 }
