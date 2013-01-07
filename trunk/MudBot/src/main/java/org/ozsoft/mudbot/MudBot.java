@@ -112,7 +112,7 @@ public class MudBot implements TelnetListener {
     private static final int MIN_TIME_UNTIL_REBOOT = 60;
 
     /** Minimum HP % being safe for hunting. */
-    private static final double MIN_HP_PERC = 0.5;
+    private static final double MIN_HP_PERC = 0.6;
 
     /** Minimum HP % to resume after resting. */
     private static final double SAFE_HP_PERC = 0.95;
@@ -1155,6 +1155,9 @@ public class MudBot implements TelnetListener {
                 state = State.SELLING;
                 setStatus("Selling items");
                 sendCommand("sell");
+                sendCommand("bar");
+                sendCommand("offer all");
+                sendCommand("_bar");
             } else {
                 state = State.HOME;
                 setStatus("Home");
@@ -1245,10 +1248,13 @@ public class MudBot implements TelnetListener {
      */
     private void createMacros() {
         macros = new HashMap<String, String[]>();
-        macros.put("start", new String[]{"brief", "house", "valenthos", "bhead", "bmode overall", "bstance wolf", "get_eq", "hall", "login", "3 n", "14 e", "brief", "party create", "l"});
+        macros.put("start", new String[]{"brief", "house", "valenthos", "bmode lion", "bstance wolf", "get_eq", "hall", "login", "3 n", "14 e", "brief", "party create", "l"});
         macros.put("end", new String[]{"brief", "w", "house", "valenthos", "store_eq", "brief", "l", "l me"});
-        macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get all", "keep all", "wear all", "wield skullbash", "wield great axe in left hand"});
+        macros.put("get_eq", new String[]{"open valenthos1", "get all from valenthos1", "close valenthos1", "open valenthos2", "get all from valenthos2", "close valenthos2", "get all", "keep all", "wear all", "wield axe"});
         macros.put("store_eq", new String[]{"remove all", "unkeep all", "open valenthos1", "put all in valenthos1", "close valenthos1", "open valenthos2", "put all in valenthos2", "close valenthos2", "drop all"});
+        macros.put("get_db", new String[]{"war", "death_knight", "d", "bladesummon", "bladetype 2", "wield deathblade in left hand", "u", "out", "_war"});
+        macros.put("war", new String[]{"brief", "3 w", "6 n", "3 nw", "2 w", "s", "brief", "l"});
+        macros.put("_war", new String[]{"brief", "n", "2 e", "3 se", "6 s", "3 e", "brief", "l"});
         macros.put("bar", new String[]{"brief", "5 e", "5 ne", "7 n", "7 nw", "enter path", "n", "brief", "l"});
         macros.put("_bar", new String[]{"brief", "2 s", "7 se", "7 s", "5 sw", "5 w", "brief", "l"});
         macros.put("sell", new String[]{"brief", "13 w", "3 n", "sell all", "2 s", "e", "deposit all", "w", "s", "13 e", "brief", "l", "money"});
@@ -1284,6 +1290,41 @@ public class MudBot implements TelnetListener {
     private void createAreas() {
         Area area = null;
 
+        area = new Area("Demon Outpost");
+        area.toPath = new String[]{"outpost"};
+        area.homePath = new String[]{"_outpost"};
+        area.roomDescription = "You are outside a small outpost.";
+        area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
+        area.addMonster(new Monster("Demon sentry", "sentry"));
+        area.addItem("gold coins");
+        area.addItem("A black spear");
+        area.addItem("A pair of black bracers");
+        area.addIgnore("The decapitated head of");
+        areas.add(area);
+        
+        area = new Area("Raja Village");
+        area.toPath = new String[]{"raja"};
+        area.homePath = new String[]{"_raja"};
+        area.roomDescription = "You stand high above the forest floor at the entrance to the quaint,";
+        area.directions = new String[]{"n", "n", "s", "s", "se", "e", "s", "s", "sw", "se", "u", "sw", "se", "d", "u", "nw", "w", "w", "sw", "d", "u", "ne", "nw", "d", "ne", "sw", "u", "se", "e", "e", "ne", "d", "nw", "ne", "n", "n", "w", "nw"};
+        area.addMonster(new Monster("visitor", "visitor"));
+        area.addMonster(new Monster("nekonohito villager", "villager"));
+        area.addMonster(new Monster("nekonohito noble", "noble"));
+        area.addMonster(new Monster("nekonohito lady", "lady"));
+        area.addItem("gold coins");
+        area.addItem("A pass");
+        area.addItem("A noble's ");
+        area.addItem("A lady's ");
+        area.addIgnore("A sign");
+        area.addIgnore("Raja Village comment board");
+        area.addIgnore("nekonohito peddler");
+        area.addIgnore("A statue");
+        area.addIgnore("nekonohito guard");
+        area.addIgnore("mother");
+        area.addIgnore("nekonohito child");
+        area.addIgnore("The decapitated head of");
+        areas.add(area);
+        
         area = new Area("Thor Bal");
         area.toPath = new String[]{"thorbal"};
         area.homePath = new String[]{"_thorbal"};
@@ -1345,41 +1386,6 @@ public class MudBot implements TelnetListener {
         area.addIgnore("The decapitated head of");
         areas.add(area);
 
-//        area = new Area("Raja Village");
-//        area.toPath = new String[]{"raja"};
-//        area.homePath = new String[]{"_raja"};
-//        area.roomDescription = "You stand high above the forest floor at the entrance to the quaint,";
-//        area.directions = new String[]{"n", "n", "s", "s", "se", "e", "s", "s", "sw", "se", "u", "sw", "se", "d", "u", "nw", "w", "w", "sw", "d", "u", "ne", "nw", "d", "ne", "sw", "u", "se", "e", "e", "ne", "d", "nw", "ne", "n", "n", "w", "nw"};
-//        area.addMonster(new Monster("visitor", "visitor"));
-//        area.addMonster(new Monster("nekonohito villager", "villager"));
-//        area.addMonster(new Monster("nekonohito noble", "noble"));
-//        area.addMonster(new Monster("nekonohito lady", "lady"));
-//        area.addItem("gold coins");
-//        area.addItem("A pass");
-//        area.addItem("A noble's ");
-//        area.addItem("A lady's ");
-//        area.addIgnore("A sign");
-//        area.addIgnore("Raja Village comment board");
-//        area.addIgnore("nekonohito peddler");
-//        area.addIgnore("A statue");
-//        area.addIgnore("nekonohito guard");
-//        area.addIgnore("mother");
-//        area.addIgnore("nekonohito child");
-//        area.addIgnore("The decapitated head of");
-//        areas.add(area);
-//        
-//        area = new Area("Demon Outpost");
-//        area.toPath = new String[]{"outpost"};
-//        area.homePath = new String[]{"_outpost"};
-//        area.roomDescription = "You are outside a small outpost.";
-//        area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
-//        area.addMonster(new Monster("Demon sentry", "sentry"));
-//        area.addItem("gold coins");
-//        area.addItem("A black spear");
-//        area.addItem("A pair of black bracers");
-//        area.addIgnore("The decapitated head of");
-//        areas.add(area);
-//        
 //        area = new Area("The Lost City");
 //        area.toPath = new String[]{"lostcity"};
 //        area.homePath = new String[]{"_lostcity"};
