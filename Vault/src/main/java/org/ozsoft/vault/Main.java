@@ -12,6 +12,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -152,7 +155,8 @@ public class Main {
             }
         }
         
-        if (isKeySet) { 
+        if (isKeySet) {
+            sortLines();
             DataOutputStream dos = null;
             try {
                 dos = new DataOutputStream(new FileOutputStream(DATA_FILE));
@@ -168,6 +172,20 @@ public class Main {
                 IOUtils.closeQuietly(dos);
             }
         }
+    }
+    
+    private void sortLines() {
+        String text = textArea.getText();
+        List<String> lines = new ArrayList<String>();
+        for (String line : text.split("\n")) {
+            lines.add(line);
+        }
+        Collections.sort(lines);
+        StringBuilder sb = new StringBuilder();
+        for (String line : lines) {
+            sb.append(line).append('\n');
+        }
+        textArea.setText(sb.toString());
     }
 
     private void close() {
