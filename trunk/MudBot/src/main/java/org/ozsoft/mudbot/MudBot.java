@@ -1097,11 +1097,7 @@ public class MudBot implements TelnetListener {
      *            The message text.
      */
     private void loot(String text) {
-        if (text.contains("You take A pass from The corpse of Visitor.")) {
-            clearMessageBuffer();
-            appendText("[Bot] Got Raja Village visitor pass\n");
-            sendCommand("keep pass");
-        } else if (text.contains("You grab hold of the corpse and lift it's neck up a bit.")) {
+        if (text.contains("You grab hold of the corpse and lift it's neck up a bit.")) {
             clearMessageBuffer();
             state = State.HUNTING;
             setStatus("Hunting");
@@ -1290,6 +1286,31 @@ public class MudBot implements TelnetListener {
     private void createAreas() {
         Area area = null;
 
+        area = new Area("Raja Village");
+        area.toPath = new String[]{"raja"};
+        area.homePath = new String[]{"_raja"};
+        area.roomDescription = "You stand high above the forest floor at the entrance to the quaint,";
+//        area.directions = new String[]{"n", "n", "s", "s", "se", "e", "s", "s", "sw", "se", "u", "sw", "se", "d", "u", "nw", "w", "w", "sw", "d", "u", "ne", "nw", "d", "ne", "sw", "u", "se", "e", "e", "ne", "d", "nw", "ne", "n", "n", "w", "nw"};
+        area.directions = new String[]{"fly", "land 23", "se", "u", "sw", "se", "d", "u", "nw", "w", "w", "sw", "d", "u", "ne", "nw", "d", "ne", "fly", "land 8"};
+        area.addMonster(new Monster("nekonohito villager", "villager"));
+        area.addMonster(new Monster("nekonohito noble", "noble"));
+        area.addMonster(new Monster("nekonohito lady", "lady"));
+        area.addItem("gold coins");
+        area.addIgnore("The decapitated head of");
+        area.addItem("A gnarled wooden wand of rejuvenation");
+        area.addItem("A pair of tough breeches");
+        area.addItem("A noble's ");
+        area.addItem("A lady's ");
+        area.addIgnore("A sign");
+        area.addIgnore("A pass");
+        area.addIgnore("Raja Village comment board");
+        area.addIgnore("nekonohito peddler");
+        area.addIgnore("A statue");
+        area.addIgnore("nekonohito guard");
+        area.addIgnore("mother");
+        area.addIgnore("nekonohito child");
+        areas.add(area);
+        
         area = new Area("Demon Outpost");
         area.toPath = new String[]{"outpost"};
         area.homePath = new String[]{"_outpost"};
@@ -1297,31 +1318,9 @@ public class MudBot implements TelnetListener {
         area.directions = new String[]{"e", "e", "n", "e", "n", "n", "n", "n", "n", "n", "w", "n", "w", "n", "n", "w", "w", "s", "s", "w", "s", "w", "s", "s", "s", "s", "s", "s", "e", "s", "e", "e"};
         area.addMonster(new Monster("Demon sentry", "sentry"));
         area.addItem("gold coins");
+        area.addItem("A gnarled wooden wand of rejuvenation");
         area.addItem("A black spear");
         area.addItem("A pair of black bracers");
-        area.addIgnore("The decapitated head of");
-        areas.add(area);
-        
-        area = new Area("Raja Village");
-        area.toPath = new String[]{"raja"};
-        area.homePath = new String[]{"_raja"};
-        area.roomDescription = "You stand high above the forest floor at the entrance to the quaint,";
-        area.directions = new String[]{"n", "n", "s", "s", "se", "e", "s", "s", "sw", "se", "u", "sw", "se", "d", "u", "nw", "w", "w", "sw", "d", "u", "ne", "nw", "d", "ne", "sw", "u", "se", "e", "e", "ne", "d", "nw", "ne", "n", "n", "w", "nw"};
-        area.addMonster(new Monster("visitor", "visitor"));
-        area.addMonster(new Monster("nekonohito villager", "villager"));
-        area.addMonster(new Monster("nekonohito noble", "noble"));
-        area.addMonster(new Monster("nekonohito lady", "lady"));
-        area.addItem("gold coins");
-        area.addItem("A pass");
-        area.addItem("A noble's ");
-        area.addItem("A lady's ");
-        area.addIgnore("A sign");
-        area.addIgnore("Raja Village comment board");
-        area.addIgnore("nekonohito peddler");
-        area.addIgnore("A statue");
-        area.addIgnore("nekonohito guard");
-        area.addIgnore("mother");
-        area.addIgnore("nekonohito child");
         area.addIgnore("The decapitated head of");
         areas.add(area);
         
@@ -1333,8 +1332,11 @@ public class MudBot implements TelnetListener {
         area.addMonster(new Monster("woodsman", "woodsman"));
         area.addMonster(new Monster("brigand", "brigand"));
         area.addItem("gold coins");
+        area.addItem("A gnarled wooden wand of rejuvenation");
         area.addItem("dark leather armour");
         area.addItem("dark leather boots");
+        area.addItem("A dark hood");
+        area.addItem("A sharp iron axe");
         area.addItem(" pelt");
         area.addIgnore("ranger");
         area.addIgnore("thief");
@@ -1357,6 +1359,7 @@ public class MudBot implements TelnetListener {
         area.addMonster(new Monster("An apewoman", "apewoman"));
         area.addMonster(new Monster("A salesman cleaning his stand", "salesman"));
         area.addItem("gold coins");
+        area.addItem("A gnarled wooden wand of rejuvenation");
         area.addItem("A sturdy leather belt");
         area.addItem("Worker's helmet");
         area.addItem("A white collar");
@@ -1382,6 +1385,7 @@ public class MudBot implements TelnetListener {
         area.addMonster(new Monster("A disgusting orc", "orc"));
         area.addMonster(new Monster("A fat orc", "orc"));
         area.addItem("gold coins");
+        area.addItem("A gnarled wooden wand of rejuvenation");
         area.addItem("An orcish ");
         area.addIgnore("The decapitated head of");
         areas.add(area);
