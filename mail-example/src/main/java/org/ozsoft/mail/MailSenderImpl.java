@@ -13,10 +13,10 @@ import javax.mail.internet.MimeMessage;
 
 public class MailSenderImpl implements MailSender {
     
-    private static final String FROM = "donotreply@projectx.sr";
+    private static final String FROM = "donotreply@ozsoft.net";
     private static final String HOST = "smtp.gmail.com";
     private static final String USERNAME = "oscar.stigter@gmail.com";
-    private static final String PASSWORD = "mDCh43pk";
+    private static final String PASSWORD = "secret";
     
     private final Session session;
     
