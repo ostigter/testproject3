@@ -14,10 +14,20 @@ public class PasswordGenerator {
     
     public static void main(String[] args) {
         PasswordGenerator pg = new PasswordGenerator("abcdefghijklmnopqrstuvwxyz", 5, 12);
+//        PasswordGenerator pg = new PasswordGenerator("0123456789", 4, 4);
         pg.generate();
     }
 
     public PasswordGenerator(String chars, int minLength, int maxLength) {
+        if (chars == null || chars.isEmpty()) {
+            throw new IllegalArgumentException("Null or empty chars");
+        }
+        if (minLength < 1) {
+            throw new IllegalArgumentException("minLength must be equal to or greater than 1");
+        }
+        if (maxLength < minLength) {
+            throw new IllegalArgumentException("maxLength must be equal to or greater than minLength");
+        }
         this.charset = chars.toCharArray();
         this.length = minLength;
         this.maxLength = maxLength;
