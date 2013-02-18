@@ -8,7 +8,7 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>${artifact.id}</name>
+    <name>${project.artifactId}</name>
     <description>Brute-force password generator</description>
     <inceptionYear>2012</inceptionYear>
     <developers>
@@ -28,7 +28,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>2.4</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
