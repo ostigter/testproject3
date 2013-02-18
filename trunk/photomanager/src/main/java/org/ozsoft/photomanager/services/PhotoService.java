@@ -30,7 +30,8 @@ import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
-import com.drew.metadata.exif.ExifDirectory;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
+import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
 
 public class PhotoService {
@@ -185,7 +186,7 @@ public class PhotoService {
                     LOGGER.warn("Storing image file without extension: " + sourceFile.getAbsolutePath());
                     extension = "jpg";
                 }
-                Metadata metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(new FileInputStream(sourceFile)));
+                Metadata metadata = ImageMetadataReader.readMetadata(sourceFile);
                 Directory dir = metadata.getDirectory(JpegDirectory.class);
                 try {
                     if (dir.containsTag(JpegDirectory.TAG_JPEG_IMAGE_WIDTH)) {
@@ -203,16 +204,16 @@ public class PhotoService {
                 } catch (MetadataException e1) {
                     LOGGER.error(e1);
                 }
-                dir = metadata.getDirectory(ExifDirectory.class);
+                dir = metadata.getDirectory(ExifSubIFDDirectory.class);
                 try {
-                    if (dir.containsTag(ExifDirectory.TAG_DATETIME_ORIGINAL)) {
-                        date = dir.getDate(ExifDirectory.TAG_DATETIME_ORIGINAL);
+                    if (dir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)) {
+                        date = dir.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
                     } else {
                         date = new Date(sourceFile.lastModified());
                     }
                     LOGGER.debug("Date: " + date);
-                    if (dir.containsTag(ExifDirectory.TAG_ORIENTATION)) {
-                        int orientation = dir.getInt(ExifDirectory.TAG_ORIENTATION);
+                    if (dir.containsTag(ExifThumbnailDirectory.TAG_ORIENTATION)) {
+                        int orientation = dir.getInt(ExifThumbnailDirectory.TAG_ORIENTATION);
                         LOGGER.debug("Orientation: " + orientation);
                     }
 

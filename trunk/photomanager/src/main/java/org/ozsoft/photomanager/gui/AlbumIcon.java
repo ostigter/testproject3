@@ -32,6 +32,8 @@ public class AlbumIcon extends JPanel implements MouseListener {
     
     private static final Font SMALL_FONT = new Font(Font.SANS_SERIF, Font.PLAIN, 11);
     
+    private static final String DEFAULT_ALBUM_IMAGE = "/images/album.png";
+    
     private final JLabel thumbnailLabel;
     
     private final JLabel nameLabel;
@@ -95,7 +97,7 @@ public class AlbumIcon extends JPanel implements MouseListener {
             thumbnailLabel.setIcon(new ImageIcon(coverPhoto.getThumbnail()));
         } else {
             // No cover photo set; use placeholder icon.
-            //TODO: Use placeholder album icon.
+            thumbnailLabel.setIcon(new ImageIcon(getClass().getResource(DEFAULT_ALBUM_IMAGE)));
         }
         
         String name = album.getName();
