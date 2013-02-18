@@ -1,0 +1,17 @@
+TODO
+====
+
+* Add album (date picker)
+* Browse albums
+* Add photos
+* Delete photos
+* Sort album
+* Edit album properties
+* Tag single photo
+* Search photos
+* Tag multiple photos
+* Edit photo tags
+* Copy photos
+* Export album
+* Backup albums
+* Restore album
