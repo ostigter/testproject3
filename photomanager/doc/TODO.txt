@@ -7,6 +7,7 @@ TODO
 * Delete photos
 * Sort album
 * Edit album properties
+* Copy photos
 * Tag single photo
 * Search photos
 * Tag multiple photos

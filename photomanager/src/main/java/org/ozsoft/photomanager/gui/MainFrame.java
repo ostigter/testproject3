@@ -99,9 +99,9 @@ public class MainFrame extends JFrame {
         createAlbum("01.jpg", "Album 1");
         createAlbum("02.jpg", "Album 2");
         createAlbum("03.jpg", "Album 3");
-        createAlbum("04.jpg", "Album 4");
-        createAlbum("05.jpg", "Album 5");
-        createAlbum("06.jpg", "Album 6");
+//        createAlbum("04.jpg", "Album 4");
+//        createAlbum("05.jpg", "Album 5");
+//        createAlbum("06.jpg", "Album 6");
     }
 
     private void createAlbum(String filename, String name) {
@@ -121,7 +121,11 @@ public class MainFrame extends JFrame {
         if (dialog.show() == Dialog.OK) {
             Album album = new Album();
             album.setName(dialog.getName());
-            album.setDate(new Date());
+            Date date = dialog.getDate();
+            if (date == null) {
+                date = new Date();
+            }
+            album.setDate(date);
             photoService.storeAlbum(album);
             albumPanel.addAlbum(album);
         }

@@ -4,18 +4,24 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
-public class AlbumPropertiesDialog extends Dialog {
+import net.sourceforge.jdatepicker.JDateComponentFactory;
+import net.sourceforge.jdatepicker.JDatePicker;
 
+public class AlbumPropertiesDialog extends Dialog {
+    
     private JTextField nameText;
     
-    private JTextField dateText;
+    private JDatePicker datePicker;
     
     private JButton okButton;
     
@@ -33,8 +39,13 @@ public class AlbumPropertiesDialog extends Dialog {
         return nameText.getText().trim();
     }
     
-    public String getDate() {
-        return dateText.getText().trim();
+    public Date getDate() {
+        Date date = null;
+        Object value = datePicker.getModel().getValue();
+        if (value != null) {
+            date = ((Calendar) value).getTime();
+        }
+        return date;
     }
     
     @Override
@@ -77,7 +88,7 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.insets = new Insets(10, 10, 5, 5);
         dialog.add(label, gbc);
         
-        dateText = new JTextField();
+        datePicker = JDateComponentFactory.createJDatePicker();
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -87,7 +98,7 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 5, 5, 5);
-        dialog.add(dateText, gbc);
+        dialog.add((JComponent) datePicker, gbc);
         
         okButton = new JButton("Create");
         okButton.addActionListener(new ActionListener() {
