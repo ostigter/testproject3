@@ -62,7 +62,6 @@ public class GalleryLayout implements LayoutManager {
 
     @Override
     public Dimension minimumLayoutSize(Container container) {
-        // Not implemented.
         return new Dimension(100, 100);
     }
 
