@@ -117,15 +117,11 @@ public class MainFrame extends JFrame {
     }
 
     private void createAlbum() {
-        AlbumPropertiesDialog dialog = new AlbumPropertiesDialog(this, false);
+        AlbumPropertiesDialog dialog = new AlbumPropertiesDialog(this);
         if (dialog.show() == Dialog.OK) {
             Album album = new Album();
             album.setName(dialog.getName());
-            Date date = dialog.getDate();
-            if (date == null) {
-                date = new Date();
-            }
-            album.setDate(date);
+            album.setDate(dialog.getDate());
             photoService.storeAlbum(album);
             albumPanel.addAlbum(album);
         }
