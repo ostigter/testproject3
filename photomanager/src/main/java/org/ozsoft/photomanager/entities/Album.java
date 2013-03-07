@@ -65,4 +65,9 @@ public class Album extends BaseEntity {
         this.coverPhoto = coverPhoto;
     }
     
+    @Override
+    public String toString() {
+        return name;
+    }
+    
 }

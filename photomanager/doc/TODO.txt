@@ -1,18 +1,18 @@
 TODO
 ====
 
-* Add album (date picker)
-* Browse albums
+* View album
 * Add photos
+* View photo
+* Re-order photos
 * Delete photos
-* Sort album
+* Delete album
 * Edit album properties
+* Export album
 * Copy photos
 * Tag single photo
 * Search photos
 * Tag multiple photos
 * Edit photo tags
-* Copy photos
-* Export album
 * Backup albums
 * Restore album

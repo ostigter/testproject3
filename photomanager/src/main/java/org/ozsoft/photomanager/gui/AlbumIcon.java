@@ -34,6 +34,10 @@ public class AlbumIcon extends JPanel implements MouseListener {
     
     private static final String DEFAULT_ALBUM_IMAGE = "/images/album.png";
     
+    private final AlbumListener parent;
+    
+    private final Album album;
+    
     private final JLabel thumbnailLabel;
     
     private final JLabel nameLabel;
@@ -42,7 +46,10 @@ public class AlbumIcon extends JPanel implements MouseListener {
     
     private boolean isSelected = false;
 
-    public AlbumIcon() {
+    public AlbumIcon(Album album, AlbumListener parent) {
+        this.album = album;
+        this.parent = parent;
+        
         setBackground(DEFAULT_COLOR);
         setBorder(new LineBorder(Color.LIGHT_GRAY));
 
@@ -88,10 +95,6 @@ public class AlbumIcon extends JPanel implements MouseListener {
         gbc.insets = new Insets(0, 5, 5, 5);
         add(dateLabel, gbc);
         
-        addMouseListener(this);
-    }
-    
-    public void setAlbum(Album album) {
         Photo coverPhoto = album.getCoverPhoto();
         if (coverPhoto != null) {
             thumbnailLabel.setIcon(new ImageIcon(coverPhoto.getThumbnail()));
@@ -102,25 +105,31 @@ public class AlbumIcon extends JPanel implements MouseListener {
         
         String name = album.getName();
         if (name != null) {
-//            Graphics g = nameLabel.getGraphics();
-//            FontMetrics fm = g.getFontMetrics(SMALL_FONT);
-//            int width = fm.stringWidth(name);
-//            System.out.format("*** width = %d\n", width);
             nameLabel.setText(name);
         }
 
         dateLabel.setText(DATE_FORMAT.format(album.getDate()));
+        
+        addMouseListener(this);
     }
-
+    
+    public void unselect() {
+        isSelected = false;
+        setBackground(DEFAULT_COLOR);
+    }
+    
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1) {
-            if (!isSelected) {
-                isSelected = true;
-                setBackground(SELECTION_COLOR);
-            } else {
-                isSelected = false;
-                setBackground(DEFAULT_COLOR);
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            if (e.getClickCount() == 1) {
+                if (!isSelected) {
+                    parent.albumSelected(album);
+                    isSelected = true;
+                    setBackground(SELECTION_COLOR);
+                }
+            } else if (e.getClickCount() == 2) {
+                unselect();
+                parent.albumOpened(album);
             }
         }
     }

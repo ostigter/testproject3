@@ -4,7 +4,6 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -14,8 +13,11 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import net.sourceforge.jdatepicker.DateModel;
 import net.sourceforge.jdatepicker.JDateComponentFactory;
 import net.sourceforge.jdatepicker.JDatePicker;
+
+import org.ozsoft.photomanager.entities.Album;
 
 public class AlbumPropertiesDialog extends Dialog {
     
@@ -27,10 +29,16 @@ public class AlbumPropertiesDialog extends Dialog {
     
     private JButton cancelButton;
     
-    public AlbumPropertiesDialog(JFrame parent, boolean editMode) {
+    public AlbumPropertiesDialog(JFrame parent) {
+        this(parent, null);
+    }
+    
+    public AlbumPropertiesDialog(JFrame parent, Album album) {
         super("Create Album", parent);
-        if (editMode) {
+        if (album != null) {
             dialog.setTitle("Edit Album Properties");
+            nameText.setText(album.getName());
+//            datePicker.getModel().setValue(album.getDate());
             okButton.setText("Save");
         }
     }
@@ -40,15 +48,15 @@ public class AlbumPropertiesDialog extends Dialog {
     }
     
     public Date getDate() {
-        Date date = null;
-        Object value = datePicker.getModel().getValue();
-        if (value != null) {
-            date = ((Calendar) value).getTime();
+        Date date = (Date) datePicker.getModel().getValue();
+        if (date == null) {
+            date = new Date();
         }
         return date;
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     protected void initUI() {
         GridBagConstraints gbc = new GridBagConstraints();
         
@@ -88,7 +96,8 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.insets = new Insets(10, 10, 5, 5);
         dialog.add(label, gbc);
         
-        datePicker = JDateComponentFactory.createJDatePicker();
+        DateModel<Date> dateModel = (DateModel<Date>) JDateComponentFactory.createDateModel(Date.class);
+        datePicker = JDateComponentFactory.createJDatePicker(dateModel);
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
