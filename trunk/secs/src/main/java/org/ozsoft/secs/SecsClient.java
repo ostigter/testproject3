@@ -7,8 +7,6 @@ import org.apache.log4j.Logger;
 
 public class SecsClient {
     
-//    private static final int SOCKET_TIMEOUT = 5000;
-    
     private static final Logger LOG = Logger.getLogger(SecsClient.class);
     
     private final String host;
@@ -30,7 +28,6 @@ public class SecsClient {
         LOG.debug("Connecting...");
         try {
             socket = new Socket(host, port);
-//            socket.setSoTimeout(SOCKET_TIMEOUT);
             LOG.info(String.format("Connected to server '%s' on port %d", host, port));
         } catch (IOException e) {
             LOG.error(String.format("Could not connect to server '%s' on port %d", host, port));
