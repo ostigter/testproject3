@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
 import org.ozsoft.secs.SecsException;
-import org.ozsoft.secs.SecsUtils;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 
@@ -14,7 +13,7 @@ public class MessageParser {
     
     private static final int HEADER_LENGTH = 10;
     
-    private static final int MAX_MESSAGE_LENGTH = 256 * 1024; // 256 kB
+    private static final long MAX_MESSAGE_LENGTH = 256 * 1024; // 256 kB
     
     private static final int SESSION_ID_LENGTH = 2;
     
@@ -47,7 +46,7 @@ public class MessageParser {
         }
         byte[] lengthField = new byte[MESSAGE_LENGTH_LENGTH];
         System.arraycopy(data, 0, lengthField, 0, MESSAGE_LENGTH_LENGTH);
-        int messageLength = SecsUtils.toU4(lengthField);
+        long messageLength = new U4(lengthField).getValue();
         LOG.debug("Message length: " + messageLength);
         if (messageLength < HEADER_LENGTH) {
             throw new SecsException("Incomplete message (invalid header length)");
@@ -91,6 +90,14 @@ public class MessageParser {
         System.arraycopy(data, MESSAGE_LENGTH_LENGTH + POS_SYSTEMBYTES, systemBytesBuf, 0, SYSTEM_BYTES_LENGTH);
         U4 systemBytes = new U4(systemBytesBuf);
         LOG.debug("System Bytes = " + systemBytes.getValue());
+        
+        switch (sType) {
+            case SELECT_REQ:
+                //TODO
+                break;
+            default:
+                //TODO
+        }
         
         Message message = null;
         return message;
