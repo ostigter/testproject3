@@ -10,11 +10,11 @@ public class SecsConnectionTest {
     public void test() {
         SecsServer server = new SecsServer();
         server.start();
-        sleep(3);
+        sleep(1);
         
         SecsClient client = new SecsClient(HOST);
         client.connect();
-        sleep(3);
+        sleep(1);
         
         server.stop();
         sleep(1);
