@@ -10,5 +10,5 @@ public abstract class SecsUtils {
         }
         return (((int) (data[0] & 0x7F)) << 24) | (((int) (data[1] & 0xFF)) << 16) | (((int) (data[2] & 0xFF)) << 8) | (((int) (data[3] & 0xFF)));
     }
-
+    
 }

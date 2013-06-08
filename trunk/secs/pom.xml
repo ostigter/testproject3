@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
     
     <name>secs</name>
-    <description>Open source SECSII/GEM library in Java</description>
+    <description>Open source SECS-II/GEM library in Java</description>
     
     <inceptionYear>2013</inceptionYear>
     <developers>
