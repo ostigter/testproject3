@@ -14,6 +14,8 @@ public class SecsServer implements Runnable {
     
     private static final int SOCKET_TIMEOUT = 100;
     
+    private static final long POLL_INTERVAL = 10L;
+    
     private static final int BUFFER_SIZE = 8192;
     
     private static final Logger LOG = Logger.getLogger(SecsServer.class);
@@ -100,13 +102,13 @@ public class SecsServer implements Runnable {
                     connectionState = ConnectionState.NOT_SELECTED;
                     handleConnection(clientSocket);
                 } catch (SocketTimeoutException e) {
-                    // No connections yet, wait some more.
+                    // No incoming connections, just continue waiting.
                 } catch (IOException e) {
                     LOG.error("Socket connection error: " + e.getMessage());
                     disconnect();
                 }
             } else {
-                sleep(SOCKET_TIMEOUT);
+                sleep(POLL_INTERVAL);
             }
         }
         thread = null;
@@ -134,7 +136,7 @@ public class SecsServer implements Runnable {
                         LOG.error("Received invalid SECS message: " + e.getMessage());
                     }
                 }
-                sleep(10L);
+                sleep(POLL_INTERVAL);
             }
         } catch (IOException e) {
             LOG.error("I/O error while reading from client connection: " + e.getMessage());
