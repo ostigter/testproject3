@@ -9,28 +9,6 @@ import org.ozsoft.secs.format.U4;
 
 public class MessageParser {
     
-    private static final int MESSAGE_LENGTH_LENGTH = 4;
-    
-    private static final int HEADER_LENGTH = 10;
-    
-    private static final long MAX_MESSAGE_LENGTH = 256 * 1024; // 256 kB
-    
-    private static final int SESSION_ID_LENGTH = 2;
-    
-    private static final int SYSTEM_BYTES_LENGTH = 4;
-    
-    private static final int POS_SESSIONID = 0;
-    
-    private static final int POS_HEADERBYTE2 = 2;
-    
-    private static final int POS_HEADERBYTE3 = 3;
-    
-    private static final int POS_PTYPE = 4;
-    
-    private static final int POS_STYPE = 5;
-    
-    private static final int POS_SYSTEMBYTES = 6;
-    
     private static final Logger LOG = Logger.getLogger(MessageParser.class);
     
     public static Message parse(byte[] data, int length) throws SecsException {
@@ -41,36 +19,36 @@ public class MessageParser {
         LOG.debug(length + " bytes read: " + sb);
         
         // Determine message length.
-        if (length < MESSAGE_LENGTH_LENGTH) {
+        if (length < Message.LENGTH_LENGTH) {
             throw new SecsException(String.format("Incomplete message (message length: %d)", length));
         }
-        byte[] lengthField = new byte[MESSAGE_LENGTH_LENGTH];
-        System.arraycopy(data, 0, lengthField, 0, MESSAGE_LENGTH_LENGTH);
+        byte[] lengthField = new byte[Message.LENGTH_LENGTH];
+        System.arraycopy(data, 0, lengthField, 0, Message.LENGTH_LENGTH);
         long messageLength = new U4(lengthField).getValue();
         LOG.debug("Message length: " + messageLength);
-        if (messageLength < HEADER_LENGTH) {
+        if (messageLength < Message.HEADER_LENGTH) {
             throw new SecsException("Incomplete message (invalid header length)");
         }
-        if (messageLength > MAX_MESSAGE_LENGTH) {
+        if (messageLength > Message.MAX_LENGTH) {
             throw new SecsException(String.format("Message too large (%d bytes)", messageLength));
         }
         
         // Parse message header.
         
         // Parse Session ID.
-        byte[] sessionIdBuf = new byte[SESSION_ID_LENGTH];
-        System.arraycopy(data, MESSAGE_LENGTH_LENGTH + POS_SESSIONID, sessionIdBuf, 0, SESSION_ID_LENGTH);
+        byte[] sessionIdBuf = new byte[Message.SESSION_ID_LENGTH];
+        System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SESSIONID, sessionIdBuf, 0, Message.SESSION_ID_LENGTH);
         U2 sessionId = new U2(sessionIdBuf);
         LOG.debug("Session ID = " + sessionId.getValue());
         
         // Get Header Bytes 2 and 3.
-        byte headerByte2 = data[MESSAGE_LENGTH_LENGTH + POS_HEADERBYTE2];
-        byte headerByte3 = data[MESSAGE_LENGTH_LENGTH + POS_HEADERBYTE3];
+        byte headerByte2 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE2];
+        byte headerByte3 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE3];
         LOG.debug("Header Byte 2 = " + headerByte2);
         LOG.debug("Header Byte 3 = " + headerByte3);
         
         // Parse PType.
-        byte pTypeByte = data[MESSAGE_LENGTH_LENGTH + POS_PTYPE];
+        byte pTypeByte = data[Message.LENGTH_LENGTH + Message.POS_PTYPE];
         PType pType = PType.parse(pTypeByte);
         LOG.debug("PType = " + pType);
         if (pType != PType.SECS_II) {
@@ -78,7 +56,7 @@ public class MessageParser {
         }
         
         // Parse SType.
-        byte sTypeByte = data[MESSAGE_LENGTH_LENGTH + POS_STYPE];
+        byte sTypeByte = data[Message.LENGTH_LENGTH + Message.POS_STYPE];
         SType sType = SType.parse(sTypeByte);
         LOG.debug("SType = " + sType);
         if (sType == SType.UNKNOWN) {
@@ -86,21 +64,17 @@ public class MessageParser {
         }
         
         // Parse System Bytes (transaction ID).
-        byte[] systemBytesBuf = new byte[SYSTEM_BYTES_LENGTH];
-        System.arraycopy(data, MESSAGE_LENGTH_LENGTH + POS_SYSTEMBYTES, systemBytesBuf, 0, SYSTEM_BYTES_LENGTH);
+        byte[] systemBytesBuf = new byte[Message.SYSTEM_BYTES_LENGTH];
+        System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SYSTEMBYTES, systemBytesBuf, 0, Message.SYSTEM_BYTES_LENGTH);
         U4 systemBytes = new U4(systemBytesBuf);
         LOG.debug("System Bytes = " + systemBytes.getValue());
         
-        switch (sType) {
-            case SELECT_REQ:
-                //TODO
-                break;
-            default:
-                //TODO
+        if (sType == SType.DATA) {
+            //TODO: Add message text.
+            return new DataMessage(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
+        } else {
+            return new ControlMessage(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
         }
-        
-        Message message = null;
-        return message;
     }
 
 }
