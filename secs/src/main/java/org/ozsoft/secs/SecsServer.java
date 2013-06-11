@@ -2,11 +2,15 @@ package org.ozsoft.secs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.secs.format.U2;
+import org.ozsoft.secs.format.U4;
+import org.ozsoft.secs.message.ControlMessage;
 import org.ozsoft.secs.message.Message;
 import org.ozsoft.secs.message.MessageParser;
 
@@ -125,13 +129,24 @@ public class SecsServer implements Runnable {
         LOG.info(String.format("Connected with host '%s'", clientHost));
         try {
             InputStream is = clientSocket.getInputStream();
+            OutputStream os = clientSocket.getOutputStream();
             byte[] buf = new byte[BUFFER_SIZE];
             while (connectionState != ConnectionState.NOT_CONNECTED) {
                 if (is.available() > 0) {
                     int length = is.read(buf);
                     try {
-                        Message message = MessageParser.parse(buf, length);
-                        LOG.debug(String.format("Received message '%s'", message));
+                        Message requestMessage = MessageParser.parse(buf, length);
+                        LOG.debug(String.format("Received message '%s'", requestMessage));
+                        U2 sessionId = requestMessage.getSessionId();
+                        U4 systemBytes = requestMessage.getSystemBytes();
+                        if (requestMessage.getSType() == SType.SELECT_REQ) {
+                            byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0 : (byte) 1;
+                            Message replyMessage = new ControlMessage(sessionId, (byte) 0, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
+                            LOG.debug("Reply message: " + replyMessage);
+                            LOG.debug("Reply message: " + replyMessage.toB());
+                            os.write(replyMessage.toB().toByteArray());
+                            os.flush();
+                        }
                     } catch (SecsException e) {
                         LOG.error("Received invalid SECS message: " + e.getMessage());
                     }

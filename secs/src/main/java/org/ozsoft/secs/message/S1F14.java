@@ -5,6 +5,6 @@ package org.ozsoft.secs.message;
  * 
  * @author Oscar Stigter
  */
-public class S1F14 extends Message {
+public class S1F14 {
 
 }

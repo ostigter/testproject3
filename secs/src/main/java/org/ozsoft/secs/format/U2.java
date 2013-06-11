@@ -27,6 +27,10 @@ public class U2 {
         setValue(data);
     }
     
+    public U2(B b) {
+        setValue(b);
+    }
+    
     public int getValue() {
         return value;
     }
@@ -43,6 +47,23 @@ public class U2 {
             throw new IllegalArgumentException("Invalid U2 length: " + data.length);
         }
         setValue((((int) (data[0] & 0xFF)) << 8) | (((int) (data[1] & 0xFF))));
+    }
+    
+    public void setValue(B b) {
+        final int length = b.getSize();
+        if (length != LENGTH) {
+            throw new IllegalArgumentException("Invalid U2 length: " + length);
+        }
+        value = b.get(0) << 8 | b.get(1);
+    }
+    
+    public B toB() {
+        final int b1 = value / 256;
+        final int b2 =  value - (b1 * 256);
+        final B b = new B();
+        b.add(b1);
+        b.add(b2);
+        return b;
     }
     
     @Override

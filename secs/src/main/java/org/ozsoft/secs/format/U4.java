@@ -45,6 +45,14 @@ public class U4 {
         setValue((((int) (data[0] & 0x7F)) << 24) | (((int) (data[1] & 0xFF)) << 16) | (((int) (data[2] & 0xFF)) << 8) | (((int) (data[3] & 0xFF))));
     }
     
+    public B toB() {
+        byte b1 = (byte) (value >> 24);
+        byte b2 = (byte) (value >> 16);
+        byte b3 = (byte) (value >> 8);
+        byte b4 = (byte) (value & 0xFF);
+        return new B(new byte[] {b1, b2, b3, b4});
+    }
+    
     @Override
     public int hashCode() {
         return Long.valueOf(value).hashCode();

@@ -15,6 +15,21 @@ public class U2Test {
         Assert.assertEquals(256, new U2(new byte[] {0x01, 0x00}).getValue());
         Assert.assertEquals(257, new U2(new byte[] {0x01, 0x01}).getValue());
         Assert.assertEquals(65535, new U2(new byte[] {(byte) 0xFF, (byte) 0xFF}).getValue());
+        
+        B b = new B(new byte[] {0x00, 0x00});
+        Assert.assertEquals(b, new U2(b).toB());
+        b = new B(new byte[] {0x00, 0x01});
+        Assert.assertEquals(b, new U2(b).toB());
+        b = new B(new byte[] {0x00, (byte) 0xFF});
+        Assert.assertEquals(b, new U2(b).toB());
+        b = new B(new byte[] {0x01, 0x00});
+        Assert.assertEquals(b, new U2(b).toB());
+        b = new B(new byte[] {0x01, 0x01});
+        Assert.assertEquals(b, new U2(b).toB());
+        b = new B(new byte[] {0x01, (byte) 0xFF});
+        Assert.assertEquals(b, new U2(b).toB());
+        b = new B(new byte[] {(byte) 0xFF, (byte) 0xFF});
+        Assert.assertEquals(b, new U2(b).toB());
     }
-
+    
 }
