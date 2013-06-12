@@ -36,7 +36,7 @@ public class B {
         add(b);
     }
     
-    public int getSize() {
+    public int length() {
         return list.size();
     }
     
@@ -65,8 +65,8 @@ public class B {
     }
     
     public void add(B b) {
-        final int size = b.getSize();
-        for (int i = 0; i < size; i++) {
+        final int length = b.length();
+        for (int i = 0; i < length; i++) {
             list.add(b.get(i));
         }
     }
@@ -76,9 +76,9 @@ public class B {
     }
     
     public byte[] toByteArray() {
-        final int size = list.size();
-        final byte[] array = new byte[size];
-        for (int i = 0; i < size; i++) {
+        final int length = list.size();
+        final byte[] array = new byte[length];
+        for (int i = 0; i < length; i++) {
             array[i] = (byte) (list.get(i) & 0xFF);
         }
         return array;
@@ -87,10 +87,10 @@ public class B {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof B) {
-            B b = (B) obj;
-            final int size = b.getSize();
-            if (size == getSize()) {
-                for (int i = 0; i < size; i++) {
+            final B b = (B) obj;
+            final int length = b.length();
+            if (length == length()) {
+                for (int i = 0; i < length; i++) {
                     if (b.get(i) != get(i)) {
                         return false;
                     }
@@ -107,15 +107,15 @@ public class B {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        final int size = list.size();
-        sb.append(String.format("B:%d", size));
-        if (size > 0) {
+        final int length = list.size();
+        sb.append(String.format("B:%d", length));
+        if (length > 0) {
             sb.append(" {");
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < length; i++) {
                 if (i > 0) {
                     sb.append(' ');
                 }
-                sb.append(String.format("%02X", list.get(i)));
+                sb.append(String.format("%02x", list.get(i)));
             }
             sb.append('}');
         }

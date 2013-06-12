@@ -27,7 +27,7 @@ public class ControlMessage extends Message {
     
     @Override
     public String toString() {
-        return String.format("ControlMessage(SType = %s)", getSType());
+        return String.format("ControlMessage(SType = %s, systemBytes = %08d)", getSType(), getSystemBytes().getValue());
     }
 
 }
