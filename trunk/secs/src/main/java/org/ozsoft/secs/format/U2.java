@@ -50,19 +50,21 @@ public class U2 {
     }
     
     public void setValue(B b) {
-        final int length = b.getSize();
+        final int length = b.length();
         if (length != LENGTH) {
             throw new IllegalArgumentException("Invalid U2 length: " + length);
         }
         value = b.get(0) << 8 | b.get(1);
     }
     
+    public byte[] toByteArray() {
+        return new byte[] {(byte) (value >> 8), (byte) (value & 0xFF)};
+    }
+    
     public B toB() {
-        final int b1 = value / 256;
-        final int b2 =  value - (b1 * 256);
-        final B b = new B();
-        b.add(b1);
-        b.add(b2);
+        B b = new B();
+        b.add(value >> 8);
+        b.add(value & 0xFF);
         return b;
     }
     

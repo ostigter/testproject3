@@ -8,9 +8,11 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import org.apache.log4j.Logger;
+import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.message.ControlMessage;
+import org.ozsoft.secs.message.DataMessage;
 import org.ozsoft.secs.message.Message;
 import org.ozsoft.secs.message.MessageParser;
 
@@ -119,17 +121,14 @@ public class SecsServer implements Runnable {
         LOG.info("Server stopped");
     }
     
-    private void disconnect() {
-        connectionState = ConnectionState.NOT_CONNECTED;
-        communicationState = CommunicationState.NOT_COMMUNICATING;
-    }
-    
     private void handleConnection(Socket clientSocket) {
         String clientHost = clientSocket.getInetAddress().getHostName();
         LOG.info(String.format("Connected with host '%s'", clientHost));
+        InputStream is = null;
+        OutputStream os = null;
         try {
-            InputStream is = clientSocket.getInputStream();
-            OutputStream os = clientSocket.getOutputStream();
+            is = clientSocket.getInputStream();
+            os = clientSocket.getOutputStream();
             byte[] buf = new byte[BUFFER_SIZE];
             while (connectionState != ConnectionState.NOT_CONNECTED) {
                 if (is.available() > 0) {
@@ -138,24 +137,100 @@ public class SecsServer implements Runnable {
                         Message requestMessage = MessageParser.parse(buf, length);
                         LOG.debug(String.format("Received message '%s'", requestMessage));
                         U2 sessionId = requestMessage.getSessionId();
+                        SType sType = requestMessage.getSType();
                         U4 systemBytes = requestMessage.getSystemBytes();
-                        if (requestMessage.getSType() == SType.SELECT_REQ) {
-                            byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0 : (byte) 1;
-                            Message replyMessage = new ControlMessage(sessionId, (byte) 0, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
-                            LOG.debug("Reply message: " + replyMessage);
-                            LOG.debug("Reply message: " + replyMessage.toB());
-                            os.write(replyMessage.toB().toByteArray());
-                            os.flush();
+                        if (requestMessage instanceof DataMessage) {
+                            DataMessage dataMessage = (DataMessage) requestMessage;
+                            int stream = dataMessage.getStream();
+                            int function = dataMessage.getFunction();
+                            B requestText = dataMessage.getText();
+                            if (stream == 1 && function == 13) {
+                                // S1F13 Establish Communication Request (CR).
+                                if (requestText.length() > 0) {
+                                    int formatByte = requestText.get(0);
+                                    LOG.debug(String.format("formatByte = %02x", formatByte));
+                                    int formatCode = (formatByte & 0xfc) >> 2;
+                                    LOG.debug(String.format("formatCode = %02x", formatCode));
+                                    int noOfLengthBytes = formatByte & 0x03;
+                                    LOG.debug(String.format("noOfLengthBytes = %02x", noOfLengthBytes));
+                                    if (noOfLengthBytes < 1 || noOfLengthBytes > 4) {
+                                        //TODO: Invalid noOfLengthBytes.
+                                    } else {
+                                        int lengthByte = requestText.get(1);
+                                        if (noOfLengthBytes > 1) {
+                                            lengthByte |= requestText.get(2) << 8;
+                                        }
+                                        if (noOfLengthBytes > 2) {
+                                            lengthByte |= requestText.get(3) << 16;
+                                        }
+                                        if (noOfLengthBytes > 3) {
+                                            lengthByte |= requestText.get(4) << 24;
+                                        }
+                                        LOG.debug(String.format("lengthByte = %02x", lengthByte));
+                                        if (lengthByte == 0) {
+                                            // No MDLN and SOFTREV specified.
+                                        } else if (lengthByte == 2) {
+                                            //TODO: Read MDLN and SOFTREV items.
+                                        } else {
+                                            LOG.error("Invalid format of S1F13 message");
+                                        }
+                                    }
+                                }
+                                
+                                // Send S1F14 Establish Communication Request Acknowledge (CRA).
+                                B text = new B();
+                                Message replyMessage = new DataMessage(sessionId, (byte) 1, (byte) 14, PType.SECS_II, SType.DATA, systemBytes, text);
+                                LOG.debug("Reply message: " + replyMessage);
+//                                LOG.debug("Reply message: " + replyMessage.toB());
+                                os.write(replyMessage.toB().toByteArray());
+                                os.flush();
+                            }
+                        } else {
+                            // Control message.
+                            switch (sType) {
+                                case SELECT_REQ:
+                                    byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0 : (byte) 1;
+                                    Message replyMessage = new ControlMessage(sessionId, (byte) 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
+                                    LOG.debug("Reply message: " + replyMessage);
+//                                  LOG.debug("Reply message: " + replyMessage.toB());
+                                    os.write(replyMessage.toB().toByteArray());
+                                    os.flush();
+                                    break;
+                                case DESELECT_REQ:
+                                    //TODO: Handle DESELECT_REQ.
+                                    break;
+                                case SEPARATE:
+                                    disconnect();
+                                    is.close();
+                                    os.close();
+                                    clientSocket.close();
+                                    break;
+                                case LINKTEST_REQ:
+                                    //TODO: Handle LINKTEST_REQ.
+                                    break;
+                                case REJECT:
+                                    //TODO: Handle REJECT.
+                                    break;
+                                default:
+                                    LOG.error("Unsupported control message type: " + sType);
+                            }
                         }
                     } catch (SecsException e) {
                         LOG.error("Received invalid SECS message: " + e.getMessage());
                     }
+                } else {
+                    sleep(POLL_INTERVAL);
                 }
-                sleep(POLL_INTERVAL);
             }
         } catch (IOException e) {
             LOG.error("I/O error while reading from client connection: " + e.getMessage());
         }
+    }
+    
+    private void disconnect() {
+        connectionState = ConnectionState.NOT_CONNECTED;
+        communicationState = CommunicationState.NOT_COMMUNICATING;
+        LOG.info("Disconnected");
     }
     
     private static void sleep(long duration) {
