@@ -12,7 +12,7 @@ public abstract class Message {
     
     public static final int HEADER_LENGTH = 10;
     
-    public static final B LENGTH_BYTES = new B(new byte[] {0, 0, 0, HEADER_LENGTH});
+    public static final byte[] LENGTH_BYTES = new byte[] {0, 0, 0, HEADER_LENGTH};
     
     public static final int MIN_LENGTH = LENGTH_LENGTH + HEADER_LENGTH;
     

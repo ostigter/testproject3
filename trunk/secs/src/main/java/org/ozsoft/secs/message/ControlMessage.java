@@ -19,9 +19,9 @@ public class ControlMessage extends Message {
         b.add(getSessionId().toB());
         b.add(getHeaderByte2());
         b.add(getHeaderByte3());
-        b.add(0);
+        b.add(0x00);
         b.add(getSType().ordinal());
-        b.add(getSystemBytes().toB());
+        b.add(getSystemBytes().toByteArray());
         return b;
     }
     

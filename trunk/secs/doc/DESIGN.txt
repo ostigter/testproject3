@@ -4,3 +4,48 @@ DESIGN
 SEMI E05 SECS-II
 SEMI E30 GEM
 SEMI E37 HSMS
+
+
+Message data
+------------
+
+0000 0001 0x01 // format List (L), 1 length byte
+0000 1010 0x0a // 10 items
+
+0010 0001 0x21 // format = Bytes (B), 2 length bytes
+0000 0001 0x01
+0000 0011 0x03 // 1 * 256 + 3 = 259 bytes
+
+0010 0101 0x25 // format = Boolean (TF), 1 length byte
+0000 0001 0x01 // True
+
+0100 0001 0x41 // format = 7-bit ASCII (A), 1 length byte 
+0001 0100 0x14 // 20 characters
+
+1010 1001 0xa9 // format = 2-byte unsigned integer (U2), 1 length byte
+0000 0110 0x06 // 6 / 2 = 3 unsigned 2-byte integers
+
+1011 0001 0xb1 // format = 4-byte unsigned integer (U2), 1 length byte
+0000 0100 0x04 // 4 / 4 = 1 unsigned 4-byte integer
+
+L {
+    B {01 7f 80 ff}
+    TF {01}
+    A {'abc'}
+    U2 {259}
+}
+
+0x01 (format L, 1 length byte)
+0x04 (length 4 items)
+0x21 (format B, 1 length byte)
+0x04 (length 4 bytes)
+0x01
+0x7f
+0x80
+0xff
+
+0x41 (format A, 1 length byte)
+0x03 (length 3 characters)
+0x61 ('a')
+0x62 ('b')
+0x63 ('c')

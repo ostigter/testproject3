@@ -5,13 +5,13 @@ package org.ozsoft.secs.format;
  * 
  * @author Oscar Stigter
  */
-public class U2 {
+public class U2 implements Data<Integer> {
     
     public static final int LENGTH = 2;
     
-    private static final int MIN_VALUE = 0;
+    private static final int MIN_VALUE = 0x00;
     
-    private static final int MAX_VALUE = 65535;
+    private static final int MAX_VALUE = 0xffff;
     
     private int value;
     
@@ -31,22 +31,24 @@ public class U2 {
         setValue(b);
     }
     
-    public int getValue() {
+    @Override
+    public Integer getValue() {
         return value;
     }
     
-    public void setValue(int value) {
+    @Override
+    public void setValue(Integer value) {
         if (value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("Invalid U2 value: " + value);
         }
         this.value = value;
     }
-    
+
     public void setValue(byte[] data) {
         if (data.length != LENGTH) {
             throw new IllegalArgumentException("Invalid U2 length: " + data.length);
         }
-        setValue((((int) (data[0] & 0xFF)) << 8) | (((int) (data[1] & 0xFF))));
+        setValue((((int) (data[0] & 0xff)) << 8) | (((int) (data[1] & 0xff))));
     }
     
     public void setValue(B b) {
@@ -57,14 +59,20 @@ public class U2 {
         value = b.get(0) << 8 | b.get(1);
     }
     
+    @Override
+    public int length() {
+        return LENGTH;
+    }
+    
+    @Override
     public byte[] toByteArray() {
-        return new byte[] {(byte) (value >> 8), (byte) (value & 0xFF)};
+        return new byte[] {(byte) (value >> 8), (byte) (value & 0xff)};
     }
     
     public B toB() {
         B b = new B();
         b.add(value >> 8);
-        b.add(value & 0xFF);
+        b.add(value & 0xff);
         return b;
     }
     
@@ -83,8 +91,13 @@ public class U2 {
     }
     
     @Override
-    public String toString() {
+    public String toSml() {
         return String.format("U2(%d)", value);
+    }
+
+    @Override
+    public String toString() {
+        return toSml();
     }
     
 }
