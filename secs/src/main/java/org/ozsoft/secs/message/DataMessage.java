@@ -43,13 +43,13 @@ public class DataMessage extends Message {
     @Override
     public B toB() {
         B b = new B();
-        b.add(new U4(Message.MIN_LENGTH + text.length()).toB());
+        b.add(new U4(Message.MIN_LENGTH + text.length()).toByteArray());
         b.add(getSessionId().toB());
         b.add(getHeaderByte2());
         b.add(getHeaderByte3());
         b.add(0x00);
         b.add(getSType().ordinal());
-        b.add(getSystemBytes().toB());
+        b.add(getSystemBytes().toByteArray());
         b.add(text);
         return b;
     }

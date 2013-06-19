@@ -3,53 +3,50 @@ package org.ozsoft.secs.format;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * List of bytes.
- * 
- * @author Oscar Stigter
- */
-public class B {
+public class B implements Data<List<Integer>> {
     
-    private List<Integer> list = new ArrayList<Integer>();
+    public static final int MIN_VALUE = 0x00;
+    
+    public static final int MAX_VALUE = 0xff;
+    
+    private List<Integer> bytes = new ArrayList<Integer>();
     
     public B() {
         // Empty implementation.
-    }
-    
-    public B(byte b) {
-        add(b);
-    }
-    
-    public B(int b) {
-        add(b);
     }
     
     public B(byte[] data) {
         add(data);
     }
     
-    public B(int[] data) {
-        add(data);
+    @Override
+    public List<Integer> getValue() {
+        return bytes;
+    }
+
+    @Override
+    public void setValue(List<Integer> bytes) {
+        this.bytes = bytes;
     }
     
-    public B(B b) {
-        add(b);
-    }
-    
+    @Override
     public int length() {
-        return list.size();
+        return bytes.size();
     }
     
     public int get(int index) {
-        return list.get(index);
+        return bytes.get(index);
     }
     
     public void add(byte b) {
-        list.add(b & 0xFF);
+        add((int) b);
     }
     
     public void add(int b) {
-        add((byte) (b & 0xFF));
+        if (b < MIN_VALUE || b > MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid value for B: " + b);
+        }
+        bytes.add(b);
     }
     
     public void add(byte[] data) {
@@ -64,50 +61,31 @@ public class B {
         }
     }
     
-    public void add(B b) {
-        final int length = b.length();
+    public void add(B data) {
+        int length = data.length();
         for (int i = 0; i < length; i++) {
-            list.add(b.get(i));
+            add(data.get(i));
         }
     }
     
     public void clear() {
-        list.clear();
+        bytes.clear();
     }
-    
+
+    @Override
     public byte[] toByteArray() {
-        final int length = list.size();
-        final byte[] array = new byte[length];
+        int length = length();
+        byte[] array = new byte[bytes.size()];
         for (int i = 0; i < length; i++) {
-            array[i] = (byte) (list.get(i) & 0xFF);
+            array[i] = (byte) (bytes.get(i) & 0xff);
         }
         return array;
     }
-    
+
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof B) {
-            final B b = (B) obj;
-            final int length = b.length();
-            if (length == length()) {
-                for (int i = 0; i < length; i++) {
-                    if (b.get(i) != get(i)) {
-                        return false;
-                    }
-                }
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-    
-    @Override
-    public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        final int length = list.size();
+    public String toSml() {
+        StringBuilder sb = new StringBuilder();
+        int length = length();
         sb.append(String.format("B:%d", length));
         if (length > 0) {
             sb.append(" {");
@@ -115,11 +93,15 @@ public class B {
                 if (i > 0) {
                     sb.append(' ');
                 }
-                sb.append(String.format("%02x", list.get(i)));
+                sb.append(String.format("%02x", bytes.get(i)));
             }
             sb.append('}');
         }
         return sb.toString();
     }
     
+    @Override
+    public String toString() {
+        return toSml();
+    }
 }

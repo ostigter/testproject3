@@ -5,13 +5,13 @@ package org.ozsoft.secs.format;
  * 
  * @author Oscar Stigter
  */
-public class U4 {
+public class U4 implements Data<Long> {
     
     public static final int LENGTH = 4;
     
-    private static final long MIN_VALUE = 0L;
+    private static final long MIN_VALUE = 0x00000000L;
     
-    private static final long MAX_VALUE = 4294967296L;
+    private static final long MAX_VALUE = 0xffffffffL;
     
     private long value;
     
@@ -27,11 +27,13 @@ public class U4 {
         setValue(data);
     }
     
-    public long getValue() {
+    @Override
+    public Long getValue() {
         return value;
     }
     
-    public void setValue(long value) {
+    @Override
+    public void setValue(Long value) {
         if (value < MIN_VALUE || value > MAX_VALUE) {
             throw new IllegalArgumentException("Invalid U4 value: " + value);
         }
@@ -42,15 +44,26 @@ public class U4 {
         if (data.length != LENGTH) {
             throw new IllegalArgumentException("Invalid U4 length: " + data.length);
         }
-        setValue((((int) (data[0] & 0x7F)) << 24) | (((int) (data[1] & 0xFF)) << 16) | (((int) (data[2] & 0xFF)) << 8) | (((int) (data[3] & 0xFF))));
+        setValue((((long) (data[0] & 0x7f)) << 24) | (((long) (data[1] & 0xff)) << 16) | (((long) (data[2] & 0xff)) << 8) | (((long) (data[3] & 0xff))));
     }
     
-    public B toB() {
+    @Override
+    public int length() {
+        return LENGTH;
+    }
+    
+    @Override
+    public byte[] toByteArray() {
         byte b1 = (byte) (value >> 24);
         byte b2 = (byte) (value >> 16);
         byte b3 = (byte) (value >> 8);
-        byte b4 = (byte) (value & 0xFF);
-        return new B(new byte[] {b1, b2, b3, b4});
+        byte b4 = (byte) (value & 0xff);
+        return new byte[] {b1, b2, b3, b4};
+    }
+
+    @Override
+    public String toSml() {
+        return String.format("U4(%d)", value);
     }
     
     @Override
@@ -69,7 +82,7 @@ public class U4 {
     
     @Override
     public String toString() {
-        return String.format("U4(%d)", value);
+        return toSml();
     }
-    
+
 }
