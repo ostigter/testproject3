@@ -16,22 +16,23 @@ public class MessageParser {
     private static final Logger LOG = Logger.getLogger(MessageParser.class);
     
     public static Message parse(byte[] data, int length) throws SecsException {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append(String.format("%02x ", data[i]));
-        }
-        LOG.debug(length + " bytes read: " + sb);
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < length; i++) {
+//            sb.append(String.format("%02x ", data[i]));
+//        }
+//        LOG.debug(length + " bytes read: " + sb);
         
         // Determine message length.
-        if (length < Message.LENGTH_LENGTH) {
+        if (length < Message.HEADER_LENGTH) {
             throw new SecsException(String.format("Incomplete message (message length: %d)", length));
         }
         byte[] lengthField = new byte[Message.LENGTH_LENGTH];
         System.arraycopy(data, 0, lengthField, 0, Message.LENGTH_LENGTH);
         long messageLength = new U4(lengthField).getValue();
 //        LOG.debug("Message length: " + messageLength);
-        if (messageLength < Message.HEADER_LENGTH) {
-            throw new SecsException("Incomplete message (invalid header length)");
+        if (length < (messageLength + Message.LENGTH_LENGTH)) {
+            throw new SecsException(String.format("Incomplete message (declared length: %d; actual length: %d)",
+                    messageLength + Message.LENGTH_LENGTH, length));
         }
         if (messageLength > Message.MAX_LENGTH) {
             throw new SecsException(String.format("Message too large (%d bytes)", messageLength));

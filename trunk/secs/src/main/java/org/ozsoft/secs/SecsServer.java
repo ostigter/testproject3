@@ -181,7 +181,7 @@ public class SecsServer implements Runnable {
                                 B text = new B();
                                 Message replyMessage = new DataMessage(sessionId, (byte) 1, (byte) 14, PType.SECS_II, SType.DATA, systemBytes, text);
                                 LOG.debug("Reply message: " + replyMessage);
-//                                LOG.debug("Reply message: " + replyMessage.toB());
+                                LOG.debug("Reply message: " + replyMessage.toB());
                                 os.write(replyMessage.toB().toByteArray());
                                 os.flush();
                             }
@@ -192,7 +192,7 @@ public class SecsServer implements Runnable {
                                     byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0 : (byte) 1;
                                     Message replyMessage = new ControlMessage(sessionId, (byte) 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
                                     LOG.debug("Reply message: " + replyMessage);
-//                                  LOG.debug("Reply message: " + replyMessage.toB());
+                                    LOG.debug("Reply message: " + replyMessage.toB());
                                     os.write(replyMessage.toB().toByteArray());
                                     os.flush();
                                     break;
