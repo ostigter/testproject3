@@ -3,6 +3,7 @@ package org.ozsoft.secs.message;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
 import org.ozsoft.secs.format.B;
+import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 
@@ -14,9 +15,9 @@ public class DataMessage extends Message {
     
     private final boolean withReply;
     
-    private final B text;
+    private final Data<?> text;
 
-    public DataMessage(U2 sessionId, byte headerByte2, byte headerByte3, PType pType, SType sType, U4 systemBytes, B text) {
+    public DataMessage(U2 sessionId, byte headerByte2, byte headerByte3, PType pType, SType sType, U4 systemBytes, Data<?> text) {
         super(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
         withReply = ((headerByte2 & 0x80) == 0x80);
         stream = (headerByte2 & 0x7f);
@@ -36,7 +37,7 @@ public class DataMessage extends Message {
         return withReply;
     }
     
-    public B getText() {
+    public Data<?> getText() {
         return text;
     }
     
@@ -50,12 +51,12 @@ public class DataMessage extends Message {
         b.add(0x00);
         b.add(getSType().ordinal());
         b.add(getSystemBytes().toByteArray());
-        b.add(text);
+        b.add(text.toByteArray());
         return b;
     }
     
     public String getType() {
-        return String.format("S%02dF%02d", stream, function);
+        return String.format("S%dF%d", stream, function);
     }
     
     @Override

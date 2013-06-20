@@ -16,11 +16,11 @@ public class MessageParser {
     private static final Logger LOG = Logger.getLogger(MessageParser.class);
     
     public static Message parse(byte[] data, int length) throws SecsException {
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < length; i++) {
-//            sb.append(String.format("%02x ", data[i]));
-//        }
-//        LOG.debug(length + " bytes read: " + sb);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(String.format("%02x ", data[i]));
+        }
+        LOG.debug(length + " bytes read: " + sb);
         
         // Determine message length.
         if (length < Message.HEADER_LENGTH) {
@@ -76,64 +76,69 @@ public class MessageParser {
         
         if (sType == SType.DATA) {
             int dataLength = (int) (messageLength - Message.HEADER_LENGTH);
-            byte[] text = new byte[dataLength];
-            System.arraycopy(data, Message.MIN_LENGTH, text, 0, dataLength);
-            Data<?> item = parseText(text);
-            return new DataMessage(sessionId, headerByte2, headerByte3, pType, sType, systemBytes, new B(text));
+            Data<?> text = null;
+            if (dataLength > 0) {
+                byte[] textBytes = new byte[dataLength];
+                System.arraycopy(data, Message.MIN_LENGTH, textBytes, 0, dataLength);
+                text = parseText(textBytes, 0);
+            }
+            return new DataMessage(sessionId, headerByte2, headerByte3, pType, sType, systemBytes, text);
         } else {
             return new ControlMessage(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
         }
     }
     
-    private static Data<?> parseText(byte[] text) {
+    private static Data<?> parseText(byte[] text, int offset) throws SecsException {
         if (text.length < 2) {
-            throw new IllegalArgumentException("Invalid data length: " + text.length);
+            throw new SecsException("Invalid data length: " + text.length);
         }
         
-        int formatByte = text[0];
+        int formatByte = text[offset];
         LOG.debug(String.format("formatByte = %02x", formatByte));
         int formatCode = (formatByte & 0xfc) >> 2;
         LOG.debug(String.format("formatCode = %02x", formatCode));
         int noOfLengthBytes = formatByte & 0x03;
-        LOG.debug(String.format("noOfLengthBytes = %02x", noOfLengthBytes));
+        LOG.debug(String.format("noOfLengthBytes = %d", noOfLengthBytes));
         if (noOfLengthBytes < 1 || noOfLengthBytes > 4) {
-            throw new IllegalArgumentException("Invalid number of length bytes: " + noOfLengthBytes);
+            throw new SecsException("Invalid number of length bytes: " + noOfLengthBytes);
         }
         if (text.length < noOfLengthBytes + 1) {
-            throw new IllegalArgumentException("Incomplete message data");
+            throw new SecsException("Incomplete message data");
         }
-        int length = text[1];
+        int length = text[offset + 1];
         if (noOfLengthBytes > 1) {
-            length |= text[2] << 8;
+            length |= (text[offset + 2] << 8);
         }
         if (noOfLengthBytes > 2) {
-            length |= text[3] << 16;
+            length |= (text[offset + 3] << 16);
         }
         if (noOfLengthBytes > 3) {
-            length |= text[4] << 24;
+            length |= (text[offset + 4] << 24);
         }
-        LOG.debug(String.format("lengthByte = %02x", length));
+        LOG.debug(String.format("length = %d", length));
+        if (text.length < offset + 2 + length) {
+            throw new SecsException("Incomplete message data");
+        }
         
-        Data<?> item = null;
-        int offset = 1 + noOfLengthBytes;
+        Data<?> dataItem = null;
+        offset++;
         switch (formatCode) {
             case 0x00: // L
-                item = parseL(text, offset, length);
+                dataItem = parseL(text, offset, length);
                 break;
             case 0x10: // B
-                item = parseB(text, offset, length);
+                dataItem = parseB(text, offset, length);
                 break;
             case 0x11: // boolean
                 //TODO
                 break;
             case 0x20: // A
-                item = parseA(text, offset, length);
+                dataItem = parseA(text, offset, length);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid format code in message data: " + formatCode);
         }
-        
-        return item;
+        return dataItem;
     }
     
     private static L parseL(byte[] data, int offset, int length) {
@@ -144,14 +149,18 @@ public class MessageParser {
     
     private static B parseB(byte[] data, int offset, int length) {
         B b = new B();
-        //TODO
+        for (int i = 0; i < length; i++) {
+            b.add(data[offset + i]);
+        }
         return b;
     }
 
     private static A parseA(byte[] data, int offset, int length) {
-        A a = new A();
-        //TODO
-        return a;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append((char) data[offset + i]);
+        }
+        return new A(sb.toString());
     }
 
 }

@@ -1,9 +1,14 @@
 package org.ozsoft.secs.format;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+
 public class B implements Data<List<Integer>> {
+    
+    private static final int FORMAT_CODE = 0x20;
     
     public static final int MIN_VALUE = 0x00;
     
@@ -46,7 +51,7 @@ public class B implements Data<List<Integer>> {
         if (b < MIN_VALUE || b > MAX_VALUE) {
             throw new IllegalArgumentException("Invalid value for B: " + b);
         }
-        bytes.add(b);
+        bytes.add((byte) b & 0xff);
     }
     
     public void add(byte[] data) {
@@ -74,12 +79,34 @@ public class B implements Data<List<Integer>> {
 
     @Override
     public byte[] toByteArray() {
+        // Determine length.
         int length = length();
-        byte[] array = new byte[bytes.size()];
-        for (int i = 0; i < length; i++) {
-            array[i] = (byte) (bytes.get(i) & 0xff);
+        int noOfLengthBytes = 1;
+        B lengthBytes = new B();
+        lengthBytes.add(length & 0xff);
+        if (length > 0xff) {
+            noOfLengthBytes++;
+            lengthBytes.add((length >> 8) & 0xff);
         }
-        return array;
+        if (length > 0xffff) {
+            noOfLengthBytes++;
+            lengthBytes.add((length >> 16) & 0xff);
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            // Write format byte.
+            baos.write(FORMAT_CODE | noOfLengthBytes);
+            for (int i = 0; i < noOfLengthBytes; i++) {
+                baos.write(lengthBytes.get(i));
+            }
+            // Write bytes recursively.
+            for (int b : bytes) {
+                baos.write(b);
+            }
+            return baos.toByteArray();
+        } finally {
+            IOUtils.closeQuietly(baos);
+        }
     }
 
     @Override

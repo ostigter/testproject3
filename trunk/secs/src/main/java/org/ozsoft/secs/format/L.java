@@ -5,7 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
+
 public class L implements Data<List<Data<?>>> {
+    
+    private static final int FORMAT_CODE = 0x00;
     
     private List<Data<?>> items = new ArrayList<Data<?>>();
 
@@ -24,6 +28,10 @@ public class L implements Data<List<Data<?>>> {
         return items.size();
     }
     
+    public Data<?> getItem(int index) {
+        return items.get(index);
+    }
+    
     public void addItem(Data<?> item) {
         items.add(item);
     }
@@ -34,18 +42,41 @@ public class L implements Data<List<Data<?>>> {
 
     @Override
     public byte[] toByteArray() {
+        // Construct length bytes.
+        int length = length();
+        int noOfLengthBytes = 1;
+        B lengthBytes = new B();
+        lengthBytes.add(length & 0xff);
+        if (length > 0xff) {
+            noOfLengthBytes++;
+            lengthBytes.add((length >> 8) & 0xff);
+        }
+        if (length > 0xffff) {
+            noOfLengthBytes++;
+            lengthBytes.add((length >> 16) & 0xff);
+        }
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] array = null;
         try {
+            // Write format byte.
+            baos.write(FORMAT_CODE | noOfLengthBytes);
+            for (int i = 0; i < noOfLengthBytes; i++) {
+                baos.write(lengthBytes.get(i));
+            }
+        
+            // Write items recursively.
             for (Data<?> item : items) {
                 baos.write(item.toByteArray());
             }
-            array = baos.toByteArray();
-            baos.close();
+            
+            return baos.toByteArray();
+
         } catch (IOException e) {
-            throw new RuntimeException("Could not serialize L: " + e.getMessage());
+            throw new RuntimeException("Could not serialize L items: " + e.getMessage());
+            
+        } finally {
+            IOUtils.closeQuietly(baos);
         }
-        return array;
     }
 
     @Override
@@ -59,6 +90,11 @@ public class L implements Data<List<Data<?>>> {
         }
         sb.append("\n}");
         return sb.toString();
+    }
+    
+    @Override
+    public String toString() {
+        return toSml();
     }
 
 }

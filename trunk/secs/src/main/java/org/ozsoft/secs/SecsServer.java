@@ -8,7 +8,9 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 import org.apache.log4j.Logger;
-import org.ozsoft.secs.format.B;
+import org.ozsoft.secs.format.A;
+import org.ozsoft.secs.format.Data;
+import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.message.ControlMessage;
@@ -23,6 +25,10 @@ public class SecsServer implements Runnable {
     private static final long POLL_INTERVAL = 10L;
     
     private static final int BUFFER_SIZE = 8192;
+    
+    private static final String MDLN = "SecsServer";
+    
+    private static final String SOFTREV = "1.0";
     
     private static final Logger LOG = Logger.getLogger(SecsServer.class);
     
@@ -135,7 +141,7 @@ public class SecsServer implements Runnable {
                     int length = is.read(buf);
                     try {
                         Message requestMessage = MessageParser.parse(buf, length);
-                        LOG.debug(String.format("Received message '%s'", requestMessage));
+                        LOG.debug(String.format("Received message: %s", requestMessage));
                         U2 sessionId = requestMessage.getSessionId();
                         SType sType = requestMessage.getSType();
                         U4 systemBytes = requestMessage.getSystemBytes();
@@ -143,43 +149,41 @@ public class SecsServer implements Runnable {
                             DataMessage dataMessage = (DataMessage) requestMessage;
                             int stream = dataMessage.getStream();
                             int function = dataMessage.getFunction();
-                            B requestText = dataMessage.getText();
+                            Data<?> requestText = dataMessage.getText();
                             if (stream == 1 && function == 13) {
-                                // S1F13 Establish Communication Request (CR).
-                                if (requestText.length() > 0) {
-                                    int formatByte = requestText.get(0);
-                                    LOG.debug(String.format("formatByte = %02x", formatByte));
-                                    int formatCode = (formatByte & 0xfc) >> 2;
-                                    LOG.debug(String.format("formatCode = %02x", formatCode));
-                                    int noOfLengthBytes = formatByte & 0x03;
-                                    LOG.debug(String.format("noOfLengthBytes = %02x", noOfLengthBytes));
-                                    if (noOfLengthBytes < 1 || noOfLengthBytes > 4) {
-                                        //TODO: Invalid noOfLengthBytes.
-                                    } else {
-                                        int lengthByte = requestText.get(1);
-                                        if (noOfLengthBytes > 1) {
-                                            lengthByte |= requestText.get(2) << 8;
-                                        }
-                                        if (noOfLengthBytes > 2) {
-                                            lengthByte |= requestText.get(3) << 16;
-                                        }
-                                        if (noOfLengthBytes > 3) {
-                                            lengthByte |= requestText.get(4) << 24;
-                                        }
-                                        LOG.debug(String.format("lengthByte = %02x", lengthByte));
-                                        if (lengthByte == 0) {
-                                            // No MDLN and SOFTREV specified.
-                                        } else if (lengthByte == 2) {
-                                            //TODO: Read MDLN and SOFTREV items.
-                                        } else {
-                                            LOG.error("Invalid format of S1F13 message");
-                                        }
-                                    }
+                                // Establish Communication Request.
+                                if (!(requestText instanceof L)) {
+                                    throw new SecsException("Invalid data format for S1F13 message");
                                 }
+                                L l = (L) requestText;
+                                String mdln = null;
+                                String softrev = null;
+                                if (l.length() == 0) {
+                                    // No MDLN and SOFTREV specified.
+                                    mdln = "";
+                                    softrev = "";
+                                } else if (l.length() == 2) {
+                                    Data<?> dataItem = l.getItem(0);
+                                    if (!(dataItem instanceof A)) {
+                                        throw new SecsException("Invalid data format for S1F13 message");
+                                    }
+                                    mdln = ((A) dataItem).getValue();
+                                    dataItem = l.getItem(1);
+                                    if (!(dataItem instanceof A)) {
+                                        throw new SecsException("Invalid data format for S1F13 message");
+                                    }
+                                    softrev = ((A) dataItem).getValue();
+                                } else {
+                                    throw new SecsException("Invalid data format for S1F13 message");
+                                }
+                                LOG.debug(String.format("MDLN = '%s'", mdln));
+                                LOG.debug(String.format("SOFTREV = '%s'", softrev));
                                 
                                 // Send S1F14 Establish Communication Request Acknowledge (CRA).
-                                B text = new B();
-                                Message replyMessage = new DataMessage(sessionId, (byte) 1, (byte) 14, PType.SECS_II, SType.DATA, systemBytes, text);
+                                L replyText = new L();
+                                replyText.addItem(new A(MDLN));
+                                replyText.addItem(new A(SOFTREV));
+                                Message replyMessage = new DataMessage(sessionId, (byte) 1, (byte) 14, PType.SECS_II, SType.DATA, systemBytes, replyText);
                                 LOG.debug("Reply message: " + replyMessage);
                                 LOG.debug("Reply message: " + replyMessage.toB());
                                 os.write(replyMessage.toB().toByteArray());
