@@ -16,7 +16,7 @@ public class ControlMessage extends Message {
     public B toB() {
         B b = new B();
         b.add(LENGTH_BYTES);
-        b.add(getSessionId().toB());
+        b.add(getSessionId().toByteArray());
         b.add(getHeaderByte2());
         b.add(getHeaderByte3());
         b.add(0x00);

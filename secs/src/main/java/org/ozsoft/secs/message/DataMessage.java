@@ -45,7 +45,7 @@ public class DataMessage extends Message {
     public B toB() {
         B b = new B();
         b.add(new U4(Message.MIN_LENGTH + text.length()).toByteArray());
-        b.add(getSessionId().toB());
+        b.add(getSessionId().toByteArray());
         b.add(getHeaderByte2());
         b.add(getHeaderByte3());
         b.add(0x00);

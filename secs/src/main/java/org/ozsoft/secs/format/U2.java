@@ -1,11 +1,14 @@
 package org.ozsoft.secs.format;
 
+
 /**
  * 2-byte unsigned integer (U2).
  * 
  * @author Oscar Stigter
  */
 public class U2 implements Data<Integer> {
+    
+    private static final int FORMAT_CODE = 0xa8;
     
     public static final int LENGTH = 2;
     
@@ -66,14 +69,12 @@ public class U2 implements Data<Integer> {
     
     @Override
     public byte[] toByteArray() {
-        return new byte[] {(byte) (value >> 8), (byte) (value & 0xff)};
-    }
-    
-    public B toB() {
-        B b = new B();
-        b.add(value >> 8);
-        b.add(value & 0xff);
-        return b;
+        //TODO: Support multi-value U2.
+        byte formatByte = (byte) (FORMAT_CODE | 0x01); // 1 length byte
+        byte lengthByte = 1;
+        byte b1 = (byte) (value >> 8);
+        byte b2 = (byte) (value & 0xff);
+        return new byte[] {formatByte, lengthByte, b1, b2};
     }
     
     @Override
