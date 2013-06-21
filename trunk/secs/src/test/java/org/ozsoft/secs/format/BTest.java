@@ -25,7 +25,7 @@ public class BTest {
         
         b.add(new byte[] {100, 101, 102});
         Assert.assertEquals(8, b.length());
-        TestUtils.assertEquals(new byte[] {0x21, 0x08, 0x01, 0x02, 0x7f, (byte) 0x80, (byte) 0xff, (byte) 0xa0, (byte) 0xa1, (byte) 0xa2}, b.toByteArray());
+        TestUtils.assertEquals(new byte[] {0x21, 0x08, 0x01, 0x02, 0x7f, (byte) 0x80, (byte) 0xff, 100, 101, 102}, b.toByteArray());
         Assert.assertEquals("B:8 {01 02 7f 80 ff 64 65 66}", b.toSml());
     }
     

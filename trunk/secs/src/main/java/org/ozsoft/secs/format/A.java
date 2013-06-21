@@ -71,6 +71,20 @@ public class A implements Data<String> {
     }
     
     @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof A) {
+            return ((A) obj).value.equals(value);
+        } else {
+            return false;
+        }
+    }
+    
+    @Override
     public String toString() {
         return toSml();
     }

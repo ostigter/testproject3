@@ -48,9 +48,9 @@ public class B implements Data<List<Integer>> {
     }
     
     public void add(int b) {
-        if (b < MIN_VALUE || b > MAX_VALUE) {
-            throw new IllegalArgumentException("Invalid value for B: " + b);
-        }
+//        if (b < MIN_VALUE || b > MAX_VALUE) {
+//            throw new IllegalArgumentException("Invalid value for B: " + b);
+//        }
         bytes.add((byte) b & 0xff);
     }
     
@@ -125,6 +125,26 @@ public class B implements Data<List<Integer>> {
             sb.append('}');
         }
         return sb.toString();
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof B) {
+            B b = (B) obj;
+            int length = b.length();
+            if (length == length()) {
+                for (int i = 0; i < length; i++) {
+                    if (b.get(i) != bytes.get(i)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
     
     @Override
