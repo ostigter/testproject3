@@ -2,7 +2,6 @@ package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
-import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 
@@ -12,7 +11,7 @@ public abstract class Message {
     
     public static final int HEADER_LENGTH = 10;
     
-    public static final byte[] LENGTH_BYTES = new byte[] {0, 0, 0, HEADER_LENGTH};
+    public static final byte[] HEADER_LENGTH_BYTES = new byte[] {0, 0, 0, HEADER_LENGTH};
     
     public static final int MIN_LENGTH = LENGTH_LENGTH + HEADER_LENGTH;
     
@@ -79,5 +78,6 @@ public abstract class Message {
         return systemBytes;
     }
     
-    public abstract B toB();
+    public abstract byte[] toByteArray();
+    
 }

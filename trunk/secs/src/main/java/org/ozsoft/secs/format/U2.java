@@ -8,7 +8,7 @@ package org.ozsoft.secs.format;
  */
 public class U2 implements Data<Integer> {
     
-    private static final int FORMAT_CODE = 0xa8;
+    public static final int FORMAT_CODE = 0xa8;
     
     public static final int LENGTH = 2;
     

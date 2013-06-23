@@ -9,6 +9,9 @@ SEMI E37 HSMS
 Message data
 ------------
 
+1111 1100 0xfc // Format Code mask
+0000 0011 0x03 // Length mask
+
 0000 0001 0x01 // format List (L), 1 length byte
 0000 1010 0x0a // 10 items
 

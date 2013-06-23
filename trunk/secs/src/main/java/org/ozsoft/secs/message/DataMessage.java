@@ -1,8 +1,11 @@
 package org.ozsoft.secs.message;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.commons.io.IOUtils;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
-import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
@@ -42,17 +45,25 @@ public class DataMessage extends Message {
     }
     
     @Override
-    public B toB() {
-        B b = new B();
-        b.add(new U4(Message.MIN_LENGTH + text.length()).toByteArray());
-        b.add(getSessionId().toByteArray());
-        b.add(getHeaderByte2());
-        b.add(getHeaderByte3());
-        b.add(0x00);
-        b.add(getSType().ordinal());
-        b.add(getSystemBytes().toByteArray());
-        b.add(text.toByteArray());
-        return b;
+    public byte[] toByteArray() {
+        byte[] textBytes = text.toByteArray();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            baos.write(new U4(MIN_LENGTH + textBytes.length).toByteArray());
+            baos.write(getSessionId().toByteArray());
+            baos.write(getHeaderByte2());
+            baos.write(getHeaderByte3());
+            baos.write(getPType().ordinal());
+            baos.write(getSType().ordinal());
+            baos.write(getSystemBytes().toByteArray());
+            baos.write(textBytes);
+        } catch (IOException e) {
+            // Internal error (should never happen).
+            throw new RuntimeException("Could not serialize message: " + e.getMessage());
+        } finally {
+            IOUtils.closeQuietly(baos);
+        }
+        return baos.toByteArray();
     }
     
     public String getType() {

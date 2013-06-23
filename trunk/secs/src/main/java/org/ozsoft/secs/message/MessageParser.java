@@ -6,6 +6,7 @@ import org.ozsoft.secs.SType;
 import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
+import org.ozsoft.secs.format.BOOLEAN;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
@@ -94,11 +95,11 @@ public class MessageParser {
         }
         
         int formatByte = text[offset];
-        LOG.debug(String.format("formatByte = %02x", formatByte));
-        int formatCode = (formatByte & 0xfc) >> 2;
-        LOG.debug(String.format("formatCode = %02x", formatCode));
+        int formatCode = (formatByte & 0xfc);
         int noOfLengthBytes = formatByte & 0x03;
-        LOG.debug(String.format("noOfLengthBytes = %d", noOfLengthBytes));
+//        LOG.debug(String.format("formatByte = %02x", formatByte));
+//        LOG.debug(String.format("formatCode = %02x", formatCode));
+//        LOG.debug(String.format("noOfLengthBytes = %d", noOfLengthBytes));
         if (noOfLengthBytes < 1 || noOfLengthBytes > 4) {
             throw new SecsException("Invalid number of length bytes: " + noOfLengthBytes);
         }
@@ -115,24 +116,24 @@ public class MessageParser {
         if (noOfLengthBytes > 3) {
             length |= (text[offset + 4] << 24);
         }
-        LOG.debug(String.format("length = %d", length));
+//        LOG.debug(String.format("length = %d", length));
         if (text.length < offset + 2 + length) {
             throw new SecsException("Incomplete message data");
         }
         
         Data<?> dataItem = null;
-        offset++;
+        offset += 1 + noOfLengthBytes;
         switch (formatCode) {
-            case 0x00: // L
+            case L.FORMAT_CODE:
                 dataItem = parseL(text, offset, length);
                 break;
-            case 0x10: // B
+            case B.FORMAT_CODE:
                 dataItem = parseB(text, offset, length);
                 break;
-            case 0x11: // boolean
-                //TODO
+            case BOOLEAN.FORMAT_CODE:
+                dataItem = parseBoolean(text, offset, length);
                 break;
-            case 0x20: // A
+            case A.FORMAT_CODE:
                 dataItem = parseA(text, offset, length);
                 break;
             default:
@@ -153,6 +154,13 @@ public class MessageParser {
             b.add(data[offset + i]);
         }
         return b;
+    }
+
+    private static BOOLEAN parseBoolean(byte[] data, int offset, int length) throws SecsException {
+        if (length != BOOLEAN.LENGTH) {
+            throw new SecsException("Invalid BOOLEAN length: " + length);
+        }
+        return new BOOLEAN(data[offset]);
     }
 
     private static A parseA(byte[] data, int offset, int length) {

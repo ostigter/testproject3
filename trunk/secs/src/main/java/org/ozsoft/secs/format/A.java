@@ -6,7 +6,7 @@ import org.apache.commons.io.IOUtils;
 
 public class A implements Data<String> {
     
-    private static final int FORMAT_CODE = 0x40;
+    public static final int FORMAT_CODE = 0x40;
     
     private String value;
     

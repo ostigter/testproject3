@@ -9,7 +9,7 @@ import org.apache.commons.io.IOUtils;
 
 public class L implements Data<List<Data<?>>> {
     
-    private static final int FORMAT_CODE = 0x00;
+    public static final int FORMAT_CODE = 0x00;
     
     private List<Data<?>> items = new ArrayList<Data<?>>();
 
