@@ -7,6 +7,8 @@ package org.ozsoft.secs.format;
  */
 public class U4 implements Data<Long> {
     
+    public static final int FORMAT_CODE = 52;
+    
     public static final int LENGTH = 4;
     
     private static final long MIN_VALUE = 0x00000000L;

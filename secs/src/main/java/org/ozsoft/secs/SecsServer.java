@@ -9,6 +9,7 @@ import java.net.SocketTimeoutException;
 
 import org.apache.log4j.Logger;
 import org.ozsoft.secs.format.A;
+import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
@@ -185,8 +186,8 @@ public class SecsServer implements Runnable {
                                 replyText.addItem(new A(SOFTREV));
                                 Message replyMessage = new DataMessage(sessionId, (byte) 1, (byte) 14, PType.SECS_II, SType.DATA, systemBytes, replyText);
                                 LOG.debug("Reply message: " + replyMessage);
-                                LOG.debug("Reply message: " + replyMessage.toB());
-                                os.write(replyMessage.toB().toByteArray());
+                                LOG.debug("Reply message: " + new B(replyMessage.toByteArray()));
+                                os.write(replyMessage.toByteArray());
                                 os.flush();
                             }
                         } else {
@@ -196,8 +197,8 @@ public class SecsServer implements Runnable {
                                     byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0 : (byte) 1;
                                     Message replyMessage = new ControlMessage(sessionId, (byte) 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
                                     LOG.debug("Reply message: " + replyMessage);
-                                    LOG.debug("Reply message: " + replyMessage.toB());
-                                    os.write(replyMessage.toB().toByteArray());
+                                    LOG.debug("Reply message: " + new B(replyMessage.toByteArray()));
+                                    os.write(replyMessage.toByteArray());
                                     os.flush();
                                     break;
                                 case DESELECT_REQ:

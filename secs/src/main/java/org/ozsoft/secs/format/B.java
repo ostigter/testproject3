@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils;
 
 public class B implements Data<List<Integer>> {
     
-    private static final int FORMAT_CODE = 0x20;
+    public static final int FORMAT_CODE = 0x20;
     
     public static final int MIN_VALUE = 0x00;
     
