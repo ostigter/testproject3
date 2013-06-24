@@ -136,6 +136,9 @@ public class MessageParser {
             case A.FORMAT_CODE:
                 dataItem = parseA(text, offset, length);
                 break;
+            case U2.FORMAT_CODE:
+                dataItem = parseU2(text, offset, length);
+                break;
             default:
                 throw new IllegalArgumentException("Invalid format code in message data: " + formatCode);
         }
@@ -169,6 +172,13 @@ public class MessageParser {
             sb.append((char) data[offset + i]);
         }
         return new A(sb.toString());
+    }
+
+    private static U2 parseU2(byte[] data, int offset, int length) throws SecsException {
+        if (length != U2.LENGTH) {
+            throw new SecsException("Invalid U2 length: " + length);
+        }
+        return new U2(new byte[] {data[offset], data[offset + 1]});
     }
 
 }
