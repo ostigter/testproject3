@@ -179,4 +179,58 @@ public class MessageParserTest {
         Assert.assertEquals(0x0102, (int) u2.getValue());
     }
 
+    @Test
+    public void dataMessageLSimple() throws SecsException {
+        byte[] data = new byte[] {0x00, 0x00, 0x00, 0x14, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x01, 0x02, 0x41, 0x02, 'V', '1', 0x41, 0x02, 'V', '2'};
+        Message message = MessageParser.parse(data, data.length);
+        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
+        Assert.assertEquals(-127, message.getHeaderByte2());
+        Assert.assertEquals(0x0d, message.getHeaderByte3());
+        Assert.assertEquals(PType.SECS_II, message.getPType());
+        Assert.assertEquals(SType.DATA, message.getSType());
+        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
+        Assert.assertTrue(message instanceof DataMessage);
+        DataMessage dataMessage = (DataMessage) message;
+        Assert.assertEquals(1, dataMessage.getStream());
+        Assert.assertEquals(13, dataMessage.getFunction());
+        Assert.assertEquals("S1F13", dataMessage.getType());
+        Data<?> text = dataMessage.getText();
+        Assert.assertTrue(text instanceof L);
+        L l = (L) text;
+        Assert.assertEquals(2, l.length());
+        Assert.assertEquals("V1", l.getItem(0).getValue());
+        Assert.assertEquals("V2", l.getItem(1).getValue());
+    }
+
+    @Test
+    public void dataMessageLMixed() throws SecsException {
+        byte[] data = new byte[] {0x00, 0x00, 0x00, 0x1a, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x01, 0x02, 0x41, 0x02, 'V', '1', 0x01, 0x02, 0x41, 0x02, 'V', '2', 0x41, 0x02, 'V', '3'};
+        Message message = MessageParser.parse(data, data.length);
+        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
+        Assert.assertEquals(-127, message.getHeaderByte2());
+        Assert.assertEquals(0x0d, message.getHeaderByte3());
+        Assert.assertEquals(PType.SECS_II, message.getPType());
+        Assert.assertEquals(SType.DATA, message.getSType());
+        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
+        Assert.assertTrue(message instanceof DataMessage);
+        DataMessage dataMessage = (DataMessage) message;
+        Assert.assertEquals(1, dataMessage.getStream());
+        Assert.assertEquals(13, dataMessage.getFunction());
+        Assert.assertEquals("S1F13", dataMessage.getType());
+        Data<?> text = dataMessage.getText();
+        Assert.assertTrue(text instanceof L);
+        L l1 = (L) text;
+        Assert.assertEquals(2, l1.length());
+        Assert.assertEquals("V1", l1.getItem(0).getValue());
+        L l2 = (L) l1.getItem(1);
+        Assert.assertEquals(2, l2.length());
+        Assert.assertEquals("V2", l2.getItem(0).getValue());
+        Assert.assertEquals("V3", l2.getItem(1).getValue());
+    }
+
+    @Test
+    public void dataMessageLNested() throws SecsException {
+        //TODO
+    }
+
 }
