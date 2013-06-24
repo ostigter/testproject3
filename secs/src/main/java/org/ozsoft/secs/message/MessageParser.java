@@ -145,9 +145,13 @@ public class MessageParser {
         return dataItem;
     }
     
-    private static L parseL(byte[] data, int offset, int length) {
+    private static L parseL(byte[] data, int offset, int length) throws SecsException {
         L l = new L();
-        //TODO
+        for (int i = 0; i < length; i++) {
+            Data<?> item = parseText(data, offset);
+            l.addItem(item);
+            offset += 2 + item.length();
+        }
         return l;
     }
     

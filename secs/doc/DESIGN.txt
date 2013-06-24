@@ -33,7 +33,7 @@ Message data
 
 L {
     B {01 7f 80 ff}
-    TF {01}
+    TF {True}
     A {'abc'}
     U2 {259}
 }
@@ -52,3 +52,34 @@ L {
 0x61 ('a')
 0x62 ('b')
 0x63 ('c')
+
+L {
+    A {'XXX'}
+    A {'YYY'}
+}
+
+01 03 41 03 XX XX XX 41 04 YY YY YY YY
+
+01 // format: L
+03 // length: 3 items
+41 // format: A
+03 // length: 3 characters
+XX
+XX
+XX
+41 // format: A
+04 // length: 4 characters
+YY
+YY
+YY
+YY
+
+L {
+    A {'XXX'}
+    L {
+        A {'YYY'}
+        A {'ZZZ'}
+    }
+}
+
+01 02 41 03 XX XX XX 01 02 41 03 YY YY YY 41 03 ZZ ZZ ZZ
