@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+        xmlns:csv="http://www.ozsoft.org/CSV"
+        elementFormDefault="qualified">
+
+    <!-- Message types -->
+
+    <!-- Message with one nested (anonymous) simple type. -->
+    <xs:element name="M1" csv:messageId="1001">
+	    <xs:simpleType>
+	        <xs:restriction base="xs:string" />
+	    </xs:simpleType>
+    </xs:element>
+
+    <!-- Message with one (named) simple type -->
+    <xs:element name="M2" csv:messageId="1002">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="S1" type="S1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Message with a list of simple types -->
+    <xs:element name="M3" csv:messageId="1003">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="S1" type="S1" minOccurs="0" maxOccurs="5" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <!-- Message with one complex type -->
+    <xs:element name="M4" csv:messageId="1004">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="C1" type="C1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <!-- Message with a list of complex types -->
+    <xs:element name="M5" csv:messageId="1005">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="C1" type="C1" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <!-- Message with one simple type and one complex type -->
+    <xs:element name="M6" csv:messageId="1006">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="S1" type="S1" />
+                <xs:element name="C1" type="C1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <!-- Message with an optional simple type and one complex type -->
+    <xs:element name="M7" csv:messageId="1007">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="S1" type="S1" minOccurs="0" />
+                <xs:element name="C1" type="C1" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <!-- Message with an optional complex type (i.e. message can be empty!). -->
+    <xs:element name="M8" csv:messageId="1008">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="C2" type="C2" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+
+    <!-- Local types -->
+
+    <xs:simpleType name="S1" csv:length="3">
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    
+    <xs:simpleType name="S1b">
+        <xs:restriction base="S1">
+            <xs:length value="10" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="S2">
+        <xs:restriction base="xs:int">
+            <xs:totalDigits value="4" />
+            <xs:minInclusive value="1" />
+            <xs:maxExclusive value="9999" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <xs:simpleType name="S2b" csv:length="10">
+        <xs:restriction base="xs:unsignedLong" />
+    </xs:simpleType>
+    
+    <xs:simpleType name="S3">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="FATAL"   csv:value="1" />
+            <xs:enumeration value="ERROR"   csv:value="2" />
+            <xs:enumeration value="WARN"    csv:value="3" />
+            <xs:enumeration value="INFO"    csv:value="4" />
+        </xs:restriction>
+    </xs:simpleType>
+    
+    <!-- Complex type with one simple type -->
+    <xs:complexType name="C1">
+        <xs:sequence>
+            <xs:element name="S1" type="S1" />
+            <xs:element name="S2" type="S2" />
+        </xs:sequence>
+    </xs:complexType>
+    
+    <!-- Complex type with one simple type -->
+    <xs:complexType name="C2">
+        <xs:sequence>
+            <xs:element name="S1" type="S1" />
+            <xs:element name="S1" type="S1" />
+        </xs:sequence>
+    </xs:complexType>
+    
+</xs:schema>
