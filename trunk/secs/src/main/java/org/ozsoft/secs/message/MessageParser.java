@@ -1,5 +1,7 @@
 package org.ozsoft.secs.message;
 
+import java.util.Stack;
+
 import org.apache.log4j.Logger;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
@@ -146,11 +148,12 @@ public class MessageParser {
     }
     
     private static L parseL(byte[] data, int offset, int length) throws SecsException {
+        //FIXME: Handle nested lists.
         L l = new L();
         for (int i = 0; i < length; i++) {
             Data<?> item = parseText(data, offset);
             l.addItem(item);
-            offset += 2 + item.length();
+            offset += item.toByteArray().length;
         }
         return l;
     }
