@@ -12,8 +12,16 @@ import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
 
+/**
+ * Test suite for the <code>MessageParser<code>.
+ * 
+ * @author Oscar Stigter
+ */
 public class MessageParserTest {
 
+    /**
+     * Tests the handling of incomplete messages.
+     */
     @Test
     public void incompleteMessage() {
         byte[] data = new byte[] {};
@@ -41,6 +49,9 @@ public class MessageParserTest {
         }
     }
 
+    /**
+     * Tests the parsing of SELECT_REQ messages.
+     */
     @Test
     public void selectReq() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, (byte) 0xff, (byte) 0xff, 0x00, 0x00, 0x00, 0x01, 0x11, 0x12, 0x13, 0x14 };
@@ -54,6 +65,9 @@ public class MessageParserTest {
         Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
     }
 
+    /**
+     * Tests the parsing of DESELECT_REQ messages.
+     */
     @Test
     public void deselectReq() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, (byte) 0xff, (byte) 0xff, 0x00, 0x00, 0x00, 0x02, 0x11, 0x12, 0x13, 0x14 };
@@ -67,9 +81,15 @@ public class MessageParserTest {
         Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
     }
 
+    /**
+     * Tests the parsing of empty data messages (header only).
+     * 
+     * @throws SecsException
+     *             In case of an invalid message.
+     */
     @Test
-    public void dataMessage() throws SecsException {
-        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0c, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x01, 0x00 };
+    public void dataMessageEmpty() throws SecsException {
+        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14};
         Message message = MessageParser.parse(data, data.length);
         Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
         Assert.assertEquals(-127, message.getHeaderByte2());
@@ -83,11 +103,21 @@ public class MessageParserTest {
         Assert.assertEquals(13, dataMessage.getFunction());
         Assert.assertEquals("S1F13", dataMessage.getType());
         Data<?> text = dataMessage.getText();
-        Assert.assertTrue(text instanceof L);
-        L l = (L) text;
-        Assert.assertEquals(0, l.length());
+        Assert.assertNull(text);
     }
 
+    /**
+     * Tests the parsing of data messages with B items. <br />
+     * <br />
+     * 
+     * Message:
+     * <pre>
+     *   B {21 22 23}
+     * </pre>
+     * 
+     * @throws SecsException
+     *             In case of an invalid message.
+     */
     @Test
     public void dataMessageB() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0f, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x21, 0x03, 0x21, 0x22,
@@ -113,6 +143,18 @@ public class MessageParserTest {
         Assert.assertEquals(0x23, b.get(2));
     }
 
+    /**
+     * Tests the parsing of data messages with BOOLEAN items. <br />
+     * <br />
+     * 
+     * Message:
+     * <pre>
+     *   BOOLEAN {True}
+     * </pre>
+     * 
+     * @throws SecsException
+     *             In case of an invalid message.
+     */
     @Test
     public void dataMessageBOOLEAN() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0d, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x11, 0x01, 0x01 };
@@ -124,6 +166,18 @@ public class MessageParserTest {
         Assert.assertTrue(b.getValue());
     }
 
+    /**
+     * Tests the parsing of data messages with A items. <br />
+     * <br />
+     * 
+     * Message:
+     * <pre>
+     *   A {'Test'}
+     * </pre>
+     * 
+     * @throws SecsException
+     *             In case of an invalid message.
+     */
     @Test
     public void dataMessageA() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x41, 0x04, 'T', 'e',
@@ -147,6 +201,18 @@ public class MessageParserTest {
         Assert.assertEquals("Test", a.getValue());
     }
 
+    /**
+     * Tests the parsing of data messages with U2 items. <br />
+     * <br />
+     * 
+     * Message:
+     * <pre>
+     *   U2 {258}
+     * </pre>
+     * 
+     * @throws SecsException
+     *             In case of an invalid message.
+     */
     @Test
     public void dataMessageU2() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0e, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, (byte) 0xa9, 0x02,
@@ -269,8 +335,8 @@ public class MessageParserTest {
      */
     @Test
     public void dataMessageLNested() throws SecsException {
-        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x22, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x01, 0x02, 0x01, 0x02,
-                0x21, 0x03, 0x11, 0x12, 0x13, 0x21, 0x03, 0x21, 0x22, 0x23, 0x21, 0x03, 0x31, 0x32, 0x33, 0x21, 0x03, 0x41, 0x42, 0x43 };
+        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x24, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x01, 0x02, 0x01, 0x02,
+                0x21, 0x03, 0x11, 0x12, 0x13, 0x21, 0x03, 0x21, 0x22, 0x23, 0x01, 0x02, 0x21, 0x03, 0x31, 0x32, 0x33, 0x21, 0x03, 0x41, 0x42, 0x43 };
         DataMessage message = (DataMessage) MessageParser.parse(data, data.length);
         Data<?> text = message.getText();
         Assert.assertTrue(text instanceof L);
