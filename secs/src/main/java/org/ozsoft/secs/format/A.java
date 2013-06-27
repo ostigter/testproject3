@@ -67,7 +67,7 @@ public class A implements Data<String> {
 
     @Override
     public String toSml() {
-        return String.format("A:%d {'%s'}", value.length(), value);
+        return String.format("A:%d {%s}", value.length(), value);
     }
     
     @Override

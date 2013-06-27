@@ -11,6 +11,7 @@ import org.ozsoft.secs.format.BOOLEAN;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
+import org.ozsoft.secs.format.U4;
 
 /**
  * Test suite for the <code>MessageParser<code>.
@@ -18,9 +19,93 @@ import org.ozsoft.secs.format.U2;
  * @author Oscar Stigter
  */
 public class MessageParserTest {
+    
+    /**
+     * Tests the parsing of empty data items.
+     */
+    @Test
+    public void emptyData() {
+        try {
+            MessageParser.parseData(null);
+            Assert.fail("Missed exception");
+        } catch (SecsException e) {
+            Assert.assertEquals("Empty data item", e.getMessage());
+        }
+        
+        try {
+            MessageParser.parseData("");
+            Assert.fail("Missed exception");
+        } catch (SecsException e) {
+            Assert.assertEquals("Empty data item", e.getMessage());
+        }
+    }
 
     /**
-     * Tests the handling of incomplete messages.
+     * Tests the parsing of B data items.
+     */
+    @Test
+    public void dataB() throws SecsException {
+        Data<?> data = MessageParser.parseData("B {01 02 03}");
+        Assert.assertTrue(data instanceof B);
+        B b = (B) data;
+        Assert.assertEquals(3, b.length());
+        Assert.assertEquals(0x01, b.get(0));
+        Assert.assertEquals(0x02, b.get(1));
+        Assert.assertEquals(0x03, b.get(2));
+    }
+
+    /**
+     * Tests the parsing of BOOLEAN data items.
+     */
+    @Test
+    public void dataBOOLEAN() throws SecsException {
+        Data<?> data = MessageParser.parseData("BOOLEAN {True}");
+        Assert.assertTrue(data instanceof BOOLEAN);
+        BOOLEAN b = (BOOLEAN) data;
+        Assert.assertTrue(b.getValue());
+
+        data = MessageParser.parseData("BOOLEAN {False}");
+        Assert.assertTrue(data instanceof BOOLEAN);
+        b = (BOOLEAN) data;
+        Assert.assertFalse(b.getValue());
+    }
+
+    /**
+     * Tests the parsing of A data items.
+     */
+    @Test
+    public void dataA() throws SecsException {
+        Data<?> data = MessageParser.parseData("A {Test}");
+        Assert.assertTrue(data instanceof A);
+        A a = (A) data;
+        Assert.assertEquals(4, a.length());
+        Assert.assertEquals("Test", a.getValue());
+    }
+
+    /**
+     * Tests the parsing of U2 data items.
+     */
+    @Test
+    public void dataU2() throws SecsException {
+        Data<?> data = MessageParser.parseData("U2 {65535}");
+        Assert.assertTrue(data instanceof U2);
+        U2 u2 = (U2) data;
+        Assert.assertEquals(0xffff, (int) u2.getValue());
+    }
+
+    /**
+     * Tests the parsing of U4 data items.
+     */
+    @Test
+    public void dataU4() throws SecsException {
+        Data<?> data = MessageParser.parseData("U4 {4294967295}");
+        Assert.assertTrue(data instanceof U4);
+        U4 u4 = (U4) data;
+        Assert.assertEquals(0xffffffffL, (long) u4.getValue());
+    }
+
+    /**
+     * Tests the parsing of incomplete messages.
      */
     @Test
     public void incompleteMessage() {
