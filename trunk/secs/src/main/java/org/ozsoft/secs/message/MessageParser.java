@@ -1,6 +1,8 @@
 package org.ozsoft.secs.message;
 
-import org.apache.log4j.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
 import org.ozsoft.secs.SecsException;
@@ -14,14 +16,69 @@ import org.ozsoft.secs.format.U4;
 
 public class MessageParser {
     
-    private static final Logger LOG = Logger.getLogger(MessageParser.class);
+    private static final Pattern DATA_PATTERN = Pattern.compile("([\\S]+) \\{(.*)\\}");
     
-    public static Message parse(byte[] data, int length) throws SecsException {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            sb.append(String.format("%02x ", data[i]));
+//    private static final Logger LOG = Logger.getLogger(MessageParser.class);
+    
+    public static Data<?> parseData(String text) throws SecsException {
+        if (text == null || text.isEmpty()) {
+            throw new SecsException("Empty data item");
         }
-        LOG.debug(length + " bytes read: " + sb);
+        
+        Matcher m = DATA_PATTERN.matcher(text);
+        if (!m.matches()) {
+            throw new SecsException("Invalid data format");  
+        }
+        
+        String type = m.group(1).trim();
+        String value = m.group(2).trim();
+        
+        Data<?> data = null;
+        if (type.equals("B")) {
+            B b = new B();
+            try {
+                for (String s : value.split("\\s")) {
+                    b.add(Byte.parseByte(s));
+                }
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid B value: " + value);
+            }
+            data = b;
+        } else if (type.equals("BOOLEAN")) {
+            if (value.equals("True")) {
+                data = new BOOLEAN(true);
+            } else if (value.equals("False")) {
+                data = new BOOLEAN(false);
+            } else {
+                throw new SecsException("Invalid BOOLEAN value: " + value);
+            }
+        } else if (type.equals("A")) {
+            data = new A(value);
+        } else if (type.equals("U2")) {
+            try {
+                data = new U2(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U2 value: " + value);
+            }
+        } else if (type.equals("U4")) {
+            try {
+                data = new U4(Long.parseLong(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U4 value: " + value);
+            }
+        } else {
+            throw new SecsException("Invalid data type: " + type);
+        }
+        
+        return data;
+    }
+
+    public static Message parse(byte[] data, int length) throws SecsException {
+//        StringBuilder sb = new StringBuilder();
+//        for (int i = 0; i < length; i++) {
+//            sb.append(String.format("%02x ", data[i]));
+//        }
+//        LOG.debug(length + " bytes read: " + sb);
         
         // Determine message length.
         if (length < Message.HEADER_LENGTH) {
@@ -184,5 +241,5 @@ public class MessageParser {
         }
         return new U2(new byte[] {data[offset], data[offset + 1]});
     }
-
+    
 }
