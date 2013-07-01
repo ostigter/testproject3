@@ -11,7 +11,7 @@ import org.ozsoft.secs.format.U4;
 
 public class ControlMessage extends Message {
 
-    public ControlMessage(U2 sessionId, byte headerByte2, byte headerByte3, PType pType, SType sType, U4 systemBytes) {
+    public ControlMessage(U2 sessionId, int headerByte2, int headerByte3, PType pType, SType sType, U4 systemBytes) {
         super(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
     }
     
@@ -26,18 +26,24 @@ public class ControlMessage extends Message {
             baos.write(getPType().ordinal());
             baos.write(getSType().ordinal());
             baos.write(getSystemBytes().toByteArray());
+            return baos.toByteArray();
         } catch (IOException e) {
             // Internal error (should never happen).
             throw new RuntimeException("Could not serialize message: " + e.getMessage());
         } finally {
             IOUtils.closeQuietly(baos);
         }
-        return baos.toByteArray();
     }
 
     @Override
     public String toString() {
-        return String.format("ControlMessage(SType = %s, systemBytes = %08d)", getSType(), getSystemBytes().getValue());
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        for (byte b : toByteArray()) {
+            sb.append(String.format("%d ", b));
+        }
+        sb.append('}');
+        return String.format("ControlMessage(SType = %s, systemBytes = %08x, header = %s)", getSType(), getSystemBytes().getValue(), sb);
     }
 
 }
