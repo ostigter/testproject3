@@ -9,7 +9,6 @@ import java.net.SocketTimeoutException;
 
 import org.apache.log4j.Logger;
 import org.ozsoft.secs.format.A;
-import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
@@ -27,7 +26,7 @@ public class SecsServer implements Runnable {
     
     private static final int BUFFER_SIZE = 8192;
     
-    private static final String MDLN = "SecsServer";
+    private static final String MDLN = "SECS Server";
     
     private static final String SOFTREV = "1.0";
     
@@ -184,9 +183,8 @@ public class SecsServer implements Runnable {
                                 L replyText = new L();
                                 replyText.addItem(new A(MDLN));
                                 replyText.addItem(new A(SOFTREV));
-                                Message replyMessage = new DataMessage(sessionId, (byte) 1, (byte) 14, PType.SECS_II, SType.DATA, systemBytes, replyText);
-                                LOG.debug("Reply message: " + replyMessage);
-                                LOG.debug("Reply message: " + new B(replyMessage.toByteArray()));
+                                Message replyMessage = new DataMessage(sessionId, 1, 14, PType.SECS_II, SType.DATA, systemBytes, replyText);
+                                LOG.debug("Reply message:    " + replyMessage);
                                 os.write(replyMessage.toByteArray());
                                 os.flush();
                             }
@@ -194,10 +192,9 @@ public class SecsServer implements Runnable {
                             // Control message.
                             switch (sType) {
                                 case SELECT_REQ:
-                                    byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0 : (byte) 1;
-                                    Message replyMessage = new ControlMessage(sessionId, (byte) 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
-                                    LOG.debug("Reply message: " + replyMessage);
-                                    LOG.debug("Reply message: " + new B(replyMessage.toByteArray()));
+                                    byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0x00 : (byte) 0x01;
+                                    Message replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
+                                    LOG.debug("Reply message:    " + replyMessage);
                                     os.write(replyMessage.toByteArray());
                                     os.flush();
                                     break;

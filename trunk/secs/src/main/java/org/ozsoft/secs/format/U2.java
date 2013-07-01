@@ -70,11 +70,12 @@ public class U2 implements Data<Integer> {
     @Override
     public byte[] toByteArray() {
         //TODO: Support multi-value U2.
-        byte formatByte = (byte) (FORMAT_CODE | 0x01); // 1 length byte
-        byte lengthByte = 1;
+//        byte formatByte = (byte) (FORMAT_CODE | 0x01); // 1 length byte
+//        byte lengthByte = 1;
         byte b1 = (byte) (value >> 8);
         byte b2 = (byte) (value & 0xff);
-        return new byte[] {formatByte, lengthByte, b1, b2};
+//        return new byte[] {formatByte, lengthByte, b1, b2};
+        return new byte[] {b1, b2};
     }
     
     @Override

@@ -20,7 +20,7 @@ public class DataMessage extends Message {
     
     private final Data<?> text;
 
-    public DataMessage(U2 sessionId, byte headerByte2, byte headerByte3, PType pType, SType sType, U4 systemBytes, Data<?> text) {
+    public DataMessage(U2 sessionId, int headerByte2, int headerByte3, PType pType, SType sType, U4 systemBytes, Data<?> text) {
         super(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
         withReply = ((headerByte2 & 0x80) == 0x80);
         stream = (headerByte2 & 0x7f);
@@ -72,8 +72,8 @@ public class DataMessage extends Message {
     
     @Override
     public String toString() {
-        return String.format("DataMessage(type = %s, withReply = %s, length = %d, systemBytes = %08x)",
-                getType(), withReply, text.length(), getSystemBytes().getValue());
+        return String.format("DataMessage(type = %s, withReply = %s, systemBytes = %08x, data = %s)",
+                getType(), withReply, text.length(), getSystemBytes().getValue(), text);
     }
     
 }

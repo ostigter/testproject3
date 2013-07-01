@@ -35,9 +35,9 @@ public abstract class Message {
     
     private final U2 sessionId;
     
-    private final byte headerByte2;
+    private final int headerByte2;
     
-    private final byte headerByte3;
+    private final int headerByte3;
     
     private final PType pType;
     
@@ -45,7 +45,7 @@ public abstract class Message {
     
     private final U4 systemBytes;
     
-    public Message(U2 sessionId, byte headerByte2, byte headerByte3, PType pType, SType sType, U4 systemBytes) {
+    public Message(U2 sessionId, int headerByte2, int headerByte3, PType pType, SType sType, U4 systemBytes) {
         this.sessionId = sessionId;
         this.headerByte2 = headerByte2;
         this.headerByte3 = headerByte3;
@@ -58,11 +58,11 @@ public abstract class Message {
         return sessionId;
     }
     
-    public byte getHeaderByte2() {
+    public int getHeaderByte2() {
         return headerByte2;
     }
     
-    public byte getHeaderByte3() {
+    public int getHeaderByte3() {
         return headerByte3;
     }
     

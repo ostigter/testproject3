@@ -105,8 +105,8 @@ public class MessageParser {
 //        LOG.debug(String.format("System Bytes = %04x", sessionId.getValue()));
         
         // Get Header Bytes 2 and 3.
-        byte headerByte2 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE2];
-        byte headerByte3 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE3];
+        int headerByte2 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE2];
+        int headerByte3 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE3];
 //        LOG.debug(String.format("Header Byte 2 = %02x", headerByte2));
 //        LOG.debug(String.format("Header Byte 3 = %02x", headerByte3));
         
