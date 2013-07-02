@@ -1,8 +1,5 @@
 package org.ozsoft.secs.message;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
 import org.ozsoft.secs.SecsException;
@@ -16,71 +13,8 @@ import org.ozsoft.secs.format.U4;
 
 public class MessageParser {
     
-    private static final Pattern DATA_PATTERN = Pattern.compile("([\\S]+)\\s\\{(.*)\\}");
-    
 //    private static final Logger LOG = Logger.getLogger(MessageParser.class);
     
-    public static Data<?> parseData(String text) throws SecsException {
-        if (text == null || text.isEmpty()) {
-            throw new SecsException("Empty data item");
-        }
-        
-        Matcher m = DATA_PATTERN.matcher(text);
-        if (!m.matches()) {
-            throw new SecsException("Invalid data format");  
-        }
-        
-        String type = m.group(1).trim();
-        String value = m.group(2).trim();
-        
-        Data<?> data = null;
-        if (type.equals("L")) {
-            L l = new L();
-            if (!value.isEmpty()) {
-                for (String s : value.split("\\S+\\s\\{\\.*\\}")) {
-                    l.addItem(parseData(s));
-                }
-            }
-            data = l;
-        } else if (type.equals("B")) {
-            B b = new B();
-            try {
-                for (String s : value.split("\\s")) {
-                    b.add(Byte.parseByte(s));
-                }
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid B value: " + value);
-            }
-            data = b;
-        } else if (type.equals("BOOLEAN")) {
-            if (value.equals("True")) {
-                data = new BOOLEAN(true);
-            } else if (value.equals("False")) {
-                data = new BOOLEAN(false);
-            } else {
-                throw new SecsException("Invalid BOOLEAN value: " + value);
-            }
-        } else if (type.equals("A")) {
-            data = new A(value);
-        } else if (type.equals("U2")) {
-            try {
-                data = new U2(Integer.parseInt(value));
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid U2 value: " + value);
-            }
-        } else if (type.equals("U4")) {
-            try {
-                data = new U4(Long.parseLong(value));
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid U4 value: " + value);
-            }
-        } else {
-            throw new SecsException("Invalid data type: " + type);
-        }
-        
-        return data;
-    }
-
     public static Message parse(byte[] data, int length) throws SecsException {
 //        StringBuilder sb = new StringBuilder();
 //        for (int i = 0; i < length; i++) {
@@ -154,6 +88,120 @@ public class MessageParser {
         }
     }
     
+    public static Data<?> parseData(String text) throws SecsException {
+        if (text == null || text.isEmpty()) {
+            throw new SecsException("Empty data item");
+        }
+        
+        Data<?> data = null;
+        
+        boolean inValue = false;
+        String type = null;
+        String value = null;
+        StringBuilder sb = new StringBuilder();
+        int depth = 0;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (!inValue) {
+                if (c == '{') {
+                    depth++;
+                    type = sb.toString().trim();
+                    inValue = true;
+                    sb.delete(0, sb.length());
+                } else {
+                    sb.append(c);
+                }
+            } else if (c == '}') {
+                depth--;
+                if (depth == 0) {
+                    value = sb.toString();
+                    inValue = false;
+                    sb.delete(0, sb.length());
+                }
+            } else {
+                sb.append(c);
+            }
+        }
+        
+        if (type.equals("L")) {
+            data = parseL(value);
+        } else if (type.equals("B")) {
+            B b = new B();
+            try {
+                for (String s : value.split("\\s")) {
+                    b.add(Byte.parseByte(s));
+                }
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid B value: " + value);
+            }
+            data = b;
+        } else if (type.equals("BOOLEAN")) {
+            if (value.equals("True")) {
+                data = new BOOLEAN(true);
+            } else if (value.equals("False")) {
+                data = new BOOLEAN(false);
+            } else {
+                throw new SecsException("Invalid BOOLEAN value: " + value);
+            }
+        } else if (type.equals("A")) {
+            data = new A(value);
+        } else if (type.equals("U2")) {
+            try {
+                data = new U2(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U2 value: " + value);
+            }
+        } else if (type.equals("U4")) {
+            try {
+                data = new U4(Long.parseLong(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U4 value: " + value);
+            }
+        } else {
+            throw new SecsException("Invalid data type: " + type);
+        }
+        
+        return data;
+    }
+    
+    private static L parseL(String text) throws SecsException {
+        L l = new L();
+        
+        if (!text.isEmpty()) {
+            boolean inValue = false;
+            String type = null;
+            String value = null;
+            int depth = 0;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < text.length(); i++) {
+                char c = text.charAt(i);
+                if (!inValue) {
+                    if (c == '{') {
+                        type = sb.toString().trim();
+                        inValue = true;
+                        sb.delete(0, sb.length());
+                    } else {
+                        sb.append(c);
+                    }
+                } else if (c == '{') {
+                    depth++;
+                } else if (c == '}') {
+                    depth--;
+                    if (depth == 0) {
+                        value = sb.toString();
+                        l.addItem(parseData(value));
+                        inValue = false;
+                        sb.delete(0, sb.length());
+                    }
+                } else {
+                    sb.append(c);
+                }
+            }
+        }
+        
+        return l;
+    }
+
     private static Data<?> parseText(byte[] text, int offset) throws SecsException {
         if (text.length < 2) {
             throw new SecsException("Invalid data length: " + text.length);
