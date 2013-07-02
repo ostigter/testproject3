@@ -105,6 +105,36 @@ public class MessageParserTest {
     }
 
     /**
+     * Tests the parsing of L data items.
+     */
+    @Test
+    public void dataL() throws SecsException {
+        Data<?> data = MessageParser.parseData("L {}");
+        Assert.assertTrue(data instanceof L);
+        L l = (L) data;
+        Assert.assertEquals(0, l.length());
+
+        data = MessageParser.parseData("L {A {V1} A {V2} A {V3}}");
+        Assert.assertTrue(data instanceof L);
+        l = (L) data;
+        Assert.assertEquals(3, l.length());
+        Assert.assertEquals("V1", l.getItem(0).getValue());
+        Assert.assertEquals("V2", l.getItem(1).getValue());
+        Assert.assertEquals("V3", l.getItem(2).getValue());
+
+        data = MessageParser.parseData("L {L {A {V1} A {V2}} L {A {V3} A {V4}}}");
+        Assert.assertTrue(data instanceof L);
+        L l1 = (L) data;
+        Assert.assertEquals(2, l1.length());
+        Assert.assertEquals("V1", l1.getItem(0).getValue());
+        Assert.assertEquals("V2", l1.getItem(1).getValue());
+        L l2 = (L) data;
+        Assert.assertEquals(2, l2.length());
+        Assert.assertEquals("V3", l1.getItem(0).getValue());
+        Assert.assertEquals("V4", l1.getItem(1).getValue());
+    }
+
+    /**
      * Tests the parsing of incomplete messages.
      */
     @Test
