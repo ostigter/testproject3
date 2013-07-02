@@ -16,7 +16,7 @@ import org.ozsoft.secs.format.U4;
 
 public class MessageParser {
     
-    private static final Pattern DATA_PATTERN = Pattern.compile("([\\S]+) \\{(.*)\\}");
+    private static final Pattern DATA_PATTERN = Pattern.compile("([\\S]+)\\s\\{(.*)\\}");
     
 //    private static final Logger LOG = Logger.getLogger(MessageParser.class);
     
@@ -34,7 +34,15 @@ public class MessageParser {
         String value = m.group(2).trim();
         
         Data<?> data = null;
-        if (type.equals("B")) {
+        if (type.equals("L")) {
+            L l = new L();
+            if (!value.isEmpty()) {
+                for (String s : value.split("\\S+\\s\\{\\.*\\}")) {
+                    l.addItem(parseData(s));
+                }
+            }
+            data = l;
+        } else if (type.equals("B")) {
             B b = new B();
             try {
                 for (String s : value.split("\\s")) {
