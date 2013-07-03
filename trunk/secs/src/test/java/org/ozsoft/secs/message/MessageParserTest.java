@@ -141,14 +141,15 @@ public class MessageParserTest {
 
         data = MessageParser.parseData("L {L {A {V1} A {V2}} L {A {V3} A {V4}}}");
         Assert.assertTrue(data instanceof L);
-        L l1 = (L) data;
-        Assert.assertEquals(2, l1.length());
+        l = (L) data;
+        Assert.assertEquals(2, l.length());
+        L l1 = (L) l.getItem(0);
         Assert.assertEquals("V1", l1.getItem(0).getValue());
         Assert.assertEquals("V2", l1.getItem(1).getValue());
-        L l2 = (L) data;
+        L l2 = (L) l.getItem(1);
         Assert.assertEquals(2, l2.length());
-        Assert.assertEquals("V3", l1.getItem(0).getValue());
-        Assert.assertEquals("V4", l1.getItem(1).getValue());
+        Assert.assertEquals("V3", l2.getItem(0).getValue());
+        Assert.assertEquals("V4", l2.getItem(1).getValue());
     }
 
     /**
