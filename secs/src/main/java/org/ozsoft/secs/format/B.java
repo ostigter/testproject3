@@ -20,6 +20,14 @@ public class B implements Data<List<Integer>> {
         // Empty implementation.
     }
     
+    public B(byte b) {
+        add(b);
+    }
+    
+    public B(int b) {
+        add(b);
+    }
+    
     public B(byte[] data) {
         add(data);
     }
