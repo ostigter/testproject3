@@ -105,22 +105,39 @@ public class MessageParserTest {
     }
 
     /**
-     * Tests the parsing of L data items.
+     * Tests the parsing of simple L data items.
      */
     @Test
-    public void dataL() throws SecsException {
+    public void dataLSimple() throws SecsException {
         Data<?> data = MessageParser.parseData("L {}");
         Assert.assertTrue(data instanceof L);
         L l = (L) data;
         Assert.assertEquals(0, l.length());
 
-        data = MessageParser.parseData("L {A {V1} A {V2} A {V3}}");
+        data = MessageParser.parseData("L {A {V1} A {V2}}");
         Assert.assertTrue(data instanceof L);
         l = (L) data;
-        Assert.assertEquals(3, l.length());
+        Assert.assertEquals(2, l.length());
         Assert.assertEquals("V1", l.getItem(0).getValue());
         Assert.assertEquals("V2", l.getItem(1).getValue());
-        Assert.assertEquals("V3", l.getItem(2).getValue());
+    }
+
+    /**
+     * Tests the parsing of nested L data items.
+     */
+    @Test
+    public void dataLNested() throws SecsException {
+        Data<?> data = MessageParser.parseData("L {}");
+        Assert.assertTrue(data instanceof L);
+        L l = (L) data;
+        Assert.assertEquals(0, l.length());
+
+        data = MessageParser.parseData("L {A {V1} A {V2}}");
+        Assert.assertTrue(data instanceof L);
+        l = (L) data;
+        Assert.assertEquals(2, l.length());
+        Assert.assertEquals("V1", l.getItem(0).getValue());
+        Assert.assertEquals("V2", l.getItem(1).getValue());
 
         data = MessageParser.parseData("L {L {A {V1} A {V2}} L {A {V3} A {V4}}}");
         Assert.assertTrue(data instanceof L);

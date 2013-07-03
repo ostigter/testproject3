@@ -83,7 +83,7 @@ public class L implements Data<List<Data<?>>> {
     public String toSml() {
         StringBuilder sb = new StringBuilder();
         int length = items.size();
-        sb.append(String.format("L {", length));
+        sb.append(String.format("L:%d {", length));
         for (int i = 0; i < length; i++) {
             sb.append('\n');
             sb.append(items.get(i).toSml());

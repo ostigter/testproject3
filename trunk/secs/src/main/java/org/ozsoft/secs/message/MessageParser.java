@@ -1,5 +1,7 @@
 package org.ozsoft.secs.message;
 
+import java.util.Stack;
+
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
 import org.ozsoft.secs.SecsException;
@@ -103,25 +105,43 @@ public class MessageParser {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (!inValue) {
+                // Determining type.
                 if (c == '{') {
-                    depth++;
+                    // Type found; start of value.
                     type = sb.toString().trim();
                     inValue = true;
                     sb.delete(0, sb.length());
                 } else {
                     sb.append(c);
                 }
-            } else if (c == '}') {
-                depth--;
-                if (depth == 0) {
-                    value = sb.toString();
-                    inValue = false;
-                    sb.delete(0, sb.length());
-                }
             } else {
-                sb.append(c);
+                // Determining value.
+                if (c == '{') {
+                    // Inner nesting; ignore.
+                    depth++;
+                    sb.append(c);
+                } else if (c == '}') {
+                    if (depth > 0) {
+                        // Still in nested part; ignore.
+                        depth--;
+                        sb.append(c);
+                    } else {
+                        // Value found.
+                        value = sb.toString();
+                        inValue = false;
+                        sb.delete(0, sb.length());
+                    }
+                } else {
+                    sb.append(c);
+                }
             }
         }
+        
+        return parseData(type, value);
+    }
+    
+    private static Data<?> parseData(String type, String value) throws SecsException {
+        Data<?> data = null;
         
         if (type.equals("L")) {
             data = parseL(value);
@@ -166,7 +186,6 @@ public class MessageParser {
     
     private static L parseL(String text) throws SecsException {
         L l = new L();
-        
         if (!text.isEmpty()) {
             boolean inValue = false;
             String type = null;
@@ -176,29 +195,39 @@ public class MessageParser {
             for (int i = 0; i < text.length(); i++) {
                 char c = text.charAt(i);
                 if (!inValue) {
+                    // Determining type.
                     if (c == '{') {
+                        // Type found; start of value.
                         type = sb.toString().trim();
                         inValue = true;
                         sb.delete(0, sb.length());
                     } else {
                         sb.append(c);
                     }
-                } else if (c == '{') {
-                    depth++;
-                } else if (c == '}') {
-                    depth--;
-                    if (depth == 0) {
-                        value = sb.toString();
-                        l.addItem(parseData(value));
-                        inValue = false;
-                        sb.delete(0, sb.length());
-                    }
                 } else {
-                    sb.append(c);
+                    // Determining value.
+                    if (c == '{') {
+                        // Inner nesting; ignore.
+                        depth++;
+                        sb.append(c);
+                    } else if (c == '}') {
+                        if (depth > 0) {
+                            // Still in nested part; ignore.
+                            depth--;
+                            sb.append(c);
+                        } else {
+                            // Value found.
+                            value = sb.toString();
+                            l.addItem(parseData(type, value));
+                            inValue = false;
+                            sb.delete(0, sb.length());
+                        }
+                    } else {
+                        sb.append(c);
+                    }
                 }
             }
         }
-        
         return l;
     }
 

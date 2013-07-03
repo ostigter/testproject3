@@ -1,13 +1,17 @@
 DESIGN
 ======
 
+
+Standards
+---------
+
 SEMI E05 SECS-II
 SEMI E30 GEM
 SEMI E37 HSMS
 
 
-Message data
-------------
+Message (de)serialization
+-------------------------
 
 1111 1100 0xfc // Format Code mask
 0000 0011 0x03 // Length mask
@@ -96,3 +100,28 @@ L {
 }
 
 01 02 01 02 21 03 11 12 13 21 03 21 22 23 21 03 31 32 33 21 03 41 42 43
+
+
+Data parsing
+------------
+
+L {
+    A {V1}
+    A {V2}
+}
+
+L {A {V1} A {V2}}
+
+
+L {
+    L {
+        A {V1}
+        A {V2}
+    }
+    L {
+        A {V3}
+        A {V4}
+    }
+}
+
+L {L {A {V1} A {V2}} L {A {V3} A {V4}}}
