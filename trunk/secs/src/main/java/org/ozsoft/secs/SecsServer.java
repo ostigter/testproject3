@@ -146,13 +146,57 @@ public class SecsServer implements Runnable {
                         U2 sessionId = requestMessage.getSessionId();
                         SType sType = requestMessage.getSType();
                         U4 systemBytes = requestMessage.getSystemBytes();
-                        if (requestMessage instanceof DataMessage) {
+                        if (requestMessage instanceof ControlMessage) {
+                            switch (sType) {
+                                case SELECT_REQ:
+                                    byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0x00 : (byte) 0x01;
+                                    Message replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
+                                    LOG.debug("Reply message:    " + replyMessage);
+                                    os.write(replyMessage.toByteArray());
+                                    os.flush();
+                                    break;
+                                case DESELECT_REQ:
+                                    //TODO: Handle DESELECT_REQ.
+                                    break;
+                                case SEPARATE:
+                                    disconnect();
+                                    is.close();
+                                    os.close();
+                                    clientSocket.close();
+                                    break;
+                                case LINKTEST_REQ:
+                                    //TODO: Handle LINKTEST_REQ.
+                                    break;
+                                case REJECT:
+                                    //TODO: Handle REJECT.
+                                    break;
+                                default:
+                                    LOG.error("Unsupported control message type: " + sType);
+                            }
+                        } else {
+                            // Data message.
                             DataMessage dataMessage = (DataMessage) requestMessage;
                             int stream = dataMessage.getStream();
                             int function = dataMessage.getFunction();
                             Data<?> requestText = dataMessage.getText();
-                            if (stream == 1 && function == 13) {
-                                // Establish Communication Request.
+                            
+                            if (stream == 1 && function == 1) {
+                                // S1F1 Are You There (R).
+                                if (requestText != null) {
+                                    throw new SecsException("Invalid data format for S1F1 message");
+                                }
+                                
+                                // Send S1F2 On Line Data (D).
+                                L replyText = new L();
+                                replyText.addItem(new A(MDLN));
+                                replyText.addItem(new A(SOFTREV));
+                                Message replyMessage = new DataMessage(sessionId, 1, 2, PType.SECS_II, SType.DATA, systemBytes, replyText);
+                                LOG.debug("Reply message:    " + replyMessage);
+                                os.write(replyMessage.toByteArray());
+                                os.flush();
+                                
+                            } else if (stream == 1 && function == 13) {
+                                // F1S13 Establish Communication Request (CR).
                                 if (!(requestText instanceof L)) {
                                     throw new SecsException("Invalid data format for S1F13 message");
                                 }
@@ -182,7 +226,7 @@ public class SecsServer implements Runnable {
                                 
                                 // Send S1F14 Establish Communication Request Acknowledge (CRA).
                                 L replyText = new L();
-                                replyText.addItem(new B(new byte[] {0x00})); // COMMACK
+                                replyText.addItem(new B(0x00)); // COMMACK = Accepted
                                 l = new L();
                                 l.addItem(new A(MDLN));
                                 l.addItem(new A(SOFTREV));
@@ -191,34 +235,44 @@ public class SecsServer implements Runnable {
                                 LOG.debug("Reply message:    " + replyMessage);
                                 os.write(replyMessage.toByteArray());
                                 os.flush();
-                            }
-                        } else {
-                            // Control message.
-                            switch (sType) {
-                                case SELECT_REQ:
-                                    byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0x00 : (byte) 0x01;
-                                    Message replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
-                                    LOG.debug("Reply message:    " + replyMessage);
-                                    os.write(replyMessage.toByteArray());
-                                    os.flush();
-                                    break;
-                                case DESELECT_REQ:
-                                    //TODO: Handle DESELECT_REQ.
-                                    break;
-                                case SEPARATE:
-                                    disconnect();
-                                    is.close();
-                                    os.close();
-                                    clientSocket.close();
-                                    break;
-                                case LINKTEST_REQ:
-                                    //TODO: Handle LINKTEST_REQ.
-                                    break;
-                                case REJECT:
-                                    //TODO: Handle REJECT.
-                                    break;
-                                default:
-                                    LOG.error("Unsupported control message type: " + sType);
+                                
+                            } else if (stream == 1 && function == 15) {
+                                // S1F17 Request OFF-LINE (ROFL).
+                                if (requestText != null) {
+                                    throw new SecsException("Invalid data format for S1F15 message");
+                                }
+                                
+                                // Send S1F16 OFF-LINE Acknowledge (OFLA).
+                                B replyText = new B(0x00); // OFLACK = OFF-LINE Acknowledge
+                                Message replyMessage = new DataMessage(sessionId, 1, 16, PType.SECS_II, SType.DATA, systemBytes, replyText);
+                                LOG.debug("Reply message:    " + replyMessage);
+                                os.write(replyMessage.toByteArray());
+                                os.flush();
+                                
+                            } else if (stream == 1 && function == 17) {
+                                // S1F17 Request ON-LINE (RONL).
+                                if (requestText != null) {
+                                    throw new SecsException("Invalid data format for S1F17 message");
+                                }
+                                
+                                // Send S1F18 ON-LINE Acknowledge (ONLA).
+                                B replyText = new B(0x00); // ONLACK = ON-LINE Accepted
+                                Message replyMessage = new DataMessage(sessionId, 1, 18, PType.SECS_II, SType.DATA, systemBytes, replyText);
+                                LOG.debug("Reply message:    " + replyMessage);
+                                os.write(replyMessage.toByteArray());
+                                os.flush();
+
+                            } else if (stream == 2 && function == 25) {
+                                // S2F25 Loopback Diagnostic Request (LDR).
+                                if (!(requestText instanceof B)) {
+                                    throw new SecsException("Invalid data format for S2F25 message");
+                                }
+                                
+                                // Send S2F26 Loopback Diagnostic Data (LDD).
+                                Message replyMessage = new DataMessage(sessionId, 2, 26, PType.SECS_II, SType.DATA, systemBytes, requestText);
+                                LOG.debug("Reply message:    " + replyMessage);
+                                os.write(replyMessage.toByteArray());
+                                os.flush();
                             }
                         }
                     } catch (SecsException e) {
