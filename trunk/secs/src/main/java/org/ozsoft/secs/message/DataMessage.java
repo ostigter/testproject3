@@ -49,7 +49,7 @@ public class DataMessage extends Message {
         byte[] textBytes = text.toByteArray();
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            baos.write(new U4(MIN_LENGTH + textBytes.length).toByteArray());
+            baos.write(new U4(HEADER_LENGTH + textBytes.length).toByteArray());
             baos.write(getSessionId().toByteArray());
             baos.write(getHeaderByte2());
             baos.write(getHeaderByte3());
@@ -57,13 +57,13 @@ public class DataMessage extends Message {
             baos.write(getSType().ordinal());
             baos.write(getSystemBytes().toByteArray());
             baos.write(textBytes);
+            return baos.toByteArray();
         } catch (IOException e) {
             // Internal error (should never happen).
             throw new RuntimeException("Could not serialize message: " + e.getMessage());
         } finally {
             IOUtils.closeQuietly(baos);
         }
-        return baos.toByteArray();
     }
     
     public String getType() {
@@ -72,8 +72,17 @@ public class DataMessage extends Message {
     
     @Override
     public String toString() {
-        return String.format("DataMessage(type = %s, withReply = %s, systemBytes = %08x, data = %s)",
-                getType(), withReply, text.length(), getSystemBytes().getValue(), text);
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+        for (byte b : toByteArray()) {
+            sb.append(String.format("%02x ", b));
+        }
+        sb.append('}');
+        if (text != null) {
+            sb.append('\n');
+            sb.append(text.toSml());
+        }
+        return String.format("%s %s", getType(), sb);
     }
     
 }
