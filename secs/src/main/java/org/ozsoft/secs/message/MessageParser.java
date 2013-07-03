@@ -1,7 +1,5 @@
 package org.ozsoft.secs.message;
 
-import java.util.Stack;
-
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
 import org.ozsoft.secs.SecsException;
@@ -95,8 +93,6 @@ public class MessageParser {
             throw new SecsException("Empty data item");
         }
         
-        Data<?> data = null;
-        
         boolean inValue = false;
         String type = null;
         String value = null;
@@ -138,50 +134,6 @@ public class MessageParser {
         }
         
         return parseData(type, value);
-    }
-    
-    private static Data<?> parseData(String type, String value) throws SecsException {
-        Data<?> data = null;
-        
-        if (type.equals("L")) {
-            data = parseL(value);
-        } else if (type.equals("B")) {
-            B b = new B();
-            try {
-                for (String s : value.split("\\s")) {
-                    b.add(Byte.parseByte(s));
-                }
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid B value: " + value);
-            }
-            data = b;
-        } else if (type.equals("BOOLEAN")) {
-            if (value.equals("True")) {
-                data = new BOOLEAN(true);
-            } else if (value.equals("False")) {
-                data = new BOOLEAN(false);
-            } else {
-                throw new SecsException("Invalid BOOLEAN value: " + value);
-            }
-        } else if (type.equals("A")) {
-            data = new A(value);
-        } else if (type.equals("U2")) {
-            try {
-                data = new U2(Integer.parseInt(value));
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid U2 value: " + value);
-            }
-        } else if (type.equals("U4")) {
-            try {
-                data = new U4(Long.parseLong(value));
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid U4 value: " + value);
-            }
-        } else {
-            throw new SecsException("Invalid data type: " + type);
-        }
-        
-        return data;
     }
     
     private static L parseL(String text) throws SecsException {
@@ -231,6 +183,50 @@ public class MessageParser {
         return l;
     }
 
+    private static Data<?> parseData(String type, String value) throws SecsException {
+        Data<?> data = null;
+        
+        if (type.equals("L")) {
+            data = parseL(value);
+        } else if (type.equals("B")) {
+            B b = new B();
+            try {
+                for (String s : value.split("\\s")) {
+                    b.add(Byte.parseByte(s));
+                }
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid B value: " + value);
+            }
+            data = b;
+        } else if (type.equals("BOOLEAN")) {
+            if (value.equals("True")) {
+                data = new BOOLEAN(true);
+            } else if (value.equals("False")) {
+                data = new BOOLEAN(false);
+            } else {
+                throw new SecsException("Invalid BOOLEAN value: " + value);
+            }
+        } else if (type.equals("A")) {
+            data = new A(value);
+        } else if (type.equals("U2")) {
+            try {
+                data = new U2(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U2 value: " + value);
+            }
+        } else if (type.equals("U4")) {
+            try {
+                data = new U4(Long.parseLong(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U4 value: " + value);
+            }
+        } else {
+            throw new SecsException("Invalid data type: " + type);
+        }
+        
+        return data;
+    }
+    
     private static Data<?> parseText(byte[] text, int offset) throws SecsException {
         if (text.length < 2) {
             throw new SecsException("Invalid data length: " + text.length);
