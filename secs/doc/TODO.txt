@@ -1,0 +1,14 @@
+TODO
+====
+
+* Handle S1F13 Establish Communication Request
+* Handle DESELECT_REQ + DESELECT_RSP
+* Handle LINKTEST_REQ + LINKTEST_RSP
+* Handle REJECT
+* Refactor using generic and specific message handlers
+* Merge SecsClient and SecsServer into SecsEquipment
+* Basic test application
+* Handle S1F1 Are You There (R)
+* Handle S1F15 Request OFF-LINE (ROFL)
+* Handle S1F17 Request ON-LINE (RONL)
+* Handle S1F3 Select Equipment Status (SSR)

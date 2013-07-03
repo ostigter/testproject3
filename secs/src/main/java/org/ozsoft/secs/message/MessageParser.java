@@ -47,8 +47,8 @@ public class MessageParser {
 //        LOG.debug(String.format("System Bytes = %04x", sessionId.getValue()));
         
         // Get Header Bytes 2 and 3.
-        int headerByte2 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE2];
-        int headerByte3 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE3];
+        byte headerByte2 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE2];
+        byte headerByte3 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE3];
 //        LOG.debug(String.format("Header Byte 2 = %02x", headerByte2));
 //        LOG.debug(String.format("Header Byte 3 = %02x", headerByte3));
         
@@ -72,7 +72,7 @@ public class MessageParser {
         byte[] systemBytesBuf = new byte[Message.SYSTEM_BYTES_LENGTH];
         System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SYSTEMBYTES, systemBytesBuf, 0, Message.SYSTEM_BYTES_LENGTH);
         U4 systemBytes = new U4(systemBytesBuf);
-//        LOG.debug(String.format("System Bytes = %08x", systemBytes.getValue()));
+//        LOG.debug(String.format("System Bytes = %d", systemBytes.getValue()));
         
         if (sType == SType.DATA) {
             int dataLength = (int) (messageLength - Message.HEADER_LENGTH);
@@ -136,6 +136,51 @@ public class MessageParser {
         return parseData(type, value);
     }
     
+    private static Data<?> parseData(String type, String value) throws SecsException {
+        Data<?> data = null;
+        
+        if (type.equals("L")) {
+            data = parseL(value);
+        } else if (type.equals("B")) {
+            B b = new B();
+            try {
+                for (String s : value.split("\\s")) {
+                    b.add(Byte.parseByte(s));
+                }
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid B value: " + value);
+            }
+            data = b;
+        } else if (type.equals("BOOLEAN")) {
+            if (value.equals("True")) {
+                data = new BOOLEAN(true);
+            } else if (value.equals("False")) {
+                data = new BOOLEAN(false);
+            } else {
+                throw new SecsException("Invalid BOOLEAN value: " + value);
+            }
+        } else if (type.equals("A")) {
+            data = new A(value);
+        } else if (type.equals("U2")) {
+            try {
+                data = new U2(Integer.parseInt(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U2 value: " + value);
+            }
+        } else if (type.equals("U4")) {
+            try {
+                data = new U4(Long.parseLong(value));
+            } catch (NumberFormatException e) {
+                throw new SecsException("Invalid U4 value: " + value);
+            }
+        } else {
+            throw new SecsException("Invalid data type: " + type);
+        }
+        
+        return data;
+    }
+    
+    //TODO: Merge parseL(String) into parse(String).
     private static L parseL(String text) throws SecsException {
         L l = new L();
         if (!text.isEmpty()) {
@@ -183,50 +228,6 @@ public class MessageParser {
         return l;
     }
 
-    private static Data<?> parseData(String type, String value) throws SecsException {
-        Data<?> data = null;
-        
-        if (type.equals("L")) {
-            data = parseL(value);
-        } else if (type.equals("B")) {
-            B b = new B();
-            try {
-                for (String s : value.split("\\s")) {
-                    b.add(Byte.parseByte(s));
-                }
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid B value: " + value);
-            }
-            data = b;
-        } else if (type.equals("BOOLEAN")) {
-            if (value.equals("True")) {
-                data = new BOOLEAN(true);
-            } else if (value.equals("False")) {
-                data = new BOOLEAN(false);
-            } else {
-                throw new SecsException("Invalid BOOLEAN value: " + value);
-            }
-        } else if (type.equals("A")) {
-            data = new A(value);
-        } else if (type.equals("U2")) {
-            try {
-                data = new U2(Integer.parseInt(value));
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid U2 value: " + value);
-            }
-        } else if (type.equals("U4")) {
-            try {
-                data = new U4(Long.parseLong(value));
-            } catch (NumberFormatException e) {
-                throw new SecsException("Invalid U4 value: " + value);
-            }
-        } else {
-            throw new SecsException("Invalid data type: " + type);
-        }
-        
-        return data;
-    }
-    
     private static Data<?> parseText(byte[] text, int offset) throws SecsException {
         if (text.length < 2) {
             throw new SecsException("Invalid data length: " + text.length);

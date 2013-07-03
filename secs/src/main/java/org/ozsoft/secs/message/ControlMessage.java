@@ -38,12 +38,10 @@ public class ControlMessage extends Message {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append('{');
         for (byte b : toByteArray()) {
-            sb.append(String.format("%d ", b));
+            sb.append(String.format("%02x ", b));
         }
-        sb.append('}');
-        return String.format("ControlMessage(SType = %s, systemBytes = %08x, header = %s)", getSType(), getSystemBytes().getValue(), sb);
+        return String.format("%s {%s}", getSType(), sb);
     }
 
 }
