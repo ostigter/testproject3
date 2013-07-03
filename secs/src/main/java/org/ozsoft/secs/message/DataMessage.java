@@ -46,17 +46,24 @@ public class DataMessage extends Message {
     
     @Override
     public byte[] toByteArray() {
-        byte[] textBytes = text.toByteArray();
+        int length = HEADER_LENGTH;
+        byte[] textBytes = null;
+        if (text != null) {
+            textBytes = text.toByteArray();
+            length += textBytes.length;
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            baos.write(new U4(HEADER_LENGTH + textBytes.length).toByteArray());
+            baos.write(new U4(length).toByteArray());
             baos.write(getSessionId().toByteArray());
             baos.write(getHeaderByte2());
             baos.write(getHeaderByte3());
             baos.write(getPType().ordinal());
             baos.write(getSType().ordinal());
             baos.write(getSystemBytes().toByteArray());
-            baos.write(textBytes);
+            if (text != null) {
+                baos.write(textBytes);
+            }
             return baos.toByteArray();
         } catch (IOException e) {
             // Internal error (should never happen).

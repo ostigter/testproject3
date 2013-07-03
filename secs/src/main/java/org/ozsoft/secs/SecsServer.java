@@ -9,6 +9,7 @@ import java.net.SocketTimeoutException;
 
 import org.apache.log4j.Logger;
 import org.ozsoft.secs.format.A;
+import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
@@ -181,8 +182,11 @@ public class SecsServer implements Runnable {
                                 
                                 // Send S1F14 Establish Communication Request Acknowledge (CRA).
                                 L replyText = new L();
-                                replyText.addItem(new A(MDLN));
-                                replyText.addItem(new A(SOFTREV));
+                                replyText.addItem(new B(new byte[] {0x00})); // COMMACK
+                                l = new L();
+                                l.addItem(new A(MDLN));
+                                l.addItem(new A(SOFTREV));
+                                replyText.addItem(l);
                                 Message replyMessage = new DataMessage(sessionId, 1, 14, PType.SECS_II, SType.DATA, systemBytes, replyText);
                                 LOG.debug("Reply message:    " + replyMessage);
                                 os.write(replyMessage.toByteArray());
