@@ -1,82 +1,114 @@
 package org.ozsoft.secs.format;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 2-byte unsigned integer (U2).
  * 
  * @author Oscar Stigter
  */
-public class U4 implements Data<Long> {
+public class U4 implements Data<List<Long>> {
     
-    public static final int FORMAT_CODE = 52;
+    public static final int FORMAT_CODE = 0xb0;
     
-    public static final int LENGTH = 4;
+    public static final int MIN_LENGTH = 4;
     
     private static final long MIN_VALUE = 0x00000000L;
     
     private static final long MAX_VALUE = 0xffffffffL;
     
-    private long value;
+    private List<Long> values = new ArrayList<Long>();
     
     public U4() {
-        this(0L);
+        // Empty implementation.
     }
     
     public U4(long value) {
-        setValue(value);
+        addValue(value);
     }
     
     public U4(byte[] data) {
-        setValue(data);
+        addValue(data);
     }
     
     @Override
-    public Long getValue() {
-        return value;
+    public List<Long> getValue() {
+        return values;
     }
     
     @Override
-    public void setValue(Long value) {
-        if (value < MIN_VALUE || value > MAX_VALUE) {
-            throw new IllegalArgumentException("Invalid U4 value: " + value);
-        }
-        this.value = value;
+    public void setValue(List<Long> value) {
+        this.values = value;
     }
     
-    public void setValue(byte[] data) {
-        if (data.length != LENGTH) {
-            throw new IllegalArgumentException("Invalid U4 length: " + data.length);
+    public long getValue(int index) {
+        return values.get(index);
+    }
+    
+    public void addValue(long value) {
+      if (value < MIN_VALUE || value > MAX_VALUE) {
+          throw new IllegalArgumentException("Invalid U4 value: " + value);
+      }
+        this.values.add(value);
+    }
+    
+    public void addValue(byte[] data) {
+        if (data.length < MIN_LENGTH) {
+            throw new IllegalArgumentException("Invalid U2 length: " + data.length);
         }
-        setValue((((long) (data[0] & 0x7f)) << 24) | (((long) (data[1] & 0xff)) << 16) | (((long) (data[2] & 0xff)) << 8) | (((long) (data[3] & 0xff))));
+        addValue((((long) (data[0] & 0x7f)) << 24) | (((long) (data[1] & 0xff)) << 16) | (((long) (data[2] & 0xff)) << 8) | (((long) (data[3] & 0xff))));
     }
     
     @Override
     public int length() {
-        return LENGTH;
+        return values.size();
     }
     
     @Override
     public byte[] toByteArray() {
-        byte b1 = (byte) (value >> 24);
-        byte b2 = (byte) (value >> 16);
-        byte b3 = (byte) (value >> 8);
-        byte b4 = (byte) (value & 0xff);
-        return new byte[] {b1, b2, b3, b4};
+//      byte formatByte = (byte) (FORMAT_CODE | 0x01); // 1 length byte
+//      byte lengthByte = values.size();
+      int length = length();
+      byte[] array = new byte[length * MIN_LENGTH];
+      for (int i = 0; i < length; i++) {
+          long value = values.get(i);
+          array[i * MIN_LENGTH] = (byte) (value >> 24);
+          array[i * MIN_LENGTH + 1] = (byte) (value >> 16);
+          array[i * MIN_LENGTH + 2] = (byte) (value >> 8);
+          array[i * MIN_LENGTH + 3] = (byte) (value & 0x000000ff);
+      }
+      return array;
     }
 
     @Override
     public String toSml() {
-        return String.format("U4(%d)", value);
+        int length = length();
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("U4:%d", length));
+        if (length > 0) {
+            boolean first = true;
+            sb.append(" {");
+            for (long value : values) {
+                if (!first) {
+                    sb.append(' ');
+                } else {
+                    first = false;
+                }
+                sb.append(value);
+            }
+            sb.append('}');
+        }
+        return sb.toString();
     }
     
-    @Override
-    public int hashCode() {
-        return Long.valueOf(value).hashCode();
-    }
+    //FIXME: Implement U4.hashCode()
     
+    //FIXME: Enhance U4.equals()
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof U4) {
-            return ((U4) obj).value == value;
+            return ((U4) obj).values == values;
         } else {
             return false;
         }

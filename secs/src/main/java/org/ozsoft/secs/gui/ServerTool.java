@@ -6,7 +6,6 @@ import java.awt.GridBagLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 public class ServerTool {
@@ -19,11 +18,11 @@ public class ServerTool {
     
     private JFrame frame;
     
-    private JTextField portText;
-    
-    private JTextField sessionId;
-    
-    private JTextField modelName;
+//    private JTextField portText;
+//    
+//    private JTextField sessionId;
+//    
+//    private JTextField modelName;
 
     public ServerTool() {
         initUI();

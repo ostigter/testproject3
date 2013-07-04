@@ -28,7 +28,7 @@ public class MessageParser {
         }
         byte[] lengthField = new byte[Message.LENGTH_LENGTH];
         System.arraycopy(data, 0, lengthField, 0, Message.LENGTH_LENGTH);
-        long messageLength = new U4(lengthField).getValue();
+        long messageLength = new U4(lengthField).getValue(0);
 //        LOG.debug("Message length: " + messageLength);
         if (length < (messageLength + Message.LENGTH_LENGTH)) {
             throw new SecsException(String.format("Incomplete message (declared length: %d; actual length: %d)",
@@ -266,11 +266,11 @@ public class MessageParser {
             case L.FORMAT_CODE:
                 dataItem = parseL(text, offset, length);
                 break;
-            case B.FORMAT_CODE:
-                dataItem = parseB(text, offset, length);
-                break;
             case BOOLEAN.FORMAT_CODE:
                 dataItem = parseBoolean(text, offset, length);
+                break;
+            case B.FORMAT_CODE:
+                dataItem = parseB(text, offset, length);
                 break;
             case A.FORMAT_CODE:
                 dataItem = parseA(text, offset, length);
@@ -278,8 +278,11 @@ public class MessageParser {
             case U2.FORMAT_CODE:
                 dataItem = parseU2(text, offset, length);
                 break;
+            case U4.FORMAT_CODE:
+                dataItem = parseU2(text, offset, length);
+                break;
             default:
-                throw new IllegalArgumentException("Invalid format code in message data: " + formatCode);
+                throw new IllegalArgumentException(String.format("Invalid format code in message data: %02x", formatCode));
         }
         return dataItem;
     }
@@ -318,10 +321,14 @@ public class MessageParser {
     }
 
     private static U2 parseU2(byte[] data, int offset, int length) throws SecsException {
-        if (length != U2.LENGTH) {
+        if (data.length < length * U2.MIN_LENGTH) {
             throw new SecsException("Invalid U2 length: " + length);
         }
-        return new U2(new byte[] {data[offset], data[offset + 1]});
+        U2 u2 = new U2();
+        for (int i = 0; i < length; i++) {
+            u2.addValue((data[offset + i * 2] & 0xff) << 8 | (data[offset + i * 2 + 1]) & 0xff);
+        }
+        return u2;
     }
     
 }

@@ -1,10 +1,23 @@
 TODO
 ====
 
-* Handle DESELECT_REQ + DESELECT_RSP
-* Handle LINKTEST_REQ + LINKTEST_RSP
-* Handle REJECT
+High priority
+-------------
+
+* Handle all data items
 * Refactor using generic and specific message handlers
 * Merge SecsClient and SecsServer into SecsEquipment
-* Basic test application
+* Basic test application (send/receive messages)
+
+Normal priority
+---------------
+
+* Communication and Control state models 
 * Handle S1F3 Select Equipment Status (SSR)
+* T3 timeout
+
+Low priority
+------------
+
+* Transaction handling
+* Sessions handling
