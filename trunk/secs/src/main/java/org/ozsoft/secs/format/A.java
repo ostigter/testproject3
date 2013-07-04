@@ -48,18 +48,24 @@ public class A implements Data<String> {
             noOfLengthBytes++;
             lengthBytes.add((length >> 16) & 0xff);
         }
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             // Write format byte.
             baos.write(FORMAT_CODE | noOfLengthBytes);
+            
+            // Write length bytes.
             for (int i = 0; i < noOfLengthBytes; i++) {
                 baos.write(lengthBytes.get(i));
             }
-            // Write bytes recursively.
+            
+            // Write character bytes.
             for (int b : value.getBytes()) {
                 baos.write(b);
             }
+            
             return baos.toByteArray();
+            
         } finally {
             IOUtils.closeQuietly(baos);
         }
