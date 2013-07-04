@@ -279,7 +279,7 @@ public class MessageParser {
                 dataItem = parseU2(text, offset, length);
                 break;
             case U4.FORMAT_CODE:
-                dataItem = parseU2(text, offset, length);
+                dataItem = parseU4(text, offset, length);
                 break;
             default:
                 throw new IllegalArgumentException(String.format("Invalid format code in message data: %02x", formatCode));
@@ -329,6 +329,17 @@ public class MessageParser {
             u2.addValue((data[offset + i * 2] & 0xff) << 8 | (data[offset + i * 2 + 1]) & 0xff);
         }
         return u2;
+    }
+    
+    private static U4 parseU4(byte[] data, int offset, int length) throws SecsException {
+        if (data.length < length * U4.MIN_LENGTH) {
+            throw new SecsException("Invalid U4 length: " + length);
+        }
+        U4 u4 = new U4();
+        for (int i = 0; i < length; i++) {
+            u4.addValue((data[offset + i * 2] & 0xff) << 24 | (data[offset + i * 2 + 1] & 0xff) << 16 | (data[offset + i * 2 + 2] & 0xff) << 8 | (data[offset + i * 2 + 3]) & 0xff);
+        }
+        return u4;
     }
     
 }

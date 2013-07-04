@@ -29,7 +29,7 @@ public class LTest {
         l.addItem(new U2(511));
         Assert.assertEquals(3, l.length());
         Assert.assertEquals("L:3 {\nB:3 {01 02 03}\nA:4 {Test}\nU2:1 {511}\n}", l.toSml());
-        TestUtils.assertEquals(new byte[] {0x01, 0x03, 0x21, 0x03, 0x01, 0x02, 0x03, 0x41, 0x04, 'T', 'e', 's', 't', 0x01, (byte) 0xff}, l.toByteArray());
+        TestUtils.assertEquals(new byte[] {0x01, 0x03, 0x21, 0x03, 0x01, 0x02, 0x03, 0x41, 0x04, 'T', 'e', 's', 't', (byte) 0xa9, 0x01, 0x01, (byte) 0xff}, l.toByteArray());
     }
 
 }

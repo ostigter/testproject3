@@ -1,7 +1,10 @@
 package org.ozsoft.secs.format;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
 
 
 /**
@@ -64,8 +67,44 @@ public class U2 implements Data<List<Integer>> {
     
     @Override
     public byte[] toByteArray() {
-//        byte formatByte = (byte) (FORMAT_CODE | 0x01); // 1 length byte
-//        byte lengthByte = values.size();
+        // Determine length.
+        int length = length();
+        int noOfLengthBytes = 1;
+        B lengthBytes = new B();
+        lengthBytes.add(length & 0xff);
+        if (length > 0xff) {
+            noOfLengthBytes++;
+            lengthBytes.add((length >> 8) & 0xff);
+        }
+        if (length > 0xffff) {
+            noOfLengthBytes++;
+            lengthBytes.add((length >> 16) & 0xff);
+        }
+        
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            // Write format byte.
+            baos.write(FORMAT_CODE | noOfLengthBytes);
+            
+            // Write length bytes.
+            for (int i = 0; i < noOfLengthBytes; i++) {
+                baos.write(lengthBytes.get(i));
+            }
+            // Write values.
+            for (int i = 0; i < length; i++) {
+                int value = values.get(i);
+                baos.write(value >> 8);
+                baos.write(value & 0xff);
+            }
+            
+            return baos.toByteArray();
+            
+        } finally {
+            IOUtils.closeQuietly(baos);
+        }
+    }
+    
+    public byte[] getBytes() {
         int length = length();
         byte[] array = new byte[length * MIN_LENGTH];
         for (int i = 0; i < length; i++) {

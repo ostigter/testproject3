@@ -55,7 +55,7 @@ public class DataMessage extends Message {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             baos.write(new U4(length).toByteArray());
-            baos.write(getSessionId().toByteArray());
+            baos.write(getSessionId().getBytes());
             baos.write(getHeaderByte2());
             baos.write(getHeaderByte3());
             baos.write(getPType().ordinal());
