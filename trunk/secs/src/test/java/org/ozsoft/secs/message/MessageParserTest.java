@@ -90,7 +90,7 @@ public class MessageParserTest {
         Data<?> data = MessageParser.parseData("U2 {65535}");
         Assert.assertTrue(data instanceof U2);
         U2 u2 = (U2) data;
-        Assert.assertEquals(0xffff, (int) u2.getValue());
+        Assert.assertEquals(0xffff, (int) u2.getValue(0));
     }
 
     /**
@@ -101,7 +101,7 @@ public class MessageParserTest {
         Data<?> data = MessageParser.parseData("U4 {4294967295}");
         Assert.assertTrue(data instanceof U4);
         U4 u4 = (U4) data;
-        Assert.assertEquals(0xffffffffL, (long) u4.getValue());
+        Assert.assertEquals(0xffffffffL, (long) u4.getValue(0));
     }
 
     /**
@@ -190,12 +190,12 @@ public class MessageParserTest {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, (byte) 0xff, (byte) 0xff, 0x00, 0x00, 0x00, 0x01, 0x11, 0x12, 0x13, 0x14 };
         Message message = MessageParser.parse(data, data.length);
         Assert.assertTrue(message instanceof ControlMessage);
-        Assert.assertEquals(0xffff, (int) message.getSessionId().getValue());
+        Assert.assertEquals(0xffff, (int) message.getSessionId().getValue(0));
         Assert.assertEquals(0x00, message.getHeaderByte2());
         Assert.assertEquals(0x00, message.getHeaderByte3());
         Assert.assertEquals(PType.SECS_II, message.getPType());
         Assert.assertEquals(SType.SELECT_REQ, message.getSType());
-        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
+        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue(0));
     }
 
     /**
@@ -206,12 +206,12 @@ public class MessageParserTest {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, (byte) 0xff, (byte) 0xff, 0x00, 0x00, 0x00, 0x02, 0x11, 0x12, 0x13, 0x14 };
         Message message = MessageParser.parse(data, data.length);
         Assert.assertTrue(message instanceof ControlMessage);
-        Assert.assertEquals(0xffff, (int) message.getSessionId().getValue());
+        Assert.assertEquals(0xffff, (int) message.getSessionId().getValue(0));
         Assert.assertEquals(0x00, message.getHeaderByte2());
         Assert.assertEquals(0x00, message.getHeaderByte3());
         Assert.assertEquals(PType.SECS_II, message.getPType());
         Assert.assertEquals(SType.SELECT_RSP, message.getSType());
-        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
+        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue(0));
     }
 
     /**
@@ -224,12 +224,12 @@ public class MessageParserTest {
     public void dataMessageEmpty() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14};
         Message message = MessageParser.parse(data, data.length);
-        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
+        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue(0));
         Assert.assertEquals(-127, message.getHeaderByte2());
         Assert.assertEquals(0x0d, message.getHeaderByte3());
         Assert.assertEquals(PType.SECS_II, message.getPType());
         Assert.assertEquals(SType.DATA, message.getSType());
-        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
+        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue(0));
         Assert.assertTrue(message instanceof DataMessage);
         DataMessage dataMessage = (DataMessage) message;
         Assert.assertEquals(1, dataMessage.getStream());
@@ -253,20 +253,8 @@ public class MessageParserTest {
      */
     @Test
     public void dataMessageB() throws SecsException {
-        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0f, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x21, 0x03, 0x21, 0x22,
-                0x23 };
-        Message message = MessageParser.parse(data, data.length);
-        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
-        Assert.assertEquals(-127, message.getHeaderByte2());
-        Assert.assertEquals(0x0d, message.getHeaderByte3());
-        Assert.assertEquals(PType.SECS_II, message.getPType());
-        Assert.assertEquals(SType.DATA, message.getSType());
-        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
-        Assert.assertTrue(message instanceof DataMessage);
-        DataMessage dataMessage = (DataMessage) message;
-        Assert.assertEquals(1, dataMessage.getStream());
-        Assert.assertEquals(13, dataMessage.getFunction());
-        Assert.assertEquals("S1F13", dataMessage.getType());
+        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0f, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x21, 0x03, 0x21, 0x22, 0x23};
+        DataMessage dataMessage = (DataMessage) MessageParser.parse(data, data.length);
         Data<?> text = dataMessage.getText();
         Assert.assertTrue(text instanceof B);
         B b = (B) text;
@@ -290,7 +278,7 @@ public class MessageParserTest {
      */
     @Test
     public void dataMessageBOOLEAN() throws SecsException {
-        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0d, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x11, 0x01, 0x01 };
+        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0d, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x11, 0x01, 0x01};
         DataMessage message = (DataMessage) MessageParser.parse(data, data.length);
         Data<?> text = message.getText();
         Assert.assertTrue(text instanceof BOOLEAN);
@@ -313,20 +301,9 @@ public class MessageParserTest {
      */
     @Test
     public void dataMessageA() throws SecsException {
-        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x41, 0x04, 'T', 'e',
-                's', 't' };
+        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x41, 0x04, 'T', 'e', 's', 't' };
         Message message = MessageParser.parse(data, data.length);
-        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
-        Assert.assertEquals(-127, message.getHeaderByte2());
-        Assert.assertEquals(0x0d, message.getHeaderByte3());
-        Assert.assertEquals(PType.SECS_II, message.getPType());
-        Assert.assertEquals(SType.DATA, message.getSType());
-        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
-        Assert.assertTrue(message instanceof DataMessage);
         DataMessage dataMessage = (DataMessage) message;
-        Assert.assertEquals(1, dataMessage.getStream());
-        Assert.assertEquals(13, dataMessage.getFunction());
-        Assert.assertEquals("S1F13", dataMessage.getType());
         Data<?> text = dataMessage.getText();
         Assert.assertTrue(text instanceof A);
         A a = (A) text;
@@ -340,33 +317,28 @@ public class MessageParserTest {
      * 
      * Message:
      * <pre>
-     *   U2 {258}
+     *   U2:6 {0 1 255 256 257 65535}
      * </pre>
      * 
      * @throws SecsException
      *             In case of an invalid message.
      */
     @Test
-    public void dataMessageU2() throws SecsException {
-        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0e, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, (byte) 0xa9, 0x02,
-                0x01, 0x02 };
+    public void dataMessageU2Multiple() throws SecsException {
+        byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x18, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14,
+                (byte) 0xa9, 0x06, 0x00, 0x00, 0x00, 0x01, 0x00, (byte) 0xff, 0x01, 0x00, 0x01, 0x01, (byte) 0xff, (byte) 0xff};
         Message message = MessageParser.parse(data, data.length);
-        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
-        Assert.assertEquals(-127, message.getHeaderByte2());
-        Assert.assertEquals(0x0d, message.getHeaderByte3());
-        Assert.assertEquals(PType.SECS_II, message.getPType());
-        Assert.assertEquals(SType.DATA, message.getSType());
-        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
-        Assert.assertTrue(message instanceof DataMessage);
         DataMessage dataMessage = (DataMessage) message;
-        Assert.assertEquals(1, dataMessage.getStream());
-        Assert.assertEquals(13, dataMessage.getFunction());
-        Assert.assertEquals("S1F13", dataMessage.getType());
         Data<?> text = dataMessage.getText();
         Assert.assertTrue(text instanceof U2);
         U2 u2 = (U2) text;
-        Assert.assertEquals(2, u2.length());
-        Assert.assertEquals(0x0102, (int) u2.getValue());
+        Assert.assertEquals(6, u2.length());
+        Assert.assertEquals(0x0000, (int) u2.getValue(0));
+        Assert.assertEquals(0x0001, (int) u2.getValue(1));
+        Assert.assertEquals(0x00ff, (int) u2.getValue(2));
+        Assert.assertEquals(0x0100, (int) u2.getValue(3));
+        Assert.assertEquals(0x0101, (int) u2.getValue(4));
+        Assert.assertEquals(0xffff, (int) u2.getValue(5));
     }
 
     /**
@@ -390,12 +362,12 @@ public class MessageParserTest {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x14, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14, 0x01, 0x02, 0x41, 0x02,
                 'V', '1', 0x41, 0x02, 'V', '2' };
         Message message = MessageParser.parse(data, data.length);
-        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue());
+        Assert.assertEquals(0x0001, (int) message.getSessionId().getValue(0));
         Assert.assertEquals(-127, message.getHeaderByte2());
         Assert.assertEquals(0x0d, message.getHeaderByte3());
         Assert.assertEquals(PType.SECS_II, message.getPType());
         Assert.assertEquals(SType.DATA, message.getSType());
-        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue());
+        Assert.assertEquals(0x11121314L, (long) message.getSystemBytes().getValue(0));
         Assert.assertTrue(message instanceof DataMessage);
         DataMessage dataMessage = (DataMessage) message;
         Assert.assertEquals(1, dataMessage.getStream());

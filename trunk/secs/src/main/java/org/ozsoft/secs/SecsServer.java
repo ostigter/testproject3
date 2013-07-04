@@ -149,26 +149,39 @@ public class SecsServer implements Runnable {
                         if (requestMessage instanceof ControlMessage) {
                             switch (sType) {
                                 case SELECT_REQ:
-                                    byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0x00 : (byte) 0x01;
+                                    // Accept SELECT_REQ if not selected, otherwise reject.
+                                    byte headerByte3 = (connectionState == ConnectionState.NOT_SELECTED) ? (byte) 0x00 : (byte) 0x01; // SelectStatus: Accept or Reject
                                     Message replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
                                     LOG.debug("Reply message:    " + replyMessage);
                                     os.write(replyMessage.toByteArray());
                                     os.flush();
                                     break;
                                 case DESELECT_REQ:
-                                    //TODO: Handle DESELECT_REQ.
+                                    // Always acknowledge DESELECT_REQ message and immediately disconnect.
+                                    headerByte3 = 0x00; // DeselectStatus: Success
+                                    replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, PType.SECS_II, SType.DESELECT_RSP, systemBytes);
+                                    LOG.debug("Reply message:    " + replyMessage);
+                                    os.write(replyMessage.toByteArray());
+                                    os.close();
+                                    is.close();
+                                    clientSocket.close();
+                                    disconnect();
                                     break;
                                 case SEPARATE:
-                                    disconnect();
+                                    // Always immediately disconnect on SEPARATE message.
                                     is.close();
                                     os.close();
                                     clientSocket.close();
+                                    disconnect();
                                     break;
                                 case LINKTEST_REQ:
-                                    //TODO: Handle LINKTEST_REQ.
+                                    replyMessage = new ControlMessage(sessionId, 0x00, 0x00, PType.SECS_II, SType.LINKTEST_RSP, systemBytes);
+                                    LOG.debug("Reply message:    " + replyMessage);
+                                    os.write(replyMessage.toByteArray());
+                                    os.flush();
                                     break;
                                 case REJECT:
-                                    //TODO: Handle REJECT.
+                                    // Nothing to do.
                                     break;
                                 default:
                                     LOG.error("Unsupported control message type: " + sType);
@@ -270,6 +283,13 @@ public class SecsServer implements Runnable {
                                 
                                 // Send S2F26 Loopback Diagnostic Data (LDD).
                                 Message replyMessage = new DataMessage(sessionId, 2, 26, PType.SECS_II, SType.DATA, systemBytes, requestText);
+                                LOG.debug("Reply message:    " + replyMessage);
+                                os.write(replyMessage.toByteArray());
+                                os.flush();
+                                
+                            } else {
+                                // Unsupported data message; send ABORT.
+                                Message replyMessage = new DataMessage(sessionId, stream, 0, PType.SECS_II, SType.DATA, systemBytes, null);
                                 LOG.debug("Reply message:    " + replyMessage);
                                 os.write(replyMessage.toByteArray());
                                 os.flush();
