@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 /**
- * 2-byte unsigned integer (U2).
+ * 4-byte unsigned integer (U4).
  * 
  * @author Oscar Stigter
  */
@@ -60,7 +60,7 @@ public class U4 implements Data<List<Long>> {
         if (data.length < MIN_LENGTH) {
             throw new IllegalArgumentException("Invalid U2 length: " + data.length);
         }
-        addValue((((long) (data[0] & 0x7f)) << 24) | (((long) (data[1] & 0xff)) << 16) | (((long) (data[2] & 0xff)) << 8) | (((long) (data[3] & 0xff))));
+        addValue((data[0] & 0x7f) << 24 | (data[1] & 0xff) << 16 | (data[2] & 0xff) << 8 | (data[3] & 0xff));
     }
     
     @Override

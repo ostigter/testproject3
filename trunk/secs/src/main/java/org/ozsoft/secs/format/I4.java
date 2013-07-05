@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 /**
- * 2-byte unsigned integer (U2).
+ * 4-byte signed integer (I4).
  * 
  * @author Oscar Stigter
  */
