@@ -8,7 +8,7 @@ import org.apache.commons.io.IOUtils;
 
 
 /**
- * 2-byte unsigned integer (I2).
+ * 2-byte signed integer (I2).
  * 
  * @author Oscar Stigter
  */
