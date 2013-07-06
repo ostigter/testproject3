@@ -4,7 +4,7 @@ TODO
 High priority
 -------------
 
-* Handle all data items
+* Implement I8, U8, F4 and F8 data items
 * Refactor using generic and specific message handlers
 * Merge SecsClient and SecsServer into SecsEquipment
 * Basic test application (send/receive messages)
