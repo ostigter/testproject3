@@ -29,7 +29,8 @@ public abstract class ConversionUtils {
         final int length = data.length;
         long value = 0L;
         for (int i = 0; i < length; i++) {
-            value |= data[i] << (length - i - 1) * 8;
+            long b = data[i];
+            value |= b << (length - i - 1) * 8;
         }
         return value;
     }
@@ -38,18 +39,11 @@ public abstract class ConversionUtils {
         final int length = data.length;
         long value = 0L;
         for (int i = 0; i < length; i++) {
-            int b = data[i];
+            long b = data[i];
             if (b < 0) {
                 b += 256;
             }
             value |= b << (length - i - 1) * 8;
-//            if (i == (length - 1)) {
-//                value += b;
-//            } else {
-//                for (int j = (length - i - 1); j > 0; j--) {
-//                    value += b << 8;
-//                }
-//            }
         }
         return value;
     }
