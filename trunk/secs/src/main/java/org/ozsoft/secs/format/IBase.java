@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.ozsoft.secs.util.ConversionUtils;
 
 public class IBase implements Data<List<Long>> {
     
@@ -80,18 +81,10 @@ public class IBase implements Data<List<Long>> {
             for (int i = 0; i < noOfLengthBytes; i++) {
                 baos.write(lengthBytes.get(i));
             }
+            
             // Write values.
-            final byte[] data = new byte[size];
             for (int i = 0; i < length; i++) {
-                long value = values.get(i);
-                for (int j = 0; j < size; j++) {
-                    if (j == (size - 1)) {
-                        data[j] = (byte) (value & 0xff);
-                    } else {
-                        data[j] = (byte) (value >> (size - i - 1) * 8);
-                    }
-                }
-                baos.write(data);
+                baos.write(ConversionUtils.integerToBytes(values.get(i), size));
             }
             
             return baos.toByteArray();
