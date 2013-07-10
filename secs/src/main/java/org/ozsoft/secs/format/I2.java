@@ -19,4 +19,9 @@ public class I2 extends IBase {
         super("I2", FORMAT_CODE, LENGTH, MIN_VALUE, MAX_VALUE);
     }
     
+    public I2(int value) {
+        super("I2", FORMAT_CODE, LENGTH, MIN_VALUE, MAX_VALUE);
+        addValue(value);
+    }
+    
 }
