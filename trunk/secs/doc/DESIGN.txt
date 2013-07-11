@@ -38,6 +38,9 @@ Message (de)serialization
 0111 0001 0x71 // format = 4-byte signed integer (I4), 1 length byte
 0000 1100 0x0c // 12 / 4 = 3 signed 2-byte integer
 
+0110 0001 0x61 // format = 8-byte signed integer (I4), 1 length byte
+0001 1000 0x18 // 24 / 8 = 3 signed 8-byte integer
+
 1010 0101 0xa5 // format = 1-byte unsigned integer (U1), 1 length byte
 0000 0010 0x02 // 2 / 1 = 2 unsigned 2-byte integers
 
@@ -46,6 +49,9 @@ Message (de)serialization
 
 1011 0001 0xb1 // format = 4-byte unsigned integer (U4), 1 length byte
 0000 0100 0x04 // 4 / 4 = 1 unsigned 4-byte integer
+
+1010 0001 0xa1 // format = 8-byte unsigned integer (U8), 1 length byte
+0000 0100 0x04 // 16 / 8 = 2 unsigned 8-byte integer
 
 L {
     B {01 7f 80 ff}
