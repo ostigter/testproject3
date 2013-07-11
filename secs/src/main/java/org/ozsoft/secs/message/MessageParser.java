@@ -180,7 +180,7 @@ public class MessageParser {
         return data;
     }
     
-    //TODO: Merge parseL(String) into parse(String).
+    //TODO: Refactor merging parseL(String) into parse(String).
     private static L parseL(String text) throws SecsException {
         L l = new L();
         if (!text.isEmpty()) {

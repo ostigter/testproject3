@@ -2,6 +2,7 @@ package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
+import org.ozsoft.secs.SecsEquipment;
 import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.Data;
@@ -26,8 +27,8 @@ public class S1F1 extends MessageHandler {
     
     private static final String SOFTREV = "1.0";
     
-    public S1F1() {
-        super(STREAM, FUNCTION, DESCRIPTION);
+    public S1F1(SecsEquipment equipment) {
+        super(STREAM, FUNCTION, DESCRIPTION, equipment);
     }
 
     @Override

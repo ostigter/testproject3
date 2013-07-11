@@ -1,7 +1,9 @@
 package org.ozsoft.secs.message;
 
+import org.ozsoft.secs.CommunicationState;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
+import org.ozsoft.secs.SecsEquipment;
 import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
@@ -27,8 +29,8 @@ public class S1F13 extends MessageHandler {
     
     private static final String SOFTREV = "1.0";
     
-    public S1F13() {
-        super(STREAM, FUNCTION, DESCRIPTION);
+    public S1F13(SecsEquipment equipment) {
+        super(STREAM, FUNCTION, DESCRIPTION, equipment);
     }
 
     @Override
@@ -62,8 +64,15 @@ public class S1F13 extends MessageHandler {
         }
         
         // Send S1F14 Establish Communication Request Acknowledge (CRA).
+        int commack = -1;
+        if (getEquipment().getCommunicationState() != CommunicationState.COMMUNICATING) {
+            commack = 0x00; // COMMACK = Accepted
+            getEquipment().setCommunicationState(CommunicationState.COMMUNICATING);
+        } else {
+            commack = 0x01; // COMMACK = Denied, Try Again
+        }
         L replyText = new L();
-        replyText.addItem(new B(0x00)); // COMMACK = Accepted
+        replyText.addItem(new B(commack));
         l = new L();
         l.addItem(new A(MDLN));
         l.addItem(new A(SOFTREV));
