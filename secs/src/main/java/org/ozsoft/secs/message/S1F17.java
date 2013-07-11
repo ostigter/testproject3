@@ -17,12 +17,12 @@ public class S1F17 extends MessageHandler {
 
     private static final int STREAM = 1;
 
-    private static final int FUNCTION = 13;
-
-    private static final boolean WITH_REPLAY = true;
+    private static final int FUNCTION = 17;
+    
+    private static final String DESCRIPTION = "Request ON-LINE (RONL)";
 
     public S1F17() {
-        super(STREAM, FUNCTION, WITH_REPLAY);
+        super(STREAM, FUNCTION, DESCRIPTION);
     }
 
     @Override
@@ -34,6 +34,8 @@ public class S1F17 extends MessageHandler {
             throw new SecsException("Invalid data format for S1F17 message");
         }
 
+        //TODO: Switch server to ON-LINE control state.
+        
         // Send S1F18 ON-LINE Acknowledge (ONLA).
         B replyText = new B(0x00); // ONLACK = ON-LINE Accepted
         return new DataMessage(sessionId, STREAM, FUNCTION + 1, PType.SECS_II, SType.DATA, systemBytes, replyText);

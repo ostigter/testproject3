@@ -8,12 +8,12 @@ public abstract class MessageHandler {
     
     private final int function;
     
-    private final boolean withReply;
+    private final String description;
     
-    public MessageHandler(int stream, int function, boolean withReply) {
+    public MessageHandler(int stream, int function, String description) {
         this.stream = stream;
         this.function = function;
-        this.withReply = withReply;
+        this.description = description;
     }
     
     public int getStream() {
@@ -24,10 +24,15 @@ public abstract class MessageHandler {
         return function;
     }
     
-    public boolean withReply() {
-        return withReply;
+    public String getDescription() {
+        return description;
     }
     
     public abstract DataMessage handle(DataMessage message) throws SecsException;
+    
+    @Override
+    public String toString() {
+        return String.format("S%dF%d - %s", stream, function, description);
+    }
 
 }
