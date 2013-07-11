@@ -20,7 +20,7 @@ public class I2 extends IBase {
     }
     
     public I2(int value) {
-        super("I2", FORMAT_CODE, LENGTH, MIN_VALUE, MAX_VALUE);
+        this();
         addValue(value);
     }
     
