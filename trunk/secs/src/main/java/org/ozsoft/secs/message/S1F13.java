@@ -21,14 +21,14 @@ public class S1F13 extends MessageHandler {
 
     private static final int FUNCTION = 13;
     
-    private static final boolean WITH_REPLAY = true;
+    private static final String DESCRIPTION = "Establish Communication Request (CR)";
 
     private static final String MDLN = "SECS Server";
     
     private static final String SOFTREV = "1.0";
     
     public S1F13() {
-        super(STREAM, FUNCTION, WITH_REPLAY);
+        super(STREAM, FUNCTION, DESCRIPTION);
     }
 
     @Override

@@ -9,19 +9,19 @@ import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 
 /**
- * S1F15 Request OFF-LINE (ROFL) request message.
+ * S2F25 Loopback Diagnostic Request (LDR) request message.
  * 
  * @author Oscar Stigter
  */
-public class S1F15 extends MessageHandler {
+public class S2F25 extends MessageHandler {
 
     private static final int STREAM = 1;
 
-    private static final int FUNCTION = 15;
-    
-    private static final String DESCRIPTION = "Request OFF-LINE (ROFL)";
+    private static final int FUNCTION = 25;
 
-    public S1F15() {
+    private static final String DESCRIPTION = "Loopback Diagnostic Request (LDR)";
+
+    public S2F25() {
         super(STREAM, FUNCTION, DESCRIPTION);
     }
 
@@ -30,15 +30,12 @@ public class S1F15 extends MessageHandler {
         U2 sessionId = message.getSessionId();
         U4 systemBytes = message.getSystemBytes();
         Data<?> requestText = message.getText();
-        if (requestText != null) {
-            throw new SecsException("Invalid data format for S1F15 message");
+        if (!(requestText instanceof B)) {
+            throw new SecsException("Invalid data format for S2F25 message");
         }
-        
-        //TODO: Switch server to OFF-LINE control state.
-        
-        // Send S1F16 OFF-LINE Acknowledge (OFLA).
-        B replyText = new B(0x00); // OFLACK = OFF-LINE Acknowledge
-        return new DataMessage(sessionId, STREAM, FUNCTION + 1, PType.SECS_II, SType.DATA, systemBytes, replyText);
+
+        // Send S2F26 Loopback Diagnostic Data (LDD).
+        return new DataMessage(sessionId, STREAM, FUNCTION + 1, PType.SECS_II, SType.DATA, systemBytes, requestText);
     }
 
 }

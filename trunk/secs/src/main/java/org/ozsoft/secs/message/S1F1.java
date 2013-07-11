@@ -19,15 +19,15 @@ public class S1F1 extends MessageHandler {
     private static final int STREAM = 1;
 
     private static final int FUNCTION = 1;
-
-    private static final boolean WITH_REPLAY = true;
+    
+    private static final String DESCRIPTION = "Are You There (R)";
 
     private static final String MDLN = "SECS Server";
     
     private static final String SOFTREV = "1.0";
     
     public S1F1() {
-        super(STREAM, FUNCTION, WITH_REPLAY);
+        super(STREAM, FUNCTION, DESCRIPTION);
     }
 
     @Override
