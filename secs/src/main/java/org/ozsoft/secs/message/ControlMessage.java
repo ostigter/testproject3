@@ -25,7 +25,7 @@ public class ControlMessage extends Message {
             baos.write(getHeaderByte3());
             baos.write(getPType().ordinal());
             baos.write(getSType().ordinal());
-            baos.write(getSystemBytes().toByteArray());
+            baos.write(getSystemBytes().getBytes());
             return baos.toByteArray();
         } catch (IOException e) {
             // Internal error (should never happen).
