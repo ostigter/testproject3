@@ -3,6 +3,7 @@ package org.ozsoft.secs.message;
 import org.ozsoft.secs.CommunicationState;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
+import org.ozsoft.secs.SecsConstants;
 import org.ozsoft.secs.SecsEquipment;
 import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.format.A;
@@ -25,10 +26,6 @@ public class S1F13 extends MessageHandler {
     
     private static final String DESCRIPTION = "Establish Communication Request (CR)";
 
-    private static final String MDLN = "SECS Server";
-    
-    private static final String SOFTREV = "1.0";
-    
     public S1F13(SecsEquipment equipment) {
         super(STREAM, FUNCTION, DESCRIPTION, equipment);
     }
@@ -42,23 +39,23 @@ public class S1F13 extends MessageHandler {
             throw new SecsException("Invalid data format for S1F13 message");
         }
         L l = (L) requestText;
-        String mdln = null;
-        String softrev = null;
+//        String mdln = null;
+//        String softrev = null;
         if (l.length() == 0) {
             // No MDLN and SOFTREV specified.
-            mdln = "";
-            softrev = "";
+//            mdln = "";
+//            softrev = "";
         } else if (l.length() == 2) {
             Data<?> dataItem = l.getItem(0);
             if (!(dataItem instanceof A)) {
                 throw new SecsException("Invalid data format for S1F13 message");
             }
-            mdln = ((A) dataItem).getValue();
+//            mdln = ((A) dataItem).getValue();
             dataItem = l.getItem(1);
             if (!(dataItem instanceof A)) {
                 throw new SecsException("Invalid data format for S1F13 message");
             }
-            softrev = ((A) dataItem).getValue();
+//            softrev = ((A) dataItem).getValue();
         } else {
             throw new SecsException("Invalid data format for S1F13 message");
         }
@@ -74,8 +71,9 @@ public class S1F13 extends MessageHandler {
         L replyText = new L();
         replyText.addItem(new B(commack));
         l = new L();
-        l.addItem(new A(MDLN));
-        l.addItem(new A(SOFTREV));
+        //FIXME: Use actual model name and software revision.
+        l.addItem(new A(SecsConstants.DEFAULT_MDLN));
+        l.addItem(new A(SecsConstants.DEFAULT_SOFTREV));
         replyText.addItem(l);
         return new DataMessage(sessionId, STREAM, FUNCTION + 1, PType.SECS_II, SType.DATA, systemBytes, replyText);
     }

@@ -4,16 +4,24 @@ TODO
 High priority
 -------------
 
-* Merge SecsClient and SecsServer into SecsEquipment
+* Connect and disconnect sequence (S1F13/14, S1F17/18, S1F15/16)
+* Configuration items
+* Status and configuration listener interface
 * Basic test application (send/receive messages)
-* Implement U8, F4 and F8 data items
 
 Normal priority
 ---------------
 
+* U8, F4 and F8 data items
 * Communication and Control state models 
-* Handle S1F3 Select Equipment Status (SSR)
 * T3 timeout
+* T5 timeout
+* T6 timeout
+* T7 timeout
+* Handle S1F3 Select Equipment Status (SSR)
+* Variables (VIDs)
+* Reports
+* Collection events (CEIDs)
 
 Low priority
 ------------
