@@ -16,9 +16,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
-import org.ozsoft.secs.SecsClient;
 import org.ozsoft.secs.SecsConstants;
-import org.ozsoft.secs.SecsServer;
+import org.ozsoft.secs.SecsEquipment;
+import org.ozsoft.secs.SecsException;
 
 public class TestTool {
     
@@ -27,6 +27,8 @@ public class TestTool {
     private static final int DEFAULT_WIDTH = 800;
     
     private static final int DEFAULT_HEIGHT = 600;
+    
+    private final SecsEquipment equipment = new SecsEquipment();
     
     private JFrame frame;
     
@@ -57,10 +59,6 @@ public class TestTool {
     private JButton clearButton;
     
     private String lastHost = SecsConstants.DEFAULT_HOST;
-    
-    private SecsClient client;
-    
-    private SecsServer server;
     
     public static void main(String[] args) {
         new TestTool();
@@ -425,26 +423,27 @@ public class TestTool {
     
     private void enable() {
         enableButton.setEnabled(false);
+        String host = hostText.getText();
         int port = Integer.parseInt(portText.getText());
-        if (activeButton.isSelected()) {
-            String host = hostText.getText();
-            client = new SecsClient(host, port);
-            client.connect();
-        } else {
-            server = new SecsServer(port);
-            server.start();
+        try {
+            equipment.setActive(activeButton.isSelected());
+            equipment.setHost(host);
+            equipment.setPort(port);
+            equipment.setEnabled(true);
+        } catch (SecsException e) {
+            //FIXME: Handle configuration error.
+            System.err.println("ERROR: Could not configure or enable equipment: " + e.getMessage());
         }
         disableButton.setEnabled(true);
     }
     
     private void disable() {
         disableButton.setEnabled(false);
-        if (client != null) {
-            client.disconnect();
-            client = null;
-        } else if (server != null) {
-            server.stop();
-            server = null;
+        try {
+            equipment.setEnabled(false);
+        } catch (SecsException e) {
+            //FIXME: Handle error while disabling equipment.
+            System.err.println("ERROR: Could not disable equipment: " + e.getMessage());
         }
         enableButton.setEnabled(true);
     }
