@@ -4,27 +4,24 @@ TODO
 High priority
 -------------
 
-* Connect and disconnect sequence (S1F13/14, S1F17/18, S1F15/16)
-* Configuration items
-* Status and configuration listener interface
+* Request Online/Offline (RONL/ROFL)
+* Control state model
+* SML format (PeerGroup)
 * Basic test application (send/receive messages)
 
 Normal priority
 ---------------
 
 * U8, F4 and F8 data items
-* Communication and Control state models 
-* T3 timeout
-* T5 timeout
-* T6 timeout
-* T7 timeout
+* T3/T5/T6/T7/T8 timeouts
+* Large message support
 * Handle S1F3 Select Equipment Status (SSR)
 * Variables (VIDs)
-* Reports
-* Collection events (CEIDs)
+* Data collection (reports and collection events)
 
 Low priority
 ------------
 
-* Transaction handling
-* Session handling
+* Objects
+* Transaction handling (parallel transactions)
+* Session handling (multiple sessions)
