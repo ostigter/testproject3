@@ -1,26 +1,39 @@
 package org.ozsoft.secs.gui;
 
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
+import org.ozsoft.secs.CommunicationState;
+import org.ozsoft.secs.ConnectionState;
+import org.ozsoft.secs.ControlState;
 import org.ozsoft.secs.SecsConstants;
 import org.ozsoft.secs.SecsEquipment;
+import org.ozsoft.secs.SecsEquipmentListener;
 import org.ozsoft.secs.SecsException;
+import org.ozsoft.secs.message.Message;
 
-public class TestTool {
+public class TestTool implements SecsEquipmentListener {
     
     private static final String TITLE = "SECS Test Tool";
     
@@ -28,6 +41,10 @@ public class TestTool {
     
     private static final int DEFAULT_HEIGHT = 600;
     
+    private static final Font FONT = new Font(Font.MONOSPACED, Font.PLAIN, 12);
+    
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
     private final SecsEquipment equipment = new SecsEquipment();
     
     private JFrame frame;
@@ -54,7 +71,7 @@ public class TestTool {
     
     private JButton sendButton;
     
-    private JTextArea messagesText;
+    private JTextArea traceText;
     
     private JButton clearButton;
     
@@ -66,6 +83,40 @@ public class TestTool {
     
     public TestTool() {
         initUI();
+        
+        connectionStateChanged(equipment.getConnectionState());
+        communicationStateChanged(equipment.getCommunicationState());
+        controlStateChanged(equipment.getControlState());
+
+        equipment.addListener(this);
+    }
+    
+    @Override
+    public void connectionStateChanged(ConnectionState connectionState) {
+        appendTraceLog("Connection State set to " + connectionState);
+        connectionStateText.setText(connectionState.name());
+    }
+
+    @Override
+    public void communicationStateChanged(CommunicationState communicationState) {
+        appendTraceLog("Communication State set to " + communicationState);
+        communicationStateText.setText(communicationState.name());
+    }
+
+    @Override
+    public void controlStateChanged(ControlState controlState) {
+        appendTraceLog("Control State set to " + controlState);
+        controlStateText.setText(controlState.name());
+    }
+
+    @Override
+    public void messageReceived(Message message) {
+        appendTraceLog("R>> " + message.toString());
+    }
+
+    @Override
+    public void messageSent(Message message) {
+        appendTraceLog("S<< " + message.toString());
     }
     
     private void initUI() {
@@ -146,7 +197,8 @@ public class TestTool {
         gbc.insets = new Insets(5, 5, 5, 5);
         panel.add(label, gbc);
         
-        hostText = new JTextField(String.valueOf(SecsConstants.DEFAULT_HOST), 9);
+        hostText = new JTextField(String.valueOf(SecsConstants.DEFAULT_HOST), 16);
+        hostText.setFont(FONT);
         hostText.setEnabled(false);
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -171,7 +223,8 @@ public class TestTool {
         gbc.insets = new Insets(5, 5, 5, 5);
         panel.add(label, gbc);
         
-        portText = new JTextField(String.valueOf(SecsConstants.DEFAULT_PORT), 4);
+        portText = new JTextField(String.valueOf(SecsConstants.DEFAULT_PORT), 6);
+        portText.setFont(FONT);
         gbc.gridx = 3;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -194,7 +247,7 @@ public class TestTool {
         gbc.insets = new Insets(5, 5, 0, 5);
         frame.getContentPane().add(panel, gbc);
         
-        panel = new JPanel(new GridBagLayout());
+        panel = new JPanel(new FlowLayout());
         panel.setBorder(new TitledBorder("Control"));
         
         enableButton = new JButton("Enable");
@@ -204,16 +257,7 @@ public class TestTool {
                 enable();
             }
         });
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        panel.add(enableButton, gbc);
+        panel.add(enableButton);
         
         disableButton = new JButton("Disable");
         disableButton.setEnabled(false);
@@ -223,16 +267,7 @@ public class TestTool {
                 disable();
             }
         });
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        panel.add(disableButton, gbc);
+        panel.add(disableButton);
         
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -260,7 +295,8 @@ public class TestTool {
         gbc.insets = new Insets(0, 5, 0, 5);
         panel.add(label, gbc);
         
-        connectionStateText = new JTextField("Not Connected", 11);
+        connectionStateText = new JTextField(14);
+        connectionStateText.setFont(FONT);
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -284,7 +320,8 @@ public class TestTool {
         gbc.insets = new Insets(0, 5, 0, 5);
         panel.add(label, gbc);
         
-        communicationStateText = new JTextField("Not Communicating", 11);
+        communicationStateText = new JTextField(18);
+        communicationStateText.setFont(FONT);
         gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -308,7 +345,8 @@ public class TestTool {
         gbc.insets = new Insets(0, 5, 0, 5);
         panel.add(label, gbc);
         
-        controlStateText = new JTextField("Offline", 11);
+        controlStateText = new JTextField(18);
+        controlStateText.setFont(FONT);
         gbc.gridx = 5;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -336,6 +374,9 @@ public class TestTool {
         
         sendText = new JTextArea();
         sendText.setEnabled(false);
+        sendText.setFont(FONT);
+        sendText.setLineWrap(false);
+        JScrollPane scrollPane = new JScrollPane(sendText);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -345,7 +386,7 @@ public class TestTool {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.insets = new Insets(5, 5, 5, 5);
-        panel.add(sendText, gbc);
+        panel.add(scrollPane, gbc);
         
         sendButton = new JButton("Send");
         sendButton.setEnabled(false);
@@ -372,10 +413,13 @@ public class TestTool {
         frame.getContentPane().add(panel, gbc);
         
         panel = new JPanel(new GridBagLayout());
-        panel.setBorder(new TitledBorder("Message Log"));
+        panel.setBorder(new TitledBorder("Trace log"));
         
-        messagesText = new JTextArea();
-        messagesText.setEditable(false);
+        traceText = new JTextArea();
+        traceText.setEditable(false);
+        traceText.setFont(FONT);
+        traceText.setLineWrap(false);
+        scrollPane = new JScrollPane(traceText);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -385,13 +429,13 @@ public class TestTool {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         gbc.insets = new Insets(5, 5, 5, 5);
-        panel.add(messagesText, gbc);
+        panel.add(scrollPane, gbc);
         
         clearButton = new JButton("Clear");
         clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                messagesText.setText("");
+                traceText.setText("");
             }
         });
         gbc.gridx = 0;
@@ -430,11 +474,11 @@ public class TestTool {
             equipment.setHost(host);
             equipment.setPort(port);
             equipment.setEnabled(true);
+            disableButton.setEnabled(true);
         } catch (SecsException e) {
-            //FIXME: Handle configuration error.
-            System.err.println("ERROR: Could not configure or enable equipment: " + e.getMessage());
+            JOptionPane.showMessageDialog(frame, "Could not configure or enable equipment: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            enableButton.setEnabled(true);
         }
-        disableButton.setEnabled(true);
     }
     
     private void disable() {
@@ -442,10 +486,20 @@ public class TestTool {
         try {
             equipment.setEnabled(false);
         } catch (SecsException e) {
-            //FIXME: Handle error while disabling equipment.
-            System.err.println("ERROR: Could not disable equipment: " + e.getMessage());
+            JOptionPane.showMessageDialog(frame, "Could not disable equipment: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         enableButton.setEnabled(true);
+    }
+
+    private void appendTraceLog(final String message) {
+        final String timestamp = DATE_FORMAT.format(new Date());
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                traceText.append(String.format("[%s] %s\n", timestamp, message));
+                traceText.setCaretPosition(traceText.getText().length());
+            }
+        });
     }
 
 }

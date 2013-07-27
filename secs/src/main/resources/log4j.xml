@@ -9,7 +9,7 @@
     </appender>
 
     <logger name="org.ozsoft.secs">
-        <level value="DEBUG"/>
+        <level value="TRACE"/>
     </logger>
 
     <root>
