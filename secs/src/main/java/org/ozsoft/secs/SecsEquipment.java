@@ -235,9 +235,23 @@ public class SecsEquipment {
     }
 
     private void disable() {
-        disconnect();
-        setCommunicationState(CommunicationState.NOT_ENABLED);
         isEnabled = false;
+        disconnect();
+        if (connectionState != ConnectionState.NOT_CONNECTED) {
+            U2 sessionId = new U2(1);
+            U4 systemBytes = new U4(99999L);
+            
+            Message message = new ControlMessage(sessionId, 0x00, 0x00, PType.SECS_II, SType.SEPARATE, systemBytes);
+            try {
+                OutputStream os = socket.getOutputStream();
+                os.write(message.toByteArray());
+                os.flush();
+            } catch (IOException e) {
+                // Internal error (should never happen).
+                LOG.error("Could not send SEPARATE message", e);
+            }
+        }
+        setCommunicationState(CommunicationState.NOT_ENABLED);
     }
 
     private void addDefaultMessageHandlers() {
@@ -262,10 +276,10 @@ public class SecsEquipment {
             is = socket.getInputStream();
             os = socket.getOutputStream();
             byte[] buf = new byte[BUFFER_SIZE];
-            while (getConnectionState() != ConnectionState.NOT_CONNECTED) {
+            while (isEnabled && getConnectionState() != ConnectionState.NOT_CONNECTED) {
                 if (connectionState == ConnectionState.NOT_SELECTED) {
                     // Not selected; send SELECT_REQ.
-                    // FIXME: Use sequentially, generated session ID and system bytes.
+                    // FIXME: Use unique session ID and system bytes.
                     U2 sessionId = new U2(1);
                     U4 systemBytes = new U4(1L);
                     Message message = new ControlMessage(sessionId, 0x00, 0x00, PType.SECS_II, SType.SELECT_REQ, systemBytes);
@@ -336,19 +350,19 @@ public class SecsEquipment {
                     // Always accept SELECT_RSP; no action required.
                     int selectStatus = requestMessage.getHeaderByte3();
                     if (selectStatus == 0x00) { // SelectStatus: Communication Established
-                        LOG.debug("Received SELECT_RSP with SelectStatus: Communication Established");
+                        LOG.debug("Received SELECT_RSP message with SelectStatus: Communication Established");
                         setConnectionState(ConnectionState.SELECTED);
                     } else if (selectStatus == 0x01) { // SelectStatus: Communication Already Active
-                        LOG.debug("Received SELECT_RSP with SelectStatus: Communication Already Active");
+                        LOG.debug("Received SELECT_RSP message with SelectStatus: Communication Already Active");
                         setConnectionState(ConnectionState.SELECTED);
                     } else if (selectStatus == 0x02) { // SelectStatus: Connection Not Ready
-                        LOG.warn("Received SELECT_RSP with SelectStatus: Connection Not Ready -- Communication failed");
+                        LOG.warn("Received SELECT_RSP message with SelectStatus: Connection Not Ready -- Communication failed");
                         setConnectionState(ConnectionState.NOT_SELECTED);
                     } else if (selectStatus == 0x03) { // SelectStatus: Connect Exhaust
-                        LOG.warn("Received SELECT_RSP with SelectStatus: Connect Exhaust -- Communication failed");
+                        LOG.warn("Received SELECT_RSP message with SelectStatus: Connect Exhaust -- Communication failed");
                         setConnectionState(ConnectionState.NOT_SELECTED);
                     } else {
-                        LOG.warn("Received SELECT_RSP with invalid SelectStatus: " + selectStatus);
+                        LOG.warn("Received SELECT_RSP message with invalid SelectStatus: " + selectStatus);
                     }
                     break;
 
@@ -366,15 +380,16 @@ public class SecsEquipment {
                 case DESELECT_RSP:
                     int deselectStatus = requestMessage.getHeaderByte3();
                     if (deselectStatus == 0x00) { // Accept
-                        LOG.debug("Received DESELECT_RSP with DeselectStatus: Success");
+                        LOG.debug("Received DESELECT_RSP message with DeselectStatus: Success");
                         setConnectionState(ConnectionState.NOT_SELECTED);
                     } else {
-                        LOG.debug("Received DESELECT_RSP with DeselectStatus: Failed");
+                        LOG.debug("Received DESELECT_RSP message with DeselectStatus: Failed");
                     }
                     break;
 
                 case SEPARATE:
                     // Immediately disconnect on SEPARATE message.
+                    LOG.debug("Received SEPARATE message");
                     disconnect();
                     break;
 
@@ -389,6 +404,7 @@ public class SecsEquipment {
 
                 case REJECT:
                     // Always accept REJECT; no action required.
+                    LOG.warn("Received REJECT message");
                     break;
 
                 default:
@@ -446,13 +462,13 @@ public class SecsEquipment {
         public void run() {
             while (isEnabled) {
                 if (getCommunicationState() == CommunicationState.NOT_COMMUNICATING) {
-                    LOG.debug("Connecting...");
+                    LOG.debug(String.format("Connecting to equipment '%s' on port %d", host, port));
                     try {
                         socket = new Socket(host, port);
                         handleConnection();
                     } catch (IOException e) {
                         LOG.debug(String.format("Failed to connect to equipment '%s' on port %d", host, port));
-                        SecsEquipment.sleep(POLL_INTERVAL);
+                        SecsEquipment.sleep(SecsConstants.DEFAULT_T5_TIMEOUT);
                     }
                 } else {
                     SecsEquipment.sleep(POLL_INTERVAL);

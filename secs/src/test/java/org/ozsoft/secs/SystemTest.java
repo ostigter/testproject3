@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-public class SecsConnectionTest {
+public class SystemTest {
     
     private static final long CONNECTION_TIMEOUT = 1000L;
 
@@ -46,11 +46,19 @@ public class SecsConnectionTest {
 //        Assert.assertEquals(ControlState.ONLINE_REMOTE, server.getControlState());
 //        Assert.assertEquals(ControlState.ONLINE_REMOTE, client.getControlState());
 
-        // client.setEnabled(false);
-        // sleep(1);
-        //
-        // server.setEnabled(false);
-        // sleep(1);
+//         client.setEnabled(false);
+//         sleep(CONNECTION_TIMEOUT);
+//         Assert.assertFalse(client.isEnabled());
+//         Assert.assertEquals(ConnectionState.NOT_CONNECTED, client.getConnectionState());
+//         Assert.assertEquals(CommunicationState.NOT_ENABLED, client.getCommunicationState());
+//         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, client.getControlState());
+//        
+//         server.setEnabled(false);
+//         sleep(CONNECTION_TIMEOUT);
+//         Assert.assertFalse(server.isEnabled());
+//         Assert.assertEquals(ConnectionState.NOT_CONNECTED, server.getConnectionState());
+//         Assert.assertEquals(CommunicationState.NOT_ENABLED, server.getCommunicationState());
+//         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, server.getControlState());
     }
 
     private static void sleep(long duration) {
