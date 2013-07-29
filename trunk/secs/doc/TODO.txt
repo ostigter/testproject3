@@ -4,8 +4,12 @@ TODO
 High priority
 -------------
 
+* Fix connect/disconnect sequence
+* Simplify message construction
 * Request Online/Offline (RONL/ROFL)
 * Control state model
+* Unique, incrementing transaction IDs (system bytes)
+* Transaction handling
 * SML format (PeerGroup)
 * Basic test application (send/receive messages)
 
@@ -23,5 +27,4 @@ Low priority
 ------------
 
 * Objects
-* Transaction handling (parallel transactions)
 * Session handling (multiple sessions)
