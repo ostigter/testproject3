@@ -23,8 +23,8 @@ public class ControlMessage extends Message {
             baos.write(getSessionId().getBytes());
             baos.write(getHeaderByte2());
             baos.write(getHeaderByte3());
-            baos.write(getPType().ordinal());
-            baos.write(getSType().ordinal());
+            baos.write(getPType().getValue());
+            baos.write(getSType().getValue());
             baos.write(getSystemBytes().getBytes());
             return baos.toByteArray();
         } catch (IOException e) {

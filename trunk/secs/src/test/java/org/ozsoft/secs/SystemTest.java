@@ -10,55 +10,62 @@ public class SystemTest {
 
     @Test
     public void test() throws SecsException {
-        // Create passive equipment listening on default port (server).
-        SecsEquipment server = new SecsEquipment();
-        server.setActive(false);
-        Assert.assertFalse(server.isEnabled());
-        Assert.assertEquals(ConnectionState.NOT_CONNECTED, server.getConnectionState());
-        Assert.assertEquals(CommunicationState.NOT_ENABLED, server.getCommunicationState());
-        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, server.getControlState());
+        // Create passive entity listening on default port.
+        SecsEquipment passiveEntity = new SecsEquipment();
+        passiveEntity.setActive(false);
+        Assert.assertFalse(passiveEntity.isEnabled());
+        Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
+        Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
+        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
 
-        // Start server.
-        server.setEnabled(true);
-        sleep(500L);
-        Assert.assertTrue(server.isEnabled());
-        Assert.assertEquals(ConnectionState.NOT_CONNECTED, server.getConnectionState());
-        Assert.assertEquals(CommunicationState.NOT_COMMUNICATING, server.getCommunicationState());
-        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, server.getControlState());
-
-        // Create active equipment connecting to default host and port (client).
-        SecsEquipment client = new SecsEquipment();
-        client.setActive(true);
-        Assert.assertFalse(client.isEnabled());
-        Assert.assertEquals(ConnectionState.NOT_CONNECTED, client.getConnectionState());
-        Assert.assertEquals(CommunicationState.NOT_ENABLED, client.getCommunicationState());
-        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, client.getControlState());
-
-        // Enable client, connecting to server.
-        client.setEnabled(true);
+        // Start passive entity.
+        passiveEntity.setEnabled(true);
         sleep(CONNECTION_TIMEOUT);
-        Assert.assertTrue(server.isEnabled());
-        Assert.assertTrue(client.isEnabled());
-        Assert.assertEquals(ConnectionState.SELECTED, server.getConnectionState());
-        Assert.assertEquals(ConnectionState.SELECTED, client.getConnectionState());
-        Assert.assertEquals(CommunicationState.COMMUNICATING, server.getCommunicationState());
-        Assert.assertEquals(CommunicationState.COMMUNICATING, client.getCommunicationState());
+        Assert.assertTrue(passiveEntity.isEnabled());
+        Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
+        Assert.assertEquals(CommunicationState.NOT_COMMUNICATING, passiveEntity.getCommunicationState());
+        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
+
+        // Create active entity connecting to default host and port.
+        SecsEquipment activeEntity = new SecsEquipment();
+        activeEntity.setActive(true);
+        Assert.assertFalse(activeEntity.isEnabled());
+        Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
+        Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
+        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
+
+        // Enable active entity, connecting to passive entity.
+        activeEntity.setEnabled(true);
+        sleep(CONNECTION_TIMEOUT);
+        Assert.assertTrue(passiveEntity.isEnabled());
+        Assert.assertTrue(activeEntity.isEnabled());
+        Assert.assertEquals(ConnectionState.SELECTED, passiveEntity.getConnectionState());
+        Assert.assertEquals(ConnectionState.SELECTED, activeEntity.getConnectionState());
+        Assert.assertEquals(CommunicationState.COMMUNICATING, passiveEntity.getCommunicationState());
+        Assert.assertEquals(CommunicationState.COMMUNICATING, activeEntity.getCommunicationState());
 //        Assert.assertEquals(ControlState.ONLINE_REMOTE, server.getControlState());
 //        Assert.assertEquals(ControlState.ONLINE_REMOTE, client.getControlState());
 
-//         client.setEnabled(false);
-//         sleep(CONNECTION_TIMEOUT);
-//         Assert.assertFalse(client.isEnabled());
-//         Assert.assertEquals(ConnectionState.NOT_CONNECTED, client.getConnectionState());
-//         Assert.assertEquals(CommunicationState.NOT_ENABLED, client.getCommunicationState());
-//         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, client.getControlState());
-//        
-//         server.setEnabled(false);
-//         sleep(CONNECTION_TIMEOUT);
-//         Assert.assertFalse(server.isEnabled());
-//         Assert.assertEquals(ConnectionState.NOT_CONNECTED, server.getConnectionState());
-//         Assert.assertEquals(CommunicationState.NOT_ENABLED, server.getCommunicationState());
-//         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, server.getControlState());
+        // Disable active entity. 
+        activeEntity.setEnabled(false);
+         sleep(CONNECTION_TIMEOUT);
+         Assert.assertFalse(activeEntity.isEnabled());
+         Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
+         Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
+         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
+         Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
+         Assert.assertEquals(CommunicationState.NOT_COMMUNICATING, passiveEntity.getCommunicationState());
+         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
+        
+         // Disable passive entity. 
+         passiveEntity.setEnabled(false);
+         Assert.assertFalse(passiveEntity.isEnabled());
+         Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
+         Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
+         Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
+         Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
+         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
+         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
     }
 
     private static void sleep(long duration) {
