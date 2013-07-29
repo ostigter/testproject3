@@ -4,7 +4,6 @@ TODO
 High priority
 -------------
 
-* Fix connect/disconnect sequence
 * Simplify message construction
 * Request Online/Offline (RONL/ROFL)
 * Control state model

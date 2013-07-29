@@ -235,8 +235,6 @@ public class SecsEquipment {
     }
 
     private void disable() {
-        isEnabled = false;
-        disconnect();
         if (connectionState != ConnectionState.NOT_CONNECTED) {
             U2 sessionId = new U2(1);
             U4 systemBytes = new U4(99999L);
@@ -251,6 +249,12 @@ public class SecsEquipment {
                 LOG.error("Could not send SEPARATE message", e);
             }
         }
+
+        isEnabled = false;
+        while (communicationState != CommunicationState.NOT_COMMUNICATING) {
+            sleep(POLL_INTERVAL);
+        }
+        
         setCommunicationState(CommunicationState.NOT_ENABLED);
     }
 
@@ -277,14 +281,15 @@ public class SecsEquipment {
             os = socket.getOutputStream();
             byte[] buf = new byte[BUFFER_SIZE];
             while (isEnabled && getConnectionState() != ConnectionState.NOT_CONNECTED) {
-                if (connectionState == ConnectionState.NOT_SELECTED) {
+                if (isActive && connectionState == ConnectionState.NOT_SELECTED) {
                     // Not selected; send SELECT_REQ.
                     // FIXME: Use unique session ID and system bytes.
                     U2 sessionId = new U2(1);
                     U4 systemBytes = new U4(1L);
                     Message message = new ControlMessage(sessionId, 0x00, 0x00, PType.SECS_II, SType.SELECT_REQ, systemBytes);
                     sendMessage(message, os);
-                } else if (connectionState == ConnectionState.SELECTED && communicationState == CommunicationState.NOT_COMMUNICATING) {
+                    sleep(100L);
+                } else if (isActive && connectionState == ConnectionState.SELECTED && communicationState == CommunicationState.NOT_COMMUNICATING) {
                     // Not communicating; send S1F13.
                     // FIXME: Use sequentially, generated session ID and system bytes.
                     U2 sessionId = new U2(1);
@@ -295,6 +300,7 @@ public class SecsEquipment {
                     text.addItem(new A(SecsConstants.DEFAULT_SOFTREV));
                     Message message = new DataMessage(sessionId, 1, 13, PType.SECS_II, SType.DATA, systemBytes, text);
                     sendMessage(message, os);
+                    sleep(100L);
                 }
                 if (is.available() > 0) {
                     int length = is.read(buf);

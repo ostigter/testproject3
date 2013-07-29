@@ -8,20 +8,24 @@ package org.ozsoft.secs;
 public enum PType {
     
     /** SECS-II protocol. */
-    SECS_II((byte) 0),
+    SECS_II(0),
     
     /** Unknown protocol. */
-    UNKNOWN((byte) -1),
+    UNKNOWN(-1),
     
     ;
     
-    private byte value;
+    private int value;
     
-    PType(byte value) {
+    PType(int value) {
         this.value = value;
     }
     
-    public static PType parse(byte value) {
+    public int getValue() {
+        return value;
+    }
+    
+    public static PType parse(int value) {
         for (PType pType : values()) {
             if (pType.value == value) {
                 return pType;
