@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.ozsoft.secs.util.ConversionUtils;
 
 
 /**
@@ -58,6 +59,13 @@ public class U2 implements Data<List<Integer>> {
             throw new IllegalArgumentException("Invalid U2 value: " + value);
         }
         values.add(value);
+    }
+    
+    public void addValue(byte[] data) {
+        if (data.length < MIN_LENGTH) {
+            throw new IllegalArgumentException("Invalid U2 length: " + data.length);
+        }
+        addValue((int) ConversionUtils.bytesToUnsignedInteger(data));
     }
 
     @Override
