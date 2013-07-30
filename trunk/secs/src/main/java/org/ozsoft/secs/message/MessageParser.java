@@ -326,7 +326,9 @@ public class MessageParser {
         }
         U2 u2 = new U2();
         for (int i = 0; i < length; i++) {
-            u2.addValue((data[offset + i * 2] & 0xff) << 8 | (data[offset + i * 2 + 1]) & 0xff);
+            byte[] valueData = new byte[U2.MIN_LENGTH];
+            System.arraycopy(data, offset + i * U2.MIN_LENGTH, valueData, 0, U2.MIN_LENGTH);
+            u2.addValue(valueData);
         }
         return u2;
     }
@@ -337,7 +339,9 @@ public class MessageParser {
         }
         U4 u4 = new U4();
         for (int i = 0; i < length; i++) {
-            u4.addValue((data[offset + i * 2] & 0xff) << 24 | (data[offset + i * 2 + 1] & 0xff) << 16 | (data[offset + i * 2 + 2] & 0xff) << 8 | (data[offset + i * 2 + 3]) & 0xff);
+            byte[] valueData = new byte[U4.MIN_LENGTH];
+            System.arraycopy(data, offset + i * U4.MIN_LENGTH, valueData, 0, U4.MIN_LENGTH);
+            u4.addValue(valueData);
         }
         return u4;
     }

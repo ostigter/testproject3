@@ -4,6 +4,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+/**
+ * Automated Test suite verifying the communication between two equipment.
+ * 
+ * @author Oscar Stigter
+ */
 public class SystemTest {
     
     private static final long CONNECTION_TIMEOUT = 1000L;
