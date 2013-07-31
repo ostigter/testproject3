@@ -4,17 +4,17 @@ TODO
 High priority
 -------------
 
+* Synchronous request messages (transaction handling)
 * Request Online/Offline (RONL/ROFL)
 * Control state model
-* Unique, incrementing transaction IDs (system bytes)
-* Transaction handling
 * SML format (PeerGroup)
 * Basic test application (send/receive messages)
+* Refactor U1/U2/U4/U8 data items
+* F4 and F8 data items
 
 Normal priority
 ---------------
 
-* U8, F4 and F8 data items
 * T3/T5/T6/T7/T8 timeouts
 * Large message support
 * Handle S1F3 Select Equipment Status (SSR)

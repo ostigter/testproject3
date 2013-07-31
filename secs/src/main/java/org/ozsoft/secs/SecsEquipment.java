@@ -36,6 +36,10 @@ import org.ozsoft.secs.message.S2F25;
  * @author Oscar Stigter
  */
 public class SecsEquipment {
+    
+    private static final int MIN_DEVICE_ID = 0;
+
+    private static final int MAX_DEVICE_ID = 32767;
 
     private static final int MIN_PORT = 1025;
 
@@ -50,6 +54,8 @@ public class SecsEquipment {
     private final Map<Integer, MessageHandler> messageHandlers;
 
     private final Set<SecsEquipmentListener> listeners;
+    
+    private int deviceId = SecsConstants.DEFAULT_DEVICE_ID;
 
     private String modelName = SecsConstants.DEFAULT_MDLN;
     
@@ -73,6 +79,8 @@ public class SecsEquipment {
     
     private Socket socket;
     
+    private long nextTransactionId = 1L;
+    
     public SecsEquipment() {
         listeners  = new HashSet<SecsEquipmentListener>();
         messageHandlers = new HashMap<Integer, MessageHandler>();
@@ -85,6 +93,17 @@ public class SecsEquipment {
         setControlState(ControlState.EQUIPMENT_OFFLINE);
     }
     
+    public int getDeviceId() {
+        return deviceId;
+    }
+    
+    public void setDeviceId(int deviceId) throws SecsException {
+        if (deviceId < MIN_DEVICE_ID || deviceId > MAX_DEVICE_ID) {
+            throw new SecsException("Invalid device ID: " + deviceId);
+        }
+        this.deviceId = deviceId;
+    }
+
     public String getModelName() {
         return modelName;
     }
@@ -131,7 +150,7 @@ public class SecsEquipment {
         }
         this.port = port;
     }
-
+    
     public ConnectionState getConnectionState() {
         return connectionState;
     }
@@ -253,10 +272,7 @@ public class SecsEquipment {
 
     private void disable() {
         if (connectionState != ConnectionState.NOT_CONNECTED) {
-            int sessionId = 1;
-            long transactionId = 1L;
-            
-            Message message = new ControlMessage(sessionId, 0x00, 0x00, SType.SEPARATE, transactionId);
+            Message message = new ControlMessage(deviceId, 0x00, 0x00, SType.SEPARATE, getNextTransactionId());
             try {
                 OutputStream os = socket.getOutputStream();
                 os.write(message.toByteArray());
@@ -300,21 +316,15 @@ public class SecsEquipment {
             while (isEnabled && getConnectionState() != ConnectionState.NOT_CONNECTED) {
                 if (connectMode == ConnectMode.ACTIVE && connectionState == ConnectionState.NOT_SELECTED) {
                     // Not selected; send SELECT_REQ.
-                    // FIXME: Use unique session ID and system bytes.
-                    int sessionId = 1;
-                    long transactionId = 1L;
-                    Message message = new ControlMessage(sessionId, 0x00, 0x00, SType.SELECT_REQ, transactionId);
+                    Message message = new ControlMessage(deviceId, 0x00, 0x00, SType.SELECT_REQ, getNextTransactionId());
                     sendMessage(message, os);
                     sleep(100L);
                 } else if (connectMode == ConnectMode.ACTIVE && connectionState == ConnectionState.SELECTED && communicationState == CommunicationState.NOT_COMMUNICATING) {
                     // Not communicating; send S1F13.
-                    // FIXME: Use sequentially, generated session ID and system bytes.
-                    int sessionId = 1;
-                    long transactionId = 3L;
                     L text = new L();
                     text.addItem(new A(modelName));
                     text.addItem(new A(softRev));
-                    Message message = new DataMessage(sessionId, 1, 13, true, transactionId, text);
+                    Message message = new DataMessage(deviceId, 1, 13, true, getNextTransactionId(), text);
                     sendMessage(message, os);
                     sleep(100L);
                 }
@@ -349,6 +359,7 @@ public class SecsEquipment {
     private Message handleMessage(Message requestMessage) throws SecsException {
         int sessionId = requestMessage.getSessionId();
         long transactionId = requestMessage.getTransactionId();
+        updateTransactionId(transactionId);
 
         Message replyMessage = null;
 
@@ -366,6 +377,7 @@ public class SecsEquipment {
                     } else {
                         headerByte3 = 0x01; // SelectStatus: Communication Already Active
                     }
+                    
                     replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, SType.SELECT_RSP, transactionId);
                     break;
 
@@ -463,6 +475,16 @@ public class SecsEquipment {
         setConnectionState(ConnectionState.NOT_CONNECTED);
         connectionThread.interrupt();
         LOG.info("Disconnected");
+    }
+    
+    private long getNextTransactionId() {
+        return nextTransactionId++;
+    }
+    
+    private void updateTransactionId(long transactionId) {
+        if (transactionId > nextTransactionId) {
+            nextTransactionId = transactionId + 1;
+        }
     }
 
     private static void sleep(long duration) {

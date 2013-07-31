@@ -25,6 +25,9 @@ public interface SecsConstants {
     /** Default active state (true means active, false means passive). */
     boolean IS_ACTIVE = false;
     
+    /** Default device ID (session ID). */
+    int DEFAULT_DEVICE_ID = 1;
+    
     /** T3 timeout in miliseconds. */
     long DEFAULT_T3_TIMEOUT = 120000L;  // 2 minutes
     
