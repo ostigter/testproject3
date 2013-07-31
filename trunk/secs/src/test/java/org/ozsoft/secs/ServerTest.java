@@ -20,7 +20,7 @@ public class ServerTest {
     public void test() {
         SecsEquipment equipment = new SecsEquipment();
         try {
-            equipment.setActive(false);
+            equipment.setConnectMode(ConnectMode.PASSIVE);
             equipment.setPort(5555);
 
             equipment.setEnabled(true);

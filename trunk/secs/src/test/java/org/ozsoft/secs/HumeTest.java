@@ -26,7 +26,7 @@ public class HumeTest {
     public void test() {
         SecsEquipment equipment = new SecsEquipment();
         try {
-            equipment.setActive(true);
+            equipment.setConnectMode(ConnectMode.ACTIVE);
             equipment.setHost(HOST);
             equipment.setPort(PORT);
 

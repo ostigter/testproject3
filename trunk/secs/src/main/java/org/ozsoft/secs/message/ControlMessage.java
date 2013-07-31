@@ -6,26 +6,64 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
+import org.ozsoft.secs.SecsConstants;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
+import org.ozsoft.secs.util.ConversionUtils;
 
-public class ControlMessage extends Message {
+public class ControlMessage implements Message {
+    
+    private int sessionId;
+    
+    private int headerByte2;
+    
+    private int headerByte3;
+    
+    private SType sType;
+    
+    private long transactionId;
 
-    public ControlMessage(U2 sessionId, int headerByte2, int headerByte3, PType pType, SType sType, U4 systemBytes) {
-        super(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
+    public ControlMessage(int sessionId, int headerByte2, int headerByte3, SType sType, long transactionId) {
+        this.sessionId = sessionId;
+        this.headerByte2 = headerByte2;
+        this.headerByte3 = headerByte3;
+        this.sType = sType;
+        this.transactionId = transactionId;
     }
     
+    @Override
+    public int getSessionId() {
+        return sessionId;
+    }
+    
+    public int getHeaderByte2() {
+        return headerByte2;
+    }
+    
+    public int getHeaderByte3() {
+        return headerByte3;
+    }
+    
+    public SType getSType() {
+        return sType;
+    }
+
+    @Override
+    public long getTransactionId() {
+        return transactionId;
+    }
+
     @Override
     public byte[] toByteArray() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            baos.write(HEADER_LENGTH_BYTES);
-            baos.write(getSessionId().getBytes());
-            baos.write(getHeaderByte2());
-            baos.write(getHeaderByte3());
-            baos.write(getPType().getValue());
-            baos.write(getSType().getValue());
-            baos.write(getSystemBytes().getBytes());
+            baos.write(SecsConstants.HEADER_LENGTH_BYTES);
+            baos.write(ConversionUtils.integerToBytes(sessionId, U2.MIN_LENGTH));
+            baos.write(headerByte2);
+            baos.write(headerByte3);
+            baos.write(PType.SECS_II.getValue());
+            baos.write(sType.getValue());
+            baos.write(ConversionUtils.integerToBytes(transactionId, U4.MIN_LENGTH));
             return baos.toByteArray();
         } catch (IOException e) {
             // Internal error (should never happen).
@@ -41,7 +79,7 @@ public class ControlMessage extends Message {
         for (byte b : toByteArray()) {
             sb.append(String.format("%02x ", b));
         }
-        return String.format("%s {%s}", getSType(), sb);
+        return String.format("%s {%s}", sType, sb);
     }
 
 }

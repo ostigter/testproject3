@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 import org.ozsoft.secs.CommunicationState;
+import org.ozsoft.secs.ConnectMode;
 import org.ozsoft.secs.ConnectionState;
 import org.ozsoft.secs.ControlState;
 import org.ozsoft.secs.SecsConstants;
@@ -470,7 +471,11 @@ public class TestTool implements SecsEquipmentListener {
         String host = hostText.getText();
         int port = Integer.parseInt(portText.getText());
         try {
-            equipment.setActive(activeButton.isSelected());
+            if (activeButton.isSelected()) {
+                equipment.setConnectMode(ConnectMode.ACTIVE);
+            } else {
+                equipment.setConnectMode(ConnectMode.PASSIVE);
+            }
             equipment.setHost(host);
             equipment.setPort(port);
             equipment.setEnabled(true);

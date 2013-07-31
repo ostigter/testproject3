@@ -15,8 +15,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.L;
-import org.ozsoft.secs.format.U2;
-import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.message.ControlMessage;
 import org.ozsoft.secs.message.DataMessage;
 import org.ozsoft.secs.message.Message;
@@ -53,11 +51,15 @@ public class SecsEquipment {
 
     private final Set<SecsEquipmentListener> listeners;
 
+    private String modelName = SecsConstants.DEFAULT_MDLN;
+    
+    private String softRev = SecsConstants.DEFAULT_SOFTREV;
+
+    private ConnectMode connectMode = SecsConstants.DEFAULT_CONNECT_MODE;
+
     private String host = SecsConstants.DEFAULT_HOST;
 
     private int port = SecsConstants.DEFAULT_PORT;
-
-    private boolean isActive = SecsConstants.IS_ACTIVE;
 
     private boolean isEnabled;
 
@@ -82,6 +84,31 @@ public class SecsEquipment {
         setCommunicationState(CommunicationState.NOT_ENABLED);
         setControlState(ControlState.EQUIPMENT_OFFLINE);
     }
+    
+    public String getModelName() {
+        return modelName;
+    }
+    
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    public String getSoftRev() {
+        return softRev;
+    }
+    
+    public void setSoftRev(String softRev) {
+        this.softRev = softRev;
+    }
+
+    public ConnectMode getConnectMode() {
+        return connectMode;
+    }
+
+    public void setConnectMode(ConnectMode connectMode) {
+        this.connectMode = connectMode;
+        LOG.info("Connect Mode set to " + connectMode);
+    }
 
     public String getHost() {
         return host;
@@ -103,16 +130,6 @@ public class SecsEquipment {
             throw new SecsException("Invalid port number: " + port);
         }
         this.port = port;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
-        String activeState = (isActive) ? "ACTIVE" : "PASSIVE";
-        LOG.info("Connection Mode set to " + activeState);
     }
 
     public ConnectionState getConnectionState() {
@@ -224,7 +241,7 @@ public class SecsEquipment {
     private void enable() {
         isEnabled = true;
         setCommunicationState(CommunicationState.NOT_COMMUNICATING);
-        if (isActive) {
+        if (connectMode == ConnectMode.ACTIVE) {
             // Active mode; establish HSMS connection (client).
             connectionThread = new ActiveConnectionThread();
         } else {
@@ -236,10 +253,10 @@ public class SecsEquipment {
 
     private void disable() {
         if (connectionState != ConnectionState.NOT_CONNECTED) {
-            U2 sessionId = new U2(1);
-            U4 systemBytes = new U4(99999L);
+            int sessionId = 1;
+            long transactionId = 1L;
             
-            Message message = new ControlMessage(sessionId, 0x00, 0x00, PType.SECS_II, SType.SEPARATE, systemBytes);
+            Message message = new ControlMessage(sessionId, 0x00, 0x00, SType.SEPARATE, transactionId);
             try {
                 OutputStream os = socket.getOutputStream();
                 os.write(message.toByteArray());
@@ -281,24 +298,23 @@ public class SecsEquipment {
             os = socket.getOutputStream();
             byte[] buf = new byte[BUFFER_SIZE];
             while (isEnabled && getConnectionState() != ConnectionState.NOT_CONNECTED) {
-                if (isActive && connectionState == ConnectionState.NOT_SELECTED) {
+                if (connectMode == ConnectMode.ACTIVE && connectionState == ConnectionState.NOT_SELECTED) {
                     // Not selected; send SELECT_REQ.
                     // FIXME: Use unique session ID and system bytes.
-                    U2 sessionId = new U2(1);
-                    U4 systemBytes = new U4(1L);
-                    Message message = new ControlMessage(sessionId, 0x00, 0x00, PType.SECS_II, SType.SELECT_REQ, systemBytes);
+                    int sessionId = 1;
+                    long transactionId = 1L;
+                    Message message = new ControlMessage(sessionId, 0x00, 0x00, SType.SELECT_REQ, transactionId);
                     sendMessage(message, os);
                     sleep(100L);
-                } else if (isActive && connectionState == ConnectionState.SELECTED && communicationState == CommunicationState.NOT_COMMUNICATING) {
+                } else if (connectMode == ConnectMode.ACTIVE && connectionState == ConnectionState.SELECTED && communicationState == CommunicationState.NOT_COMMUNICATING) {
                     // Not communicating; send S1F13.
                     // FIXME: Use sequentially, generated session ID and system bytes.
-                    U2 sessionId = new U2(1);
-                    U4 systemBytes = new U4(3L);
+                    int sessionId = 1;
+                    long transactionId = 3L;
                     L text = new L();
-                    // FIXME: Use actual model name and software revision.
-                    text.addItem(new A(SecsConstants.DEFAULT_MDLN));
-                    text.addItem(new A(SecsConstants.DEFAULT_SOFTREV));
-                    Message message = new DataMessage(sessionId, 1, 13, PType.SECS_II, SType.DATA, systemBytes, text);
+                    text.addItem(new A(modelName));
+                    text.addItem(new A(softRev));
+                    Message message = new DataMessage(sessionId, 1, 13, true, transactionId, text);
                     sendMessage(message, os);
                     sleep(100L);
                 }
@@ -331,30 +347,31 @@ public class SecsEquipment {
     }
 
     private Message handleMessage(Message requestMessage) throws SecsException {
-        U2 sessionId = requestMessage.getSessionId();
-        SType sType = requestMessage.getSType();
-        U4 systemBytes = requestMessage.getSystemBytes();
+        int sessionId = requestMessage.getSessionId();
+        long transactionId = requestMessage.getTransactionId();
 
         Message replyMessage = null;
 
         if (requestMessage instanceof ControlMessage) {
             // HSMS control message.
+            ControlMessage controlMessage = (ControlMessage) requestMessage;
+            SType sType = controlMessage.getSType();
+            int headerByte3 = controlMessage.getHeaderByte3();
             switch (sType) {
                 case SELECT_REQ:
                     // Always accept SELECT_REQ.
-                    int headerByte3 = -1;
                     if (getConnectionState() == ConnectionState.NOT_SELECTED) {
                         headerByte3 = 0x00; // SelectStatus: Communication Established
                         setConnectionState(ConnectionState.SELECTED);
                     } else {
                         headerByte3 = 0x01; // SelectStatus: Communication Already Active
                     }
-                    replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, PType.SECS_II, SType.SELECT_RSP, systemBytes);
+                    replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, SType.SELECT_RSP, transactionId);
                     break;
 
                 case SELECT_RSP:
                     // Always accept SELECT_RSP; no action required.
-                    int selectStatus = requestMessage.getHeaderByte3();
+                    int selectStatus = controlMessage.getHeaderByte3();
                     if (selectStatus == 0x00) { // SelectStatus: Communication Established
                         LOG.debug("Received SELECT_RSP message with SelectStatus: Communication Established");
                         setConnectionState(ConnectionState.SELECTED);
@@ -380,11 +397,11 @@ public class SecsEquipment {
                     } else {
                         headerByte3 = 0x01; // DeselectStatus: Failed
                     }
-                    replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, PType.SECS_II, SType.DESELECT_RSP, systemBytes);
+                    replyMessage = new ControlMessage(sessionId, 0x00, headerByte3, SType.DESELECT_RSP, transactionId);
                     break;
 
                 case DESELECT_RSP:
-                    int deselectStatus = requestMessage.getHeaderByte3();
+                    int deselectStatus = controlMessage.getHeaderByte3();
                     if (deselectStatus == 0x00) { // Accept
                         LOG.debug("Received DESELECT_RSP message with DeselectStatus: Success");
                         setConnectionState(ConnectionState.NOT_SELECTED);
@@ -401,7 +418,7 @@ public class SecsEquipment {
 
                 case LINKTEST_REQ:
                     // Send LINKTEST_RSP message.
-                    replyMessage = new ControlMessage(sessionId, 0x00, 0x00, PType.SECS_II, SType.LINKTEST_RSP, systemBytes);
+                    replyMessage = new ControlMessage(sessionId, 0x00, 0x00, SType.LINKTEST_RSP, transactionId);
                     break;
 
                 case LINKTEST_RSP:
@@ -433,7 +450,7 @@ public class SecsEquipment {
                 } else {
                     // Unsupported message; send ABORT.
                     LOG.warn(String.format("Unsupported data message (%s) -- ABORT", dataMessage.getType()));
-                    replyMessage = new DataMessage(sessionId, stream, 0, PType.SECS_II, SType.DATA, systemBytes, null);
+                    replyMessage = new DataMessage(sessionId, stream, 0, false, transactionId, null);
                 }
             }
         }
