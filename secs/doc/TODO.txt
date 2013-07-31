@@ -4,7 +4,6 @@ TODO
 High priority
 -------------
 
-* Simplify message construction
 * Request Online/Offline (RONL/ROFL)
 * Control state model
 * Unique, incrementing transaction IDs (system bytes)

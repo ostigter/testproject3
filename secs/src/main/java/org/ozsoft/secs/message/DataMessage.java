@@ -9,8 +9,11 @@ import org.ozsoft.secs.SType;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
+import org.ozsoft.secs.util.ConversionUtils;
 
-public class DataMessage extends Message {
+public class DataMessage implements Message {
+    
+    private final int sessionId;
     
     private final int stream;
     
@@ -18,14 +21,27 @@ public class DataMessage extends Message {
     
     private final boolean withReply;
     
+    private final long transactionId;
+    
     private final Data<?> text;
 
-    public DataMessage(U2 sessionId, int headerByte2, int headerByte3, PType pType, SType sType, U4 systemBytes, Data<?> text) {
-        super(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
-        withReply = ((headerByte2 & 0x80) == 0x80);
-        stream = (headerByte2 & 0x7f);
-        function = headerByte3;
+    public DataMessage(int sessionId, int stream, int function, boolean withReply, long transactionId, Data<?> text) {
+        this.sessionId = sessionId;
+        this.stream = stream;
+        this.function = function;
+        this.withReply = withReply;
+        this.transactionId = transactionId;
         this.text = text;
+    }
+    
+    @Override
+    public int getSessionId() {
+        return sessionId;
+    }
+
+    @Override
+    public long getTransactionId() {
+        return transactionId;
     }
     
     public int getStream() {
@@ -54,13 +70,13 @@ public class DataMessage extends Message {
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            baos.write(new U4(length).getBytes());
-            baos.write(getSessionId().getBytes());
-            baos.write(getHeaderByte2());
-            baos.write(getHeaderByte3());
-            baos.write(getPType().ordinal());
-            baos.write(getSType().ordinal());
-            baos.write(getSystemBytes().getBytes());
+            baos.write(ConversionUtils.integerToBytes(length, U4.MIN_LENGTH));
+            baos.write(ConversionUtils.integerToBytes(sessionId, U2.MIN_LENGTH));
+            baos.write((withReply) ? stream | 0x80 : stream); // HeaderByte2
+            baos.write(function); // HeaderByte3
+            baos.write(PType.SECS_II.getValue());
+            baos.write(SType.DATA.getValue());
+            baos.write(ConversionUtils.integerToBytes(transactionId, U4.MIN_LENGTH));
             if (text != null) {
                 baos.write(textBytes);
             }
@@ -91,5 +107,5 @@ public class DataMessage extends Message {
         }
         return String.format("%s %s", getType(), sb);
     }
-    
+
 }

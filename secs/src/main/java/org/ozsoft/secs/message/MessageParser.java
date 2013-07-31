@@ -10,6 +10,7 @@ import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
+import org.ozsoft.secs.util.ConversionUtils;
 
 public class MessageParser {
     
@@ -43,19 +44,15 @@ public class MessageParser {
         // Parse Session ID.
         byte[] sessionIdBuf = new byte[Message.SESSION_ID_LENGTH];
         System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SESSIONID, sessionIdBuf, 0, Message.SESSION_ID_LENGTH);
-        U2 sessionId = new U2(sessionIdBuf);
-//        LOG.debug(String.format("System Bytes = %04x", sessionId.getValue()));
+        int sessionId = (int) ConversionUtils.bytesToUnsignedInteger(sessionIdBuf);
         
-        // Get Header Bytes 2 and 3.
+        // Get Header Bytes.
         byte headerByte2 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE2];
         byte headerByte3 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE3];
-//        LOG.debug(String.format("Header Byte 2 = %02x", headerByte2));
-//        LOG.debug(String.format("Header Byte 3 = %02x", headerByte3));
         
         // Parse PType.
         byte pTypeByte = data[Message.LENGTH_LENGTH + Message.POS_PTYPE];
         PType pType = PType.parse(pTypeByte);
-//        LOG.debug("PType = " + pType);
         if (pType != PType.SECS_II) {
             throw new SecsException(String.format("Unsupported protocol; not SECS-II (PType: %d)", pTypeByte));
         }
@@ -63,16 +60,14 @@ public class MessageParser {
         // Parse SType.
         byte sTypeByte = data[Message.LENGTH_LENGTH + Message.POS_STYPE];
         SType sType = SType.parse(sTypeByte);
-//        LOG.debug("SType = " + sType);
         if (sType == SType.UNKNOWN) {
             throw new SecsException(String.format("Unsupported message type (SType: %02x)", sTypeByte));
         }
         
-        // Parse System Bytes (transaction ID).
-        byte[] systemBytesBuf = new byte[Message.SYSTEM_BYTES_LENGTH];
-        System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SYSTEMBYTES, systemBytesBuf, 0, Message.SYSTEM_BYTES_LENGTH);
-        U4 systemBytes = new U4(systemBytesBuf);
-//        LOG.debug(String.format("System Bytes = %d", systemBytes.getValue()));
+        // Parse Transaction ID.
+        byte[] transactionIdBuf = new byte[Message.SYSTEM_BYTES_LENGTH];
+        System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SYSTEMBYTES, transactionIdBuf, 0, Message.SYSTEM_BYTES_LENGTH);
+        long transactionId = ConversionUtils.bytesToUnsignedInteger(transactionIdBuf);
         
         if (sType == SType.DATA) {
             int dataLength = (int) (messageLength - Message.HEADER_LENGTH);
@@ -82,9 +77,12 @@ public class MessageParser {
                 System.arraycopy(data, Message.MIN_LENGTH, textBytes, 0, dataLength);
                 text = parseText(textBytes, 0);
             }
-            return new DataMessage(sessionId, headerByte2, headerByte3, pType, sType, systemBytes, text);
+            int stream = headerByte2 & 0x7f;
+            int function = headerByte3;
+            boolean withReply = ((headerByte2 & 0x80) == 0x80);
+            return new DataMessage(sessionId, stream, function, withReply, transactionId, text);
         } else {
-            return new ControlMessage(sessionId, headerByte2, headerByte3, pType, sType, systemBytes);
+            return new ControlMessage(sessionId, headerByte2, headerByte3, sType, transactionId);
         }
     }
     

@@ -13,6 +13,9 @@ public interface SecsConstants {
     /** Default software revision. */
     String DEFAULT_SOFTREV = "1.0";
     
+    /** Default connect mode. */
+    ConnectMode DEFAULT_CONNECT_MODE = ConnectMode.PASSIVE;
+    
     /** Default host. */
     String DEFAULT_HOST = "localhost";
 
@@ -33,5 +36,8 @@ public interface SecsConstants {
     
     /** T7 timeout in miliseconds. */
     long DEFAULT_T7_TIMEOUT = 120000L; // 2 minutes
+    
+    /** Header length bytes for a header-only message. */
+    byte[] HEADER_LENGTH_BYTES = new byte[] {0x00, 0x00, 0x00, 0x0a};
     
 }

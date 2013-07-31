@@ -17,7 +17,7 @@ public class SystemTest {
     public void test() throws SecsException {
         // Create passive entity listening on default port.
         SecsEquipment passiveEntity = new SecsEquipment();
-        passiveEntity.setActive(false);
+        passiveEntity.setConnectMode(ConnectMode.PASSIVE);
         Assert.assertFalse(passiveEntity.isEnabled());
         Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
         Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
@@ -33,7 +33,7 @@ public class SystemTest {
 
         // Create active entity connecting to default host and port.
         SecsEquipment activeEntity = new SecsEquipment();
-        activeEntity.setActive(true);
+        activeEntity.setConnectMode(ConnectMode.ACTIVE);
         Assert.assertFalse(activeEntity.isEnabled());
         Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
         Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
