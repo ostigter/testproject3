@@ -16,10 +16,10 @@ import org.junit.Test;
 public class HumeTest {
 
     /** Host of the equipment with the Hume SECS/GEM library. */
-    private static final String HOST = "172.19.234.96";
+    private static final String HOST = "localhost";
 
     /** Port number of the Hume SECS/GEM library. */
-    private static final int PORT = 5000;
+    private static final int PORT = 5555;
 
     @Test
     @Ignore
