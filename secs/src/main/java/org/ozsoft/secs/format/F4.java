@@ -48,10 +48,7 @@ public class F4 implements Data<List<Float>> {
         if (data.length != SIZE) {
             throw new IllegalArgumentException(String.format("Invalid %s length: %d bytes", NAME, data.length));
         }
-        int bits = (((data[0] & 0xff)) << 24) | (((data[1] & 0xff)) << 16) |
-                   (((data[2] & 0xff)) << 8) | (((data[3] & 0xff)));
-        addValue(Float.intBitsToFloat(bits));
-//        addValue(Float.intBitsToFloat((int) ConversionUtils.bytesToSignedInteger(data)));
+        addValue(Float.intBitsToFloat((int) ConversionUtils.bytesToUnsignedInteger(data)));
     }
 
     @Override
@@ -62,7 +59,7 @@ public class F4 implements Data<List<Float>> {
     @Override
     public byte[] toByteArray() {
         // Determine length.
-        int length = length();
+        int length = values.size() * SIZE;
         int noOfLengthBytes = 1;
         B lengthBytes = new B();
         lengthBytes.add(length & 0xff);
@@ -86,8 +83,8 @@ public class F4 implements Data<List<Float>> {
             }
             
             // Write values.
-            for (int i = 0; i < length; i++) {
-                int bits = Float.floatToIntBits(values.get(i));
+            for (float value : values) {
+                int bits = Float.floatToIntBits(value);
                 baos.write(ConversionUtils.integerToBytes(bits, SIZE));
             }
             

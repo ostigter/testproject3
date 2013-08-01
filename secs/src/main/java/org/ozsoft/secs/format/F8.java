@@ -48,12 +48,7 @@ public class F8 implements Data<List<Double>> {
         if (data.length != SIZE) {
             throw new IllegalArgumentException(String.format("Invalid %s length: %d bytes", NAME, data.length));
         }
-        long bits = (((long) (data[0] & 0xff)) << 56) | (((long) (data[1] & 0xff)) << 48)
-                | (((long) (data[2] & 0xff)) << 40) | (((long) (data[3] & 0xff)) << 32)
-                | (((long) (data[4] & 0xff)) << 24) | (((long) (data[5] & 0xff)) << 16)
-                | (((long) (data[6] & 0xff)) << 8) | (((long) (data[7] & 0xff)));
-        addValue(Double.longBitsToDouble(bits));
-//        addValue(Double.longBitsToDouble(ConversionUtils.bytesToSignedInteger(data)));
+        addValue(Double.longBitsToDouble(ConversionUtils.bytesToUnsignedInteger(data)));
     }
 
     @Override
@@ -64,7 +59,7 @@ public class F8 implements Data<List<Double>> {
     @Override
     public byte[] toByteArray() {
         // Determine length.
-        int length = length();
+        int length = values.size() * SIZE;
         int noOfLengthBytes = 1;
         B lengthBytes = new B();
         lengthBytes.add(length & 0xff);
@@ -88,8 +83,8 @@ public class F8 implements Data<List<Double>> {
             }
             
             // Write values.
-            for (int i = 0; i < length; i++) {
-                long bits = Double.doubleToLongBits(values.get(i));
+            for (double value : values) {
+                long bits = Double.doubleToLongBits(value);
                 baos.write(ConversionUtils.integerToBytes(bits, SIZE));
             }
             
