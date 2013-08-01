@@ -13,7 +13,7 @@ public class I1 extends IntegerBase {
     
     private static final boolean IS_SIGNED = true;
     
-    private static final int SIZE = 1;
+    public static final int SIZE = 1;
     
     private static final int MIN_VALUE = -128;
     

@@ -13,7 +13,7 @@ public class U8Test {
         u8.addValue(0x7fffffffffffffffL);
         Assert.assertEquals(3, u8.length());
         Assert.assertEquals("U8:3 {0 1234605616436508552 9223372036854775807}", u8.toSml());
-        TestUtils.assertEquals(new byte[] {(byte) 0xa1, 0x03,
+        TestUtils.assertEquals(new byte[] {(byte) 0xa1, 0x18,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte) 0x88,
                 (byte) 0x7f, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff}, 

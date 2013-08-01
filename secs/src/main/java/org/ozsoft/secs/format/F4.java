@@ -10,11 +10,11 @@ import org.ozsoft.secs.util.ConversionUtils;
 
 public class F4 implements Data<List<Float>> {
     
+    public static final String NAME = "F4";
+    
     public static final int FORMAT_CODE = 0x90;
     
-    private static final String NAME = "F4";
-    
-    private static final int SIZE = 4;
+    public static final int SIZE = 4;
     
     private List<Float> values = new ArrayList<Float>();
     
@@ -48,7 +48,10 @@ public class F4 implements Data<List<Float>> {
         if (data.length != SIZE) {
             throw new IllegalArgumentException(String.format("Invalid %s length: %d bytes", NAME, data.length));
         }
-        addValue(Float.intBitsToFloat((int) ConversionUtils.bytesToSignedInteger(data)));
+        int bits = (((data[0] & 0xff)) << 24) | (((data[1] & 0xff)) << 16) |
+                   (((data[2] & 0xff)) << 8) | (((data[3] & 0xff)));
+        addValue(Float.intBitsToFloat(bits));
+//        addValue(Float.intBitsToFloat((int) ConversionUtils.bytesToSignedInteger(data)));
     }
 
     @Override

@@ -70,7 +70,7 @@ public class IntegerBase implements Data<List<Long>> {
     @Override
     public byte[] toByteArray() {
         // Determine length.
-        int length = length();
+        int length = values.size() * size;
         int noOfLengthBytes = 1;
         B lengthBytes = new B();
         lengthBytes.add(length & 0xff);
@@ -94,8 +94,8 @@ public class IntegerBase implements Data<List<Long>> {
             }
             
             // Write values.
-            for (int i = 0; i < length; i++) {
-                baos.write(ConversionUtils.integerToBytes(values.get(i), size));
+            for (long value : values) {
+                baos.write(ConversionUtils.integerToBytes(value, size));
             }
             
             return baos.toByteArray();

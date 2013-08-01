@@ -9,7 +9,6 @@ High priority
 * Control state model
 * SML format (PeerGroup)
 * Basic test application (send/receive messages)
-* Refactor U1/U2/U4/U8 data items
 
 Normal priority
 ---------------
