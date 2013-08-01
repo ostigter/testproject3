@@ -70,13 +70,13 @@ public class DataMessage implements Message {
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            baos.write(ConversionUtils.integerToBytes(length, U4.MIN_LENGTH));
-            baos.write(ConversionUtils.integerToBytes(sessionId, U2.MIN_LENGTH));
+            baos.write(ConversionUtils.integerToBytes(length, U4.SIZE));
+            baos.write(ConversionUtils.integerToBytes(sessionId, U2.SIZE));
             baos.write((withReply) ? stream | 0x80 : stream); // HeaderByte2
             baos.write(function); // HeaderByte3
             baos.write(PType.SECS_II.getValue());
             baos.write(SType.DATA.getValue());
-            baos.write(ConversionUtils.integerToBytes(transactionId, U4.MIN_LENGTH));
+            baos.write(ConversionUtils.integerToBytes(transactionId, U4.SIZE));
             if (text != null) {
                 baos.write(textBytes);
             }

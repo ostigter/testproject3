@@ -5,18 +5,22 @@ package org.ozsoft.secs.format;
  * 
  * @author Oscar Stigter
  */
-public class I2 extends IBase {
+public class I2 extends IntegerBase {
     
     public static final int FORMAT_CODE = 0x64;
     
-    private static final int LENGTH = 2;
+    private static final String NAME = "I2";
+    
+    private static final boolean IS_SIGNED = true;
+    
+    private static final int SIZE = 2;
     
     private static final int MIN_VALUE = -32768;
     
     private static final int MAX_VALUE = 32767;
     
     public I2() {
-        super("I2", FORMAT_CODE, LENGTH, MIN_VALUE, MAX_VALUE);
+        super(NAME, FORMAT_CODE, IS_SIGNED, SIZE, MIN_VALUE, MAX_VALUE);
     }
     
     public I2(int value) {

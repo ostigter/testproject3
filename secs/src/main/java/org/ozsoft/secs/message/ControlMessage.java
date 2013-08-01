@@ -58,12 +58,12 @@ public class ControlMessage implements Message {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             baos.write(SecsConstants.HEADER_LENGTH_BYTES);
-            baos.write(ConversionUtils.integerToBytes(sessionId, U2.MIN_LENGTH));
+            baos.write(ConversionUtils.integerToBytes(sessionId, U2.SIZE));
             baos.write(headerByte2);
             baos.write(headerByte3);
             baos.write(PType.SECS_II.getValue());
             baos.write(sType.getValue());
-            baos.write(ConversionUtils.integerToBytes(transactionId, U4.MIN_LENGTH));
+            baos.write(ConversionUtils.integerToBytes(transactionId, U4.SIZE));
             return baos.toByteArray();
         } catch (IOException e) {
             // Internal error (should never happen).

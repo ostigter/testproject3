@@ -319,26 +319,26 @@ public class MessageParser {
     }
 
     private static U2 parseU2(byte[] data, int offset, int length) throws SecsException {
-        if (data.length < length * U2.MIN_LENGTH) {
+        if (data.length < length * U2.SIZE) {
             throw new SecsException("Invalid U2 length: " + length);
         }
         U2 u2 = new U2();
         for (int i = 0; i < length; i++) {
-            byte[] valueData = new byte[U2.MIN_LENGTH];
-            System.arraycopy(data, offset + i * U2.MIN_LENGTH, valueData, 0, U2.MIN_LENGTH);
+            byte[] valueData = new byte[U2.SIZE];
+            System.arraycopy(data, offset + i * U2.SIZE, valueData, 0, U2.SIZE);
             u2.addValue(valueData);
         }
         return u2;
     }
     
     private static U4 parseU4(byte[] data, int offset, int length) throws SecsException {
-        if (data.length < length * U4.MIN_LENGTH) {
+        if (data.length < length * U4.SIZE) {
             throw new SecsException("Invalid U4 length: " + length);
         }
         U4 u4 = new U4();
         for (int i = 0; i < length; i++) {
-            byte[] valueData = new byte[U4.MIN_LENGTH];
-            System.arraycopy(data, offset + i * U4.MIN_LENGTH, valueData, 0, U4.MIN_LENGTH);
+            byte[] valueData = new byte[U4.SIZE];
+            System.arraycopy(data, offset + i * U4.SIZE, valueData, 0, U4.SIZE);
             u4.addValue(valueData);
         }
         return u4;
