@@ -1,7 +1,7 @@
 package org.ozsoft.secs.format;
 
 /**
- * 2-byte signed integer (I2).
+ * 8-byte signed integer (I8).
  * 
  * @author Oscar Stigter
  */

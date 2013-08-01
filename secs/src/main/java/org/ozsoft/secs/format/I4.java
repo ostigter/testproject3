@@ -1,6 +1,5 @@
 package org.ozsoft.secs.format;
 
-
 /**
  * 4-byte signed integer (I4).
  * 

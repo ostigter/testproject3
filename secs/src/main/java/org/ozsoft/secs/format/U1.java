@@ -1,7 +1,7 @@
 package org.ozsoft.secs.format;
 
 /**
- * 2-byte unsigned integer (U1).
+ * 1-byte unsigned integer (U1).
  * 
  * @author Oscar Stigter
  */

@@ -4,7 +4,6 @@ TODO
 High priority
 -------------
 
-* F4 and F8 data items
 * Synchronous request messages (transaction handling)
 * Request Online/Offline (RONL/ROFL)
 * Control state model
