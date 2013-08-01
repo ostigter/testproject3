@@ -8,23 +8,26 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 import org.ozsoft.secs.util.ConversionUtils;
 
-public class IBase implements Data<List<Long>> {
+public class IntegerBase implements Data<List<Long>> {
     
     private List<Long> values = new ArrayList<Long>();
     
-    protected String name;
+    private String name;
     
-    protected int formatCode;
+    private int formatCode;
     
-    protected int size;
+    private boolean isSigned;
     
-    protected long minValue;
+    private int size;
     
-    protected long maxValue;
+    private long minValue;
     
-    public IBase(String name, int formatCode, int size, long minValue, long maxValue) {
+    private long maxValue;
+    
+    public IntegerBase(String name, int formatCode, boolean isSigned, int size, long minValue, long maxValue) {
         this.name = name;
         this.formatCode = formatCode;
+        this.isSigned = isSigned;
         this.size = size;
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -49,6 +52,14 @@ public class IBase implements Data<List<Long>> {
             throw new IllegalArgumentException("Invalid value: " + value);
         }
         values.add(value);
+    }
+
+    public void addValue(byte[] data) {
+        if (data.length != size) {
+            throw new IllegalArgumentException(String.format("Invalid %s length: %d bytes", name, data.length));
+        }
+        addValue((isSigned) ?
+                ConversionUtils.bytesToSignedInteger(data) : ConversionUtils.bytesToUnsignedInteger(data));
     }
 
     @Override
@@ -119,13 +130,21 @@ public class IBase implements Data<List<Long>> {
         return sb.toString();
     }
 
-    //FIXME: Implement I1.hashCode()
-    
-    //FIXME: Enhance IBase.equals()
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof IBase) {
-            return ((IBase) obj).values == values;
+        if (obj instanceof IntegerBase) {
+            IntegerBase ib = (IntegerBase) obj;
+            int length = ib.length();
+            if (length == this.size) {
+                for (int i = 0; i < length; i++) {
+                    if (ib.getValue(i) != values.get(i)) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

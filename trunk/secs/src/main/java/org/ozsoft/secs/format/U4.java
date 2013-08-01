@@ -5,18 +5,22 @@ package org.ozsoft.secs.format;
  * 
  * @author Oscar Stigter
  */
-public class U4 extends UBase {
+public class U4 extends IntegerBase {
+    
+    public static final int SIZE = 4;
     
     public static final int FORMAT_CODE = 0xb0;
     
-    public static final int MIN_LENGTH = 4;
+    private static final String NAME = "U4";
+    
+    private static final boolean IS_SIGNED = false;
     
     private static final long MIN_VALUE = 0x00000000L;
     
     private static final long MAX_VALUE = 0xffffffffL;
     
     public U4() {
-        super("U4", FORMAT_CODE, MIN_LENGTH, MIN_VALUE, MAX_VALUE);
+        super(NAME, FORMAT_CODE, IS_SIGNED, SIZE, MIN_VALUE, MAX_VALUE);
     }
     
     public U4(long value) {

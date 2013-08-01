@@ -6,18 +6,22 @@ package org.ozsoft.secs.format;
  * 
  * @author Oscar Stigter
  */
-public class I4 extends IBase {
+public class I4 extends IntegerBase {
     
     public static final int FORMAT_CODE = 0x70;
     
-    public static final int LENGTH = 4;
+    private static final String NAME = "I4";
+    
+    private static final boolean IS_SIGNED = true;
+    
+    private static final int SIZE = 4;
     
     private static final int MIN_VALUE = -2147483647;
     
     private static final int MAX_VALUE = 2147483646;
     
     public I4() {
-        super("I4", FORMAT_CODE, LENGTH, MIN_VALUE, MAX_VALUE);
+        super(NAME, FORMAT_CODE, IS_SIGNED, SIZE, MIN_VALUE, MAX_VALUE);
     }
     
     public I4(int value) {
