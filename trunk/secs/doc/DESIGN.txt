@@ -53,6 +53,12 @@ Message (de)serialization
 1010 0001 0xa1 // format = 8-byte unsigned integer (U8), 1 length byte
 0000 0100 0x04 // 16 / 8 = 2 unsigned 8-byte integer
 
+1001 0001 0x91 // format = 4-byte single-precision floating-point (F4), 1 length byte
+0000 0100 0x04 // 4 / 4 = 1 single-precision floating-point number
+
+1000 0001 0x81 // format = 8-byte double-precision floating-point (F8), 1 length byte
+0001 0000 0x10 // 16 / 8 = 2 double-precision floating-point numbers
+
 L {
     B {01 7f 80 ff}
     TF {True}
