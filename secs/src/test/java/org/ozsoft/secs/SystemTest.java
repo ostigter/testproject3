@@ -11,10 +11,12 @@ import org.junit.Test;
  */
 public class SystemTest {
     
-    private static final long CONNECTION_TIMEOUT = 1000L;
+    private static final long CONNECTION_TIMEOUT = 500L;
 
     @Test
     public void test() throws SecsException {
+        //TODO: Use state polling instead of sleep().
+        
         // Create passive entity listening on default port.
         SecsEquipment passiveEntity = new SecsEquipment();
         passiveEntity.setConnectMode(ConnectMode.PASSIVE);
