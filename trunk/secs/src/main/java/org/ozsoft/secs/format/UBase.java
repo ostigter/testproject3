@@ -50,6 +50,13 @@ public class UBase implements Data<List<Long>> {
         }
         values.add(value);
     }
+    
+    public void addValue(byte[] data) {
+        if (data.length < size) {
+            throw new IllegalArgumentException(String.format("Invalid %s length: %d bytes", name, data.length));
+        }
+        addValue(ConversionUtils.bytesToUnsignedInteger(data));
+    }
 
     @Override
     public int length() {
