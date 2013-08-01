@@ -28,7 +28,7 @@ public class ServerTest {
                 sleep(10L);
             }
 
-            sleep(30000L);
+            sleep(600000L);
 
             equipment.setEnabled(false);
             while (equipment.getCommunicationState() != CommunicationState.NOT_ENABLED) {

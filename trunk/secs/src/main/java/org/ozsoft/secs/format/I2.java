@@ -7,13 +7,13 @@ package org.ozsoft.secs.format;
  */
 public class I2 extends IntegerBase {
     
-    public static final int FORMAT_CODE = 0x64;
+    public static final int FORMAT_CODE = 0x68;
     
     private static final String NAME = "I2";
     
     private static final boolean IS_SIGNED = true;
     
-    private static final int SIZE = 2;
+    public static final int SIZE = 2;
     
     private static final int MIN_VALUE = -32768;
     

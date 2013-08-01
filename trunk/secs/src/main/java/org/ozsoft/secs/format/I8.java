@@ -13,7 +13,7 @@ public class I8 extends IntegerBase {
     
     private static final boolean IS_SIGNED = true;
     
-    private static final int SIZE = 8;
+    public static final int SIZE = 8;
     
     private static final long MIN_VALUE = Long.MIN_VALUE;
     

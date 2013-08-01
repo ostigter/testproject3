@@ -13,7 +13,7 @@ public class I4 extends IntegerBase {
     
     private static final boolean IS_SIGNED = true;
     
-    private static final int SIZE = 4;
+    public static final int SIZE = 4;
     
     private static final int MIN_VALUE = -2147483647;
     

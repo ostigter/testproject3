@@ -89,7 +89,7 @@ public class MessageParserTest {
         Data<?> data = MessageParser.parseData("U2 {65535}");
         Assert.assertTrue(data instanceof U2);
         U2 u2 = (U2) data;
-        Assert.assertEquals(0xffff, (int) u2.getValue(0));
+        Assert.assertEquals(0xffff, u2.getValue(0));
     }
 
     /**
@@ -100,7 +100,7 @@ public class MessageParserTest {
         Data<?> data = MessageParser.parseData("U4 {4294967295}");
         Assert.assertTrue(data instanceof U4);
         U4 u4 = (U4) data;
-        Assert.assertEquals(0xffffffffL, (long) u4.getValue(0));
+        Assert.assertEquals(0xffffffffL, u4.getValue(0));
     }
 
     /**
@@ -188,7 +188,7 @@ public class MessageParserTest {
     public void selectReq() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, (byte) 0xff, (byte) 0xff, 0x00, 0x00, 0x00, 0x01, 0x11, 0x12, 0x13, 0x14};
         ControlMessage message = (ControlMessage) MessageParser.parse(data, data.length);
-        Assert.assertEquals(0xffff, (int) message.getSessionId());
+        Assert.assertEquals(0xffff, message.getSessionId());
         Assert.assertEquals(0x00, message.getHeaderByte2());
         Assert.assertEquals(0x00, message.getHeaderByte3());
         Assert.assertEquals(SType.SELECT_REQ, message.getSType());
@@ -202,7 +202,7 @@ public class MessageParserTest {
     public void deselectReq() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, (byte) 0xff, (byte) 0xff, 0x00, 0x00, 0x00, 0x02, 0x11, 0x12, 0x13, 0x14 };
         ControlMessage message = (ControlMessage) MessageParser.parse(data, data.length);
-        Assert.assertEquals(0xffff, (int) message.getSessionId());
+        Assert.assertEquals(0xffff, message.getSessionId());
         Assert.assertEquals(0x00, message.getHeaderByte2());
         Assert.assertEquals(0x00, message.getHeaderByte3());
         Assert.assertEquals(SType.SELECT_RSP, message.getSType());
@@ -219,7 +219,7 @@ public class MessageParserTest {
     public void dataMessageEmpty() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x0a, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14};
         DataMessage message = (DataMessage) MessageParser.parse(data, data.length);
-        Assert.assertEquals(0x0001, (int) message.getSessionId());
+        Assert.assertEquals(0x0001, message.getSessionId());
         Assert.assertEquals(1, message.getStream());
         Assert.assertEquals(13, message.getFunction());
         Assert.assertTrue(message.withReply());
@@ -315,19 +315,19 @@ public class MessageParserTest {
     @Test
     public void dataMessageU2Multiple() throws SecsException {
         byte[] data = new byte[] { 0x00, 0x00, 0x00, 0x18, 0x00, 0x01, (byte) 0x81, 0x0d, 0x00, 0x00, 0x11, 0x12, 0x13, 0x14,
-                (byte) 0xa9, 0x06, 0x00, 0x00, 0x00, 0x01, 0x00, (byte) 0xff, 0x01, 0x00, 0x01, 0x01, (byte) 0xff, (byte) 0xff};
+                (byte) 0xa9, 0x0c, 0x00, 0x00, 0x00, 0x01, 0x00, (byte) 0xff, 0x01, 0x00, 0x01, 0x01, (byte) 0xff, (byte) 0xff};
         Message message = MessageParser.parse(data, data.length);
         DataMessage dataMessage = (DataMessage) message;
         Data<?> text = dataMessage.getText();
         Assert.assertTrue(text instanceof U2);
         U2 u2 = (U2) text;
         Assert.assertEquals(6, u2.length());
-        Assert.assertEquals(0x0000, (int) u2.getValue(0));
-        Assert.assertEquals(0x0001, (int) u2.getValue(1));
-        Assert.assertEquals(0x00ff, (int) u2.getValue(2));
-        Assert.assertEquals(0x0100, (int) u2.getValue(3));
-        Assert.assertEquals(0x0101, (int) u2.getValue(4));
-        Assert.assertEquals(0xffff, (int) u2.getValue(5));
+        Assert.assertEquals(0x0000, u2.getValue(0));
+        Assert.assertEquals(0x0001, u2.getValue(1));
+        Assert.assertEquals(0x00ff, u2.getValue(2));
+        Assert.assertEquals(0x0100, u2.getValue(3));
+        Assert.assertEquals(0x0101, u2.getValue(4));
+        Assert.assertEquals(0xffff, u2.getValue(5));
     }
 
     /**

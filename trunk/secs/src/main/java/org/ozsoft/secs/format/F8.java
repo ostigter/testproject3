@@ -10,11 +10,11 @@ import org.ozsoft.secs.util.ConversionUtils;
 
 public class F8 implements Data<List<Double>> {
     
+    public static final String NAME = "F8";
+    
     public static final int FORMAT_CODE = 0x80;
     
-    private static final String NAME = "F8";
-    
-    private static final int SIZE = 8;
+    public static final int SIZE = 8;
     
     private List<Double> values = new ArrayList<Double>();
     
@@ -48,7 +48,12 @@ public class F8 implements Data<List<Double>> {
         if (data.length != SIZE) {
             throw new IllegalArgumentException(String.format("Invalid %s length: %d bytes", NAME, data.length));
         }
-        addValue(Double.longBitsToDouble(ConversionUtils.bytesToSignedInteger(data)));
+        long bits = (((long) (data[0] & 0xff)) << 56) | (((long) (data[1] & 0xff)) << 48)
+                | (((long) (data[2] & 0xff)) << 40) | (((long) (data[3] & 0xff)) << 32)
+                | (((long) (data[4] & 0xff)) << 24) | (((long) (data[5] & 0xff)) << 16)
+                | (((long) (data[6] & 0xff)) << 8) | (((long) (data[7] & 0xff)));
+        addValue(Double.longBitsToDouble(bits));
+//        addValue(Double.longBitsToDouble(ConversionUtils.bytesToSignedInteger(data)));
     }
 
     @Override
