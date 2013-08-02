@@ -2,7 +2,7 @@ package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.ControlState;
 import org.ozsoft.secs.SecsEquipment;
-import org.ozsoft.secs.SecsException;
+import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
 
@@ -24,12 +24,12 @@ public class S1F17 extends MessageHandler {
     }
 
     @Override
-    public DataMessage handle(DataMessage message) throws SecsException {
+    public DataMessage handle(DataMessage message) throws SecsParseException {
         int sessionId = message.getSessionId();
         long transactionId = message.getTransactionId();
         Data<?> requestText = message.getText();
         if (requestText != null) {
-            throw new SecsException("Invalid data format for S1F17 message");
+            throw new SecsParseException("Invalid data format for S1F17 message");
         }
 
         // Send S1F18 ON-LINE Acknowledge (ONLA).

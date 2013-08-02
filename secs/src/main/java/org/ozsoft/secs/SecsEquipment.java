@@ -97,9 +97,9 @@ public class SecsEquipment {
         return deviceId;
     }
     
-    public void setDeviceId(int deviceId) throws SecsException {
+    public void setDeviceId(int deviceId) throws SecsConfigurationException {
         if (deviceId < MIN_DEVICE_ID || deviceId > MAX_DEVICE_ID) {
-            throw new SecsException("Invalid device ID: " + deviceId);
+            throw new SecsConfigurationException("Invalid device ID: " + deviceId);
         }
         this.deviceId = deviceId;
     }
@@ -133,9 +133,9 @@ public class SecsEquipment {
         return host;
     }
 
-    public void setHost(String host) throws SecsException {
+    public void setHost(String host) throws SecsConfigurationException {
         if (host == null || host.isEmpty()) {
-            throw new SecsException(String.format("Invalid host: '%s'", host));
+            throw new SecsConfigurationException(String.format("Invalid host: '%s'", host));
         }
         this.host = host;
     }
@@ -144,9 +144,9 @@ public class SecsEquipment {
         return port;
     }
 
-    public void setPort(int port) throws SecsException {
+    public void setPort(int port) throws SecsConfigurationException {
         if (port < MIN_PORT || port > MAX_PORT) {
-            throw new SecsException("Invalid port number: " + port);
+            throw new SecsConfigurationException("Invalid port number: " + port);
         }
         this.port = port;
     }
@@ -241,9 +241,8 @@ public class SecsEquipment {
         try {
             sendMessage(message, socket.getOutputStream());
         } catch (IOException e) {
-            // Internal error (should never happen).
-            String msg = "Could not send message: " + e.getMessage(); 
-            LOG.error(msg);
+            String msg = "Internal error while sending message"; 
+            LOG.error(msg, e);
             throw new SecsException(msg, e);
         }
     }
@@ -278,8 +277,7 @@ public class SecsEquipment {
                 os.write(message.toByteArray());
                 os.flush();
             } catch (IOException e) {
-                // Internal error (should never happen).
-                LOG.error("Could not send SEPARATE message", e);
+                LOG.error("Internal error while sending SEPARATE message", e);
             }
         }
 
@@ -337,8 +335,10 @@ public class SecsEquipment {
                         if (replyMessage != null) {
                             sendMessage(replyMessage, os);
                         }
-                    } catch (SecsException e) {
+                    } catch (SecsParseException e) {
                         LOG.error("Received invalid SECS message: " + e.getMessage());
+                    } catch (SecsException e) {
+                        LOG.error("Internal SECS error while handling message", e);
                     }
                 } else {
                     sleep(POLL_INTERVAL);
@@ -346,7 +346,7 @@ public class SecsEquipment {
             }
         } catch (Exception e) {
             // Internal error (should never happen).
-            LOG.error("Internal error while handling connection: " + e.getMessage());
+            LOG.error("Internal error while handling connection", e);
         }
 
         // Disconnect.
