@@ -55,6 +55,8 @@ public class SecsEquipment {
 
     private final Set<SecsEquipmentListener> listeners;
     
+    private final Map<Long, Transaction> transactions;
+    
     private int deviceId = SecsConstants.DEFAULT_DEVICE_ID;
 
     private String modelName = SecsConstants.DEFAULT_MDLN;
@@ -84,6 +86,7 @@ public class SecsEquipment {
     public SecsEquipment() {
         listeners  = new HashSet<SecsEquipmentListener>();
         messageHandlers = new HashMap<Integer, MessageHandler>();
+        transactions = new HashMap<Long, Transaction>();
         
         addDefaultMessageHandlers();
         
@@ -316,6 +319,7 @@ public class SecsEquipment {
                     // Not selected; send SELECT_REQ.
                     Message message = new ControlMessage(deviceId, 0x00, 0x00, SType.SELECT_REQ, getNextTransactionId());
                     sendMessage(message, os);
+                    startTransaction(message);
                     sleep(100L);
                 } else if (connectMode == ConnectMode.ACTIVE && connectionState == ConnectionState.SELECTED && communicationState == CommunicationState.NOT_COMMUNICATING) {
                     // Not communicating; send S1F13.
@@ -324,8 +328,10 @@ public class SecsEquipment {
                     text.addItem(new A(softRev));
                     Message message = new DataMessage(deviceId, 1, 13, true, getNextTransactionId(), text);
                     sendMessage(message, os);
+                    startTransaction(message);
                     sleep(100L);
                 }
+                
                 if (is.available() > 0) {
                     int length = is.read(buf);
                     try {
@@ -335,14 +341,18 @@ public class SecsEquipment {
                         if (replyMessage != null) {
                             sendMessage(replyMessage, os);
                         }
+                        
                     } catch (SecsParseException e) {
                         LOG.error("Received invalid SECS message: " + e.getMessage());
+                        
                     } catch (SecsException e) {
                         LOG.error("Internal SECS error while handling message", e);
                     }
                 } else {
                     sleep(POLL_INTERVAL);
                 }
+                
+                checkTransactions();
             }
         } catch (Exception e) {
             // Internal error (should never happen).
@@ -382,22 +392,25 @@ public class SecsEquipment {
                     break;
 
                 case SELECT_RSP:
-                    // Always accept SELECT_RSP; no action required.
-                    int selectStatus = controlMessage.getHeaderByte3();
-                    if (selectStatus == 0x00) { // SelectStatus: Communication Established
-                        LOG.debug("Received SELECT_RSP message with SelectStatus: Communication Established");
-                        setConnectionState(ConnectionState.SELECTED);
-                    } else if (selectStatus == 0x01) { // SelectStatus: Communication Already Active
-                        LOG.debug("Received SELECT_RSP message with SelectStatus: Communication Already Active");
-                        setConnectionState(ConnectionState.SELECTED);
-                    } else if (selectStatus == 0x02) { // SelectStatus: Connection Not Ready
-                        LOG.warn("Received SELECT_RSP message with SelectStatus: Connection Not Ready -- Communication failed");
-                        setConnectionState(ConnectionState.NOT_SELECTED);
-                    } else if (selectStatus == 0x03) { // SelectStatus: Connect Exhaust
-                        LOG.warn("Received SELECT_RSP message with SelectStatus: Connect Exhaust -- Communication failed");
-                        setConnectionState(ConnectionState.NOT_SELECTED);
+                    if (endTransaction(transactionId)) {
+                        int selectStatus = controlMessage.getHeaderByte3();
+                        if (selectStatus == 0x00) { // SelectStatus: Communication Established
+                            LOG.debug("Received SELECT_RSP message with SelectStatus: Communication Established");
+                            setConnectionState(ConnectionState.SELECTED);
+                        } else if (selectStatus == 0x01) { // SelectStatus: Communication Already Active
+                            LOG.debug("Received SELECT_RSP message with SelectStatus: Communication Already Active");
+                            setConnectionState(ConnectionState.SELECTED);
+                        } else if (selectStatus == 0x02) { // SelectStatus: Connection Not Ready
+                            LOG.warn("Received SELECT_RSP message with SelectStatus: Connection Not Ready -- Communication failed");
+                            setConnectionState(ConnectionState.NOT_SELECTED);
+                        } else if (selectStatus == 0x03) { // SelectStatus: Connect Exhaust
+                            LOG.warn("Received SELECT_RSP message with SelectStatus: Connect Exhaust -- Communication failed");
+                            setConnectionState(ConnectionState.NOT_SELECTED);
+                        } else {
+                            LOG.warn("Received SELECT_RSP message with invalid SelectStatus: " + selectStatus);
+                        }
                     } else {
-                        LOG.warn("Received SELECT_RSP message with invalid SelectStatus: " + selectStatus);
+                        LOG.warn("Unexpected SELECT_RSP received -- ignored");
                     }
                     break;
 
@@ -413,12 +426,16 @@ public class SecsEquipment {
                     break;
 
                 case DESELECT_RSP:
-                    int deselectStatus = controlMessage.getHeaderByte3();
-                    if (deselectStatus == 0x00) { // Accept
-                        LOG.debug("Received DESELECT_RSP message with DeselectStatus: Success");
-                        setConnectionState(ConnectionState.NOT_SELECTED);
+                    if (endTransaction(transactionId)) {
+                        int deselectStatus = controlMessage.getHeaderByte3();
+                        if (deselectStatus == 0x00) { // Accept
+                            LOG.debug("Received DESELECT_RSP message with DeselectStatus: Success");
+                            setConnectionState(ConnectionState.NOT_SELECTED);
+                        } else {
+                            LOG.debug("Received DESELECT_RSP message with DeselectStatus: Failed");
+                        }
                     } else {
-                        LOG.debug("Received DESELECT_RSP message with DeselectStatus: Failed");
+                        LOG.warn("Unexpected DESELECT_RSP received -- ignored");
                     }
                     break;
 
@@ -434,7 +451,9 @@ public class SecsEquipment {
                     break;
 
                 case LINKTEST_RSP:
-                    // Always accept LINKTEST_RSP; no action required.
+                    if (!endTransaction(transactionId)) {
+                        LOG.warn("Unexpected LINKTEST_RSP received -- ignored");
+                    }
                     break;
 
                 case REJECT:
@@ -453,8 +472,15 @@ public class SecsEquipment {
 
             if (function == 0) {
                 // Received FxS0 (ABORT) message; nothing to do.
+//            } else if (isReplyMessage(dataMessage)) {
+//                // Reply message.
+//                LOG.info("### Received reply message");
+//                if (endTransaction(transactionId)) {
+//                } else {
+//                    LOG.warn("Unexpected reply data message -- ignored");
+//                }
             } else {
-                // Find handler for specific data message.
+                // Request message; process by specific message handler.
                 MessageHandler handler = messageHandlers.get(stream * 256 + function);
                 if (handler != null) {
                     LOG.trace("Handle data message " + handler);
@@ -468,6 +494,10 @@ public class SecsEquipment {
         }
 
         return replyMessage;
+    }
+    
+    private static boolean isReplyMessage(DataMessage message) {
+        return message.getFunction() % 2 == 0;
     }
 
     private void disconnect() {
@@ -484,6 +514,60 @@ public class SecsEquipment {
     private void updateTransactionId(long transactionId) {
         if (transactionId > nextTransactionId) {
             nextTransactionId = transactionId + 1;
+        }
+    }
+    
+    private void startTransaction(Message requestMessage) {
+        synchronized (transactions) {
+            long transactionId = requestMessage.getTransactionId();
+            transactions.put(transactionId, new Transaction(requestMessage));
+            LOG.trace(String.format("Transaction %d started", transactionId));
+        }
+    }
+    
+    private boolean endTransaction(long transactionId) {
+        synchronized (transactions) {
+            if (transactions.containsKey(transactionId)) {
+                transactions.remove(transactionId);
+                LOG.trace(String.format("Transaction %d ended", transactionId));
+                return true;
+            } else {
+                LOG.warn(String.format("Reply message received for unknown transaction %d", transactionId));
+                return false;
+            }
+        }
+    }
+    
+    private void checkTransactions() {
+        long now = System.currentTimeMillis();
+        synchronized (transactions) {
+            for (Transaction transaction : transactions.values()) {
+                long duration = now - transaction.getTimestamp();
+                Message message = transaction.getRequestMessage();
+                long transactionId = message.getTransactionId();
+                if (message instanceof DataMessage) {
+                    //FIXME: Use configured T3 value.
+                    if (duration > SecsConstants.DEFAULT_T3_TIMEOUT) {
+                        LOG.warn(String.format("T3 timeout for transaction %d -- aborted", transactionId));
+                        DataMessage dataMessage = (DataMessage) message;
+                        DataMessage abortMessage = new DataMessage(deviceId, dataMessage.getStream(), 0, false, transactionId, null);
+                        try {
+                            sendMessage(abortMessage, socket.getOutputStream());
+                        } catch (IOException e) {
+                            LOG.error("Internal error while sending ABORT message", e);
+                        }
+                        endTransaction(transactionId);
+                    }
+                } else { // ControlMessage
+                    //FIXME: Use configured T6 value.
+                    if (duration > SecsConstants.DEFAULT_T6_TIMEOUT) {
+                        // Control message time-out; treat as connection failure.
+                        LOG.warn(String.format("T6 timeout for transaction %d -- disconnect", transactionId));
+                        endTransaction(transactionId);
+                        disconnect();
+                    }
+                }
+            }
         }
     }
 

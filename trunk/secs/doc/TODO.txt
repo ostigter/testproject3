@@ -14,6 +14,7 @@ High priority
 
 Normal priority
 
+* Trace log file
 * Handle S1F3 Select Equipment Status (SSR)
 * Handle S2F29 Equipment Constant Namelist Request (ECNR)
 * Handle S2F31 Time and Date Set Request (DTS)
