@@ -2,7 +2,7 @@ package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.CommunicationState;
 import org.ozsoft.secs.SecsEquipment;
-import org.ozsoft.secs.SecsException;
+import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
@@ -26,12 +26,12 @@ public class S1F13 extends MessageHandler {
     }
 
     @Override
-    public DataMessage handle(DataMessage message) throws SecsException {
+    public DataMessage handle(DataMessage message) throws SecsParseException {
         int sessionId = message.getSessionId();
         long transactionId = message.getTransactionId();
         Data<?> requestText = message.getText();
         if (!(requestText instanceof L)) {
-            throw new SecsException("Invalid data format for S1F13 message");
+            throw new SecsParseException("Invalid data format for S1F13 message");
         }
         L l = (L) requestText;
 //        String mdln = null;
@@ -43,16 +43,16 @@ public class S1F13 extends MessageHandler {
         } else if (l.length() == 2) {
             Data<?> dataItem = l.getItem(0);
             if (!(dataItem instanceof A)) {
-                throw new SecsException("Invalid data format for S1F13 message");
+                throw new SecsParseException("Invalid data format for S1F13 message");
             }
 //            mdln = ((A) dataItem).getValue();
             dataItem = l.getItem(1);
             if (!(dataItem instanceof A)) {
-                throw new SecsException("Invalid data format for S1F13 message");
+                throw new SecsParseException("Invalid data format for S1F13 message");
             }
 //            softrev = ((A) dataItem).getValue();
         } else {
-            throw new SecsException("Invalid data format for S1F13 message");
+            throw new SecsParseException("Invalid data format for S1F13 message");
         }
         
         // Send S1F14 Establish Communication Request Acknowledge (CRA).

@@ -1,13 +1,8 @@
 package org.ozsoft.secs;
 
-/**
- * Generic, top-level SECS exception.
- * 
- * @author Oscar Stigter
- */
-public class SecsException extends Exception {
+public class SecsParseException extends SecsException {
 
-    private static final long serialVersionUID = -6343582345850766217L;
+    private static final long serialVersionUID = -364064596812127277L;
 
     /**
      * Constructor with a message only.
@@ -15,7 +10,7 @@ public class SecsException extends Exception {
      * @param message
      *            Message describing the problem.
      */
-    public SecsException(String message) {
+    public SecsParseException(String message) {
         super(message);
     }
 
@@ -27,7 +22,7 @@ public class SecsException extends Exception {
      * @param cause
      *            Inner exception with the actual cause of the problem.
      */
-    public SecsException(String message, Throwable cause) {
+    public SecsParseException(String message, Throwable cause) {
         super(message, cause);
     }
 
