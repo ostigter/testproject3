@@ -14,6 +14,8 @@ import java.util.Set;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.ozsoft.secs.format.A;
+import org.ozsoft.secs.format.B;
+import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.message.ControlMessage;
 import org.ozsoft.secs.message.DataMessage;
@@ -22,7 +24,6 @@ import org.ozsoft.secs.message.MessageHandler;
 import org.ozsoft.secs.message.MessageParser;
 import org.ozsoft.secs.message.S1F1;
 import org.ozsoft.secs.message.S1F13;
-import org.ozsoft.secs.message.S1F14;
 import org.ozsoft.secs.message.S1F15;
 import org.ozsoft.secs.message.S1F17;
 import org.ozsoft.secs.message.S2F25;
@@ -242,7 +243,7 @@ public class SecsEquipment {
         }
         
         try {
-            sendMessage(message, socket.getOutputStream());
+            sendMessage(message, socket.getOutputStream(), false);
         } catch (IOException e) {
             String msg = "Internal error while sending message"; 
             LOG.error(msg, e);
@@ -250,13 +251,40 @@ public class SecsEquipment {
         }
     }
     
-    private void sendMessage(Message message, OutputStream os) throws IOException {
+    private Message sendMessage(Message message, OutputStream os, boolean asynchronous) throws SecsTimeoutException, IOException {
         LOG.trace(String.format("Send message %s", message));
+        
         os.write(message.toByteArray());
         os.flush();
+        
         for (SecsEquipmentListener listener : listeners) {
             listener.messageSent(message);
         }
+        
+        Message replyMessage = null;
+        if (message instanceof DataMessage) {
+            DataMessage dataMessage = (DataMessage) message;
+            if (!asynchronous && dataMessage.withReply()) {
+                long transactionId = dataMessage.getTransactionId();
+                startTransaction(dataMessage);
+                long startTime = System.currentTimeMillis();
+                while (replyMessage == null) {
+                    sleep(POLL_INTERVAL);
+                    synchronized (transactions) {
+                        Transaction transaction = transactions.get(transactionId);
+                        if (transaction != null) {
+                            replyMessage = transaction.getReplyMessage();
+                        }
+                    }
+                    if (replyMessage == null && (System.currentTimeMillis() - startTime) > SecsConstants.DEFAULT_T3_TIMEOUT) {
+                        String msg = String.format("T3 timeout for request message %s with transaction ID %d", dataMessage.getType(), transactionId); 
+                        LOG.warn(msg);
+                        throw new SecsTimeoutException(msg);
+                    }
+                }
+            }
+        }
+        return replyMessage;
     }
 
     private void enable() {
@@ -294,14 +322,10 @@ public class SecsEquipment {
 
     private void addDefaultMessageHandlers() {
         addMessageHandler(new S1F1(this)); // Are You There (R)
-        addMessageHandler(new S1F13(this)); // Establish Communication Request
-                                            // (CR)
-        addMessageHandler(new S1F14(this)); // Establish Communication
-                                            // Acknowledge (CRA)
+        addMessageHandler(new S1F13(this)); // Establish Communication Request // (CR)
         addMessageHandler(new S1F15(this)); // Request OFF-LINE (ROFL)
         addMessageHandler(new S1F17(this)); // Request ON-LINE (RONL)
-        addMessageHandler(new S2F25(this)); // Request Loopback Diagnostic
-                                            // Request (LDR)
+        addMessageHandler(new S2F25(this)); // Request Loopback Diagnostic Request (LDR)
     }
 
     private void handleConnection() {
@@ -316,19 +340,18 @@ public class SecsEquipment {
             byte[] buf = new byte[BUFFER_SIZE];
             while (isEnabled && getConnectionState() != ConnectionState.NOT_CONNECTED) {
                 if (connectMode == ConnectMode.ACTIVE && connectionState == ConnectionState.NOT_SELECTED) {
-                    // Not selected; send SELECT_REQ.
+                    // Not selected yet; send SELECT_REQ.
                     Message message = new ControlMessage(deviceId, 0x00, 0x00, SType.SELECT_REQ, getNextTransactionId());
-                    sendMessage(message, os);
+                    sendMessage(message, os, true);
                     startTransaction(message);
                     sleep(100L);
                 } else if (connectMode == ConnectMode.ACTIVE && connectionState == ConnectionState.SELECTED && communicationState == CommunicationState.NOT_COMMUNICATING) {
-                    // Not communicating; send S1F13.
+                    // Not communicating yet; send S1F13 (Communication Request).
                     L text = new L();
                     text.addItem(new A(modelName));
                     text.addItem(new A(softRev));
                     Message message = new DataMessage(deviceId, 1, 13, true, getNextTransactionId(), text);
-                    sendMessage(message, os);
-                    startTransaction(message);
+                    sendMessage(message, os, true);
                     sleep(100L);
                 }
                 
@@ -339,7 +362,7 @@ public class SecsEquipment {
                         LOG.trace(String.format("Received message: %s", requestMessage));
                         Message replyMessage = handleMessage(requestMessage);
                         if (replyMessage != null) {
-                            sendMessage(replyMessage, os);
+                            sendMessage(replyMessage, os, true);
                         }
                         
                     } catch (SecsParseException e) {
@@ -366,16 +389,16 @@ public class SecsEquipment {
         disconnect();
     }
 
-    private Message handleMessage(Message requestMessage) throws SecsException {
-        int sessionId = requestMessage.getSessionId();
-        long transactionId = requestMessage.getTransactionId();
+    private Message handleMessage(Message message) throws SecsException {
+        int sessionId = message.getSessionId();
+        long transactionId = message.getTransactionId();
         updateTransactionId(transactionId);
 
         Message replyMessage = null;
 
-        if (requestMessage instanceof ControlMessage) {
+        if (message instanceof ControlMessage) {
             // HSMS control message.
-            ControlMessage controlMessage = (ControlMessage) requestMessage;
+            ControlMessage controlMessage = (ControlMessage) message;
             SType sType = controlMessage.getSType();
             int headerByte3 = controlMessage.getHeaderByte3();
             switch (sType) {
@@ -466,29 +489,41 @@ public class SecsEquipment {
             }
         } else {
             // Data message (standard GEM or custom).
-            DataMessage dataMessage = (DataMessage) requestMessage;
+            DataMessage dataMessage = (DataMessage) message;
             int stream = dataMessage.getStream();
             int function = dataMessage.getFunction();
 
             if (function == 0) {
                 // Received FxS0 (ABORT) message; nothing to do.
-//            } else if (isReplyMessage(dataMessage)) {
-//                // Reply message.
-//                LOG.info("### Received reply message");
-//                if (endTransaction(transactionId)) {
-//                } else {
-//                    LOG.warn("Unexpected reply data message -- ignored");
-//                }
-            } else {
-                // Request message; process by specific message handler.
-                MessageHandler handler = messageHandlers.get(stream * 256 + function);
-                if (handler != null) {
-                    LOG.trace("Handle data message " + handler);
-                    replyMessage = handler.handle(dataMessage);
+            } else if (stream == 9) {
+                // Steam 9 is reserved for generic errors.
+                if (endTransaction(transactionId)) {
+                    LOG.warn(String.format("Received %s for transaction %d", dataMessage.getType(), transactionId));
                 } else {
-                    // Unsupported message; send ABORT.
-                    LOG.warn(String.format("Unsupported data message (%s) -- ABORT", dataMessage.getType()));
-                    replyMessage = new DataMessage(sessionId, stream, 0, false, transactionId, null);
+                    LOG.warn(String.format("Received unexpected %s -- ignored", dataMessage.getType()));
+                }
+            } else if (stream == 1 && function == 14) {
+                // S1F14 (Communication Request Acknowledge).
+                handleS1F14(dataMessage);
+            } else {
+                // Check whether message is reply for active request.
+                synchronized (transactions) {
+                    Transaction transaction = transactions.get(transactionId);
+                    if (transaction != null) {
+                        // Active request message found; set reply message to be processed.
+                        transaction.setReplyMessage(dataMessage);
+                    } else {
+                        // Request message; process by specific message handler.
+                        MessageHandler handler = messageHandlers.get(stream * 256 + function);
+                        if (handler != null) {
+                            LOG.trace("Handle data message " + handler);
+                            replyMessage = handler.handle(dataMessage);
+                        } else {
+                            // Unsupported message; send ABORT.
+                            LOG.warn(String.format("Unsupported data message (%s) -- ABORT", dataMessage.getType()));
+                            replyMessage = new DataMessage(sessionId, stream, 0, false, transactionId, null);
+                        }
+                    }
                 }
             }
         }
@@ -496,10 +531,58 @@ public class SecsEquipment {
         return replyMessage;
     }
     
-    private static boolean isReplyMessage(DataMessage message) {
-        return message.getFunction() % 2 == 0;
+    /**
+     * Handle S1F14 (Communication Request Acknowledge). <br />
+     * <br />
+     * 
+     * Format:
+     * <pre>
+     * <L:2
+     *     COMMACK        // <B:1>
+     *     <L:2
+     *          MDLN      // <A:20>
+     *          SOFTREV   // <A:20>
+     *     >
+     * >
+     * </pre>   
+     * 
+     * @param message
+     *            The message.
+     * 
+     * @throws SecsParseException
+     *             If the message is invalid.
+     */
+    private void handleS1F14(DataMessage message) throws SecsParseException {
+        Data<?> text = message.getText();
+        if (text == null) {
+            throw new SecsParseException("Invalid S1F14 message: empty text");
+        }
+        if (!(text instanceof L)) {
+            throw new SecsParseException("Invalid S1F14 message: text not L");
+        }
+        L l = (L) text;
+        if (l.length() != 2) {
+            throw new SecsParseException("Invalid S1F14 message: L must have length of 2");
+        }
+        text = l.getItem(0);
+        if (!(text instanceof B)) {
+            throw new SecsParseException("Invalid S1F14 message: First element of L must be B");
+        }
+        B b = (B) text;
+        if (b.length() != 1) {
+            throw new SecsParseException("Invalid S1F14 message: B must have length of 1 (COMMACK)");
+        }
+        int commAck = b.get(0);
+        if (commAck == 0x00) { // Accepted
+            LOG.debug("Received S1F14 message with COMMACK: Accepted");
+            setCommunicationState(CommunicationState.COMMUNICATING);
+        } else if (commAck == 0x01) { // Denied, Try Again
+            LOG.warn("Received S1F14 message with COMMACK: Denied, Try Again");
+        } else {
+            LOG.warn("Received S1F14 with invalid COMMACK value");
+        }
     }
-
+    
     private void disconnect() {
         setCommunicationState(CommunicationState.NOT_COMMUNICATING);
         setConnectionState(ConnectionState.NOT_CONNECTED);
@@ -538,6 +621,28 @@ public class SecsEquipment {
         }
     }
     
+//    private Message getRequestMessage(long transactionId) {
+//        Message requestMessage = null;
+//        synchronized (transactions) {
+//            Transaction transaction = transactions.get(transactionId);
+//            if (transaction != null) {
+//                requestMessage = transaction.getRequestMessage();
+//            }
+//        }
+//        return requestMessage;
+//    }
+//    
+//    private Message getReplyMessage(long transactionId) {
+//        Message replyMessage = null;
+//        synchronized (transactions) {
+//            Transaction transaction = transactions.get(transactionId);
+//            if (transaction != null) {
+//                replyMessage = transaction.getReplyMessage();
+//            }
+//        }
+//        return replyMessage;
+//    }
+    
     private void checkTransactions() {
         long now = System.currentTimeMillis();
         synchronized (transactions) {
@@ -552,8 +657,8 @@ public class SecsEquipment {
                         DataMessage dataMessage = (DataMessage) message;
                         DataMessage abortMessage = new DataMessage(deviceId, dataMessage.getStream(), 0, false, transactionId, null);
                         try {
-                            sendMessage(abortMessage, socket.getOutputStream());
-                        } catch (IOException e) {
+                            sendMessage(abortMessage, socket.getOutputStream(), true);
+                        } catch (Exception e) {
                             LOG.error("Internal error while sending ABORT message", e);
                         }
                         endTransaction(transactionId);
