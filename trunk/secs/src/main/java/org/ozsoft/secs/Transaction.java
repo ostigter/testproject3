@@ -9,21 +9,34 @@ import org.ozsoft.secs.message.Message;
  */
 public class Transaction {
     
-    private final Message requestMessage;
-    
     private final long timestamp;
     
-    public Transaction(Message requestMessage) {
-        this.requestMessage = requestMessage;
-        timestamp = System.currentTimeMillis();
-    }
+    private final Message requestMessage;
     
-    public Message getRequestMessage() {
-        return requestMessage;
+    private Message replyMessage;
+    
+    public Transaction(Message requestMessage) {
+        timestamp = System.currentTimeMillis();
+        this.requestMessage = requestMessage;
     }
     
     public long getTimestamp() {
         return timestamp;
     }
 
+    public Message getRequestMessage() {
+        return requestMessage;
+    }
+    
+    public Message getReplyMessage() {
+        return replyMessage;
+    }
+    
+    /* package */ void setReplyMessage(Message replyMessage) {
+        if (replyMessage.getTransactionId() != requestMessage.getTransactionId()) {
+            throw new IllegalArgumentException("Reply message does not match request message");
+        }
+        this.replyMessage = replyMessage;
+    }
+    
 }
