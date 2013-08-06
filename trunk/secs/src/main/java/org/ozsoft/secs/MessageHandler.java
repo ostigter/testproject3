@@ -1,7 +1,6 @@
-package org.ozsoft.secs.message;
+package org.ozsoft.secs;
 
-import org.ozsoft.secs.SecsEquipment;
-import org.ozsoft.secs.SecsException;
+import org.ozsoft.secs.message.DataMessage;
 
 public abstract class MessageHandler {
     
@@ -11,13 +10,12 @@ public abstract class MessageHandler {
     
     private final String description;
     
-    private final SecsEquipment equipment;
+    private SecsEquipment equipment;
     
-    public MessageHandler(int stream, int function, String description, SecsEquipment equipment) {
+    public MessageHandler(int stream, int function, String description) {
         this.stream = stream;
         this.function = function;
         this.description = description;
-        this.equipment = equipment;
     }
     
     public int getStream() {
@@ -37,6 +35,10 @@ public abstract class MessageHandler {
     }
     
     public abstract DataMessage handle(DataMessage message) throws SecsException;
+    
+    /* package */ void setEquipment(SecsEquipment equipment) {
+        this.equipment = equipment;
+    }
     
     @Override
     public String toString() {

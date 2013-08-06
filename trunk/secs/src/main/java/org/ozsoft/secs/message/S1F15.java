@@ -1,7 +1,7 @@
 package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.ControlState;
-import org.ozsoft.secs.SecsEquipment;
+import org.ozsoft.secs.MessageHandler;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
@@ -19,8 +19,8 @@ public class S1F15 extends MessageHandler {
     
     private static final String DESCRIPTION = "Request OFF-LINE (ROFL)";
 
-    public S1F15(SecsEquipment equipment) {
-        super(STREAM, FUNCTION, DESCRIPTION, equipment);
+    public S1F15() {
+        super(STREAM, FUNCTION, DESCRIPTION);
     }
 
     @Override

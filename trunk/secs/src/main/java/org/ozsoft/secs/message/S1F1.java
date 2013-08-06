@@ -1,6 +1,6 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsEquipment;
+import org.ozsoft.secs.MessageHandler;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.Data;
@@ -19,8 +19,8 @@ public class S1F1 extends MessageHandler {
     
     private static final String DESCRIPTION = "Are You There (R)";
 
-    public S1F1(SecsEquipment equipment) {
-        super(STREAM, FUNCTION, DESCRIPTION, equipment);
+    public S1F1() {
+        super(STREAM, FUNCTION, DESCRIPTION);
     }
 
     @Override

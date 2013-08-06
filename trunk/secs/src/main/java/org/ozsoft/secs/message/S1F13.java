@@ -1,7 +1,7 @@
 package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.CommunicationState;
-import org.ozsoft.secs.SecsEquipment;
+import org.ozsoft.secs.MessageHandler;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
@@ -21,8 +21,8 @@ public class S1F13 extends MessageHandler {
     
     private static final String DESCRIPTION = "Establish Communication Request (CR)";
 
-    public S1F13(SecsEquipment equipment) {
-        super(STREAM, FUNCTION, DESCRIPTION, equipment);
+    public S1F13() {
+        super(STREAM, FUNCTION, DESCRIPTION);
     }
 
     @Override
