@@ -3,6 +3,7 @@ package org.ozsoft.secs;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.ozsoft.secs.message.S99F1;
 
 /**
  * Automated Test suite verifying the communication between two equipment.
@@ -24,6 +25,9 @@ public class SystemTest {
         Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
         Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
+        
+        // Register a test message handler.
+        passiveEntity.addMessageHandler(new S99F1());
 
         // Start passive entity.
         passiveEntity.setEnabled(true);

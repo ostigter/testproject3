@@ -1,6 +1,6 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsEquipment;
+import org.ozsoft.secs.MessageHandler;
 import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
@@ -18,8 +18,8 @@ public class S2F25 extends MessageHandler {
 
     private static final String DESCRIPTION = "Loopback Diagnostic Request (LDR)";
 
-    public S2F25(SecsEquipment equipment) {
-        super(STREAM, FUNCTION, DESCRIPTION, equipment);
+    public S2F25() {
+        super(STREAM, FUNCTION, DESCRIPTION);
     }
 
     @Override

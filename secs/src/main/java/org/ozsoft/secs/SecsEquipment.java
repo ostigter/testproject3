@@ -20,7 +20,6 @@ import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.message.ControlMessage;
 import org.ozsoft.secs.message.DataMessage;
 import org.ozsoft.secs.message.Message;
-import org.ozsoft.secs.message.MessageHandler;
 import org.ozsoft.secs.message.MessageParser;
 import org.ozsoft.secs.message.S1F1;
 import org.ozsoft.secs.message.S1F13;
@@ -220,8 +219,12 @@ public class SecsEquipment {
     }
 
     public void addMessageHandler(MessageHandler handler) {
-        int messageId = handler.getStream() * 256 + handler.getFunction();
+        handler.setEquipment(this);
+        int stream = handler.getStream();
+        int function = handler.getFunction();
+        int messageId = stream * 256 + function;
         messageHandlers.put(messageId, handler);
+        LOG.info(String.format("Added message handler for %s", handler));
     }
 
     public void removeMessageHandler(MessageHandler handler) {
@@ -321,11 +324,11 @@ public class SecsEquipment {
     }
 
     private void addDefaultMessageHandlers() {
-        addMessageHandler(new S1F1(this)); // Are You There (R)
-        addMessageHandler(new S1F13(this)); // Establish Communication Request // (CR)
-        addMessageHandler(new S1F15(this)); // Request OFF-LINE (ROFL)
-        addMessageHandler(new S1F17(this)); // Request ON-LINE (RONL)
-        addMessageHandler(new S2F25(this)); // Request Loopback Diagnostic Request (LDR)
+        addMessageHandler(new S1F1());  // Are You There (R)
+        addMessageHandler(new S1F13()); // Establish Communication Request // (CR)
+        addMessageHandler(new S1F15()); // Request OFF-LINE (ROFL)
+        addMessageHandler(new S1F17()); // Request ON-LINE (RONL)
+        addMessageHandler(new S2F25()); // Request Loopback Diagnostic Request (LDR)
     }
 
     private void handleConnection() {
