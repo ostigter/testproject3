@@ -6,12 +6,14 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
-import org.ozsoft.secs.SecsConstants;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.util.ConversionUtils;
 
 public class ControlMessage implements Message {
+    
+    /** Header length bytes for a header-only message. */
+    private static final byte[] HEADER_LENGTH_BYTES = new byte[] {0x00, 0x00, 0x00, 0x0a};
     
     private int sessionId;
     
@@ -57,7 +59,7 @@ public class ControlMessage implements Message {
     public byte[] toByteArray() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            baos.write(SecsConstants.HEADER_LENGTH_BYTES);
+            baos.write(HEADER_LENGTH_BYTES);
             baos.write(ConversionUtils.integerToBytes(sessionId, U2.SIZE));
             baos.write(headerByte2);
             baos.write(headerByte3);
