@@ -15,6 +15,7 @@ public class MailSenderImpl implements MailSender {
     
     private static final String FROM = "donotreply@ozsoft.net";
     private static final String HOST = "smtp.gmail.com";
+    private static final String PORT = "587";
     private static final String USERNAME = "oscar.stigter@gmail.com";
     private static final String PASSWORD = "secret";
     
@@ -22,9 +23,15 @@ public class MailSenderImpl implements MailSender {
     
     public MailSenderImpl() {
         Properties props = new Properties();
-        props.put("mail.host", HOST);
-        props.put("mail.smtp.auth", "true");            // Required for GMail
-        props.put("mail.smtp.starttls.enable", "true"); // Required for GMail
+        // Required for regular SMTP server:
+//        props.put("mail.host", HOST);
+//        props.put("mail.port", PORT);
+        
+        // Required for GMail:
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", HOST);
+        props.put("mail.smtp.port", PORT);
 
         Authenticator auth = new SimpleAuthenticator(USERNAME, PASSWORD);
         
