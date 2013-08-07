@@ -240,18 +240,22 @@ public class SecsEquipment {
         listeners.remove(listener);
     }
     
-    public void sendMessage(Message message) throws SecsException {
+    public DataMessage sendDataMessage(int stream, int function, boolean withReply, Data<?> text) throws SecsException {
         if (communicationState != CommunicationState.COMMUNICATING) {
             throw new SecsException("Communication State not COMMUNICATING");
         }
         
+        DataMessage requestMessage = new DataMessage(deviceId, stream, function, withReply, getNextTransactionId(), text);
+        DataMessage replyMessage = null;
         try {
-            sendMessage(message, socket.getOutputStream(), false);
+            replyMessage = (DataMessage) sendMessage(requestMessage, socket.getOutputStream(), false);
         } catch (IOException e) {
             String msg = "Internal error while sending message"; 
             LOG.error(msg, e);
             throw new SecsException(msg, e);
         }
+        
+        return replyMessage;
     }
     
     private Message sendMessage(Message message, OutputStream os, boolean asynchronous) throws SecsTimeoutException, IOException {
@@ -378,7 +382,7 @@ public class SecsEquipment {
                     sleep(POLL_INTERVAL);
                 }
                 
-                checkTransactions();
+//                checkTransactions();
             }
         } catch (Exception e) {
             // Internal error (should never happen).
@@ -645,39 +649,32 @@ public class SecsEquipment {
 //        }
 //        return replyMessage;
 //    }
-    
-    private void checkTransactions() {
-        long now = System.currentTimeMillis();
-        synchronized (transactions) {
-            for (Transaction transaction : transactions.values()) {
-                long duration = now - transaction.getTimestamp();
-                Message message = transaction.getRequestMessage();
-                long transactionId = message.getTransactionId();
-                if (message instanceof DataMessage) {
-                    //FIXME: Use configured T3 value.
-                    if (duration > SecsConstants.DEFAULT_T3_TIMEOUT) {
-                        LOG.warn(String.format("T3 timeout for transaction %d -- aborted", transactionId));
-                        DataMessage dataMessage = (DataMessage) message;
-                        DataMessage abortMessage = new DataMessage(deviceId, dataMessage.getStream(), 0, false, transactionId, null);
-                        try {
-                            sendMessage(abortMessage, socket.getOutputStream(), true);
-                        } catch (Exception e) {
-                            LOG.error("Internal error while sending ABORT message", e);
-                        }
-                        endTransaction(transactionId);
-                    }
-                } else { // ControlMessage
-                    //FIXME: Use configured T6 value.
-                    if (duration > SecsConstants.DEFAULT_T6_TIMEOUT) {
-                        // Control message time-out; treat as connection failure.
-                        LOG.warn(String.format("T6 timeout for transaction %d -- disconnect", transactionId));
-                        endTransaction(transactionId);
-                        disconnect();
-                    }
-                }
-            }
-        }
-    }
+//    
+//    private void checkTransactions() {
+//        long now = System.currentTimeMillis();
+//        synchronized (transactions) {
+//            for (Transaction transaction : transactions.values()) {
+//                long duration = now - transaction.getTimestamp();
+//                Message message = transaction.getRequestMessage();
+//                long transactionId = message.getTransactionId();
+//                if (message instanceof DataMessage) {
+//                    //FIXME: Use configured T3 value.
+//                    if (duration > SecsConstants.DEFAULT_T3_TIMEOUT) {
+//                        LOG.warn(String.format("T3 timeout for transaction %d -- aborted", transactionId));
+//                        endTransaction(transactionId);
+//                    }
+//                } else { // ControlMessage
+//                    //FIXME: Use configured T6 value.
+//                    if (duration > SecsConstants.DEFAULT_T6_TIMEOUT) {
+//                        // Control message time-out; treat as connection failure.
+//                        LOG.warn(String.format("T6 timeout for transaction %d -- disconnect", transactionId));
+//                        endTransaction(transactionId);
+//                        disconnect();
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private static void sleep(long duration) {
         try {
