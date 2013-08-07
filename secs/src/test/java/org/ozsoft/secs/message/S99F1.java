@@ -48,7 +48,7 @@ public class S99F1 extends MessageHandler {
         long transactionId = message.getTransactionId();
         
         Data<?> requestText = message.getText();
-        if (requestText != null) {
+        if (requestText == null) {
             return createS9F7(sessionId, transactionId);
         }
         if (!(requestText instanceof L)) {

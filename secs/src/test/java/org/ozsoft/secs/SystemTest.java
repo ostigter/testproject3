@@ -3,21 +3,30 @@ package org.ozsoft.secs;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.ozsoft.secs.format.A;
+import org.ozsoft.secs.format.B;
+import org.ozsoft.secs.format.L;
+import org.ozsoft.secs.message.DataMessage;
 import org.ozsoft.secs.message.S99F1;
 
 /**
- * Automated Test suite verifying the communication between two equipment.
+ * Test suite verifying the communication between two local SECS equipment.
  * 
  * @author Oscar Stigter
  */
 public class SystemTest {
     
+    /** Timeout before communication is considered to have failed. */
     private static final long CONNECTION_TIMEOUT = 500L;
 
+    /**
+     * Tests the communication between two local SECS equipment.
+     * 
+     * @throws SecsException
+     *             If the SECS communications fails.
+     */
     @Test
     public void test() throws SecsException {
-        //TODO: Use state polling instead of sleep().
-        
         // Create passive entity listening on default port.
         SecsEquipment passiveEntity = new SecsEquipment();
         passiveEntity.setConnectMode(ConnectMode.PASSIVE);
@@ -26,7 +35,7 @@ public class SystemTest {
         Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
         
-        // Register a test message handler.
+        // Register test message handler on passive entity.
         passiveEntity.addMessageHandler(new S99F1());
 
         // Start passive entity.
@@ -56,6 +65,19 @@ public class SystemTest {
         Assert.assertEquals(CommunicationState.COMMUNICATING, activeEntity.getCommunicationState());
 //        Assert.assertEquals(ControlState.ONLINE_REMOTE, server.getControlState());
 //        Assert.assertEquals(ControlState.ONLINE_REMOTE, client.getControlState());
+        
+        // Send S99F1 message from active to passive entity.
+        L l = new L();
+        l.addItem(new A("Mr. Smith"));
+        DataMessage replyMessage = activeEntity.sendDataMessage(99, 1, true, l);
+        Assert.assertEquals(99, replyMessage.getStream());
+        Assert.assertEquals(2, replyMessage.getFunction());
+        l = (L) replyMessage.getText();
+        Assert.assertEquals(2, l.length());
+        int ackCode = ((B) l.getItem(0)).get(0);
+        Assert.assertEquals(0x00, ackCode);
+        String greeting = ((A) l.getItem(1)).getValue();
+        Assert.assertEquals("Hello, Mr. Smith!", greeting);
 
         // Disable active entity. 
         activeEntity.setEnabled(false);
@@ -78,7 +100,13 @@ public class SystemTest {
          Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
          Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
     }
-
+    
+    /**
+     * Suspends the current thread for a specific duration.
+     * 
+     * @param duration
+     *            The duration in miliseconds.
+     */
     private static void sleep(long duration) {
         try {
             Thread.sleep(duration);

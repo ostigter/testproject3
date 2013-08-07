@@ -29,7 +29,7 @@ public interface SecsConstants {
     int DEFAULT_DEVICE_ID = 1;
     
     /** T3 timeout in miliseconds. */
-    long DEFAULT_T3_TIMEOUT = 120000L;  // 2 minutes
+    long DEFAULT_T3_TIMEOUT = 120000;  // 2 minutes
     
     /** T5 timeout in miliseconds. */
     long DEFAULT_T5_TIMEOUT = 5000L; // 5 seconds
