@@ -126,26 +126,28 @@ L {
 01 02 01 02 21 03 11 12 13 21 03 21 22 23 21 03 31 32 33 21 03 41 42 43
 
 
-Data parsing
-------------
+API
+===
 
-L {
-    A {V1}
-    A {V2}
+SecsEquipment equipment = new SecsEquipment();
+equipment.setConnectMode(ConnectMode.ACTIVE);
+equipment.setHost(HOST);
+equipment.setPort(PORT);
+equipment.setT3(10);
+equipment.setTraceDir("D:/SECS/log");
+equipment.setEnabled(true);
+
+SecsMessage s99f1 = new S99F1();
+s99f1.setName("Mr. Smith");
+SecsMessage s99f2 = equipment.sendMessage(s99f1);
+int ackCode = s99f2.getAckCode();
+String greeting = s99f2.getGreeting();
+
+
+public class S99F1 extends SecsMessage {
+
+    public static final int STREAM = 99;
+
+    public static final int FUNCTION = 1;
+
 }
-
-L {A {V1} A {V2}}
-
-
-L {
-    L {
-        A {V1}
-        A {V2}
-    }
-    L {
-        A {V3}
-        A {V4}
-    }
-}
-
-L {L {A {V1} A {V2}} L {A {V3} A {V4}}}

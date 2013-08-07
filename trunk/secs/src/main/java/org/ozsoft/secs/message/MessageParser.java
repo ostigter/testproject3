@@ -2,6 +2,7 @@ package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.PType;
 import org.ozsoft.secs.SType;
+import org.ozsoft.secs.SecsConstants;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
@@ -22,58 +23,77 @@ import org.ozsoft.secs.util.ConversionUtils;
 
 public class MessageParser {
     
+    private static final int LENGTH_LENGTH = 4;
+    
+//    private static final byte[] HEADER_LENGTH_BYTES = new byte[] {0, 0, 0, (byte) SecsConstants.HEADER_LENGTH};
+    
+    private static final int MIN_LENGTH = LENGTH_LENGTH + SecsConstants.HEADER_LENGTH;
+    
+    private static final long MAX_LENGTH = 256 * 1024; // 256 kB
+    
+    private static final int SESSION_ID_LENGTH = 2;
+    
+    private static final int SYSTEM_BYTES_LENGTH = 4;
+    
+    private static final int POS_SESSIONID = 0;
+    private static final int POS_HEADERBYTE2 = 2;
+    private static final int POS_HEADERBYTE3 = 3;
+    private static final int POS_PTYPE = 4;
+    private static final int POS_STYPE = 5;
+    private static final int POS_SYSTEMBYTES = 6;
+    
     public static Message parse(byte[] data, int length) throws SecsParseException {
         // Determine message length.
-        if (length < Message.HEADER_LENGTH) {
+        if (length < SecsConstants.HEADER_LENGTH) {
             throw new SecsParseException(String.format("Incomplete message (message length: %d)", length));
         }
-        byte[] lengthField = new byte[Message.LENGTH_LENGTH];
-        System.arraycopy(data, 0, lengthField, 0, Message.LENGTH_LENGTH);
+        byte[] lengthField = new byte[LENGTH_LENGTH];
+        System.arraycopy(data, 0, lengthField, 0, LENGTH_LENGTH);
         long messageLength = new U4(lengthField).getValue(0);
-        if (length < (messageLength + Message.LENGTH_LENGTH)) {
+        if (length < (messageLength + LENGTH_LENGTH)) {
             throw new SecsParseException(String.format("Incomplete message (declared length: %d; actual length: %d)",
-                    messageLength + Message.LENGTH_LENGTH, length));
+                    messageLength + LENGTH_LENGTH, length));
         }
-        if (messageLength > Message.MAX_LENGTH) {
+        if (messageLength > MAX_LENGTH) {
             throw new SecsParseException(String.format("Message too large (%d bytes)", messageLength));
         }
         
         // Parse message header.
         
         // Parse Session ID.
-        byte[] sessionIdBuf = new byte[Message.SESSION_ID_LENGTH];
-        System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SESSIONID, sessionIdBuf, 0, Message.SESSION_ID_LENGTH);
+        byte[] sessionIdBuf = new byte[SESSION_ID_LENGTH];
+        System.arraycopy(data, LENGTH_LENGTH + POS_SESSIONID, sessionIdBuf, 0, SESSION_ID_LENGTH);
         int sessionId = (int) ConversionUtils.bytesToUnsignedInteger(sessionIdBuf);
         
         // Get Header Bytes.
-        byte headerByte2 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE2];
-        byte headerByte3 = data[Message.LENGTH_LENGTH + Message.POS_HEADERBYTE3];
+        byte headerByte2 = data[LENGTH_LENGTH + POS_HEADERBYTE2];
+        byte headerByte3 = data[LENGTH_LENGTH + POS_HEADERBYTE3];
         
         // Parse PType.
-        byte pTypeByte = data[Message.LENGTH_LENGTH + Message.POS_PTYPE];
+        byte pTypeByte = data[LENGTH_LENGTH + POS_PTYPE];
         PType pType = PType.parse(pTypeByte);
         if (pType != PType.SECS_II) {
             throw new SecsParseException(String.format("Unsupported protocol; not SECS-II (PType: %d)", pTypeByte));
         }
         
         // Parse SType.
-        byte sTypeByte = data[Message.LENGTH_LENGTH + Message.POS_STYPE];
+        byte sTypeByte = data[LENGTH_LENGTH + POS_STYPE];
         SType sType = SType.parse(sTypeByte);
         if (sType == SType.UNKNOWN) {
             throw new SecsParseException(String.format("Unsupported message type (SType: %02x)", sTypeByte));
         }
         
         // Parse Transaction ID.
-        byte[] transactionIdBuf = new byte[Message.SYSTEM_BYTES_LENGTH];
-        System.arraycopy(data, Message.LENGTH_LENGTH + Message.POS_SYSTEMBYTES, transactionIdBuf, 0, Message.SYSTEM_BYTES_LENGTH);
+        byte[] transactionIdBuf = new byte[SYSTEM_BYTES_LENGTH];
+        System.arraycopy(data, LENGTH_LENGTH + POS_SYSTEMBYTES, transactionIdBuf, 0, SYSTEM_BYTES_LENGTH);
         long transactionId = ConversionUtils.bytesToUnsignedInteger(transactionIdBuf);
         
         if (sType == SType.DATA) {
-            int dataLength = (int) (messageLength - Message.HEADER_LENGTH);
+            int dataLength = (int) (messageLength - SecsConstants.HEADER_LENGTH);
             Data<?> text = null;
             if (dataLength > 0) {
                 byte[] textBytes = new byte[dataLength];
-                System.arraycopy(data, Message.MIN_LENGTH, textBytes, 0, dataLength);
+                System.arraycopy(data, MIN_LENGTH, textBytes, 0, dataLength);
                 text = parseText(textBytes, 0);
             }
             int stream = headerByte2 & 0x7f;
@@ -233,7 +253,7 @@ public class MessageParser {
         int formatByte = data[offset];
         int formatCode = formatByte & 0xfc;
         int noOfLengthBytes = formatByte & 0x03;
-        if (noOfLengthBytes < 1 || noOfLengthBytes > Message.LENGTH_LENGTH) {
+        if (noOfLengthBytes < 1 || noOfLengthBytes > LENGTH_LENGTH) {
             throw new SecsParseException("Invalid number of length bytes: " + noOfLengthBytes);
         }
         if (data.length < noOfLengthBytes + 1) {
