@@ -1,6 +1,5 @@
 package org.ozsoft.secs;
 
-import org.ozsoft.secs.message.DataMessage;
 
 public abstract class MessageHandler {
     

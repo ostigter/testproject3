@@ -28,11 +28,11 @@ import org.ozsoft.secs.CommunicationState;
 import org.ozsoft.secs.ConnectMode;
 import org.ozsoft.secs.ConnectionState;
 import org.ozsoft.secs.ControlState;
+import org.ozsoft.secs.Message;
 import org.ozsoft.secs.SecsConstants;
 import org.ozsoft.secs.SecsEquipment;
 import org.ozsoft.secs.SecsEquipmentListener;
 import org.ozsoft.secs.SecsException;
-import org.ozsoft.secs.message.Message;
 
 public class TestTool implements SecsEquipmentListener {
     

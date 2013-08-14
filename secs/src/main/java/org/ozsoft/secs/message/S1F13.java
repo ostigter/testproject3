@@ -1,6 +1,7 @@
 package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.CommunicationState;
+import org.ozsoft.secs.DataMessage;
 import org.ozsoft.secs.MessageHandler;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.A;

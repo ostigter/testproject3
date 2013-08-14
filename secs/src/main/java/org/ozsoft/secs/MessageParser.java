@@ -1,10 +1,5 @@
-package org.ozsoft.secs.message;
+package org.ozsoft.secs;
 
-import org.ozsoft.secs.PType;
-import org.ozsoft.secs.SType;
-import org.ozsoft.secs.SecsConstants;
-import org.ozsoft.secs.SecsException;
-import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.BOOLEAN;

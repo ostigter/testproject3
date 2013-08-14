@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.L;
-import org.ozsoft.secs.message.DataMessage;
 import org.ozsoft.secs.message.S99F1;
 
 /**
