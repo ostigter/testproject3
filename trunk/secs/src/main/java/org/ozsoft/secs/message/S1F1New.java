@@ -1,5 +1,6 @@
 package org.ozsoft.secs.message;
 
+import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsMessage;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.Data;
@@ -24,6 +25,14 @@ public class S1F1New extends SecsMessage {
         if (data != null) {
             throw new SecsParseException("No data expected");
         }
+    }
+
+    @Override
+    public SecsMessage handle(int sessionId, long transactionId) throws SecsException {
+        S1F2New s1f2 = new S1F2New();
+        s1f2.setModelName(getEquipment().getModelName());
+        s1f2.setSoftRev(getEquipment().getSoftRev());
+        return s1f2;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.ozsoft.secs.message;
 
+import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsMessage;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.format.A;
@@ -63,6 +64,12 @@ public class S1F2New extends SecsMessage {
             throw new SecsParseException("SOFTREV must be an A");
         }
         softRev = ((A) data).getValue();
+    }
+
+    @Override
+    public SecsMessage handle(int sessionId, long transactionId) throws SecsException {
+        // Reply message, so not implemented.
+        return null;
     }
 
     @Override

@@ -44,6 +44,8 @@ public abstract class SecsMessage {
     
     public abstract void parseData(Data<?> data) throws SecsParseException;
     
+    public abstract SecsMessage handle(int sessionId, long transactionId) throws SecsException;
+    
     public abstract Data<?> getData() throws SecsParseException;
     
 }

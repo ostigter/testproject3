@@ -2,6 +2,10 @@ package org.ozsoft.secs.message;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.ozsoft.secs.ControlMessage;
+import org.ozsoft.secs.DataMessage;
+import org.ozsoft.secs.Message;
+import org.ozsoft.secs.MessageParser;
 import org.ozsoft.secs.SType;
 import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;

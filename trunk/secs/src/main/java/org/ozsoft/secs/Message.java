@@ -1,4 +1,4 @@
-package org.ozsoft.secs.message;
+package org.ozsoft.secs;
 
 public interface Message {
     

@@ -1,6 +1,5 @@
 package org.ozsoft.secs;
 
-import org.ozsoft.secs.message.Message;
 
 /**
  * SECS transaction belonging to a sent request message.

@@ -1,12 +1,9 @@
-package org.ozsoft.secs.message;
+package org.ozsoft.secs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
-import org.ozsoft.secs.PType;
-import org.ozsoft.secs.SType;
-import org.ozsoft.secs.SecsConstants;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
