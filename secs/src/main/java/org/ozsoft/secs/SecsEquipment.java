@@ -365,7 +365,7 @@ public class SecsEquipment {
                 if (is.available() > 0) {
                     int length = is.read(buf);
                     try {
-                        Message requestMessage = MessageParser.parse(buf, length);
+                        Message requestMessage = MessageParser.parseMessage(buf, length);
                         LOG.trace(String.format("Received message: %s", requestMessage));
                         Message replyMessage = handleMessage(requestMessage);
                         if (replyMessage != null) {
