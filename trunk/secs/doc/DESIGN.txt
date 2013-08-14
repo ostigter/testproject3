@@ -142,12 +142,3 @@ s99f1.setName("Mr. Smith");
 SecsMessage s99f2 = equipment.sendMessage(s99f1);
 int ackCode = s99f2.getAckCode();
 String greeting = s99f2.getGreeting();
-
-
-public class S99F1 extends SecsMessage {
-
-    public static final int STREAM = 99;
-
-    public static final int FUNCTION = 1;
-
-}
