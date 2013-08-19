@@ -126,8 +126,35 @@ L {
 01 02 01 02 21 03 11 12 13 21 03 21 22 23 21 03 31 32 33 21 03 41 42 43
 
 
-API
-===
+API design
+==========
+
+public interface SecsMessage {
+    int getStream();
+    int getFunction();
+    int getSessionId();
+    void setSessionId(int sessionId);
+    long getTransactionId();
+    void setTransactionId(long transactionId);
+    void parseData<Data<?> data) throws SecsParseException;
+    Data<?> getData() throws SecsParseException;
+}
+
+public interface SecsPrimaryMessage extends SecsMessage {
+    boolean withReply();
+    SecsMessage handle() throws SecsExcception;
+}
+
+public interface SecsReplyMessage extends SecsMessage {
+    SecsPrimaryMessage getPrimaryMessage();
+    void setPrimaryMessage(SecsPrimaryMessage primaryMessage);
+}
+
+
+API usage example
+=================
+
+Active equipment:
 
 SecsEquipment equipment = new SecsEquipment();
 equipment.setConnectMode(ConnectMode.ACTIVE);
@@ -139,6 +166,147 @@ equipment.setEnabled(true);
 
 SecsMessage s99f1 = new S99F1();
 s99f1.setName("Mr. Smith");
-SecsMessage s99f2 = equipment.sendMessage(s99f1);
-int ackCode = s99f2.getAckCode();
-String greeting = s99f2.getGreeting();
+SecsMessage reply = equipment.sendAndWait(s99f1);
+if (reply instanceof S99F2) {
+    SecsMessage s99f2 = (S99F2) reply;
+    int ackCode = s99f2.getAckCode();
+    String greeting = s99f2.getGreeting();
+    // ...
+} else {
+    // Unexpected message type, e.g. S9F7 (Bad data).
+    System.err.println("Received " + reply + " instead of S99F2");
+}
+
+Passive equipment:
+
+SecsEquipment equipment = new SecsEquipment();
+equipment.setConnectMode(ConnectMode.PASSIVE);
+equipment.setPort(PORT);
+equipment.addMessageType(S99F1.class);
+equipment.setEnabled(true);
+
+public class S99F1 extends SecsPrimaryMessage {
+
+    private String name;
+    
+    @Override
+    public int getStream() {
+        return 99;
+    }
+    
+    @Override
+    public int getFunction() {
+        return 1;
+    }
+    
+    @Override
+    public boolean withReply() {
+        return true;
+    }
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    @Override
+    public void parseData(Data<?> data) throws ParseException {
+        // ...
+    }
+    
+    @Override
+    public Data<?> getData() throws ParseException {
+        Data<?> data = null;
+        // ...
+        return data;
+    }
+    
+    @Override
+    public SecsMessage handle() throws SecsException {
+        String name = getName();
+        S99F2 s99f2 = new S99F2();
+        s99f2.setPrimaryMessage(this);
+        s99f2.setGreeting(String.format("Hello, %s!", name));
+        return s99f2;
+    }
+}
+
+public class S99F2 implements SecsReplyMessage {
+
+    private int grAck;
+    private String greeting;
+    
+    @Override
+    public int getStream() {
+        return 99;
+    }
+    
+    @Override
+    public int getFunction() {
+        return 2;
+    }
+    
+    @Override
+    public boolean withReply() {
+        return false;
+    }
+    
+    public int getGrAck() {
+        return grAck;
+    }
+    
+    public void setGrAck(int grAck) {
+        this.grAck = grAck;
+    }
+    
+    public String getGreeting() {
+        return greeting;
+    }
+    
+    public void setGreeting(String greeting) {
+        this.greeting = greeting;
+    }
+    
+    @Override
+    public void parseData(Data<?> data) throws ParseException {
+        // ...
+    }
+    
+    @Override
+    public Data<?> getData() throws ParseException {
+        Data<?> data = null;
+        // ...
+        return data;
+    }
+    
+    @Override
+    public void setPrimaryMessage(SecsPrimaryMessage primaryMessage) {
+        if (primaryMessage instanceof S99F1) {
+            this.primaryMessage = primaryMessage;
+        } else {
+            throw new IllegalArgumentException("Invalid primary message for S99F2: " + primaryMessage);
+        }
+    }
+}
+
+public interface SecsMessageHandler<P extends SecsPrimaryMessage, R extends SecsReplyMessage> {
+
+    R handle(P primaryMessage) throws SecsException;
+}
+
+public class S99F1Handler implements SecsMessageHandler<S99F1, S99F2> {
+
+    public S99F2 handle(S99F1 s99f1) throws SecsException {
+        String name = s99f1.getName();
+        if (name.isEmpty()) {
+            throw new SecsParseException("Empty NAME");
+        }
+        String greeting = new String("Hello, %s!", name); 
+        S99F2 s99f2 = new S99F2();
+        s99f2.setGreeting(greeting);
+        return s99f2;    
+    }
+}
