@@ -7,7 +7,7 @@ Introduction
 
 The secs4j project offers an open source SECS/GEM library written in Java.
 
-The SECS/GEM protocol is the defacto stanard in the semiconductor industry used for communication
+The SECS/GEM protocol is the defacto standard in the semiconductor industry used for communication
 between the host system and semiconductor equipment. 
 
 The secs4j library strives to comply with the following SEMI standards:
