@@ -111,21 +111,26 @@ public class S1F14 extends SecsReplyMessage {
             throw new SecsParseException("MDLN and SOFTREV must be in a L");
         }
         l = (L) data;
-        if (l.length() != 2) {
-            throw new SecsParseException("Nested L must contain exactly 2 items");
+        if (l.length() == 0) {
+            // MDLN and SOFTREV not specified; set empty.
+            setModelName("");
+            setSoftRev("");
+        } else if (l.length() == 2) {
+            data = l.getItem(0);
+            if (!(data instanceof A)) {
+                throw new SecsParseException("MDLN must be an A");
+            }
+            String modelName = ((A) data).getValue();
+            data = l.getItem(1);
+            if (!(data instanceof A)) {
+                throw new SecsParseException("SOFTREV must be an A");
+            }
+            String softRev = ((A) data).getValue();
+            setModelName(modelName);
+            setSoftRev(softRev);
+        } else {
+            throw new SecsParseException("Nested L must contain exactly 0 or 2 items");
         }
-        data = l.getItem(0);
-        if (!(data instanceof A)) {
-            throw new SecsParseException("MDLN must be an A");
-        }
-        String modelName = ((A) data).getValue();
-        data = l.getItem(1);
-        if (!(data instanceof A)) {
-            throw new SecsParseException("SOFTREV must be an A");
-        }
-        String softRev = ((A) data).getValue();
-        setModelName(modelName);
-        setSoftRev(softRev);
     }
 
     @Override
