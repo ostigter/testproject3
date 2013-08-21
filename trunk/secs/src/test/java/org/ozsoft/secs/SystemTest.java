@@ -3,10 +3,8 @@ package org.ozsoft.secs;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.ozsoft.secs.format.A;
-import org.ozsoft.secs.format.B;
-import org.ozsoft.secs.format.L;
 import org.ozsoft.secs.message.S99F1;
+import org.ozsoft.secs.message.S99F2;
 
 /**
  * Test suite verifying the communication between two local SECS equipment.
@@ -34,8 +32,8 @@ public class SystemTest {
         Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
         
-        // Register test message handler on passive entity.
-        passiveEntity.addMessageHandler(new S99F1());
+        // Register test primary message on passive entity.
+        passiveEntity.addMessageType(S99F1.class);
 
         // Start passive entity.
         passiveEntity.setEnabled(true);
@@ -53,6 +51,9 @@ public class SystemTest {
         Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
 
+        // Register test reply message on active entity.
+        activeEntity.addMessageType(S99F2.class);
+
         // Enable active entity, connecting to passive entity.
         activeEntity.setEnabled(true);
         sleep(CONNECTION_TIMEOUT);
@@ -66,17 +67,15 @@ public class SystemTest {
 //        Assert.assertEquals(ControlState.ONLINE_REMOTE, client.getControlState());
         
         // Send S99F1 message from active to passive entity.
-        L l = new L();
-        l.addItem(new A("Mr. Smith"));
-        DataMessage replyMessage = activeEntity.sendDataMessage(99, 1, true, l);
-        Assert.assertEquals(99, replyMessage.getStream());
-        Assert.assertEquals(2, replyMessage.getFunction());
-        l = (L) replyMessage.getText();
-        Assert.assertEquals(2, l.length());
-        int ackCode = ((B) l.getItem(0)).get(0);
-        Assert.assertEquals(0x00, ackCode);
-        String greeting = ((A) l.getItem(1)).getValue();
-        Assert.assertEquals("Hello, Mr. Smith!", greeting);
+        S99F1 s99f1 = new S99F1();
+        s99f1.setName("Mr. Smith");
+        SecsReplyMessage replyMessage = activeEntity.sendMessageAndWait(s99f1);
+        Assert.assertEquals("Incorrect stream", 99, replyMessage.getStream());
+        Assert.assertEquals("Incorrect function", 2, replyMessage.getFunction());
+        Assert.assertTrue("Reply message not S99F2", replyMessage instanceof S99F2);
+        S99F2 s99f2 = (S99F2) replyMessage;
+        Assert.assertEquals("Incorrect GRACK value", S99F2.GRACK_ACCEPT, s99f2.getGrAck());
+        Assert.assertEquals("Incorrect GREETING value", "Hello, Mr. Smith!", s99f2.getGreeting());
 
         // Disable active entity. 
         activeEntity.setEnabled(false);

@@ -1,10 +1,10 @@
 package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.ControlState;
-import org.ozsoft.secs.DataMessage;
-import org.ozsoft.secs.MessageHandler;
+import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
-import org.ozsoft.secs.format.B;
+import org.ozsoft.secs.SecsPrimaryMessage;
+import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
@@ -12,31 +12,59 @@ import org.ozsoft.secs.format.Data;
  * 
  * @author Oscar Stigter
  */
-public class S1F17 extends MessageHandler {
+public class S1F17 extends SecsPrimaryMessage {
 
     private static final int STREAM = 1;
 
     private static final int FUNCTION = 17;
     
+    private static final boolean WITH_REPLY = true;
+    
     private static final String DESCRIPTION = "Request ON-LINE (RONL)";
 
-    public S1F17() {
-        super(STREAM, FUNCTION, DESCRIPTION);
+    /** ONLACK: Acknowledge. */
+    private static final int ACKNOWLEDGE = 0x00;
+
+    @Override
+    public int getStream() {
+        return STREAM;
     }
 
     @Override
-    public DataMessage handle(DataMessage message) throws SecsParseException {
-        int sessionId = message.getSessionId();
-        long transactionId = message.getTransactionId();
-        Data<?> requestText = message.getText();
-        if (requestText != null) {
-            throw new SecsParseException("Invalid data format for S1F17 message");
-        }
-
-        // Send S1F18 ON-LINE Acknowledge (ONLA).
-        getEquipment().setControlState(ControlState.ONLINE_REMOTE);
-        B replyText = new B(0x00); // ONLACK = ON-LINE Accepted
-        return new DataMessage(sessionId, STREAM, FUNCTION + 1, false, transactionId, replyText);
+    public int getFunction() {
+        return FUNCTION;
     }
 
+    @Override
+    public boolean withReply() {
+        return WITH_REPLY;
+    }
+
+    @Override
+    public String getDescripton() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    protected void parseData(Data<?> data) throws SecsParseException {
+        if (data != null) {
+            throw new SecsParseException("Message must not contain any data");
+        }
+    }
+
+    @Override
+    protected Data<?> getData() throws SecsParseException {
+        // Header-only message, so no data.
+        return null;
+    }
+
+    @Override
+    protected SecsReplyMessage handle() throws SecsException {
+        // Always acknowledge request.
+        getEquipment().setControlState(ControlState.ONLINE_REMOTE);
+        S1F18 s1f18 = new S1F18();
+        s1f18.setOnlAck(ACKNOWLEDGE);
+        return s1f18;
+    }
+    
 }
