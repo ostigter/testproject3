@@ -1,24 +1,24 @@
 package org.ozsoft.secs.message;
 
+import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
-import org.ozsoft.secs.SecsPrimaryMessage;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
- * S2F25 Loopback Diagnostic Request (LDR) message.
+ * S2F26 Loopback Diagnostic Acknowledge (LDA) reply message.
  * 
  * @author Oscar Stigter
  */
-public class S2F25 extends SecsPrimaryMessage {
+public class S2F26 extends SecsReplyMessage {
 
     private static final int STREAM = 2;
 
-    private static final int FUNCTION = 25;
-
-    private static final boolean WITH_REPLY = true;
+    private static final int FUNCTION = 26;
     
-    private static final String DESCRIPTION = "Loopback Diagnostic Request (LDR)";
+    private static final boolean WITH_REPLY = false;
+    
+    private static final String DESCRIPTION = "Loopback Diagnostic Acknowledge (LDA)";
     
     private Data<?> testData;
     
@@ -51,23 +51,20 @@ public class S2F25 extends SecsPrimaryMessage {
     }
 
     @Override
-    protected void parseData(Data<?> data) throws SecsParseException {
+    public void parseData(Data<?> data) throws SecsParseException {
         // Just copy test data as-is.
         setTestData(data);
     }
 
     @Override
-    protected Data<?> getData() throws SecsParseException {
+    public Data<?> getData() throws SecsParseException {
         // Just return test data as-is.
         return getTestData();
     }
 
     @Override
-    protected SecsReplyMessage handle() {
-        // Always acknowledge request.
-        S2F26 s2f26 = new S2F26();
-        s2f26.setTestData(testData);
-        return s2f26;
+    protected void handle() throws SecsException {
+        // Not implemented.
     }
 
 }

@@ -1,5 +1,7 @@
 package org.ozsoft.secs;
 
+import java.util.Map;
+
 import org.ozsoft.secs.format.A;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.BOOLEAN;
@@ -19,8 +21,6 @@ import org.ozsoft.secs.util.ConversionUtils;
 
 public class MessageParser {
     
-    private static final int WITH_REPLY_MASK = 0x80;
-
     private static final int LENGTH_LENGTH = 4;
     
     private static final int MIN_LENGTH = LENGTH_LENGTH + SecsConstants.HEADER_LENGTH;
@@ -40,7 +40,7 @@ public class MessageParser {
     private static final int POS_STYPE = 5;
     private static final int POS_SYSTEMBYTES = 6;
     
-    public static Message parseMessage(byte[] data, int length) throws SecsParseException {
+    public static Message parseMessage(byte[] data, int length, Map<Integer, Class<? extends SecsMessage>> messageTypes) throws SecsParseException {
         // Determine message length.
         if (length < SecsConstants.HEADER_LENGTH) {
             throw new SecsParseException(String.format("Incomplete message (message length: %d)", length));
@@ -96,8 +96,24 @@ public class MessageParser {
             }
             int stream = headerByte2 & STREAM_MASK;
             int function = headerByte3;
-            boolean withReply = ((headerByte2 & WITH_REPLY_MASK) == WITH_REPLY_MASK);
-            return new DataMessage(sessionId, stream, function, withReply, transactionId, text);
+            Class<? extends SecsMessage> messageType = messageTypes.get(stream * 256 + function);
+            if (messageType != null) {
+                try {
+                    SecsMessage dataMessage = messageType.newInstance();
+                    dataMessage.setSessionId(sessionId);
+                    dataMessage.setTransactionId(transactionId);
+                    dataMessage.parseData(text);
+                    return dataMessage;
+                } catch (SecsParseException e) {
+                    // Invalid data; just re-throw parse exception.
+                    throw e;
+                } catch (Exception e) {
+                    // Internal error (should never happen).
+                    throw new SecsParseException("Could not instantiate message type: " + messageType, e);
+                }
+            } else {
+                throw new SecsParseException(String.format("Unsupported message type: S%dF%d", stream, function));
+            }
         } else {
             return new ControlMessage(sessionId, headerByte2, headerByte3, sType, transactionId);
         }

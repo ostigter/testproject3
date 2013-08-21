@@ -1,92 +1,115 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.DataMessage;
-import org.ozsoft.secs.MessageHandler;
 import org.ozsoft.secs.SecsParseException;
+import org.ozsoft.secs.SecsPrimaryMessage;
+import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.A;
-import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 
 /**
- * S99F1 test message handler. <br />
+ * S99F1 Greeting Request test primary message. <br />
  * <br />
  * 
- * Format of S99F1 request message:
- * <pre>
- * <L
- *      NAME    // <A>
- * >
- * </pre>
+ * Returns a greeting based on the specified name. <br />
+ * <br />
  * 
- * Format of S99F2 reply message:
+ * Format:
  * <pre>
  * <L
- *      <B:1>   // Acknowledge byte (0x00 = Accept)
- *      <A>     // Greeting based on NAME
+ *      NAME     // <A>
  * >
  * </pre>
  * 
  * @author Oscar Stigter
  */
-public class S99F1 extends MessageHandler {
+public class S99F1 extends SecsPrimaryMessage {
 
     private static final int STREAM = 99;
 
     private static final int FUNCTION = 1;
 
-    private static final String DESCRIPTION = "Test Request (TR)";
+    private static final boolean WITH_REPLY = true;
+    
+    private static final String DESCRIPTION = "Greeting Request (GR)";
 
     private static final String GREETING = "Hello, %s!";
-
-    public S99F1() {
-        super(STREAM, FUNCTION, DESCRIPTION);
+    
+    private String name;
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
-    public DataMessage handle(DataMessage message) throws SecsParseException {
-        int sessionId = message.getSessionId();
-        long transactionId = message.getTransactionId();
-        
-        Data<?> requestText = message.getText();
-        if (requestText == null) {
-            return createS9F7(sessionId, transactionId);
-        }
-        if (!(requestText instanceof L)) {
-            return createS9F7(sessionId, transactionId);
-        }
-        L l = (L) requestText;
-        if (l.length() != 1) {
-            return createS9F7(sessionId, transactionId);
-        }
-        requestText = l.getItem(0);
-        if (!(requestText instanceof A)) {
-            return createS9F7(sessionId, transactionId);
-        }
-        String name = ((A) requestText).getValue();
-        if (name.isEmpty()) {
-            return createS9F7(sessionId, transactionId);
-        }
-
-        // Send S99F2 Test Response (TR) with acknowledge byte and greeting.
-        L replyText = new L();
-        replyText.addItem(new B(0x00));  // Accept
-        replyText.addItem(new A(String.format(GREETING, name))); // Greeting
-        return new DataMessage(sessionId, STREAM, FUNCTION + 1, false, transactionId, replyText);
+    public int getStream() {
+        return STREAM;
     }
 
-    /**
-     * Returns a S9F7 (Bad data) reply message.
-     * 
-     * @param sessionId
-     *            Session ID of the request message.
-     * @param transactionId
-     *            Transaction ID of the request message.
-     * 
-     * @return The S9F7 message.
-     */
-    private static DataMessage createS9F7(int sessionId, long transactionId) {
-        return new DataMessage(sessionId, 9, 7, false, transactionId, null);
+    @Override
+    public int getFunction() {
+        return FUNCTION;
+    }
+
+    @Override
+    public boolean withReply() {
+        return WITH_REPLY;
+    }
+
+    @Override
+    public String getDescripton() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    protected void parseData(Data<?> data) throws SecsParseException {
+        if (data == null) {
+            throw new SecsParseException("Data not set");
+        }
+        if (!(data instanceof L)) {
+            throw new SecsParseException("Root data item must be of type L");
+        }
+        L l = (L) data;
+        if (l.length() != 1) {
+            throw new SecsParseException("L must have length of exactly 1 item");
+        }
+        data = l.getItem(0);
+        if (!(data instanceof A)) {
+            throw new SecsParseException("NAME must be of type A");
+        }
+        String name = ((A) data).getValue();
+        if (name.isEmpty()) {
+            throw new SecsParseException("Empty NAME");
+        }
+        setName(name);
+    }
+
+    @Override
+    protected Data<?> getData() throws SecsParseException {
+        if (name == null) {
+            throw new SecsParseException("NAME not set");
+        }
+        if (name.isEmpty()) {
+            throw new SecsParseException("Empty NAME");
+        }
+        
+        L l = new L();
+        l.addItem(new A(name));
+        return l;
+    }
+
+    @Override
+    protected SecsReplyMessage handle() {
+        // Always accept any request.
+        String greeting = String.format(GREETING, name);
+        S99F2 s99f2 = new S99F2();
+        s99f2.setGrAck(S99F2.GRACK_ACCEPT);
+        s99f2.setGreeting(greeting);
+        return s99f2;
     }
 
 }

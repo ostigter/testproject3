@@ -1,10 +1,10 @@
 package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.ControlState;
-import org.ozsoft.secs.DataMessage;
-import org.ozsoft.secs.MessageHandler;
+import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
-import org.ozsoft.secs.format.B;
+import org.ozsoft.secs.SecsPrimaryMessage;
+import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
@@ -12,31 +12,58 @@ import org.ozsoft.secs.format.Data;
  * 
  * @author Oscar Stigter
  */
-public class S1F15 extends MessageHandler {
+public class S1F15 extends SecsPrimaryMessage {
+
+    public static final int OFLA_ACKNOWLEDGE = 0x00;
 
     private static final int STREAM = 1;
 
     private static final int FUNCTION = 15;
     
+    private static final boolean WITH_REPLY = true;
+    
     private static final String DESCRIPTION = "Request OFF-LINE (ROFL)";
 
-    public S1F15() {
-        super(STREAM, FUNCTION, DESCRIPTION);
+    @Override
+    public int getStream() {
+        return STREAM;
     }
 
     @Override
-    public DataMessage handle(DataMessage message) throws SecsParseException {
-        int sessionId = message.getSessionId();
-        long transactionId = message.getTransactionId();
-        Data<?> requestText = message.getText();
-        if (requestText != null) {
-            throw new SecsParseException("Invalid data format for S1F15 message");
-        }
-        
-        // Send S1F16 OFF-LINE Acknowledge (OFLA).
-        getEquipment().setControlState(ControlState.HOST_OFFLINE);
-        B replyText = new B(0x00); // OFLACK = OFF-LINE Acknowledge
-        return new DataMessage(sessionId, STREAM, FUNCTION + 1, false, transactionId, replyText);
+    public int getFunction() {
+        return FUNCTION;
     }
 
+    @Override
+    public boolean withReply() {
+        return WITH_REPLY;
+    }
+
+    @Override
+    public String getDescripton() {
+        return DESCRIPTION;
+    }
+
+    @Override
+    public void parseData(Data<?> data) throws SecsParseException {
+        if (data != null) {
+            throw new SecsParseException("Message must not contain any data");
+        }
+    }
+
+    @Override
+    public Data<?> getData() throws SecsParseException {
+        // Header-only message, so no data.
+        return null;
+    }
+
+    @Override
+    protected SecsReplyMessage handle() throws SecsException {
+        // Always accept.
+        getEquipment().setControlState(ControlState.HOST_OFFLINE);
+        S1F16 s1f16 = new S1F16();
+        s1f16.setOfla(OFLA_ACKNOWLEDGE);
+        return s1f16;
+    }
+    
 }

@@ -8,12 +8,10 @@ import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.util.ConversionUtils;
 
-public class ControlMessage implements Message {
+public class ControlMessage extends Message {
     
     /** Header length bytes for a header-only message. */
     private static final byte[] HEADER_LENGTH_BYTES = new byte[] {0x00, 0x00, 0x00, 0x0a};
-    
-    private int sessionId;
     
     private int headerByte2;
     
@@ -21,19 +19,12 @@ public class ControlMessage implements Message {
     
     private SType sType;
     
-    private long transactionId;
-
     public ControlMessage(int sessionId, int headerByte2, int headerByte3, SType sType, long transactionId) {
-        this.sessionId = sessionId;
         this.headerByte2 = headerByte2;
         this.headerByte3 = headerByte3;
         this.sType = sType;
-        this.transactionId = transactionId;
-    }
-    
-    @Override
-    public int getSessionId() {
-        return sessionId;
+        setSessionId(sessionId);
+        setTransactionId(transactionId);
     }
     
     public int getHeaderByte2() {
@@ -49,21 +40,16 @@ public class ControlMessage implements Message {
     }
 
     @Override
-    public long getTransactionId() {
-        return transactionId;
-    }
-
-    @Override
     public byte[] toByteArray() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             baos.write(HEADER_LENGTH_BYTES);
-            baos.write(ConversionUtils.integerToBytes(sessionId, U2.SIZE));
+            baos.write(ConversionUtils.integerToBytes(getSessionId(), U2.SIZE));
             baos.write(headerByte2);
             baos.write(headerByte3);
             baos.write(PType.SECS_II.getValue());
             baos.write(sType.getValue());
-            baos.write(ConversionUtils.integerToBytes(transactionId, U4.SIZE));
+            baos.write(ConversionUtils.integerToBytes(getTransactionId(), U4.SIZE));
             return baos.toByteArray();
         } catch (IOException e) {
             // Internal error (should never happen).
