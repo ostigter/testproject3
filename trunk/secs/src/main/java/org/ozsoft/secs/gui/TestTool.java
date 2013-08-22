@@ -34,6 +34,11 @@ import org.ozsoft.secs.SecsEquipment;
 import org.ozsoft.secs.SecsEquipmentListener;
 import org.ozsoft.secs.SecsException;
 
+/**
+ * Test tool with Swing GUI to simulate a SECS equipment and interactively test communicating with other SECS equipment.
+ * 
+ * @author Oscar Stigter
+ */
 public class TestTool implements SecsEquipmentListener {
     
     private static final String TITLE = "SECS Test Tool";

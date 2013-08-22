@@ -365,7 +365,7 @@ public class SecsEquipment {
                 OutputStream os = socket.getOutputStream();
                 os.write(message.toByteArray());
                 os.flush();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 LOG.error("Internal error while sending SEPARATE message", e);
             }
         }
