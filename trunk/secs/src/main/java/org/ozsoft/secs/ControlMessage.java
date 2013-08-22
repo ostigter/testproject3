@@ -8,6 +8,11 @@ import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.util.ConversionUtils;
 
+/**
+ * HSMS control message.
+ * 
+ * @author Oscar Stigter
+ */
 public class ControlMessage extends Message {
     
     /** Header length bytes for a header-only message. */

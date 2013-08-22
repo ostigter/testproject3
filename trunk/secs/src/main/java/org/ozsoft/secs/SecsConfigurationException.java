@@ -1,7 +1,7 @@
 package org.ozsoft.secs;
 
 /**
- * SECS configuration-related exception.
+ * SECS configuration related exception.
  * 
  * @author Oscar Stigter
  */

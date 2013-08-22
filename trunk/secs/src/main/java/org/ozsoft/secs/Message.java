@@ -1,5 +1,10 @@
 package org.ozsoft.secs;
 
+/**
+ * Root class of all SECS messages.
+ * 
+ * @author Oscar Stigter
+ */
 public abstract class Message {
     
     private SecsEquipment equipment;

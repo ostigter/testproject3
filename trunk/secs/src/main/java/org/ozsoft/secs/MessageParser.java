@@ -19,6 +19,11 @@ import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.format.U8;
 import org.ozsoft.secs.util.ConversionUtils;
 
+/**
+ * SECS message parser.
+ * 
+ * @author Oscar Stigter
+ */
 public class MessageParser {
     
     private static final int LENGTH_LENGTH = 4;

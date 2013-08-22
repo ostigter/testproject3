@@ -1,17 +1,17 @@
 package org.ozsoft.secs;
 
 /**
- * Message protocol (PType).
+ * HSMS PType byte with the message protocol.
  * 
  * @author Oscar Stigter
  */
 public enum PType {
     
     /** SECS-II protocol. */
-    SECS_II(0),
+    SECS_II(0x00),
     
     /** Unknown protocol. */
-    UNKNOWN(-1),
+    UNKNOWN(0xff),
     
     ;
     

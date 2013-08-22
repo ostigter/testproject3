@@ -1,7 +1,7 @@
 package org.ozsoft.secs;
 
 /**
- * SECS constants.
+ * Generic SECS constants.
  * 
  * @author Oscar Stigter
  */
@@ -40,6 +40,7 @@ public interface SecsConstants {
     /** T7 timeout in miliseconds. */
     long DEFAULT_T7_TIMEOUT = 120000L; // 2 minutes
     
+    /** SECS header length in bytes. */
     int HEADER_LENGTH = 10;
     
 }
