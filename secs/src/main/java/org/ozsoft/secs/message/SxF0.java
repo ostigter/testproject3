@@ -5,6 +5,11 @@ import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
+/**
+ * Abort Transaction (ABORT) reply message.
+ * 
+ * @author Oscar Stigter
+ */
 public class SxF0 extends SecsReplyMessage {
     
     private static final int FUNCTION = 0;
@@ -13,8 +18,17 @@ public class SxF0 extends SecsReplyMessage {
     
     private static final String DESCRIPTION = "ABORT";
     
+    /**
+     * The message stream. 
+     */
     private final int stream;
     
+    /**
+     * Constructor.
+     * 
+     * @param stream
+     *            The message stream.
+     */
     public SxF0(int stream) {
         this.stream = stream;
     }
@@ -39,8 +53,10 @@ public class SxF0 extends SecsReplyMessage {
     }
 
     @Override
-    protected void parseData(Data<?> data) {
-        // Not implemented.
+    protected void parseData(Data<?> data) throws SecsParseException {
+        if (data != null) {
+            throw new SecsParseException("Unexpected data");
+        }
     }
 
     @Override
