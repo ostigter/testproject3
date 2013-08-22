@@ -75,8 +75,11 @@ public class S1F18 extends SecsReplyMessage {
 
     @Override
     protected Data<?> getData() throws SecsParseException {
-        // Header-only message, so no data.
-        return null;
+        if (onlAck == null) {
+            throw new SecsParseException("ONLACK not set");
+        }
+        
+        return new B(onlAck);
     }
 
     @Override

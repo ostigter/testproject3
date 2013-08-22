@@ -62,7 +62,7 @@ public class S1F15 extends SecsPrimaryMessage {
         // Always accept.
         getEquipment().setControlState(ControlState.HOST_OFFLINE);
         S1F16 s1f16 = new S1F16();
-        s1f16.setOfla(OFLA_ACKNOWLEDGE);
+        s1f16.setOflAck(OFLA_ACKNOWLEDGE);
         return s1f16;
     }
     
