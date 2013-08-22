@@ -23,6 +23,7 @@ import org.ozsoft.secs.message.S1F18;
 import org.ozsoft.secs.message.S1F2;
 import org.ozsoft.secs.message.S2F25;
 import org.ozsoft.secs.message.S2F26;
+import org.ozsoft.secs.message.SxF0;
 
 /**
  * SECS equipment implementing the following SEMI standards:
@@ -415,8 +416,16 @@ public class SecsEquipment {
                             sendMessage(replyMessage, false);
                         }
                         
+                    } catch (UnsupportedMessageException e) {
+                        // Unsupported message type -- ABORT.
+                        LOG.warn(e.getMessage());
+                        SecsMessage sxf0 = new SxF0(e.getStream());
+                        sxf0.setTransactionId(e.getTransactionId());
+                        sendMessage(sxf0, false);
+                        
                     } catch (SecsParseException e) {
-                        LOG.error("Received invalid SECS message: " + e.getMessage());
+                        // Protocol fault by remote equipment.
+                        LOG.warn("Received invalid SECS message: " + e.getMessage());
                         
                     } catch (SecsException e) {
                         LOG.error("Internal SECS error while handling message", e);
@@ -533,7 +542,7 @@ public class SecsEquipment {
                     break;
 
                 default:
-                    LOG.error("Unsupported control message type: " + sType);
+                    LOG.warn(String.format("Unsupported control message (SType = %s) -- ignored", sType));
             }
         } else {
             // Data message (standard GEM or custom).
@@ -554,11 +563,18 @@ public class SecsEquipment {
             } else {
                 dataMessage.setEquipment(this);
                 if (dataMessage instanceof SecsPrimaryMessage) {
-                    // Primary message; redirect to specific message handler.
-                    LOG.trace(String.format("Handle primary message %s - %s", dataMessage.getType(), dataMessage.getDescripton()));
-                    replyMessage = ((SecsPrimaryMessage) dataMessage).handle();
-                    replyMessage.setSessionId(deviceId);
-                    replyMessage.setTransactionId(transactionId);
+                    if (communicationState == CommunicationState.COMMUNICATING || dataMessage instanceof S1F13) {
+                        // Redirect primary message to specific message handler.
+                        LOG.trace(String.format("Handle primary message %s - %s", dataMessage.getType(), dataMessage.getDescripton()));
+                        replyMessage = ((SecsPrimaryMessage) dataMessage).handle();
+                        replyMessage.setSessionId(deviceId);
+                        replyMessage.setTransactionId(transactionId);
+                    } else {
+                        // Communication not established yet -- ABORT.
+                        SecsMessage sxf0 = new SxF0(stream);
+                        sxf0.setTransactionId(transactionId);
+                        sendMessage(sxf0, false);
+                    }
                 } else if (dataMessage instanceof SecsReplyMessage) {
                     // Reply message.
                     // Try to match with active transaction.

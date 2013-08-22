@@ -40,7 +40,7 @@ public class MessageParser {
     private static final int POS_STYPE = 5;
     private static final int POS_SYSTEMBYTES = 6;
     
-    public static Message parseMessage(byte[] data, int length, Map<Integer, Class<? extends SecsMessage>> messageTypes) throws SecsParseException {
+    public static Message parseMessage(byte[] data, int length, Map<Integer, Class<? extends SecsMessage>> messageTypes) throws SecsException {
         // Determine message length.
         if (length < SecsConstants.HEADER_LENGTH) {
             throw new SecsParseException(String.format("Incomplete message (message length: %d)", length));
@@ -112,7 +112,7 @@ public class MessageParser {
                     throw new SecsParseException("Could not instantiate message type: " + messageType, e);
                 }
             } else {
-                throw new SecsParseException(String.format("Unsupported message type: S%dF%d", stream, function));
+                throw new UnsupportedMessageException(stream, function, transactionId);
             }
         } else {
             return new ControlMessage(sessionId, headerByte2, headerByte3, sType, transactionId);

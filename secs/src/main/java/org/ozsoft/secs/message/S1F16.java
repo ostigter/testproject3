@@ -23,14 +23,14 @@ public class S1F16 extends SecsReplyMessage {
     
     private static final String DESCRIPTION = "OFF-LINE Acknowledge (OFLA)";
     
-    private Integer ofla;
+    private Integer oflAck;
     
-    public int getOfla() {
-        return ofla;
+    public int getOflAck() {
+        return oflAck;
     }
     
-    public void setOfla(int ofla) {
-        this.ofla = ofla;
+    public void setOflAck(int oflAck) {
+        this.oflAck = oflAck;
     }
 
     @Override
@@ -69,13 +69,16 @@ public class S1F16 extends SecsReplyMessage {
         if (ofla != OFLACK_ACKNOWLEDGE) {
             throw new SecsParseException("Invalid OFLACK value: " + ofla);
         }
-        setOfla(ofla);
+        setOflAck(ofla);
     }
 
     @Override
     protected Data<?> getData() throws SecsParseException {
-        // Header-only message, so no data.
-        return null;
+        if (oflAck == null) {
+            throw new SecsParseException("OFLACK not set");
+        }
+        
+        return new B(oflAck);
     }
 
     @Override
