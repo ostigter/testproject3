@@ -9,28 +9,85 @@ import org.ozsoft.secs.format.U2;
 import org.ozsoft.secs.format.U4;
 import org.ozsoft.secs.util.ConversionUtils;
 
+/**
+ * SECS data message. <br />
+ * <br />
+ * 
+ * Used for standard SECS/GEM messages or custom, application-specifc messages.
+ * 
+ * @author Oscar Stigter
+ */
 public abstract class SecsMessage extends Message {
-    
+
     private static final int WITH_REPLY_MASK = 0x80;
 
+    /**
+     * Returns the stream.
+     * 
+     * @return The stream.
+     */
     public abstract int getStream();
-    
+
+    /**
+     * Returns the function.
+     * 
+     * @return The function.
+     */
     public abstract int getFunction();
-    
+
+    /**
+     * Indicates whether this primary message requires a reply message.
+     * 
+     * @return True if a reply message is required, otherwise false.
+     */
+    //TODO: Refactor withReply() away.
     public abstract boolean withReply();
-    
+
+    /**
+     * Returns the message type's description (e.g. "Communication Request (CR)").
+     * 
+     * @return The description.
+     */
     public abstract String getDescripton();
-    
+
+    /**
+     * Returns the message type based on the stream and function (e.g. "S1F13").
+     * 
+     * @return The message type.
+     */
     public final String getType() {
         return String.format("S%dF%d", getStream(), getFunction());
     }
-    
+
+    /**
+     * Parses the data of an incoming message. <br />
+     * <br />
+     * 
+     * Typically used to set any message specific values (e.g. COMMACK).
+     * 
+     * @param data
+     *            The message data.
+     * 
+     * @throws SecsParseException
+     *             If the data could not be parsed due to an invalid message.
+     */
     protected abstract void parseData(Data<?> data) throws SecsParseException;
-    
+
+    /**
+     * Returns the message data. <br />
+     * <br />
+     * 
+     * The data is typically based on message specific values (e.g. COMMACK).
+     * 
+     * @return The message data.
+     * 
+     * @throws SecsParseException
+     *             If any of the message specific values are not set or invalid.
+     */
     protected abstract Data<?> getData() throws SecsParseException;
-    
+
     @Override
-    /* package */ final byte[] toByteArray() throws SecsParseException {
+    /* package */final byte[] toByteArray() throws SecsParseException {
         int length = SecsConstants.HEADER_LENGTH;
         Data<?> data = getData();
         byte[] dataBytes = null;
@@ -58,10 +115,9 @@ public abstract class SecsMessage extends Message {
             IOUtils.closeQuietly(baos);
         }
     }
-    
+
     @Override
     public String toString() {
-//        return String.format("%s - %s", getType(), getDescripton());
         StringBuilder sb = new StringBuilder();
         try {
             for (byte b : toByteArray()) {
@@ -72,5 +128,5 @@ public abstract class SecsMessage extends Message {
         }
         return String.format("%s - %s {%s}", getType(), getDescripton(), sb);
     }
-    
+
 }

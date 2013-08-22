@@ -20,31 +20,64 @@ import org.ozsoft.secs.format.U8;
 import org.ozsoft.secs.util.ConversionUtils;
 
 /**
- * SECS message parser.
+ * SECS message parser, responsible for the low-level parsing of incoming messages and SML text.
  * 
  * @author Oscar Stigter
  */
 public class MessageParser {
     
+    /** The length of the Length field in bytes. */
     private static final int LENGTH_LENGTH = 4;
     
+    /** The minimum length of a (header-only) message. */
     private static final int MIN_LENGTH = LENGTH_LENGTH + SecsConstants.HEADER_LENGTH;
     
+    /** The maximum supported length of a message in bytes. */
+    //TODO: Support large messages (up to 4 GB).
     private static final long MAX_LENGTH = 256 * 1024; // 256 kB
     
-    private static final int SESSION_ID_LENGTH = 2;
+    /** The length of the Session ID field in bytes. */
+    private static final int SESSION_ID_LENGTH = U2.SIZE;
     
-    private static final int SYSTEM_BYTES_LENGTH = 4;
+    /** The length of the System Bytes (Transaction ID) field in bytes. */
+    private static final int SYSTEM_BYTES_LENGTH = U4.SIZE;
     
+    /** Bit mask for a data message's Stream field. */
     private static final int STREAM_MASK = 0x7f;
 
+    /** Byte position of the Session ID field. */
     private static final int POS_SESSIONID = 0;
+
+    /** Byte position of the Header Byte 2 field. */
     private static final int POS_HEADERBYTE2 = 2;
+    
+    /** Byte position of the Header Byte 3 field. */
     private static final int POS_HEADERBYTE3 = 3;
+    
+    /** Byte position of the PType field. */
     private static final int POS_PTYPE = 4;
+    
+    /** Byte position of the SType field. */
     private static final int POS_STYPE = 5;
+    
+    /** Byte position of the System Bytes (Transaction ID) field. */
     private static final int POS_SYSTEMBYTES = 6;
     
+    /**
+     * Parses a SECS message.
+     * 
+     * @param data
+     *            The message as byte array.
+     * @param length
+     *            The length of the message.
+     * @param messageTypes
+     *            The supported data message types (e.g. S1F13).
+     * 
+     * @return The SECS message.
+     * 
+     * @throws SecsException
+     *             If the message could not be parsed because it is invalid.
+     */
     public static Message parseMessage(byte[] data, int length, Map<Integer, Class<? extends SecsMessage>> messageTypes) throws SecsException {
         // Determine message length.
         if (length < SecsConstants.HEADER_LENGTH) {

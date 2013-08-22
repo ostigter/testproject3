@@ -16,7 +16,7 @@ public class UnsupportedMessageException extends SecsException {
     private final long transactionId;
 
     /**
-     * Constructor with a message only.
+     * Constructor.
      * 
      * @param stream
      *            The message's stream.
