@@ -1,14 +1,16 @@
 package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.ControlState;
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsPrimaryMessage;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
- * S1F17 Request ON-LINE (RONL) request message.
+ * S1F17 Request ON-LINE (RONL) request message. <br />
+ * <br />
+ * 
+ * This message does not have any data.
  * 
  * @author Oscar Stigter
  */
@@ -53,13 +55,13 @@ public class S1F17 extends SecsPrimaryMessage {
     }
 
     @Override
-    protected Data<?> getData() throws SecsParseException {
+    protected Data<?> getData() {
         // Header-only message, so no data.
         return null;
     }
 
     @Override
-    protected SecsReplyMessage handle() throws SecsException {
+    protected SecsReplyMessage handle() {
         // Always acknowledge request.
         getEquipment().setControlState(ControlState.ONLINE_REMOTE);
         S1F18 s1f18 = new S1F18();

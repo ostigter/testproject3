@@ -7,19 +7,19 @@ package org.ozsoft.secs;
  */
 public enum ControlState {
     
-    /** OFFLINE > EQUIPMENT OFFLINE. */
+    /** Offline as controlled by the equipment. */
     EQUIPMENT_OFFLINE,
     
-    /** OFFLINE > ATTEMPT ONLINE. */
+    /** Offline, but attempting to get online. */
     ATTEMPT_ONLINE,
     
-    /** OFFLINE > HOST OFFLINE. */
+    /** Offline as requested by the host. */ 
     HOST_OFFLINE,
     
-    /** ONLINE > ONLINE LOCAL. */
+    /** Online, but only locally controllable. */
     ONLINE_LOCAL,
     
-    /** ONLINE > ONLINE REMOTE. */
+    /** Online and fully remotely controllable. */
     ONLINE_REMOTE,
 
 }

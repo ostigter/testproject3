@@ -1,14 +1,16 @@
 package org.ozsoft.secs.message;
 
 import org.ozsoft.secs.ControlState;
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsPrimaryMessage;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
- * S1F15 Request OFF-LINE (ROFL) request message.
+ * S1F15 Request OFF-LINE (ROFL) request message. <br />
+ * <br />
+ * 
+ * This message does not have any data.
  * 
  * @author Oscar Stigter
  */
@@ -52,13 +54,13 @@ public class S1F15 extends SecsPrimaryMessage {
     }
 
     @Override
-    public Data<?> getData() throws SecsParseException {
+    public Data<?> getData() {
         // Header-only message, so no data.
         return null;
     }
 
     @Override
-    protected SecsReplyMessage handle() throws SecsException {
+    protected SecsReplyMessage handle() {
         // Always accept.
         getEquipment().setControlState(ControlState.HOST_OFFLINE);
         S1F16 s1f16 = new S1F16();

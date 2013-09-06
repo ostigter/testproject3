@@ -9,7 +9,16 @@ import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 
 /**
- * S1F13 Establish Communication Request (CR) primary message.
+ * S1F13 Establish Communication Request (CR) primary message. <br />
+ * <br />
+ * 
+ * Format:
+ * <pre>
+ * <L
+ *      MDLN            // A:20
+ *      SOFTREV         // A:20
+ * >
+ * </pre>
  * 
  * @author Oscar Stigter
  */

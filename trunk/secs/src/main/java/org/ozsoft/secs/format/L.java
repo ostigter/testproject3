@@ -7,12 +7,48 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * SECS data item L (list of other data items).
+ * 
+ * @author Oscar Stigter
+ */
 public class L implements Data<List<Data<?>>> {
     
+    /** SECS format code. */
     public static final int FORMAT_CODE = 0x00;
     
+    /** The data items. */
     private List<Data<?>> items = new ArrayList<Data<?>>();
+    
+    /**
+     * Constructor with an initial empty list.
+     */
+    public L() {
+        // Empty implementation.
+    }
 
+    /**
+     * Returns the data item at a specific index position.
+     * 
+     * @param index
+     *            The index position.
+     * 
+     * @return The data item.
+     */
+    public Data<?> getItem(int index) {
+        return items.get(index);
+    }
+    
+    /**
+     * Adds a data item to the end of the list.
+     * 
+     * @param item
+     *            The data item.
+     */
+    public void addItem(Data<?> item) {
+        items.add(item);
+    }
+    
     @Override
     public List<Data<?>> getValue() {
         return items;
@@ -28,18 +64,6 @@ public class L implements Data<List<Data<?>>> {
         return items.size();
     }
     
-    public Data<?> getItem(int index) {
-        return items.get(index);
-    }
-    
-    public void addItem(Data<?> item) {
-        items.add(item);
-    }
-    
-    public void clear() {
-        items.clear();
-    }
-
     @Override
     public byte[] toByteArray() {
         // Construct length bytes.

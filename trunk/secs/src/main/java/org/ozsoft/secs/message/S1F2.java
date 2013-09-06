@@ -1,6 +1,5 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.A;
@@ -71,19 +70,27 @@ public class S1F2 extends SecsReplyMessage {
             throw new SecsParseException("Top-level data item must be an L");
         }
         L l = (L) data;
-        if (l.length() != 2) {
-            throw new SecsParseException("L must contain exactly 2 items");
+        String softRev = "";
+        String modelName = "";
+        
+        
+        if (l.length() == 0) {
+            softRev = "";
+            modelName = "";
+        } else if (l.length() == 2) {
+            data = l.getItem(0);
+            if (!(data instanceof A)) {
+                throw new SecsParseException("MDLN must be an A");
+            }
+            modelName = ((A) data).getValue();
+            data = l.getItem(1);
+            if (!(data instanceof A)) {
+                throw new SecsParseException("SOFTREV must be an A");
+            }
+            softRev = ((A) data).getValue();
+        } else {
+            throw new SecsParseException("L must contain 0 or 2 items");
         }
-        data = l.getItem(0);
-        if (!(data instanceof A)) {
-            throw new SecsParseException("MDLN must be an A");
-        }
-        String modelName = ((A) data).getValue();
-        data = l.getItem(1);
-        if (!(data instanceof A)) {
-            throw new SecsParseException("SOFTREV must be an A");
-        }
-        String softRev = ((A) data).getValue();
         setModelName(modelName);
         setSoftRev(softRev);
     }
@@ -104,7 +111,7 @@ public class S1F2 extends SecsReplyMessage {
     }
 
     @Override
-    protected void handle() throws SecsException {
+    protected void handle() {
         // Not implemented.
     }
 

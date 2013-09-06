@@ -49,6 +49,22 @@ public class SecsEquipment {
 
     private static final int MAX_PORT = 65535;
 
+    private static final int MIN_T3 = 1;
+
+    private static final int MAX_T3 = 120;
+
+    private static final int MIN_T5 = 1;
+
+    private static final int MAX_T5 = 240;
+
+    private static final int MIN_T6 = 1;
+
+    private static final int MAX_T6 = 240;
+
+    private static final int MIN_T7 = 1;
+
+    private static final int MAX_T7 = 240;
+
     private static final long POLL_INTERVAL = 10L;
 
     private static final int BUFFER_SIZE = 8192;
@@ -72,6 +88,14 @@ public class SecsEquipment {
     private String host = SecsConstants.DEFAULT_HOST;
 
     private int port = SecsConstants.DEFAULT_PORT;
+    
+    private int t3 = SecsConstants.DEFAULT_T3;
+
+    private int t5 = SecsConstants.DEFAULT_T5;
+
+    private int t6 = SecsConstants.DEFAULT_T6;
+
+    private int t7 = SecsConstants.DEFAULT_T7;
 
     private boolean isEnabled;
 
@@ -101,16 +125,18 @@ public class SecsEquipment {
     }
     
     private void addDefaultMessageTypes() {
-      addMessageType(S1F1.class);  // Are You There (R)
-      addMessageType(S1F2.class);  // On Line Data (D)
-      addMessageType(S1F13.class); // Establish Communication Request (CR)
-      addMessageType(S1F14.class); // Establish Communication Request Acknowledge (CRA)
-      addMessageType(S1F15.class); // Request OFF-LINE (ROFL)
-      addMessageType(S1F16.class); // OFF-LINE Acknowledge (OFLA)
-      addMessageType(S1F17.class); // Request ON-LINE (RONL)
-      addMessageType(S1F18.class); // ON-LINE Acknowledge (ONLA)
-      addMessageType(S2F25.class); // Request Loopback Diagnostic Request (LDR)
-      addMessageType(S2F26.class); // Loopback Diagnostic Acknowledge (LDA)
+        LOG.debug("Add default message types");
+        addMessageType(S1F1.class); // Are You There (R)
+        addMessageType(S1F2.class); // On Line Data (D)
+        addMessageType(S1F13.class); // Establish Communication Request (CR)
+        addMessageType(S1F14.class); // Establish Communication Request Acknowledge (CRA)
+        addMessageType(S1F15.class); // Request OFF-LINE (ROFL)
+        addMessageType(S1F16.class); // OFF-LINE Acknowledge (OFLA)
+        addMessageType(S1F17.class); // Request ON-LINE (RONL)
+        addMessageType(S1F18.class); // ON-LINE Acknowledge (ONLA)
+        addMessageType(S2F25.class); // Request Loopback Diagnostic Request
+                                     // (LDR)
+        addMessageType(S2F26.class); // Loopback Diagnostic Acknowledge (LDA)
     }
 
     public int getDeviceId() {
@@ -122,6 +148,7 @@ public class SecsEquipment {
             throw new SecsConfigurationException("Invalid device ID: " + deviceId);
         }
         this.deviceId = deviceId;
+        LOG.info("Device ID set to " + deviceId);
     }
 
     public String getModelName() {
@@ -130,6 +157,7 @@ public class SecsEquipment {
     
     public void setModelName(String modelName) {
         this.modelName = modelName;
+        LOG.info("Model Name set to " + modelName);
     }
 
     public String getSoftRev() {
@@ -138,15 +166,7 @@ public class SecsEquipment {
     
     public void setSoftRev(String softRev) {
         this.softRev = softRev;
-    }
-
-    public ConnectMode getConnectMode() {
-        return connectMode;
-    }
-
-    public void setConnectMode(ConnectMode connectMode) {
-        this.connectMode = connectMode;
-        LOG.info("Connect Mode set to " + connectMode);
+        LOG.info("SoftRev set to " + softRev);
     }
 
     public String getHost() {
@@ -169,6 +189,63 @@ public class SecsEquipment {
             throw new SecsConfigurationException("Invalid port number: " + port);
         }
         this.port = port;
+    }
+    
+    public ConnectMode getConnectMode() {
+        return connectMode;
+    }
+
+    public void setConnectMode(ConnectMode connectMode) {
+        this.connectMode = connectMode;
+        LOG.info("Connect Mode set to " + connectMode);
+    }
+
+    public int getT3Timeout() {
+        return t3;
+    }
+    
+    public void setT3Timeout(int t3) throws SecsConfigurationException {
+        if (t3 < MIN_T3 || t3 > MAX_T3) {
+            throw new SecsConfigurationException("Invalid value for T3: " + t3);
+        }
+        this.t3 = t3;
+        LOG.info(String.format("T3 set to %d seconds", t3));
+    }
+    
+    public int getT5Timeout() {
+        return t5;
+    }
+    
+    public void setT5Timeout(int t5) throws SecsConfigurationException {
+        if (t5 < MIN_T5 || t5 > MAX_T5) {
+            throw new SecsConfigurationException("Invalid value for T5: " + t5);
+        }
+        this.t5 = t5;
+        LOG.info(String.format("T5 set to %d seconds", t5));
+    }
+    
+    public int getT6Timeout() {
+        return t6;
+    }
+    
+    public void setT6Timeout(int t6) throws SecsConfigurationException {
+        if (t6 < MIN_T6 || t6 > MAX_T6) {
+            throw new SecsConfigurationException("Invalid value for T6: " + t6);
+        }
+        this.t6 = t6;
+        LOG.info(String.format("T6 set to %d seconds", t6));
+    }
+    
+    public int getT7Timeout() {
+        return t7;
+    }
+    
+    public void setT7Timeout(int t7) throws SecsConfigurationException {
+        if (t7 < MIN_T7 || t7 > MAX_T7) {
+            throw new SecsConfigurationException("Invalid value for T7: " + t7);
+        }
+        this.t7 = t7;
+        LOG.info(String.format("T5 set to %d seconds", t7));
     }
     
     public ConnectionState getConnectionState() {
@@ -241,7 +318,7 @@ public class SecsEquipment {
             message = messageType.newInstance();
             int messageId = message.getStream() * 256 + message.getFunction();
             messageTypes.put(messageId, messageType);
-            LOG.info("Added message type " + message.getDescripton());
+            LOG.debug("Added message type " + message.getDescripton());
         } catch (Exception e) {
             LOG.error("Could not instantiate message type: " + messageType, e);
         }
@@ -335,7 +412,7 @@ public class SecsEquipment {
                     }
                 }
             }
-            if (replyMessage == null && (System.currentTimeMillis() - startTime) > SecsConstants.DEFAULT_T3_TIMEOUT) {
+            if (replyMessage == null && (System.currentTimeMillis() - startTime) > t3) {
                 // T3 transaction timeout.
                 String msg = String.format("T3 timeout for request message %s with transaction ID %d", primaryMessage.getType(), transactionId); 
                 LOG.warn(msg);
@@ -347,6 +424,7 @@ public class SecsEquipment {
     
     private void enable() {
         isEnabled = true;
+        LOG.info("Enabled State set to ENABLED");
         setCommunicationState(CommunicationState.NOT_COMMUNICATING);
         if (connectMode == ConnectMode.ACTIVE) {
             // Active mode; establish HSMS connection (client).
@@ -371,6 +449,7 @@ public class SecsEquipment {
         }
 
         isEnabled = false;
+        LOG.info("Enabled State set to DISABLED");
         while (communicationState != CommunicationState.NOT_COMMUNICATING) {
             sleep(POLL_INTERVAL);
         }
@@ -662,7 +741,7 @@ public class SecsEquipment {
                         handleConnection();
                     } catch (IOException e) {
                         LOG.debug(String.format("Failed to connect to equipment '%s' on port %d", host, port));
-                        SecsEquipment.sleep(SecsConstants.DEFAULT_T5_TIMEOUT);
+                        SecsEquipment.sleep(t5);
                     }
                 } else {
                     SecsEquipment.sleep(POLL_INTERVAL);

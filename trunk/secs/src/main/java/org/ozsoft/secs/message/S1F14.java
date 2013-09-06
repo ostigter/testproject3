@@ -2,7 +2,6 @@ package org.ozsoft.secs.message;
 
 import org.apache.log4j.Logger;
 import org.ozsoft.secs.CommunicationState;
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.A;
@@ -11,7 +10,19 @@ import org.ozsoft.secs.format.Data;
 import org.ozsoft.secs.format.L;
 
 /**
- * S1F14 - Establish Communication Request Acknowledge (CRA) reply message.
+ * S1F14 - Establish Communication Request Acknowledge (CRA) reply message. <br />
+ * <br />
+ * 
+ * Format:
+ * <pre>
+ * <L
+ *   COMMACK            // B:01 (0x00 = Accepted, 0x01 = Denied, Try Again)
+ *   <L
+ *     MDLN             // A:20
+ *     SOFTREV          // A:20
+ *   >
+ * >
+ * </pre>
  * 
  * @author Oscar Stigter
  */
@@ -155,7 +166,7 @@ public class S1F14 extends SecsReplyMessage {
     }
 
     @Override
-    protected void handle() throws SecsException {
+    protected void handle() {
         if (commAck == COMMACK_ACCEPTED) {
             LOG.debug("Received S1F14 with COMMACK: Accepted");
             getEquipment().setCommunicationState(CommunicationState.COMMUNICATING);

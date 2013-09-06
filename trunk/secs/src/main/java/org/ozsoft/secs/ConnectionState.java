@@ -7,13 +7,13 @@ package org.ozsoft.secs;
  */
 public enum ConnectionState {
     
-    /** NOT CONNECTED. */
+    /** Not connected. */
     NOT_CONNECTED,
     
-    /** CONNECTED > NOT SELECTED. */
+    /** Connected, but not yet selected. */
     NOT_SELECTED,
     
-    /** CONNECTED > SELECTED. */
+    /** Connected and selected. */
     SELECTED,
 
 }

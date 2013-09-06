@@ -1,12 +1,16 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsException;
-import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
- * S2F26 Loopback Diagnostic Acknowledge (LDA) reply message.
+ * S2F26 Loopback Diagnostic Acknowledge (LDA) reply message. <br />
+ * <br />
+ * 
+ * Format:
+ * <pre>
+ * TESTDATA     // any data item, or empty
+ * </pre>
  * 
  * @author Oscar Stigter
  */
@@ -51,19 +55,19 @@ public class S2F26 extends SecsReplyMessage {
     }
 
     @Override
-    public void parseData(Data<?> data) throws SecsParseException {
+    public void parseData(Data<?> data) {
         // Just copy test data as-is.
         setTestData(data);
     }
 
     @Override
-    public Data<?> getData() throws SecsParseException {
+    public Data<?> getData() {
         // Just return test data as-is.
         return getTestData();
     }
 
     @Override
-    protected void handle() throws SecsException {
+    protected void handle() {
         // Not implemented.
     }
 
