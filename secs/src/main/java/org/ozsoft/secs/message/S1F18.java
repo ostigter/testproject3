@@ -1,13 +1,18 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.B;
 import org.ozsoft.secs.format.Data;
 
 /**
- * S1F18 ON-LINE Acknowledge (ONLA) reply message.
+ * S1F18 ON-LINE Acknowledge (ONLA) reply message. <br />
+ * <br />
+ * 
+ * Format:
+ * <pre>
+ * ONLACK       // <B:1> (0x00 = Acknowledge, 0x01 = Error)
+ * </pre>
  * 
  * @author Oscar Stigter
  */
@@ -83,7 +88,7 @@ public class S1F18 extends SecsReplyMessage {
     }
 
     @Override
-    protected void handle() throws SecsException {
+    protected void handle() {
         // Not implemented.
     }
 

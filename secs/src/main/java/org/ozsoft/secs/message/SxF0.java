@@ -1,6 +1,5 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
@@ -60,13 +59,13 @@ public class SxF0 extends SecsReplyMessage {
     }
 
     @Override
-    protected Data<?> getData() throws SecsParseException {
+    protected Data<?> getData() {
         // No data.
         return null;
     }
 
     @Override
-    protected void handle() throws SecsException {
+    protected void handle() {
         // Not implemented.
     }
 

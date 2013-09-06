@@ -12,7 +12,7 @@ import org.ozsoft.secs.message.S99F2;
  * @author Oscar Stigter
  */
 public class SystemTest {
-    
+
     /** Timeout before communication is considered to have failed. */
     private static final long CONNECTION_TIMEOUT = 500L;
 
@@ -31,7 +31,7 @@ public class SystemTest {
         Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
         Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
-        
+
         // Register test primary message on passive entity.
         passiveEntity.addMessageType(S99F1.class);
 
@@ -63,9 +63,7 @@ public class SystemTest {
         Assert.assertEquals(ConnectionState.SELECTED, activeEntity.getConnectionState());
         Assert.assertEquals(CommunicationState.COMMUNICATING, passiveEntity.getCommunicationState());
         Assert.assertEquals(CommunicationState.COMMUNICATING, activeEntity.getCommunicationState());
-//        Assert.assertEquals(ControlState.ONLINE_REMOTE, server.getControlState());
-//        Assert.assertEquals(ControlState.ONLINE_REMOTE, client.getControlState());
-        
+
         // Send S99F1 message from active to passive entity.
         S99F1 s99f1 = new S99F1();
         s99f1.setName("Mr. Smith");
@@ -77,28 +75,28 @@ public class SystemTest {
         Assert.assertEquals("Incorrect GRACK value", S99F2.GRACK_ACCEPT, s99f2.getGrAck());
         Assert.assertEquals("Incorrect GREETING value", "Hello, Mr. Smith!", s99f2.getGreeting());
 
-        // Disable active entity. 
+        // Disable active entity.
         activeEntity.setEnabled(false);
-         sleep(CONNECTION_TIMEOUT);
-         Assert.assertFalse(activeEntity.isEnabled());
-         Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
-         Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
-         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
-         Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
-         Assert.assertEquals(CommunicationState.NOT_COMMUNICATING, passiveEntity.getCommunicationState());
-         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
-        
-         // Disable passive entity. 
-         passiveEntity.setEnabled(false);
-         Assert.assertFalse(passiveEntity.isEnabled());
-         Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
-         Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
-         Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
-         Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
-         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
-         Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
+        sleep(CONNECTION_TIMEOUT);
+        Assert.assertFalse(activeEntity.isEnabled());
+        Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
+        Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
+        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
+        Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
+        Assert.assertEquals(CommunicationState.NOT_COMMUNICATING, passiveEntity.getCommunicationState());
+        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
+
+        // Disable passive entity.
+        passiveEntity.setEnabled(false);
+        Assert.assertFalse(passiveEntity.isEnabled());
+        Assert.assertEquals(ConnectionState.NOT_CONNECTED, passiveEntity.getConnectionState());
+        Assert.assertEquals(ConnectionState.NOT_CONNECTED, activeEntity.getConnectionState());
+        Assert.assertEquals(CommunicationState.NOT_ENABLED, passiveEntity.getCommunicationState());
+        Assert.assertEquals(CommunicationState.NOT_ENABLED, activeEntity.getCommunicationState());
+        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, passiveEntity.getControlState());
+        Assert.assertEquals(ControlState.EQUIPMENT_OFFLINE, activeEntity.getControlState());
     }
-    
+
     /**
      * Suspends the current thread for a specific duration.
      * 

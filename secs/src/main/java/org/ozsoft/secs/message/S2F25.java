@@ -1,12 +1,17 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsPrimaryMessage;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
- * S2F25 Loopback Diagnostic Request (LDR) message.
+ * S2F25 Loopback Diagnostic Request (LDR) message. <br />
+ * <br />
+ * 
+ * Format:
+ * <pre>
+ * TESTDATA     // any data item, or empty
+ * </pre>
  * 
  * @author Oscar Stigter
  */
@@ -51,13 +56,13 @@ public class S2F25 extends SecsPrimaryMessage {
     }
 
     @Override
-    protected void parseData(Data<?> data) throws SecsParseException {
+    protected void parseData(Data<?> data) {
         // Just copy test data as-is.
         setTestData(data);
     }
 
     @Override
-    protected Data<?> getData() throws SecsParseException {
+    protected Data<?> getData() {
         // Just return test data as-is.
         return getTestData();
     }

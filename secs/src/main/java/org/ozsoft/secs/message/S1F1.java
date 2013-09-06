@@ -1,14 +1,16 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsPrimaryMessage;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.Data;
 
 /**
- * S1F1 Are You There (R) primary message.
+ * S1F1 Are You There (R) primary message. <br />
+ * <br />
  * 
+ * This message does not use any data.
+ *  
  * @author Oscar Stigter
  */
 public class S1F1 extends SecsPrimaryMessage {
@@ -55,7 +57,7 @@ public class S1F1 extends SecsPrimaryMessage {
     }
 
     @Override
-    protected SecsReplyMessage handle() throws SecsException {
+    protected SecsReplyMessage handle() {
         S1F2 s1f2 = new S1F2();
         s1f2.setModelName(getEquipment().getModelName());
         s1f2.setSoftRev(getEquipment().getSoftRev());

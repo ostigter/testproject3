@@ -1,6 +1,5 @@
 package org.ozsoft.secs.message;
 
-import org.ozsoft.secs.SecsException;
 import org.ozsoft.secs.SecsParseException;
 import org.ozsoft.secs.SecsReplyMessage;
 import org.ozsoft.secs.format.B;
@@ -8,6 +7,12 @@ import org.ozsoft.secs.format.Data;
 
 /**
  * S1F16 OFF-LINE Acknowledge (OFLA) reply message.
+ * <br />
+ * 
+ * Format:
+ * <pre>
+ * OFLACK       // B:01 (0x00 = Acknowledge, 0x00 = Error)
+ * </pre>
  * 
  * @author Oscar Stigter
  */
@@ -82,7 +87,7 @@ public class S1F16 extends SecsReplyMessage {
     }
 
     @Override
-    protected void handle() throws SecsException {
+    protected void handle() {
         // Not implemented.
     }
 

@@ -28,17 +28,17 @@ public interface SecsConstants {
     /** Default device ID (session ID). */
     int DEFAULT_DEVICE_ID = 1;
     
-    /** T3 timeout in miliseconds. */
-    long DEFAULT_T3_TIMEOUT = 120000;  // 2 minutes
+    /** T3 (Reply) timeout in miliseconds. */
+    int DEFAULT_T3 = 120000; // 2 minutes
     
-    /** T5 timeout in miliseconds. */
-    long DEFAULT_T5_TIMEOUT = 5000L; // 5 seconds
+    /** T5 (Connect Separation) timeout in miliseconds. */
+    int DEFAULT_T5 = 10000; // 10 seconds
     
-    /** T6 timeout in miliseconds. */
-    long DEFAULT_T6_TIMEOUT = 120000L; // 2 minutes
+    /** T6 (Control Transaction) timeout in miliseconds. */
+    int DEFAULT_T6 = 5000; // 5 seconds
     
-    /** T7 timeout in miliseconds. */
-    long DEFAULT_T7_TIMEOUT = 120000L; // 2 minutes
+    /** T7 (Connect Idle) timeout in miliseconds. */
+    int DEFAULT_T7 = 10000; // 10 seconds
     
     /** SECS header length in bytes. */
     int HEADER_LENGTH = 10;

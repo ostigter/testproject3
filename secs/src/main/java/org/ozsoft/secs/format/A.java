@@ -4,16 +4,32 @@ import java.io.ByteArrayOutputStream;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * SECS data item A (single 7-bit ASCII text).
+ * 
+ * @author Oscar Stigter
+ */
 public class A implements Data<String> {
     
+    /** SECS format code. */
     public static final int FORMAT_CODE = 0x40;
     
+    /** The value. */
     private String value;
     
+    /**
+     * Constructor with an empty value.
+     */
     public A() {
         this("");
     }
     
+    /**
+     * Constructor with an initial value.
+     * 
+     * @param value
+     *            The value.
+     */
     public A(String value) {
         setValue(value);
     }

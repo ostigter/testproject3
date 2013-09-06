@@ -11,6 +11,9 @@ import org.ozsoft.secs.format.TestUtils;
  */
 public class ConversionUtilsTest {
     
+    /**
+     * Tests converting an integer to a byte arrays.
+     */
     @Test
     public void integerToBytes() {
         // 1-byte signed integer.
@@ -39,6 +42,9 @@ public class ConversionUtilsTest {
         TestUtils.assertEquals(new byte[] {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, (byte) 0x88}, ConversionUtils.integerToBytes(0x1122334455667788L, 8));
     }
     
+    /**
+     * Tests converting a byte array to a signed integer.
+     */
     @Test
     public void bytesToSignedInteger() {
         // 1-byte signed integer.
@@ -46,8 +52,27 @@ public class ConversionUtilsTest {
         Assert.assertEquals(1, ConversionUtils.bytesToSignedInteger(new byte[] {0x01}));
         Assert.assertEquals(127, ConversionUtils.bytesToSignedInteger(new byte[] {0x7f}));
         Assert.assertEquals(-128, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0x80}));
+        
+        // 2-byte signed integer.
+        Assert.assertEquals(0, ConversionUtils.bytesToSignedInteger(new byte[] {0x00, 0x00}));
+        Assert.assertEquals(1, ConversionUtils.bytesToSignedInteger(new byte[] {0x00, 0x01}));
+        Assert.assertEquals(-1, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0xff, (byte) 0xff}));
+        Assert.assertEquals(127, ConversionUtils.bytesToSignedInteger(new byte[] {0x00, 0x7f}));
+        Assert.assertEquals(-128, ConversionUtils.bytesToSignedInteger(new byte[] {0x00, (byte) 0x80}));
+        Assert.assertEquals(258, ConversionUtils.bytesToSignedInteger(new byte[] {0x01, 0x02}));
+        
+        Assert.assertEquals(-127, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0xff, (byte) 0x81}));
+        Assert.assertEquals(-128, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0xff, (byte) 0x80}));
+        Assert.assertEquals(-129, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0xff, (byte) 0x7f}));
+        Assert.assertEquals(-255, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0xff, (byte) 0x01}));
+        Assert.assertEquals(-256, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0xff, (byte) 0x00}));
+        //FIXME: Conversion of bytes to negative integers less than -256.
+//        Assert.assertEquals(-257, ConversionUtils.bytesToSignedInteger(new byte[] {(byte) 0xfe, (byte) 0xff}));
     }
 
+    /**
+     * Tests converting a byte array to an unsigned integer.
+     */
     @Test
     public void bytesToUnsignedInteger() {
         // 1-byte unsigned integer.

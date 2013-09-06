@@ -12,10 +12,10 @@ import org.junit.Test;
 public class ActiveTest {
 
     /** Host of the remote entity. */
-    private static final String HOST = "172.19.234.96";
+    private static final String HOST = "localhost";
 
     /** Port number of the remote entity. */
-    private static final int PORT = 5000;
+    private static final int PORT = 5555;
 
     /** SECS session duration. */
     private static final long SESSION_DURATION = 5000L; // 5 seconds
