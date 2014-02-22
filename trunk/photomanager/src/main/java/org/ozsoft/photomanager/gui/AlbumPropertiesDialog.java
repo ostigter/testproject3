@@ -18,6 +18,7 @@ import net.sourceforge.jdatepicker.JDateComponentFactory;
 import net.sourceforge.jdatepicker.JDatePicker;
 
 import org.ozsoft.photomanager.entities.Album;
+import org.ozsoft.photomanager.gui.util.Dialog;
 
 public class AlbumPropertiesDialog extends Dialog {
     

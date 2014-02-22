@@ -1,48 +1,28 @@
 package org.ozsoft.photomanager.gui;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 import org.ozsoft.photomanager.entities.Album;
 import org.ozsoft.photomanager.entities.Photo;
+import org.ozsoft.photomanager.gui.util.GalleryItem;
+import org.ozsoft.photomanager.gui.util.GalleryListener;
 
 /**
  * A single album icon as listed in the {@link AlbumPanel}.
  * 
  * @author Oscar Stigter
  */
-public class AlbumIcon extends JPanel implements MouseListener {
+public class AlbumIcon extends GalleryItem {
 
-	private static final long serialVersionUID = -2347960330864112521L;
-
-	private static final DateFormat DATE_FORMAT = new SimpleDateFormat(
-			"d MMM. yyyy");
-
-	private static final Color SELECTION_COLOR = new Color(255, 255, 128);
-
-	private static final Color DEFAULT_COLOR = Color.WHITE;
-
-	private static final Font NORMAL_FONT = new Font(Font.SANS_SERIF,
-			Font.BOLD, 12);
-
-	private static final Font SMALL_FONT = new Font(Font.SANS_SERIF,
-			Font.PLAIN, 11);
+	private static final long serialVersionUID = -3913203912804081255L;
 
 	private static final String DEFAULT_ALBUM_IMAGE = "/images/album.png";
-
-	private final AlbumListener parent;
 
 	private final Album album;
 
@@ -52,22 +32,21 @@ public class AlbumIcon extends JPanel implements MouseListener {
 
 	private final JLabel dateLabel;
 
-	private boolean isSelected = false;
-
 	/**
 	 * Constructor.
 	 * 
 	 * @param album
 	 *            The associated album.
-	 * @param parent
-	 *            The album listener owning this album icon.
+	 * @param listener
+	 *            The gallery listener.
 	 */
-	public AlbumIcon(Album album, AlbumListener parent) {
-		this.album = album;
-		this.parent = parent;
+	public AlbumIcon(Album album, GalleryListener listener) {
+		super(listener);
 
-		setBackground(DEFAULT_COLOR);
-		setBorder(new LineBorder(Color.LIGHT_GRAY));
+		this.album = album;
+
+		setBackground(UIConstants.DEFAULT_BACKGROUND_COLOR);
+		setBorder(new LineBorder(UIConstants.LINE_COLOR));
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -86,7 +65,7 @@ public class AlbumIcon extends JPanel implements MouseListener {
 		add(thumbnailLabel, gbc);
 
 		nameLabel = new JLabel();
-		nameLabel.setFont(NORMAL_FONT);
+		nameLabel.setFont(UIConstants.NORMAL_FONT);
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.gridwidth = 1;
@@ -99,7 +78,7 @@ public class AlbumIcon extends JPanel implements MouseListener {
 		add(nameLabel, gbc);
 
 		dateLabel = new JLabel();
-		dateLabel.setFont(SMALL_FONT);
+		dateLabel.setFont(UIConstants.SMALL_FONT);
 		gbc.gridx = 0;
 		gbc.gridy = 2;
 		gbc.gridwidth = 1;
@@ -125,56 +104,22 @@ public class AlbumIcon extends JPanel implements MouseListener {
 			nameLabel.setText(name);
 		}
 
-		dateLabel.setText(DATE_FORMAT.format(album.getDate()));
-
-		addMouseListener(this);
-	}
-
-	/**
-	 * Set the selection flag for this album icon.
-	 * 
-	 * @param isSelected
-	 *            Whether this album icon is selected.
-	 */
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
-		if (isSelected) {
-			setBackground(SELECTION_COLOR);
-		} else {
-			setBackground(DEFAULT_COLOR);
-		}
+		dateLabel.setText(UIConstants.DATE_FORMAT.format(album.getDate()));
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON1) {
-			if (!isSelected) {
-				parent.albumSelected(album);
-			}
-			if (e.getClickCount() == 2) {
-				parent.albumOpened(album);
-			}
-		}
+	protected void doSelected() {
+		setBackground(UIConstants.SELECTION_BACKGROUND_COLOR);
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		// Not implemented.
+	protected void doUnselected() {
+		setBackground(UIConstants.DEFAULT_BACKGROUND_COLOR);
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		// Not implemented.
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// Not implemented.
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// Not implemented.
+	public String toString() {
+		return album.getName();
 	}
 
 }
