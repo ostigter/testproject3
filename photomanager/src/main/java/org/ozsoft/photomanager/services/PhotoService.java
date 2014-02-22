@@ -34,6 +34,11 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.jpeg.JpegDirectory;
 
+/**
+ * Service managing the albums and photos.
+ * 
+ * @author Oscar Stigter
+ */
 public class PhotoService {
 
     /** Thumbnail width in pixels. */
@@ -71,7 +76,7 @@ public class PhotoService {
             LOGGER.debug("Stored album with ID " + album.getId());
         } catch (PersistenceException e) {
             tx.rollback();
-            LOGGER.error("Error storing album", e);
+            LOGGER.error("Could not store album in database", e);
         }
     }
 
@@ -110,7 +115,7 @@ public class PhotoService {
             LOGGER.debug("Stored photo with ID " + photo.getId());
         } catch (PersistenceException e) {
             tx.rollback();
-            LOGGER.error("Error storing photo", e);
+            LOGGER.error("Could not store photo in database", e);
         }
     }
 
@@ -146,7 +151,7 @@ public class PhotoService {
                 try {
                     is = blob.getBinaryStream();
                 } catch (SQLException e) {
-                    LOGGER.error(String.format("Could not retrieve content of photo [%d]\n", id));
+                    LOGGER.error(String.format("Could not retrieve content of photo [%d] from database", id));
                 }
             }
         }
@@ -165,93 +170,105 @@ public class PhotoService {
             album.setCoverPhoto(photos.get(0));
         }
 
+        LOGGER.debug(String.format("Added [%d] photos to album [%s]", photos.size(), album));
+
         storeAlbum(album);
     }
 
-    private Photo uploadPhoto(File sourceFile) {
-        LOGGER.debug(String.format("Store photo from file '%s'", sourceFile.getAbsolutePath()));
+    /**
+     * Uploads a photo from file and stores it in the database.
+     * 
+     * @param file
+     *            The photo file.
+     * 
+     * @return The stored photo.
+     */
+    private Photo uploadPhoto(File file) {
+        String path = file.getAbsolutePath();
+        LOGGER.debug(String.format("Store photo from file '%s'", path));
         InputStream is = null;
         Photo photo = null;
         try {
-            try {
-                LOGGER.debug("Extracting EXIF metadata");
-                int width = -1;
-                int height = -1;
-                Date date = null;
-                String extension = null;
-                int p = sourceFile.getName().lastIndexOf('.');
-                if (p >= 0) {
-                    extension = sourceFile.getName().substring(p + 1).toLowerCase();
-                } else {
-                    LOGGER.warn("Storing image file without extension: " + sourceFile.getAbsolutePath());
-                    extension = "jpg";
-                }
-                Metadata metadata = ImageMetadataReader.readMetadata(sourceFile);
-                Directory dir = metadata.getDirectory(JpegDirectory.class);
-                try {
-                    if (dir.containsTag(JpegDirectory.TAG_JPEG_IMAGE_WIDTH)) {
-                        width = dir.getInt(JpegDirectory.TAG_JPEG_IMAGE_WIDTH);
-                        LOGGER.debug("Width: " + width);
-                    } else {
-                        LOGGER.warn("No width set in EXIF metadata");
-                    }
-                    if (dir.containsTag(JpegDirectory.TAG_JPEG_IMAGE_HEIGHT)) {
-                        height = dir.getInt(JpegDirectory.TAG_JPEG_IMAGE_HEIGHT);
-                        LOGGER.debug("Height: " + height);
-                    } else {
-                        LOGGER.warn("No height set in EXIF metadata");
-                    }
-                } catch (MetadataException e1) {
-                    LOGGER.error(e1);
-                }
-                dir = metadata.getDirectory(ExifSubIFDDirectory.class);
-                try {
-                    if (dir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)) {
-                        date = dir.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-                    } else {
-                        date = new Date(sourceFile.lastModified());
-                    }
-                    LOGGER.debug("Date: " + date);
-                    if (dir.containsTag(ExifThumbnailDirectory.TAG_ORIENTATION)) {
-                        int orientation = dir.getInt(ExifThumbnailDirectory.TAG_ORIENTATION);
-                        LOGGER.debug("Orientation: " + orientation);
-                    }
-
-                    // Store metadata in database.
-                    photo = new Photo();
-                    photo.setWidth(width);
-                    photo.setHeight(height);
-                    photo.setDate(date);
-                    photo.setFileType(extension);
-                    storePhoto(photo);
-
-                    storeThumbnail(sourceFile, photo);
-
-                    storeContent(sourceFile, photo);
-
-                } catch (MetadataException e1) {
-                    LOGGER.error(e1);
-                }
-            } catch (ImageProcessingException e1) {
-                LOGGER.error(e1);
+            LOGGER.trace("Extracting EXIF metadata");
+            int width = -1;
+            int height = -1;
+            Date date = null;
+            String extension = null;
+            int p = file.getName().lastIndexOf('.');
+            if (p >= 0) {
+                extension = file.getName().substring(p + 1).toLowerCase();
+            } else {
+                LOGGER.warn(String.format("Storing image file without extension: []", path));
+                extension = "jpg";
             }
+            Metadata metadata = ImageMetadataReader.readMetadata(file);
+            Directory dir = metadata.getDirectory(JpegDirectory.class);
+            if (dir.containsTag(JpegDirectory.TAG_JPEG_IMAGE_WIDTH)) {
+                width = dir.getInt(JpegDirectory.TAG_JPEG_IMAGE_WIDTH);
+                LOGGER.debug("### Width: " + width);
+            } else {
+                LOGGER.warn(String.format("No width set in EXIF metadata of photo [%s]", path));
+            }
+            if (dir.containsTag(JpegDirectory.TAG_JPEG_IMAGE_HEIGHT)) {
+                height = dir.getInt(JpegDirectory.TAG_JPEG_IMAGE_HEIGHT);
+                LOGGER.debug("### Height: " + height);
+            } else {
+                LOGGER.warn(String.format("No height set in EXIF metadata of photo [%s]", path));
+            }
+            dir = metadata.getDirectory(ExifSubIFDDirectory.class);
+            if (dir.containsTag(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL)) {
+                date = dir.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+            } else {
+                date = new Date(file.lastModified());
+            }
+            LOGGER.debug("Date: " + date);
+            if (dir.containsTag(ExifThumbnailDirectory.TAG_ORIENTATION)) {
+                int orientation = dir.getInt(ExifThumbnailDirectory.TAG_ORIENTATION);
+                LOGGER.debug("Orientation: " + orientation);
+            }
+
+            // Store metadata in database.
+            photo = new Photo();
+            photo.setWidth(width);
+            photo.setHeight(height);
+            photo.setDate(date);
+            photo.setFileType(extension);
+            storePhoto(photo);
+
+            // Store content in database.
+            storeContent(file, photo);
+
+            // Create and store thumbnail in database.
+            storeThumbnail(photo);
+
+        } catch (MetadataException e) {
+            LOGGER.error(String.format("Could not read metadata from photo [%s]", path), e);
+
+        } catch (ImageProcessingException e) {
+            LOGGER.error(String.format("Failed to parse image from file '%s'", file), e);
+
         } catch (IOException e) {
-            LOGGER.error(String.format("Failed to upload photo from file '%s'", sourceFile), e);
+            LOGGER.error(String.format("Failed to read file '%s'", file), e);
+
         } finally {
             IOUtils.closeQuietly(is);
         }
+
         return photo;
     }
 
-    private void storeThumbnail(File photoFile, Photo photo) {
-        LOGGER.debug("Creating thumbnail of photo " + photo.getId());
+    private void storeThumbnail(Photo photo) {
+        long photoId = photo.getId();
+        LOGGER.trace(String.format("Creating thumbnail of photo [%d]", photoId));
         try {
-            BufferedImage image = ImageIO.read(photoFile);
+            BufferedImage image = ImageIO.read(retrieveContent(photoId));
             int orgWidth = image.getWidth();
             int orgHeight = image.getHeight();
-            int width = (orgWidth > orgHeight) ? THUMBNAIL_WIDTH : (int) (THUMBNAIL_WIDTH * ((double) orgWidth / (double) orgHeight));
-            int height = (orgHeight > orgWidth) ? THUMBNAIL_WIDTH : (int) (THUMBNAIL_WIDTH * ((double) orgHeight / (double) orgWidth));
-            BufferedImage thumbnail = new BufferedImage((int) width, (int) height, image.getType());
+            int width = (orgWidth > orgHeight) ? THUMBNAIL_WIDTH
+                    : (int) (THUMBNAIL_WIDTH * ((double) orgWidth / (double) orgHeight));
+            int height = (orgHeight > orgWidth) ? THUMBNAIL_WIDTH
+                    : (int) (THUMBNAIL_WIDTH * ((double) orgHeight / (double) orgWidth));
+            BufferedImage thumbnail = new BufferedImage(width, height, image.getType());
             Graphics2D g = thumbnail.createGraphics();
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.drawImage(image, 0, 0, width, height, 0, 0, orgWidth, orgHeight, null);
@@ -260,10 +277,10 @@ public class PhotoService {
             ImageIO.write(thumbnail, "jpg", baos);
             photo.setThumbnail(baos.toByteArray());
             baos.close();
-            LOGGER.debug("Storing thumbnail of photo " + photo.getId());
+            LOGGER.debug(String.format("Store thumbnail of photo [%d]", photoId));
             storePhoto(photo);
         } catch (IOException e) {
-            LOGGER.error("Could not create thumbnail of photo " + photoFile, e);
+            LOGGER.error(String.format("Could not create thumbnail of photo [%d]", photoId), e);
         }
     }
 

@@ -20,116 +20,115 @@ import org.ozsoft.photomanager.gui.util.GalleryItem;
 @SuppressWarnings("rawtypes")
 public class AlbumIcon extends GalleryItem {
 
-	private static final long serialVersionUID = -3913203912804081255L;
+    private static final long serialVersionUID = -3913203912804081255L;
 
-	private static final String DEFAULT_ALBUM_IMAGE = "/images/album.png";
+    private static final String DEFAULT_ALBUM_IMAGE = "/images/album.png";
 
-	private final Album album;
+    private final Album album;
 
-	private final JLabel thumbnailLabel;
+    private final JLabel thumbnailLabel;
 
-	private final JLabel nameLabel;
+    private final JLabel nameLabel;
 
-	private final JLabel dateLabel;
+    private final JLabel dateLabel;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param album
-	 *            The associated album.
-	 * @param listener
-	 *            The gallery listener.
-	 */
-	@SuppressWarnings("unchecked")
-	public AlbumIcon(Album album, AlbumPanel parent) {
-		super(parent);
+    /**
+     * Constructor.
+     * 
+     * @param album
+     *            The associated album.
+     * @param listener
+     *            The gallery listener.
+     */
+    @SuppressWarnings("unchecked")
+    public AlbumIcon(Album album, AlbumPanel parent) {
+        super(parent);
 
-		this.album = album;
+        this.album = album;
 
-		setBackground(UIConstants.DEFAULT_BACKGROUND_COLOR);
-		setBorder(new LineBorder(UIConstants.LINE_COLOR));
+        setBackground(UIConstants.DEFAULT_BACKGROUND_COLOR);
+        setBorder(new LineBorder(UIConstants.LINE_COLOR));
 
-		setLayout(new GridBagLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
 
-		// Thumbnail of album's cover photo.
-		thumbnailLabel = new JLabel();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		add(thumbnailLabel, gbc);
+        // Thumbnail of album's cover photo.
+        thumbnailLabel = new JLabel();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(5, 5, 5, 5);
+        add(thumbnailLabel, gbc);
 
-		nameLabel = new JLabel();
-		nameLabel.setFont(UIConstants.NORMAL_FONT);
-		gbc.gridx = 0;
-		gbc.gridy = 1;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.insets = new Insets(0, 5, 0, 5);
-		add(nameLabel, gbc);
+        nameLabel = new JLabel();
+        nameLabel.setFont(UIConstants.NORMAL_FONT);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(0, 5, 0, 5);
+        add(nameLabel, gbc);
 
-		dateLabel = new JLabel();
-		dateLabel.setFont(UIConstants.SMALL_FONT);
-		gbc.gridx = 0;
-		gbc.gridy = 2;
-		gbc.gridwidth = 1;
-		gbc.gridheight = 1;
-		gbc.anchor = GridBagConstraints.CENTER;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.weightx = 0.0;
-		gbc.weighty = 0.0;
-		gbc.insets = new Insets(0, 5, 5, 5);
-		add(dateLabel, gbc);
+        dateLabel = new JLabel();
+        dateLabel.setFont(UIConstants.SMALL_FONT);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(0, 5, 5, 5);
+        add(dateLabel, gbc);
 
-		Photo coverPhoto = album.getCoverPhoto();
-		if (coverPhoto != null) {
-			thumbnailLabel.setIcon(new ImageIcon(coverPhoto.getThumbnail()));
-		} else {
-			// No cover photo set; use placeholder icon.
-			thumbnailLabel.setIcon(new ImageIcon(getClass().getResource(
-					DEFAULT_ALBUM_IMAGE)));
-		}
+        Photo coverPhoto = album.getCoverPhoto();
+        if (coverPhoto != null) {
+            thumbnailLabel.setIcon(new ImageIcon(coverPhoto.getThumbnail()));
+        } else {
+            // No cover photo set; use placeholder icon.
+            thumbnailLabel.setIcon(new ImageIcon(getClass().getResource(DEFAULT_ALBUM_IMAGE)));
+        }
 
-		String name = album.getName();
-		if (name != null) {
-			nameLabel.setText(name);
-		}
+        String name = album.getName();
+        if (name != null) {
+            nameLabel.setText(name);
+        }
 
-		dateLabel.setText(UIConstants.DATE_FORMAT.format(album.getDate()));
-	}
+        dateLabel.setText(UIConstants.DATE_FORMAT.format(album.getDate()));
+    }
 
-	/**
-	 * Returns the associated album.
-	 * 
-	 * @return The album.
-	 */
-	public Album getAlbum() {
-		return album;
-	}
+    /**
+     * Returns the associated album.
+     * 
+     * @return The album.
+     */
+    public Album getAlbum() {
+        return album;
+    }
 
-	@Override
-	protected void doSelected() {
-		setBackground(UIConstants.SELECTION_BACKGROUND_COLOR);
-	}
+    @Override
+    protected void doSelected() {
+        setBackground(UIConstants.SELECTION_BACKGROUND_COLOR);
+    }
 
-	@Override
-	protected void doUnselected() {
-		setBackground(UIConstants.DEFAULT_BACKGROUND_COLOR);
-	}
+    @Override
+    protected void doUnselected() {
+        setBackground(UIConstants.DEFAULT_BACKGROUND_COLOR);
+    }
 
-	@Override
-	public String toString() {
-		return album.getName();
-	}
+    @Override
+    public String toString() {
+        return album.getName();
+    }
 
 }
