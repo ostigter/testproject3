@@ -17,15 +17,15 @@ public abstract class GalleryPanel<T extends GalleryItem<?>> extends JPanel {
 
     private static final long serialVersionUID = 6576478313016045049L;
 
-    private final Set<T> items;
+    private final Set<GalleryItem<T>> items;
 
-    private T selectedItem;
+    private GalleryItem<T> selectedItem;
 
     /**
      * Constructor.
      */
     public GalleryPanel() {
-        items = new HashSet<T>();
+        items = new HashSet<GalleryItem<T>>();
         setLayout(new GalleryLayout());
         setBorder(new LineBorder(UIConstants.LINE_COLOR));
     }
@@ -36,13 +36,13 @@ public abstract class GalleryPanel<T extends GalleryItem<?>> extends JPanel {
      * @param item
      *            The item.
      */
-    protected final void addItem(T item) {
+    protected final void addItem(GalleryItem<T> item) {
         add(item);
         items.add(item);
         revalidate();
     }
 
-    protected void itemSelected(T item) {
+    protected void itemSelected(GalleryItem<T> item) {
         if (selectedItem != null) {
             selectedItem.setSelected(false);
         }
@@ -50,7 +50,7 @@ public abstract class GalleryPanel<T extends GalleryItem<?>> extends JPanel {
         item.setSelected(true);
     }
 
-    protected void itemOpened(T item) {
+    protected void itemOpened(GalleryItem<T> item) {
         // Empty implementation by default.
     }
 
