@@ -11,13 +11,13 @@ import javax.swing.border.LineBorder;
 import org.ozsoft.photomanager.entities.Album;
 import org.ozsoft.photomanager.entities.Photo;
 import org.ozsoft.photomanager.gui.util.GalleryItem;
-import org.ozsoft.photomanager.gui.util.GalleryListener;
 
 /**
  * A single album icon as listed in the {@link AlbumPanel}.
  * 
  * @author Oscar Stigter
  */
+@SuppressWarnings("rawtypes")
 public class AlbumIcon extends GalleryItem {
 
 	private static final long serialVersionUID = -3913203912804081255L;
@@ -40,8 +40,9 @@ public class AlbumIcon extends GalleryItem {
 	 * @param listener
 	 *            The gallery listener.
 	 */
-	public AlbumIcon(Album album, GalleryListener listener) {
-		super(listener);
+	@SuppressWarnings("unchecked")
+	public AlbumIcon(Album album, AlbumPanel parent) {
+		super(parent);
 
 		this.album = album;
 
@@ -105,6 +106,15 @@ public class AlbumIcon extends GalleryItem {
 		}
 
 		dateLabel.setText(UIConstants.DATE_FORMAT.format(album.getDate()));
+	}
+
+	/**
+	 * Returns the associated album.
+	 * 
+	 * @return The album.
+	 */
+	public Album getAlbum() {
+		return album;
 	}
 
 	@Override

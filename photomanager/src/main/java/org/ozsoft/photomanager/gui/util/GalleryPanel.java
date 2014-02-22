@@ -14,19 +14,19 @@ import org.ozsoft.photomanager.gui.UIConstants;
  * 
  * @author Oscar Stigter
  */
-public abstract class GalleryPanel extends JPanel implements GalleryListener {
+public abstract class GalleryPanel<T extends GalleryItem<?>> extends JPanel {
 
 	private static final long serialVersionUID = 6576478313016045049L;
 
-	private final Set<GalleryItem> items;
+	private final Set<T> items;
 
-	private GalleryItem selectedItem;
+	private T selectedItem;
 
 	/**
 	 * Constructor.
 	 */
 	public GalleryPanel() {
-		items = new HashSet<GalleryItem>();
+		items = new HashSet<T>();
 		setLayout(new GalleryLayout());
 		setBorder(new LineBorder(UIConstants.LINE_COLOR));
 	}
@@ -37,19 +37,22 @@ public abstract class GalleryPanel extends JPanel implements GalleryListener {
 	 * @param item
 	 *            The item.
 	 */
-	public void addItem(GalleryItem item) {
+	protected void addItem(T item) {
 		add(item);
 		items.add(item);
 		revalidate();
 	}
 
-	@Override
-	public void itemSelected(GalleryItem item) {
+	public void itemSelected(T item) {
 		if (selectedItem != null) {
 			selectedItem.setSelected(false);
 		}
 		selectedItem = item;
 		item.setSelected(true);
+	}
+
+	public void itemOpened(T item) {
+		// Empty implementation by default.
 	}
 
 }

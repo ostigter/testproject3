@@ -5,16 +5,17 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPanel;
 
-public abstract class GalleryItem extends JPanel implements MouseListener {
+public abstract class GalleryItem<T> extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = 8225825322087633479L;
 
-	private final GalleryListener listener;
+	@SuppressWarnings("rawtypes")
+	private final GalleryPanel parent;
 
 	private boolean isSelected = false;
 
-	public GalleryItem(GalleryListener listener) {
-		this.listener = listener;
+	public GalleryItem(GalleryPanel<?> parent) {
+		this.parent = parent;
 		addMouseListener(this);
 	}
 
@@ -37,13 +38,14 @@ public abstract class GalleryItem extends JPanel implements MouseListener {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public void mouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseEvent.BUTTON1) {
 			if (!isSelected) {
-				listener.itemSelected(this);
+				parent.itemSelected(this);
 			}
 			if (e.getClickCount() == 2) {
-				listener.itemOpened(this);
+				parent.itemOpened(this);
 			}
 		}
 	}
