@@ -283,7 +283,6 @@ public class PhotoService {
         } finally {
             IOUtils.closeQuietly(is);
         }
-
     }
 
 }

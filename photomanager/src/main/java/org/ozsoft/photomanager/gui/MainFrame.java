@@ -20,6 +20,11 @@ import org.apache.log4j.Logger;
 import org.ozsoft.photomanager.entities.Album;
 import org.ozsoft.photomanager.services.PhotoService;
 
+/**
+ * The application's main frame.
+ * 
+ * @author Oscar Stigter
+ */
 public class MainFrame extends JFrame {
 
     private static final int WIDTH = 900;
@@ -92,7 +97,10 @@ public class MainFrame extends JFrame {
 
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(null);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
+        
+        updateAlbumPanel();
 
         LOGGER.info("Started");
 
@@ -102,6 +110,12 @@ public class MainFrame extends JFrame {
 //        createAlbum("04.jpg", "Album 4");
 //        createAlbum("05.jpg", "Album 5");
 //        createAlbum("06.jpg", "Album 6");
+    }
+    
+    private void updateAlbumPanel() {
+    	for (Album album : photoService.listAlbums()) {
+    		albumPanel.addAlbum(album);
+    	}
     }
 
     private void createAlbum(String filename, String name) {
