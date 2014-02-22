@@ -1,7 +1,6 @@
 package org.ozsoft.photomanager.gui;
 
 import org.ozsoft.photomanager.entities.Album;
-import org.ozsoft.photomanager.gui.util.GalleryItem;
 import org.ozsoft.photomanager.gui.util.GalleryPanel;
 
 /**
@@ -9,7 +8,7 @@ import org.ozsoft.photomanager.gui.util.GalleryPanel;
  * 
  * @author Oscar Stigter
  */
-public class AlbumPanel extends GalleryPanel {
+public class AlbumPanel extends GalleryPanel<AlbumIcon> {
 
 	private static final long serialVersionUID = -2042112588233826274L;
 
@@ -25,8 +24,9 @@ public class AlbumPanel extends GalleryPanel {
 	}
 
 	@Override
-	public void itemOpened(GalleryItem item) {
+	public void itemOpened(AlbumIcon item) {
 		// TODO: Open album.
+		System.out.println("### Open album: " + item.getAlbum());
 	}
 
 }
