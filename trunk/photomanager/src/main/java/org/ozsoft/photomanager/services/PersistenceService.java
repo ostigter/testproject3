@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 /**
- * Singleton with the ORM entity manager.
+ * Singleton with the ORM entity manager and persistence session.
  * 
  * @author Oscar Stigter
  */
@@ -22,17 +22,17 @@ public class PersistenceService {
 
     /** Entity manager. */
     private static final EntityManager entityManager;
-    
+
     /** JPA session. */
     private static final Session session;
-    
+
     /**
      * Static initializer.
      * 
      * Creates the entity manager.
      */
     static {
-        LOGGER.debug("Creating entity manager");
+        LOGGER.trace("Creating entity manager");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(PU_NAME);
         entityManager = emf.createEntityManager();
         session = entityManager.unwrap(Session.class);

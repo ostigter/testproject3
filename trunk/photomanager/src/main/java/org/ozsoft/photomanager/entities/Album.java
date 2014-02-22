@@ -12,6 +12,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * Album entity.
+ * 
+ * @author Oscar Stigter
+ */
 @Entity
 public class Album extends BaseEntity {
 
@@ -19,16 +24,16 @@ public class Album extends BaseEntity {
 
     @Basic
     private String name;
-    
+
     @Temporal(TemporalType.DATE)
     private Date date;
-    
+
     @OneToMany
     private List<Photo> photos;
-    
+
     @OneToOne(fetch = FetchType.LAZY)
     private Photo coverPhoto;
-    
+
     public Album() {
         setPhotos(new ArrayList<Photo>());
     }
@@ -64,10 +69,10 @@ public class Album extends BaseEntity {
     public void setCoverPhoto(Photo coverPhoto) {
         this.coverPhoto = coverPhoto;
     }
-    
+
     @Override
     public String toString() {
         return name;
     }
-    
+
 }

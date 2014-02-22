@@ -10,31 +10,36 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * Photo entity with BLOB content.
+ * 
+ * @author Oscar Stigter
+ */
 @Entity
 public class Photo extends BaseEntity {
 
     private static final long serialVersionUID = -300563798008125626L;
-    
+
     @Basic
     private int width;
-    
+
     @Basic
     private int height;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
-    
+
     @Basic
     private String fileType;
-    
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] thumbnail;
-    
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private Blob content;
-    
+
     public int getWidth() {
         return width;
     }
@@ -75,12 +80,12 @@ public class Photo extends BaseEntity {
         this.thumbnail = thumbnail;
     }
 
-	public Blob getContent() {
-		return content;
-	}
+    public Blob getContent() {
+        return content;
+    }
 
-	public void setContent(Blob content) {
-		this.content = content;
-	}
+    public void setContent(Blob content) {
+        this.content = content;
+    }
 
 }

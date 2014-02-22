@@ -21,33 +21,33 @@ import org.ozsoft.photomanager.entities.Album;
 import org.ozsoft.photomanager.gui.util.Dialog;
 
 public class AlbumPropertiesDialog extends Dialog {
-    
+
     private JTextField nameText;
-    
+
     private JDatePicker datePicker;
-    
+
     private JButton okButton;
-    
+
     private JButton cancelButton;
-    
+
     public AlbumPropertiesDialog(JFrame parent) {
         this(parent, null);
     }
-    
+
     public AlbumPropertiesDialog(JFrame parent, Album album) {
         super("Create Album", parent);
         if (album != null) {
             dialog.setTitle("Edit Album Properties");
             nameText.setText(album.getName());
-//            datePicker.getModel().setValue(album.getDate());
+            // datePicker.getModel().setValue(album.getDate());
             okButton.setText("Save");
         }
     }
-    
+
     public String getName() {
         return nameText.getText().trim();
     }
-    
+
     public Date getDate() {
         Date date = (Date) datePicker.getModel().getValue();
         if (date == null) {
@@ -55,12 +55,12 @@ public class AlbumPropertiesDialog extends Dialog {
         }
         return date;
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     protected void initUI() {
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         JLabel label = new JLabel("Name:");
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -72,7 +72,7 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 10, 5, 5);
         dialog.add(label, gbc);
-        
+
         nameText = new JTextField();
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -84,7 +84,7 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 5, 5, 5);
         dialog.add(nameText, gbc);
-        
+
         label = new JLabel("Date:");
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -96,7 +96,7 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 10, 5, 5);
         dialog.add(label, gbc);
-        
+
         DateModel<Date> dateModel = (DateModel<Date>) JDateComponentFactory.createDateModel(Date.class);
         datePicker = JDateComponentFactory.createJDatePicker(dateModel);
         gbc.gridx = 1;
@@ -109,7 +109,7 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 5, 5, 5);
         dialog.add((JComponent) datePicker, gbc);
-        
+
         okButton = new JButton("Create");
         okButton.addActionListener(new ActionListener() {
             @Override
@@ -127,7 +127,7 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(5, 10, 5, 10);
         dialog.add(okButton, gbc);
-        
+
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
             @Override
@@ -145,21 +145,22 @@ public class AlbumPropertiesDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(5, 5, 10, 10);
         dialog.add(cancelButton, gbc);
-        
+
         dialog.pack();
         dialog.setResizable(false);
     }
-    
+
     private void ok() {
         if (getName().isEmpty()) {
-            JOptionPane.showMessageDialog(dialog, "An album name must be specified.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(dialog, "An album name must be specified.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         result = Dialog.OK;
         dialog.dispose();
     }
-    
+
     private void cancel() {
         dialog.dispose();
     }

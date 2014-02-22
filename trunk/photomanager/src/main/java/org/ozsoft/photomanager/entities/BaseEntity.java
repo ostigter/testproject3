@@ -7,6 +7,11 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
+/**
+ * Base class for all JPA entities.
+ * 
+ * @author Oscar Stigter
+ */
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
 
