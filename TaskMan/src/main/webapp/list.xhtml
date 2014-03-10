@@ -7,37 +7,35 @@
 	<ui:define name="content">
 		<h:messages infoClass="infoMessage" errorClass="errorMessage" />
 		<h:form id="form">
-			<h:commandButton class="padded" value="Create Task" action="createTask.jsf" /><br />
-			<div class="padded">
-				<h:selectBooleanCheckbox value="#{userBean.showCompleted}">
+			<h:commandButton value="Create Task" action="createTask.jsf" /><br />
+            <div class="verticalSeparated">
+			    <h:selectBooleanCheckbox value="#{userBean.showCompleted}">
 					<f:ajax execute="@form" render="form" />
 				</h:selectBooleanCheckbox>
 				Show completed tasks
 			</div>
-			<div class="padded">
-				<h:dataTable rendered="#{not empty userBean.tasks}"
-						value="#{userBean.tasks}" var="task"
-						rules="all" styleClass="boxed"
-						headerClass="taskId taskSummary taskStatus"
-						columnClasses="taskId, taskSummary, taskStatus"
-						rowClasses="odd, even">
-					<h:column>
-						<f:facet name="header">ID</f:facet>
-						<h:commandLink value="#{task.id}" action="editTask.jsf">
-							<f:setPropertyActionListener target="#{editTaskBean.task}" value="${task}" />
-						</h:commandLink>
-					</h:column>
-					<h:column>
-						<f:facet name="header">Summary</f:facet>
-						<h:outputText value="#{task.summary}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">Status</f:facet>
-						<h:outputText value="#{task.status.name}" />
-					</h:column>
-				</h:dataTable>
-				<h:outputText style="width: 100%; background: #c0c0ff;" value="No tasks to display." rendered="#{empty userBean.tasks}" />
-			</div>
+			<h:dataTable rendered="#{not empty userBean.tasks}"
+					value="#{userBean.tasks}" var="task"
+					rules="all" styleClass="boxed"
+					headerClass="taskId taskSummary taskStatus"
+					columnClasses="taskId, taskSummary, taskStatus"
+					rowClasses="odd, even">
+				<h:column>
+					<f:facet name="header">ID</f:facet>
+					<h:commandLink value="#{task.id}" action="editTask.jsf">
+						<f:setPropertyActionListener target="#{editTaskBean.task}" value="${task}" />
+					</h:commandLink>
+				</h:column>
+				<h:column>
+					<f:facet name="header">Summary</f:facet>
+					<h:outputText value="#{task.summary}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Status</f:facet>
+					<h:outputText value="#{task.status.name}" />
+				</h:column>
+			</h:dataTable>
+			<h:outputText style="width: 100%; background: #c0c0ff;" value="No tasks to display." rendered="#{empty userBean.tasks}" />
 		</h:form>
 	</ui:define>
 </ui:composition>

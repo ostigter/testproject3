@@ -7,7 +7,7 @@ body {
 	background: #c0c0ff url('../resources/images/background.gif');
 	width: 100%;
     font-family: Arial, SansSerife;
-	font-size: 14px;
+	font-size: 12px;
     text-align: center;
 }
 
@@ -37,7 +37,7 @@ div#genericLinks {
 }
 
 div#left {
-	padding: 10px;
+	padding: 0;
 	width:  150px;
     float: left;
 }
@@ -55,13 +55,22 @@ div#center {
 
 div#footer {
 	border-top: 1px solid #c0c0ff;
-	padding: 10px;
+	padding: 0 10px 5px 10px;
 	width:  100%;
     clear: both;
 }
 
+p.footer {
+    margin: 10px 20px 0 10px;
+    text-align: right;
+}
+
 .padded {
 	margin: 10px;
+}
+
+.verticalSeparated {
+	margin: 10px 0 10px 0;
 }
 
 img {
@@ -73,31 +82,38 @@ th {
 	color: #000000;
 	margin: 0;
 	padding: 0;
-	padding-bottom: 30px;
 }
 
 table.boxed {
+    border: 0 solid #c0c0ff;
 	width: 100%;
 }
 
 th.taskId {
-	width: 50px;
+	width: 10px;
+    height: 20px;
 	text-align: center;
 }
 
 td.taskId {
-	width: 50px;
+	width: 10px;
 	text-align: center;
 }
 
 th.taskSummary {
+    width: 520px;
+    height: 20px;
+    text-align: left;
 }
 
 td.taskSummary {
+    width: 520px;
+	text-align: left;
 }
 
 th.taskStatus {
 	width: 100px;
+    height: 20px;
 	text-align: center;
 }
 
