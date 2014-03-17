@@ -2,15 +2,19 @@ package org.ozsoft.task;
 
 public abstract class Task implements Runnable {
     
-    private TaskListener listener;
+    private final TaskListener listener;
     
-    private Thread thread;
+    private final Thread thread;
     
-    protected boolean isRunning = false;
+    private boolean isRunning = false;
     
     public Task(TaskListener listener) {
         this.listener = listener;
         thread = new Thread(this);
+    }
+    
+    public final boolean isRunning() {
+        return isRunning;
     }
     
     public final void start() {
@@ -40,19 +44,7 @@ public abstract class Task implements Runnable {
         }
     }
     
-    protected void doStart() {
-        // To be overridden by subclass.
-    }
-
-    protected void doComplete() {
-        // To be overridden by subclass.
-    }
-
-    protected void doCancel() {
-        // To be overridden by subclass.
-    }
-
-    protected void setProgress(int progress) {
+    protected final void setProgress(int progress) {
         if (listener != null) {
             listener.taskUpdated(progress);
         }
@@ -68,4 +60,16 @@ public abstract class Task implements Runnable {
         }
     }
     
+    protected void doStart() {
+        // To be overridden by subclass.
+    }
+
+    protected void doComplete() {
+        // To be overridden by subclass.
+    }
+
+    protected void doCancel() {
+        // To be overridden by subclass.
+    }
+
 }
