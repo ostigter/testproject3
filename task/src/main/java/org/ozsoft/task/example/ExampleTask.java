@@ -17,7 +17,7 @@ public class ExampleTask extends Task {
     @Override
     public void run() {
         System.out.println("DummyTask: Running");
-        for (int i = 1; isRunning && i <= 10; i++) {
+        for (int i = 1; isRunning() && i <= 10; i++) {
             try {
                 Thread.sleep(500L);
                 setProgress(i * 10);
