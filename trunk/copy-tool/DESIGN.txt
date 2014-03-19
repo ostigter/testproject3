@@ -1,0 +1,5 @@
+                    Copying file 'Foo.zip'
+Current:  1 of 10 files, 1.78 of 2.23 MB  --------------------  68.9 %
+Total:    1.78 MB of 38.9 MB              --------------------   2.3 %
+Speed:    2.34 MB/s (average: 2.28 MB/s)
+Duration: Elapsed: 26 seconds  Remaining: 2 minutes
