@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -22,7 +23,9 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class CopyTool {
+import org.ozsoft.copytool.task.TaskListener;
+
+public class CopyTool implements TaskListener {
 
     private static final String TITLE = "Copy Tool";
 
@@ -37,7 +40,7 @@ public class CopyTool {
     private JButton addButton;
 
     private JButton removeButton;
-    
+
     private JList<File> sourcesList;
 
     private DefaultListModel<File> sourceFiles;
@@ -45,10 +48,12 @@ public class CopyTool {
     private JTextField destDirText;
 
     private JButton browseButton;
-    
+
     private File destDir;
 
     private JButton copyButton;
+
+    private ProgressDialog progressDialog;
 
     public CopyTool() {
         initUI();
@@ -204,6 +209,8 @@ public class CopyTool {
         gbc.insets = new Insets(10, 10, 15, 10);
         frame.getContentPane().add(copyButton, gbc);
 
+        progressDialog = new ProgressDialog(frame);
+
         frame.setSize(WIDTH, HEIGHT);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -213,26 +220,27 @@ public class CopyTool {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         fileChooser.setMultiSelectionEnabled(true);
-        fileChooser.setCurrentDirectory(new File("C:/LocalData"));
+        fileChooser.setCurrentDirectory(new File("D:/"));
         if (fileChooser.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
             for (File file : fileChooser.getSelectedFiles()) {
                 addSourceFile(file);
             }
         }
     }
-    
+
     private void addSourceFile(File file) {
         if (file.isDirectory()) {
             for (File child : file.listFiles()) {
                 addSourceFile(child);
             }
         } else {
-            sourceFiles.addElement(file);
+            if (!sourceFiles.contains(file)) {
+                sourceFiles.addElement(file);
+            }
         }
-        
         updateButtons();
     }
-    
+
     private void sourcesSelected() {
         int[] selectedIndices = sourcesList.getSelectedIndices();
         if (selectedIndices.length > 0) {
@@ -241,7 +249,7 @@ public class CopyTool {
             removeButton.setEnabled(false);
         }
     }
-    
+
     private void removeSources() {
         int[] selectedIndices = sourcesList.getSelectedIndices();
         for (int i = selectedIndices.length - 1; i >= 0; i--) {
@@ -249,23 +257,59 @@ public class CopyTool {
         }
         updateButtons();
     }
-    
+
     private void browseDestination() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        fileChooser.setCurrentDirectory(new File("C:/LocalData"));
+        fileChooser.setCurrentDirectory(new File("D:/"));
         if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
             destDir = fileChooser.getSelectedFile();
             destDirText.setText(destDir.getAbsolutePath());
             updateButtons();
         }
     }
-    
+
     private void updateButtons() {
         copyButton.setEnabled(sourceFiles.size() > 0 && destDir != null);
     }
-    
+
     private void copyFiles() {
-        //TODO
+        addButton.setEnabled(false);
+        removeButton.setEnabled(false);
+        browseButton.setEnabled(false);
+        copyButton.setEnabled(false);
+        progressDialog.setVisible(true);
+        for (int i = 0; i < sourceFiles.size(); i++) {
+            progressDialog.setProgress(0);
+            File sourceFile = sourceFiles.elementAt(i);
+            File destFile = new File(destDir, sourceFile.getName());
+            CopyFileTask task = new CopyFileTask(sourceFile, destFile, this);
+            task.start();
+        }
+    }
+
+    @Override
+    public void taskStarted() {
+        // Empty implementation.
+    }
+
+    @Override
+    public void taskUpdated(int progress) {
+        progressDialog.setProgress(progress);
+    }
+
+    @Override
+    public void taskCompleted() {
+        progressDialog.setVisible(false);
+        JOptionPane.showMessageDialog(frame, "All files copied successfully.", "Copy Tool",
+                JOptionPane.INFORMATION_MESSAGE);
+        sourceFiles.removeAllElements();
+        addButton.setEnabled(true);
+        browseButton.setEnabled(true);
+    }
+
+    @Override
+    public void taskCanceled() {
+        JOptionPane.showMessageDialog(frame, "File copy canceled.", "Copy Tool", JOptionPane.INFORMATION_MESSAGE);
     }
 }
