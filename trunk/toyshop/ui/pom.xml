@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.ozsoft.toyshop</groupId>
+        <artifactId>toyshop</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>toyshop-ui</artifactId>
+    <packaging>war</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Web UI</description>
+
+    <dependencies>
+        <!-- Project -->
+        <dependency>
+            <groupId>org.ozsoft.toyshop</groupId>
+            <artifactId>toyshop-core</artifactId>
+            <version>${project.version}</version>
+            <type>ejb</type>
+            <scope>compile</scope>
+        </dependency>
+        
+        <!-- Java EE -->
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+    
+    <build>
+        <finalName>toyshop</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <warName>toyshop</warName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
