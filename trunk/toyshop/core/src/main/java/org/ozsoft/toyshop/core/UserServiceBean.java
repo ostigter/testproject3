@@ -1,9 +1,9 @@
 package org.ozsoft.toyshop.core;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 import org.ozsoft.toyshop.api.User;
 import org.ozsoft.toyshop.api.UserService;
@@ -12,7 +12,7 @@ import org.ozsoft.toyshop.api.UserService;
 @Local(UserService.class)
 public class UserServiceBean implements UserService {
 
-    @Inject
+    @EJB
     private UserDao userDao;
 
     @PostConstruct
