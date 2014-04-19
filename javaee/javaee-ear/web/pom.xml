@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.example.javaee</groupId>
+        <artifactId>javaee-ear</artifactId>
+        <version>1.0</version>
+    </parent>
+    <artifactId>javaee-ear-web</artifactId>
+    <packaging>war</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Web UI layer</description>
+
+    <dependencies>
+        <!-- Project modules -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>javaee-ear-ejb</artifactId>
+            <type>ejb</type>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- Java EE API -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${war.plugin.version}</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

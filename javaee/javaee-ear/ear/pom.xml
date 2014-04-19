@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+        <groupId>org.example.javaee</groupId>
+		<artifactId>javaee-ear</artifactId>
+		<version>1.0</version>
+	</parent>
+    <artifactId>javaee-ear-ear</artifactId>
+	<packaging>ear</packaging>
+    
+    <name>${project.artifactId}</name>
+    <description>Packages the application as single EAR file</description>
+
+	<dependencies>
+        <!-- Project modules -->
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>javaee-ear-web</artifactId>
+			<type>war</type>
+		</dependency>
+		<dependency>
+            <groupId>${project.groupId}</groupId>
+			<artifactId>javaee-ear-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+        <finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>${ear.plugin.version}</version>
+				<configuration>
+					<version>${javaee.version}</version>
+					<modules>
+						<webModule>
+                            <groupId>${project.groupId}</groupId>
+							<artifactId>javaee-ear-web</artifactId>
+							<contextRoot>javaee-ear</contextRoot>
+						</webModule>
+					</modules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
