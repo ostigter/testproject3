@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- JBoss specific descriptor file to override the context root -->
+<jboss-web>
+	<context-root>/greeter</context-root>
+</jboss-web>
