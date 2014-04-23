@@ -1,4 +1,4 @@
-package org.example.javaee.webapp;
+package org.example.javaee.webapp.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;

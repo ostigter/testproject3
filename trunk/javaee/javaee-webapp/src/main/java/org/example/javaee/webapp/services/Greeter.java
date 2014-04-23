@@ -1,4 +1,4 @@
-package org.example.javaee.webapp;
+package org.example.javaee.webapp.services;
 
 public interface Greeter {
 
