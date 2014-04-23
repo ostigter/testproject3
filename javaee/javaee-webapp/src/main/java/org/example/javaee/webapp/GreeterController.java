@@ -6,6 +6,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.example.javaee.webapp.services.Greeter;
+
 @Named("greeter")
 @RequestScoped
 public class GreeterController implements Serializable {
