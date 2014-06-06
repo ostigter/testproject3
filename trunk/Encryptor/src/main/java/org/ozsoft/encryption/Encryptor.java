@@ -20,8 +20,7 @@ import org.apache.commons.io.IOUtils;
  * Encryption library using 128-bit AES cryptography with a shared key. <br />
  * <br />
  * 
- * This is a programmer-friendly wrapper around the Java Cryptography Extention
- * (JCE) API.
+ * This is a programmer-friendly wrapper around the Java Cryptography Extention (JCE) API.
  * 
  * @author Oscar Stigter
  */
@@ -84,8 +83,7 @@ public class Encryptor {
      * Sets the shared key based on a password. <br />
      * <br />
      * 
-     * Uses an MD5 hash of the UTF-8 bytes of the password String to generate
-     * the key.
+     * Uses an MD5 hash of the UTF-8 bytes of the password String to generate the key.
      * 
      * @param password
      *            The password.
@@ -356,8 +354,7 @@ public class Encryptor {
         File sourceFile = new File(path);
         String targetPath = path.substring(0, path.length() - 4);
         File targetFile = new File(targetPath);
-        try {
-            InputStream is = new FileInputStream(sourceFile);
+        try (InputStream is = new FileInputStream(sourceFile)) {
             byte[] checkBlock = new byte[32];
             is.read(checkBlock);
             if (!byteArraysEqual(checkBlock, encrypt(new byte[31]))) {
@@ -442,5 +439,4 @@ public class Encryptor {
         }
         return isEqual;
     }
-
 }
