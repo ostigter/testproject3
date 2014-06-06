@@ -21,8 +21,7 @@ public class EncryptionException extends Exception {
     }
 
     /**
-     * Constructs an <code>EncryptionException</code> with a message and a
-     * nested exception as the cause.
+     * Constructs an <code>EncryptionException</code> with a message and a nested exception as the cause.
      * 
      * @param message
      *            The message.
@@ -32,5 +31,4 @@ public class EncryptionException extends Exception {
     public EncryptionException(String message, Throwable t) {
         super(message, t);
     }
-
 }

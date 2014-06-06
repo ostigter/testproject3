@@ -1,13 +1,15 @@
 package org.ozsoft.encryption;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Random;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -22,7 +24,7 @@ public class EncryptorTest {
     private static final String PASSWORD = "aBc#123!";
 
     private static final int BLOCK_SIZE = 10 * 1024 * 1024; // 10MB
-    
+
     @Test
     public void encryption() throws Exception {
         Random random = new Random();
@@ -48,16 +50,16 @@ public class EncryptorTest {
         // Encrypt and decrypt a byte array.
         cleardata = null;
         cipherdata = encryptor.encrypt(cleardata);
-        Assert.assertNull(cipherdata);
+        assertNull(cipherdata);
         cleardata = encryptor.decrypt(cipherdata);
-        Assert.assertNull(cleardata);
+        assertNull(cleardata);
         cleardata = new byte[0];
         cipherdata = encryptor.encrypt(cleardata);
         Assert.assertNotNull(cipherdata);
-        Assert.assertEquals(0, cipherdata.length);
+        assertEquals(0, cipherdata.length);
         cleardata = encryptor.decrypt(cipherdata);
         Assert.assertNotNull(cleardata);
-        Assert.assertEquals(0, cleardata.length);
+        assertEquals(0, cleardata.length);
         startTime = System.currentTimeMillis();
         cleardata = CLEARTEXT.getBytes();
         cipherdata = encryptor.encrypt(cleardata);
@@ -67,7 +69,7 @@ public class EncryptorTest {
         cleardata = encryptor.decrypt(cipherdata);
         cleartext = new String(cleardata);
         duration = System.currentTimeMillis() - startTime;
-        Assert.assertEquals(CLEARTEXT, cleartext);
+        assertEquals(CLEARTEXT, cleartext);
         System.out.format("Byte array decrypted in %d ms\n", duration);
 
         // Encrypt and decrypt large data block.
@@ -88,14 +90,14 @@ public class EncryptorTest {
         // Encypt and decrypt String.
         cleartext = null;
         ciphertext = encryptor.encrypt(cleartext);
-        Assert.assertEquals(null, ciphertext);
+        assertEquals(null, ciphertext);
         cleartext = encryptor.decrypt(ciphertext);
-        Assert.assertEquals(null, cleartext);
+        assertEquals(null, cleartext);
         cleartext = CLEARTEXT;
         ciphertext = encryptor.encrypt(cleartext);
         cleartext = encryptor.decrypt(ciphertext);
-        Assert.assertEquals(CLEARTEXT, cleartext);
-        
+        assertEquals(CLEARTEXT, cleartext);
+
         // Encrypt and decrypt stream.
         cleartext = "This is a test with streaming encryption and decryption.";
         InputStream clearIn = IOUtils.toInputStream(cleartext);
@@ -107,7 +109,6 @@ public class EncryptorTest {
         InputStream cipherIn = new ByteArrayInputStream(cipherdata);
         ByteArrayOutputStream clearOut = new ByteArrayOutputStream();
         encryptor.decrypt(cipherIn, clearOut);
-        Assert.assertEquals("Streaming encryption/decryption failed", cleartext, clearOut.toString()); 
+        assertEquals("Streaming encryption/decryption failed", cleartext, clearOut.toString());
     }
-
 }
