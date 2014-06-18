@@ -2,48 +2,40 @@ package org.ozsoft.password;
 
 import java.util.Arrays;
 
+/**
+ * Brute-force password generator based on a fixed set of characters and a minimum length.
+ * 
+ * @author Oscar Stigter
+ */
 public class PasswordGenerator {
-    
+
     private final char[] charset;
 
-    private final int maxLength;
-    
     private int length;
-    
-    private char[] password;
-    
-    public static void main(String[] args) {
-        PasswordGenerator pg = new PasswordGenerator("abcdefghijklmnopqrstuvwxyz", 5, 12);
-//        PasswordGenerator pg = new PasswordGenerator("0123456789", 4, 4);
-        pg.generate();
-    }
 
-    public PasswordGenerator(String chars, int minLength, int maxLength) {
+    private char[] password;
+
+    public PasswordGenerator(String chars, int minLength) {
         if (chars == null || chars.isEmpty()) {
             throw new IllegalArgumentException("Null or empty chars");
         }
         if (minLength < 1) {
             throw new IllegalArgumentException("minLength must be equal to or greater than 1");
         }
-        if (maxLength < minLength) {
-            throw new IllegalArgumentException("maxLength must be equal to or greater than minLength");
-        }
         this.charset = chars.toCharArray();
         this.length = minLength;
-        this.maxLength = maxLength;
-    }
-    
-    public void generate() {
+
         password = new char[length];
         Arrays.fill(password, charset[0]);
-        while (length <= maxLength) {
-            String attempt = toString();
-            System.out.println(attempt);
-            increment();
-        }
     }
 
-    public void increment() {
+    public String getNextPassword() {
+        String nextPassword = String.valueOf(password);
+        increment();
+        return nextPassword;
+    }
+
+    private void increment() {
         int index = length - 1;
         while (index >= 0) {
             if (password[index] == charset[charset.length - 1]) {
@@ -62,9 +54,4 @@ public class PasswordGenerator {
             }
         }
     }
-
-    public String toString() {
-        return String.valueOf(password);
-    }
-    
 }
