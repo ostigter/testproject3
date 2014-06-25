@@ -9,8 +9,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 /**
- * Example application showing how to execute a remote shell command over SSH
- * with the JSch library.
+ * Example application showing how to execute a remote shell command over SSH with the JSch library.
  * 
  * @author Oscar Stigter
  */
