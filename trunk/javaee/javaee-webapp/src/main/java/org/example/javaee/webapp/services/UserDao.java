@@ -1,13 +1,13 @@
 package org.example.javaee.webapp.services;
 
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import org.example.javaee.webapp.domain.User;
 import org.example.javaee.webapp.entity.UserEntity;
 
-@Singleton
+@Stateless
 public class UserDao {
 
     @Inject
