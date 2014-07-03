@@ -1,7 +1,6 @@
 package org.example.javaee.webapp.services;
 
-public interface Greeter {
+public interface GreeterService {
 
     String getGreeting(String name);
-
 }

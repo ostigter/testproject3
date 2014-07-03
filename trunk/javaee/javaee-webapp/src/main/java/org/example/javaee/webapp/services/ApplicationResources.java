@@ -17,5 +17,4 @@ public class ApplicationResources {
     public FacesContext getFacesContext() {
         return FacesContext.getCurrentInstance();
     }
-
 }

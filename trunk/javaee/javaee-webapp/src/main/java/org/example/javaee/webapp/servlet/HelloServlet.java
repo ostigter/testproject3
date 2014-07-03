@@ -20,5 +20,4 @@ public class HelloServlet extends HttpServlet {
         writer.write("<h1>Hello World!</h1>");
         writer.write("<a href=\"greeter.jsf\">Return to Greeter service</a>");
     }
-
 }
