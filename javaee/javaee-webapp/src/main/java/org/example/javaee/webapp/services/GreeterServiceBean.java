@@ -4,7 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 @RequestScoped
-public class GreeterBean implements Greeter {
+public class GreeterServiceBean implements GreeterService {
 
     @Inject
     private UserDao userDao;
@@ -20,7 +20,8 @@ public class GreeterBean implements Greeter {
     }
 
     private void addUser(String username) {
-        userDao.addUser(username, "secret");
+        if (userDao.getUser(username) == null) {
+            userDao.addUser(username, "secret");
+        }
     }
-
 }

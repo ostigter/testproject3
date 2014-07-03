@@ -45,5 +45,4 @@ public class UserEntity implements Serializable {
         user.setPassword(password);
         return user;
     }
-
 }

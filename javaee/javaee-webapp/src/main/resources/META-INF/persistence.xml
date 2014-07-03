@@ -5,10 +5,8 @@
     
     <persistence-unit name="primary">
         
-        <jta-data-source>java:jboss/datasources/TestDS</jta-data-source>
-        <!-- Uncomment to use default JBoss example H2 datasource
+        <!-- Default JBoss example H2 datasource -->
         <jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
-        -->
         <!-- Uncomment to use datasource deployed with this WAR
         <jta-data-source>java:jboss/datasources/GreeterDS</jta-data-source>
         -->

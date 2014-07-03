@@ -14,14 +14,14 @@
 	            <h:panelGrid columns="3">
 	                <h:outputLabel>Name:</h:outputLabel>
 	                <h:inputText value="#{name}" />
-	                <h:commandButton value="Greet" action="#{greeter.setName(name)}">
+	                <h:commandButton value="Greet" action="#{greeterModel.setName(name)}">
 	                </h:commandButton>
 	            </h:panelGrid>
 	        </h:form>
             <h:form id="response">
                 <h:panelGrid columns="2">
                     <h:outputLabel>Response:</h:outputLabel>
-                    <h:outputLabel value="#{greeter.greeting}" />
+                    <h:outputLabel value="#{greeterModel.greeting}" />
                 </h:panelGrid>
             </h:form>
             <p>
