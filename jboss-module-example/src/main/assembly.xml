@@ -1,0 +1,22 @@
+<assembly>
+    <id>module</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>src/main</directory>
+            <outputDirectory>main</outputDirectory>
+            <includes>
+                <include>module.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>main</outputDirectory>
+            <includes>
+                <include>${project.artifactId}.${project.packaging}</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
