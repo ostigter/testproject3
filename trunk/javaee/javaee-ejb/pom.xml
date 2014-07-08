@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.example.javaee</groupId>
+	<artifactId>javaee-ejb</artifactId>
+	<version>1.0</version>
+	<packaging>pom</packaging>
+
+	<name>${project.artifactId}</name>
+	<description>Top-level project POM</description>
+	<inceptionYear>2014</inceptionYear>
+    <licenses>
+       <license>
+           <name>Apache License 2.0</name>
+           <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+       </license>
+    </licenses>
+	<contributors>
+		<contributor>
+			<name>Oscar Stigter</name>
+			<email>oscar.stigter@gmail.com</email>
+		</contributor>
+	</contributors>
+
+	<modules>
+		<module>greeter</module>
+		<module>greeter-client</module>
+	</modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<javaee.version>7.0</javaee.version>
+		<ejb.version>3.1</ejb.version>
+		<ejb.plugin.version>2.3</ejb.plugin.version>
+		<ear.plugin.version>2.9</ear.plugin.version>
+		<war.plugin.version>2.4</war.plugin.version>
+        <commons-lang.version>2.6</commons-lang.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<!-- Project modules -->
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>greeter-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>greeter-ejb</artifactId>
+				<version>${project.version}</version>
+				<type>ejb</type>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>greeter-ear</artifactId>
+				<version>${project.version}</version>
+				<type>ear</type>
+			</dependency>
+
+			<!-- Java EE API -->
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>${javaee.version}</version>
+				<scope>provided</scope>
+			</dependency>
+            
+            <!-- Third-party -->
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
