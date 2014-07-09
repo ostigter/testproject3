@@ -3,16 +3,16 @@ package org.example.greeter.service;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
-import org.apache.commons.lang.StringUtils;
 import org.example.greeter.api.Greeter;
 
 @Stateless
-@Remote
+@Remote(Greeter.class)
 public class GreeterBean implements Greeter {
 
     @Override
     public String getGreeting(String name) {
-        if (StringUtils.isEmpty(name)) {
+        // if (StringUtils.isEmpty(name)) {
+        if (name == null || name.isEmpty()) {
             return "Hello!";
         } else {
             return String.format("Hello, %s!", name);

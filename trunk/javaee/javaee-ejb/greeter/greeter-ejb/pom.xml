@@ -7,6 +7,7 @@
         <groupId>org.example.javaee</groupId>
         <artifactId>javaee-ejb</artifactId>
         <version>1.0</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 	<artifactId>greeter-ejb</artifactId>
 	<packaging>ejb</packaging>
@@ -28,10 +29,12 @@
 		</dependency>
         
         <!-- Third-party -->
+        <!--
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
+        -->
 	</dependencies>
 
     <build>
