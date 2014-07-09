@@ -5,27 +5,31 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-        <groupId>org.example.javaee</groupId>
+		<groupId>org.example.javaee</groupId>
 		<artifactId>javaee-ejb</artifactId>
 		<version>1.0</version>
+		<relativePath>../../pom.xml</relativePath>
 	</parent>
-    <artifactId>greeter-ear</artifactId>
+	<artifactId>greeter-ear</artifactId>
 	<packaging>ear</packaging>
-    
-    <name>${project.artifactId}</name>
-    <description>Packages the Greeter service EAR</description>
+
+	<name>${project.artifactId}</name>
+	<description>Packages the Greeter service EAR</description>
 
 	<dependencies>
-        <dependency>
-            <groupId>org.example.javaee</groupId>
-            <artifactId>greeter-ejb</artifactId>
-            <version>1.0</version>
-            <type>ejb</type>
-        </dependency>
-    </dependencies>
-    
+		<dependency>
+			<groupId>org.example.javaee</groupId>
+			<artifactId>greeter-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.example.javaee</groupId>
+			<artifactId>greeter-ejb</artifactId>
+			<type>ejb</type>
+		</dependency>
+	</dependencies>
+
 	<build>
-        <finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -34,8 +38,13 @@
 				<configuration>
 					<version>7</version>
 					<modules>
+						<jarModule>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>greeter-api</artifactId>
+							<bundleDir>lib</bundleDir>
+						</jarModule>
 						<ejbModule>
-                            <groupId>${project.groupId}</groupId>
+							<groupId>${project.groupId}</groupId>
 							<artifactId>greeter-ejb</artifactId>
 						</ejbModule>
 					</modules>
@@ -43,5 +52,5 @@
 			</plugin>
 		</plugins>
 	</build>
-    
+
 </project>
