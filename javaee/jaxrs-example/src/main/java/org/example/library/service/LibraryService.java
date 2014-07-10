@@ -1,8 +1,11 @@
-package org.example.jaxrs;
+package org.example.library.service;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.example.library.api.Book;
+import org.example.library.api.Library;
 
 public class LibraryService implements Library {
 

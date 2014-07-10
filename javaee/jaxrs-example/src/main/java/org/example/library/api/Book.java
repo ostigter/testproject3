@@ -1,4 +1,4 @@
-package org.example.jaxrs;
+package org.example.library.api;
 
 public class Book {
 
@@ -30,5 +30,10 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s - \"%s\"", author, title);
     }
 }
