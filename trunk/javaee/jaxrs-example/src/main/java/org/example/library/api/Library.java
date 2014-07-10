@@ -1,4 +1,4 @@
-package org.example.jaxrs;
+package org.example.library.api;
 
 import java.util.Collection;
 
