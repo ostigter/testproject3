@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.1" name="${jboss.module.name}">
+
+    <resources>
+        <resource-root path="${project.build.finalName}.jar" />
+    </resources>
+
+    <dependencies>
+    </dependencies>
+    
+</module>

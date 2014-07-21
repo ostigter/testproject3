@@ -1,0 +1,23 @@
+<assembly>
+    <id>module</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <fileSet>
+            <directory>src/main</directory>
+            <outputDirectory>org/example/greeter/main</outputDirectory>
+            <includes>
+                <include>module.xml</include>
+            </includes>
+            <filtered>true</filtered>
+        </fileSet>
+        <fileSet>
+            <directory>target</directory>
+            <outputDirectory>org/example/greeter/main</outputDirectory>
+            <includes>
+                <include>${project.build.finalName}.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>
