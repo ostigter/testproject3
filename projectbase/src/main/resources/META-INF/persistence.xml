@@ -3,24 +3,18 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0">
 	
-	<persistence-unit name="primary">
+	<persistence-unit name="projectbasePU">
 
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
-        <!-- Entities -->
         <class>org.ozsoft.projectbase.entities.Project</class>
         <class>org.ozsoft.projectbase.entities.Release</class>
+        
+        <jta-data-source>java:jboss/datasources/ProjectBase</jta-data-source>
 
 		<properties>
-            <!-- In-memory H2 database -->
-            <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:h2:~/projectbase.db" />
-            <property name="javax.persistence.jdbc.user" value="sa" />
-            <property name="javax.persistence.jdbc.password" value="sa" />
-            
-            <!-- Hibernate -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+            <property name="hibernate.hbm2ddl.auto" value="validate" />
             <property name="hibernate.show_sql" value="false" />
 		</properties>
 

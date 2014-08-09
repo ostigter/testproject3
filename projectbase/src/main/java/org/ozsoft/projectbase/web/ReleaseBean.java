@@ -76,7 +76,7 @@ public class ReleaseBean implements Serializable {
         }
         return releases;
     }
-    
+
     public String add() {
         if (projectName != null && projectName.length() > 0) {
             title = "Add Release";
@@ -113,7 +113,8 @@ public class ReleaseBean implements Serializable {
 
     public String delete() {
         if (release != null) {
-            projectRepository.deleteRelease(release.getId());
+            project.getReleases().remove(release);
+            projectRepository.store(project);
         }
         return "listReleases.xhtml";
     }
