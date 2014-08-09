@@ -15,8 +15,8 @@
             <!-- PostgreSQL -->
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/projectbase" />
-            <property name="javax.persistence.jdbc.user" value="projectbase" />
-            <property name="javax.persistence.jdbc.password" value="projectbase" />
+            <property name="javax.persistence.jdbc.user" value="sa" />
+            <property name="javax.persistence.jdbc.password" value="sa" />
 
             <!-- Hibernate -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
