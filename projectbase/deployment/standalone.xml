@@ -1,11 +1,11 @@
             <datasources>
                 <datasource jndi-name="java:jboss/datasources/ProjectBase" pool-name="ProjectBaseDS" enabled="true" use-java-context="true">
-                    <connection-url>jdbc:postgresql://localhost/projectbase</connection-url>
+                    <connection-url>jdbc:postgresql://localhost:5432/projectbase</connection-url>
                     <driver>postgresql</driver>
                     <transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
                     <security>
-                        <user-name>sa</user-name>
-                        <password>sa</password>
+                        <user-name>projectbase</user-name>
+                        <password>projectbase</password>
                     </security>
                 </datasource>
                 <drivers>
