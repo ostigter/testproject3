@@ -1,43 +1,33 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:f="http://java.sun.com/jsf/core"
-       xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <title>ProjectBase</title>
-        <link rel="StyleSheet" type="text/css" href="styles.css" />
-    </h:head>
-    <h:body>
-        <div class="ui-widget ui-widget-header">
-            <h1>ProjectBase</h1>
-        </div>
-        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-            <h:outputLink value="listProducts.xhtml">
-                <h:outputText value="Products" />
-            </h:outputLink>
-            |
-            <h:outputLink value="listReleases.xhtml">
-                <h:outputText value="Releases" />
-            </h:outputLink>
-        </div>
-        <div class="ui-widget ui-widget-content ui-corner-all">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="template.xhtml">
+    <ui:define name="content">
+        <div class="content ui-widget ui-widget-content ui-corner-all">
             <h2><h:outputText value="#{productBean.title}" /></h2>
             <h:form>
-                <p:commandButton value="Delete Product" action="#{productBean.delete}" ajax="false" rendered="#{not empty productBean.product}" />
+                <h:panelGroup rendered="#{not empty productBean.product}">
+                    <p:commandButton value="Delete Product" action="#{productBean.delete}" ajax="false" />
+                    <br /><br />
+                </h:panelGroup>
                 <h:panelGrid columns="2">
                     <h:outputLabel for="code" value="Code:" />
-                    <p:inputText id="code" value="#{productBean.code}" />
+                    <p:inputText id="code" value="#{productBean.code}" style="width: 50px" />
                     <h:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name" value="#{productBean.name}" />
-                    <f:facet name="footer">
-                        <h:panelGroup>
-                            <p:commandButton value="Save" action="#{productBean.save}" ajax="false" />
-                            <p:commandLink value="Cancel" action="#{productBean.cancel}" ajax="false" />
-                        </h:panelGroup>
-                    </f:facet>
+                    <p:inputText id="name" value="#{productBean.name}" style="width: 200px" />
+                    <h:outputLabel for="description" value="Description:" />
+                    <p:inputTextarea id="description" value="#{productBean.description}" autoResize="false" styleClass="textarea" />
+                    &#160;
+                    <h:panelGroup>
+                        <br />
+                        <p:commandButton value="Save" action="#{productBean.save}" ajax="false" />
+                        &#160;
+                        <p:commandLink value="Cancel" action="#{productBean.cancel}" ajax="false" />
+                    </h:panelGroup>
                 </h:panelGrid>
             </h:form>
         </div>
-    </h:body>
-</html>
+    </ui:define>
+</ui:composition>

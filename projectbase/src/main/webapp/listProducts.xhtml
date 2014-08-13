@@ -1,49 +1,35 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-       xmlns:h="http://java.sun.com/jsf/html"
-       xmlns:f="http://java.sun.com/jsf/core"
-       xmlns:p="http://primefaces.org/ui">
-    <h:head>
-        <title>ProjectBase</title>
-        <link rel="StyleSheet" type="text/css" href="styles.css" />
-    </h:head>
-    <h:body>
-        <div class="ui-widget ui-widget-header">
-            <h1>ProjectBase</h1>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="template.xhtml">
+    <ui:define name="content">
+        <div class="content ui-widget ui-widget-content ui-corner-all">
+            <h2>Products</h2>
+            <h:form>
+                <p:dataTable value="#{productBean.products}" var="product" rendered="#{not empty productBean.products}" style="width: 100%">
+                    <p:column style="width: 50px">
+                        <f:facet name="header">Code</f:facet>
+                        <h:commandLink value="#{product.code}" action="#{productBean.edit}" ajax="false">
+                            <f:setPropertyActionListener target="#{productBean.product}" value="${product}" />
+                        </h:commandLink>
+                    </p:column>
+                    <p:column style="width: 200px">
+                        <f:facet name="header">Name</f:facet>
+                        <h:outputText value="#{product.name}" />
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">Description</f:facet>
+                        <h:outputText value="#{product.description}" />
+                    </p:column>
+                </p:dataTable>
+                <h:panelGroup rendered="#{empty productBean.products}">
+                    <p>No products defined.</p>
+                </h:panelGroup>
+                <br />
+                <p:commandButton value="Add Product" action="#{productBean.add}" ajax="false" />
+            </h:form>
         </div>
-        <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-            <h:outputLink value="listProducts.xhtml">
-                <h:outputText value="Products" />
-            </h:outputLink>
-            |
-            <h:outputLink value="listReleases.xhtml">
-                <h:outputText value="Releases" />
-            </h:outputLink>
-        </div>
-        <div class="ui-widget ui-widget-content ui-corner-all">
-	        <h2>Products</h2>
-	        <h:form>
-		        <p:dataTable value="#{productBean.products}" var="product" rendered="#{not empty productBean.products}" style="width: 50%">
-		            <p:column style="width: 50px">
-		                <f:facet name="header">
-		                    <h:outputText value="Code" />
-		                </f:facet>
-		                <h:commandLink value="#{product.code}" action="#{productBean.edit}" ajax="false">
-		                    <f:setPropertyActionListener target="#{productBean.product}" value="${product}" />
-		                </h:commandLink>
-		            </p:column>
-		            <p:column>
-		                <f:facet name="header">
-		                    <h:outputText value="Name" />
-		                </f:facet>
-		                <h:outputText value="#{product.name}" />
-		            </p:column>
-		        </p:dataTable>
-		        <h:outputText value="No products defined." rendered="#{empty productBean.products}" />
-		        <br />
-	            <p:commandButton value="Add Product" action="#{productBean.add}" ajax="false" />
-		    </h:form>
-        </div>
-    </h:body>
-</html>
+    </ui:define>
+</ui:composition>
