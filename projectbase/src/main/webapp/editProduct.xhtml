@@ -13,8 +13,8 @@
             <h1>ProjectBase</h1>
         </div>
         <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-            <h:outputLink value="listProjects.xhtml">
-                <h:outputText value="Projects" />
+            <h:outputLink value="listProducts.xhtml">
+                <h:outputText value="Products" />
             </h:outputLink>
             |
             <h:outputLink value="listReleases.xhtml">
@@ -22,18 +22,18 @@
             </h:outputLink>
         </div>
         <div class="ui-widget ui-widget-content ui-corner-all">
-            <h2><h:outputText value="#{projectBean.title}" /></h2>
+            <h2><h:outputText value="#{productBean.title}" /></h2>
             <h:form>
-                <p:commandButton value="Delete Project" action="#{projectBean.delete}" ajax="false" rendered="#{not empty projectBean.project}" />
+                <p:commandButton value="Delete Product" action="#{productBean.delete}" ajax="false" rendered="#{not empty productBean.product}" />
                 <h:panelGrid columns="2">
                     <h:outputLabel for="code" value="Code:" />
-                    <p:inputText id="code" value="#{projectBean.code}" />
+                    <p:inputText id="code" value="#{productBean.code}" />
                     <h:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name" value="#{projectBean.name}" />
+                    <p:inputText id="name" value="#{productBean.name}" />
                     <f:facet name="footer">
                         <h:panelGroup>
-                            <p:commandButton value="Save" action="#{projectBean.save}" ajax="false" />
-                            <p:commandLink value="Cancel" action="#{projectBean.cancel}" ajax="false" />
+                            <p:commandButton value="Save" action="#{productBean.save}" ajax="false" />
+                            <p:commandLink value="Cancel" action="#{productBean.cancel}" ajax="false" />
                         </h:panelGroup>
                     </f:facet>
                 </h:panelGrid>

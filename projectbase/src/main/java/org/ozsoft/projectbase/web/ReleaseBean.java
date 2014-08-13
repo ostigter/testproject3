@@ -7,9 +7,9 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import org.ozsoft.projectbase.entities.Project;
+import org.ozsoft.projectbase.entities.Product;
 import org.ozsoft.projectbase.entities.Release;
-import org.ozsoft.projectbase.repositories.ProjectRepository;
+import org.ozsoft.projectbase.repositories.ProductRepository;
 
 @ManagedBean
 @SessionScoped
@@ -18,13 +18,13 @@ public class ReleaseBean implements Serializable {
     private static final long serialVersionUID = 8246447601649350345L;
 
     @EJB
-    private ProjectRepository projectRepository;
+    private ProductRepository productRepository;
 
     private String title;
 
-    private String projectName;
+    private String productName;
 
-    private Project project;
+    private Product product;
 
     private Release release;
 
@@ -34,20 +34,20 @@ public class ReleaseBean implements Serializable {
         return title;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProjectName(String projectName) {
-        this.projectName = projectName;
+    public void setProductName(String product) {
+        this.productName = product;
     }
 
-    public Project getProject() {
-        return project;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getName() {
@@ -68,17 +68,17 @@ public class ReleaseBean implements Serializable {
 
     public List<Release> getReleases() {
         List<Release> releases = null;
-        if (projectName != null && projectName.length() > 0) {
-            project = projectRepository.retrieveByName(projectName);
-            if (project != null) {
-                releases = project.getReleases();
+        if (productName != null && productName.length() > 0) {
+            product = productRepository.retrieveByName(productName);
+            if (product != null) {
+                releases = product.getReleases();
             }
         }
         return releases;
     }
 
     public String add() {
-        if (projectName != null && projectName.length() > 0) {
+        if (productName != null && productName.length() > 0) {
             title = "Add Release";
             name = "";
             return "editRelease.xhtml";
@@ -104,17 +104,17 @@ public class ReleaseBean implements Serializable {
             release = new Release();
         }
         release.setName(name);
-        project = projectRepository.retrieveByName(projectName);
-        release.setProject(project);
-        project.getReleases().add(release);
-        projectRepository.store(project);
+        product = productRepository.retrieveByName(productName);
+        release.setProduct(product);
+        product.getReleases().add(release);
+        productRepository.store(product);
         return "listReleases.xhtml";
     }
 
     public String delete() {
         if (release != null) {
-            project.getReleases().remove(release);
-            projectRepository.store(project);
+            product.getReleases().remove(release);
+            productRepository.store(product);
         }
         return "listReleases.xhtml";
     }
