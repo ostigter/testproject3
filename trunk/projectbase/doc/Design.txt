@@ -1,5 +1,5 @@
-ProjectBase
-===========
+ProjectBase design
+==================
 
 
 Use cases
@@ -9,14 +9,17 @@ Use cases
 * Log out
 * Manage users
 * Manage products
+* Manage releases
 * Manage components
+* Manage teams
+* Manage sprints
 * Manage stories
 * Manage requirements
-* Manage releases
-* Manage tasks, change requests, bug reports
 * Manage test suites
 * Manage test cases
-* Manage sprints
+* Manage issues
+* Manage tasks
+* View/edit board
 * Report requirements
 	* per project
 	* per component
@@ -35,60 +38,57 @@ User
     password
     fullName
     email
-Project
+    notes
+Product
+    code
     name
+    description
     owners
-    components
-    releases
-    sprints
 Component
+    product
+    code
     name
+    description
     owners
-    requirements
-	tasks
-    parent
-    children
 Release
-    project
+    product
     name (version)
     owners
     date
-    status (d/a/b/c)
-    sprints
+    status (Development, Alpha, Beta, Customer)
 Sprint
-    id
+    team
+    number
     startDate
     endDate 
-    developers
-    stories
-    tasks
+    members
 Story
-    requirements
-    tasks
+    title
+    description
+    status
+Feature
+    title
+    description
+    product
+    component
+    status
 Requirement
-    id
-	project
+	product
 	component
 	release
-    sprint
-    type (Functional, Interface, Design, Reliability, Performance, Usability, Maintainability, Portability)
+	sprint
+    type (Functional, Interface, Design, Reliability, Performance, Usability, Maintainability, Portability, Testability)
     title
     description
     owner
     status (Draft, For Review, Final, Obsolete)
     parent
     children
-	tasks
-	testCases
     history
 Task
-    id
-	project
-	component
-	release
-	sprint
     title
     description
+	sprint
     owner
     status (New, Reopened, Investigated, Planned, In Progress, For Review, Verified, Integrated, Blocked, Postponed, Closed)
     resolution (Integrated, Duplicate, Not Reproducable, Won't Fix)
