@@ -3,20 +3,20 @@ package org.ozsoft.projectbase.web;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.ozsoft.projectbase.entities.Product;
 import org.ozsoft.projectbase.repositories.ProductRepository;
 
-@ManagedBean
-@SessionScoped
+@Named
+@RequestScoped
 public class ProductBean implements Serializable {
 
     private static final long serialVersionUID = 4728584552025654369L;
 
-    @EJB
+    @Inject
     private ProductRepository productRepository;
 
     private String title;
@@ -27,6 +27,8 @@ public class ProductBean implements Serializable {
 
     private String name;
 
+    private String description;
+
     public String getTitle() {
         return title;
     }
@@ -35,8 +37,8 @@ public class ProductBean implements Serializable {
         return product;
     }
 
-    public void setProduct(Product project) {
-        this.product = project;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public String getCode() {
@@ -55,6 +57,14 @@ public class ProductBean implements Serializable {
         this.name = name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<Product> getProducts() {
         return productRepository.findAll();
     }
@@ -64,6 +74,7 @@ public class ProductBean implements Serializable {
         product = null;
         code = "";
         name = "";
+        description = "";
         return "editProduct.xhtml";
     }
 
@@ -71,6 +82,7 @@ public class ProductBean implements Serializable {
         title = "Edit Product";
         code = product.getCode();
         name = product.getName();
+        description = product.getDescription();
         return "editProduct.xhtml";
     }
 
@@ -80,13 +92,14 @@ public class ProductBean implements Serializable {
         }
         product.setCode(code);
         product.setName(name);
+        product.setDescription(description);
         productRepository.store(product);
         return "listProducts.xhtml";
     }
 
     public String delete() {
         if (product != null) {
-            productRepository.delete(product.getId());
+            productRepository.delete(product);
         }
         return "listProducts.xhtml";
     }

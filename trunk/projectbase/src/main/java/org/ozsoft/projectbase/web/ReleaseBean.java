@@ -1,23 +1,24 @@
 package org.ozsoft.projectbase.web;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.ozsoft.projectbase.entities.Product;
 import org.ozsoft.projectbase.entities.Release;
 import org.ozsoft.projectbase.repositories.ProductRepository;
 
-@ManagedBean
+@Named
 @SessionScoped
 public class ReleaseBean implements Serializable {
 
     private static final long serialVersionUID = 8246447601649350345L;
 
-    @EJB
+    @Inject
     private ProductRepository productRepository;
 
     private String title;
@@ -29,6 +30,10 @@ public class ReleaseBean implements Serializable {
     private Release release;
 
     private String name;
+
+    private Date date;
+
+    private String description;
 
     public String getTitle() {
         return title;
@@ -58,6 +63,22 @@ public class ReleaseBean implements Serializable {
         this.name = name;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Release getRelease() {
         return release;
     }
@@ -78,12 +99,16 @@ public class ReleaseBean implements Serializable {
     }
 
     public String add() {
-        if (productName != null && productName.length() > 0) {
+        if (product != null) {
+            release = new Release();
+            release.setProduct(product);
+            product.getReleases().add(release);
             title = "Add Release";
             name = "";
+            date = new Date();
+            description = "";
             return "editRelease.xhtml";
         } else {
-            System.out.println("*** Project not set");
             return "listReleases.xhtml";
         }
     }
@@ -92,21 +117,18 @@ public class ReleaseBean implements Serializable {
         if (release != null) {
             title = "Edit Release";
             name = release.getName();
+            date = release.getDate();
+            description = release.getDescription();
             return "editRelease.xhtml";
         } else {
-            System.out.println("*** Release not set");
             return "listReleases.xhtml";
         }
     }
 
     public String save() {
-        if (release == null) {
-            release = new Release();
-        }
         release.setName(name);
-        product = productRepository.retrieveByName(productName);
-        release.setProduct(product);
-        product.getReleases().add(release);
+        release.setDate(date);
+        release.setDescription(description);
         productRepository.store(product);
         return "listReleases.xhtml";
     }
@@ -122,5 +144,4 @@ public class ReleaseBean implements Serializable {
     public String cancel() {
         return "listReleases.xhtml";
     }
-
 }
