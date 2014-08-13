@@ -7,7 +7,7 @@
 
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
-        <class>org.ozsoft.projectbase.entities.Project</class>
+        <class>org.ozsoft.projectbase.entities.Product</class>
         <class>org.ozsoft.projectbase.entities.Release</class>
         
         <jta-data-source>java:jboss/datasources/ProjectBase</jta-data-source>

@@ -6,17 +6,16 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Release extends BaseEntity {
 
-	private static final long serialVersionUID = -1541127939474309492L;
-	
-	@ManyToOne
-	private Project project;
+    private static final long serialVersionUID = -1541127939474309492L;
 
-	public Project getProject() {
-		return project;
-	}
+    @ManyToOne
+    private Product product;
 
-	public void setProject(Project project) {
-		this.project = project;
-	}
-	
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 }

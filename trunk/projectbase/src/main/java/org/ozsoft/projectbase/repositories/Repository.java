@@ -16,7 +16,7 @@ public abstract class Repository<T extends BaseEntity> {
 
     @PersistenceContext
     protected EntityManager em;
-    
+
     protected Repository(Class<T> entityClass) {
         this.entityClass = entityClass;
         className = entityClass.getName();
@@ -35,30 +35,29 @@ public abstract class Repository<T extends BaseEntity> {
     }
 
     public List<T> findAll() {
-    	return em.createQuery("SELECT e FROM " + className + " e", entityClass).getResultList();
+        return em.createQuery("SELECT e FROM " + className + " e", entityClass).getResultList();
     }
 
     public T retrieveById(long id) {
         return em.find(entityClass, id);
     }
-    
+
     @SuppressWarnings("unchecked")
-	public T retrieveByName(String name) {
-    	Query query = em.createQuery("SELECT e FROM " + className + " e WHERE e.name = :name", entityClass);
-    	query.setParameter("name", name);
-    	List<T> entities = query.getResultList();
-    	return (entities.size() > 0) ? entities.get(0) : null;
+    public T retrieveByName(String name) {
+        Query query = em.createQuery("SELECT e FROM " + className + " e WHERE e.name = :name", entityClass);
+        query.setParameter("name", name);
+        List<T> entities = query.getResultList();
+        return (entities.size() > 0) ? entities.get(0) : null;
     }
-    
+
     public void delete(long id) {
-    	T entity = retrieveById(id);
-    	if (entity != null) {
-    		delete(entity);
-    	}
+        T entity = retrieveById(id);
+        if (entity != null) {
+            delete(entity);
+        }
     }
 
     public void delete(T entity) {
         em.remove(entity);
     }
-
 }

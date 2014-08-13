@@ -13,8 +13,8 @@
             <h1>ProjectBase</h1>
         </div>
         <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-            <h:outputLink value="listProjects.xhtml">
-                <h:outputText value="Projects" />
+            <h:outputLink value="listProducts.xhtml">
+                <h:outputText value="Products" />
             </h:outputLink>
             |
             <h:outputLink value="listReleases.xhtml">
@@ -25,10 +25,10 @@
 	        <h2>Releases</h2>
 	        <h:form>
 	            <h:panelGrid columns="2">
-	                <h:outputText value="Project:" />                
-		            <p:selectOneMenu value="#{releaseBean.projectName}" onchange="submit()" effectDuration="1" styleClass="selectOneMenu">
+	                <h:outputText value="Product:" />                
+		            <p:selectOneMenu value="#{releaseBean.productName}" onchange="submit()" effectDuration="1" styleClass="selectOneMenu">
 	                    <f:selectItem itemLabel="--Select--" itemValue="" />
-		                <f:selectItems value="#{projectBean.projects}" />
+		                <f:selectItems value="#{productBean.products}" />
 		            </p:selectOneMenu>
 	            </h:panelGrid>
 	            <p:dataTable value="#{releaseBean.releases}" var="release" rendered="#{not empty releaseBean.releases}" style="width: 25%">
@@ -41,9 +41,9 @@
 	                    </h:commandLink>
 	                </p:column>
 	            </p:dataTable>
-	            <h:outputText value="No releases defined." rendered="#{not empty releaseBean.projectName and empty releaseBean.releases}" />
+	            <h:outputText value="No releases defined." rendered="#{not empty releaseBean.productName and empty releaseBean.releases}" />
 		        <br />
-	            <p:commandButton value="Add Release" action="#{releaseBean.add}" ajax="false" rendered="#{not empty releaseBean.projectName}" />
+	            <p:commandButton value="Add Release" action="#{releaseBean.add}" ajax="false" rendered="#{not empty releaseBean.productName}" />
 		    </h:form>
         </div>
     </h:body>

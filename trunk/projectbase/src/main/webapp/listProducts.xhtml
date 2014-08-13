@@ -13,8 +13,8 @@
             <h1>ProjectBase</h1>
         </div>
         <div id="menu" class="ui-widget ui-widget-content ui-corner-all">
-            <h:outputLink value="listProjects.xhtml">
-                <h:outputText value="Projects" />
+            <h:outputLink value="listProducts.xhtml">
+                <h:outputText value="Products" />
             </h:outputLink>
             |
             <h:outputLink value="listReleases.xhtml">
@@ -22,27 +22,27 @@
             </h:outputLink>
         </div>
         <div class="ui-widget ui-widget-content ui-corner-all">
-	        <h2>Projects</h2>
+	        <h2>Products</h2>
 	        <h:form>
-		        <p:dataTable value="#{projectBean.projects}" var="project" rendered="#{not empty projectBean.projects}" style="width: 50%">
+		        <p:dataTable value="#{productBean.products}" var="product" rendered="#{not empty productBean.products}" style="width: 50%">
 		            <p:column style="width: 50px">
 		                <f:facet name="header">
 		                    <h:outputText value="Code" />
 		                </f:facet>
-		                <h:commandLink value="#{project.code}" action="#{projectBean.edit}" ajax="false">
-		                    <f:setPropertyActionListener target="#{projectBean.project}" value="${project}" />
+		                <h:commandLink value="#{product.code}" action="#{productBean.edit}" ajax="false">
+		                    <f:setPropertyActionListener target="#{productBean.product}" value="${product}" />
 		                </h:commandLink>
 		            </p:column>
 		            <p:column>
 		                <f:facet name="header">
 		                    <h:outputText value="Name" />
 		                </f:facet>
-		                <h:outputText value="#{project.name}" />
+		                <h:outputText value="#{product.name}" />
 		            </p:column>
 		        </p:dataTable>
-		        <h:outputText value="No projects defined." rendered="#{empty projectBean.projects}" />
+		        <h:outputText value="No products defined." rendered="#{empty productBean.products}" />
 		        <br />
-	            <p:commandButton value="Add Project" action="#{projectBean.add}" ajax="false" />
+	            <p:commandButton value="Add Product" action="#{productBean.add}" ajax="false" />
 		    </h:form>
         </div>
     </h:body>
