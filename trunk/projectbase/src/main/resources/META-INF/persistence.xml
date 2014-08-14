@@ -7,6 +7,7 @@
 
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
+        <class>org.ozsoft.projectbase.entities.User</class>
         <class>org.ozsoft.projectbase.entities.Product</class>
         <class>org.ozsoft.projectbase.entities.Release</class>
         
