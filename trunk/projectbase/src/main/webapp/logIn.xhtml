@@ -1,0 +1,29 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="template.xhtml">
+    <ui:define name="content">
+        <div class="content ui-widget ui-widget-content ui-corner-all">
+            <h2>Log In</h2>
+            <h:form>
+                <h:messages infoClass="infoMessage" errorClass="errorMessage" />
+                <h:panelGrid columns="2">
+                    <h:outputLabel value="Username:" for="username" />
+                    <h:inputText id="username" value="#{userBean.username}" required="true"
+                            requiredMessage="Please enter your username" maxlength="15" style="width: 150px;" />                
+                    <h:outputLabel value="Password:" for="password" />
+                    <h:inputSecret id="password" value="#{userBean.password}" required="true"
+                            requiredMessage="Please enter your password"  maxlength="15" style="width: 150px;" />
+                    <h:selectBooleanCheckbox value="#{userBean.rememberMe}" />
+                    Remember me on this computer
+                </h:panelGrid>
+                <br />
+                <h:commandButton value="Log In" action="#{userBean.logIn}" />
+                <br /><br />
+                <p>If you do not have an account yet, request one from an administrator.</p>
+            </h:form>
+        </div>
+    </ui:define>
+</ui:composition>

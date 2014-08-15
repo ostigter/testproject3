@@ -3,8 +3,11 @@ package org.ozsoft.projectbase.web;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 
 import org.ozsoft.projectbase.entities.User;
 import org.ozsoft.projectbase.services.UserService;
@@ -27,6 +30,8 @@ public class UserBean implements Serializable {
 
     private String password;
 
+    private boolean rememberMe;
+
     public String getUsername() {
         return username;
     }
@@ -43,12 +48,42 @@ public class UserBean implements Serializable {
         this.password = password;
     }
 
-    public void logIn() {
-        User user = userService.logIn(username, password);
-        // TODO
+    public boolean getRememberMe() {
+        return rememberMe;
     }
 
-    public void logOut() {
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
+    }
+
+    public String logIn() {
+        User user = userService.logIn(username, password);
+        if (user != null) {
+            // Successfully logged in.
+            return "index.xhtml";
+        } else {
+            // Incorrect username or password.
+            FacesContext fc = FacesContext.getCurrentInstance();
+            fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Incorrect username or password.", null));
+            return null;
+        }
+    }
+
+    public String logOut() {
         userService.logOut();
+        clearUser();
+        return "index.xhtml";
+    }
+
+    private static HttpSession getSession(boolean create) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        return (HttpSession) facesContext.getExternalContext().getSession(create);
+    }
+
+    private void clearUser() {
+        username = null;
+        password = null;
+        rememberMe = false;
+        getSession(false).invalidate();
     }
 }

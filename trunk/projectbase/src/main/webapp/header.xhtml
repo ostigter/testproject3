@@ -6,6 +6,18 @@
 	<div class="ui-widget ui-widget-header ui-corner-all">
 	    <h1>ProjectBase</h1>
 	</div>
+    <div class="accountBar ui-widget ui-widget-content ui-corner-all">
+        <h:outputLink value="logIn.xhtml" rendered="#{empty userService.user}">
+            <h:outputText value="Log in" />
+        </h:outputLink>
+        <h:form rendered="#{not empty userService.user}">
+            <h:outputLink value="editUser.xhtml">
+                <h:outputText value="#{userService.user.username}" />
+            </h:outputLink>
+		    |
+            <h:commandLink value="Log out" action="#{userBean.logOut}" />
+        </h:form>
+    </div>
     <div class="content ui-widget ui-widget-content ui-corner-all">
         <h:outputLink value="listProducts.xhtml">
             <h:outputText value="Products" />

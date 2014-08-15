@@ -17,6 +17,9 @@ public class Product extends BaseEntity {
     private String code;
 
     @Basic
+    protected String name;
+
+    @Basic
     private String description;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
@@ -28,6 +31,14 @@ public class Product extends BaseEntity {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -44,5 +55,10 @@ public class Product extends BaseEntity {
 
     public void setReleases(List<Release> releases) {
         this.releases = releases;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Product(code = '%s', name = '%s')", code, name);
     }
 }
