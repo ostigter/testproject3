@@ -2,11 +2,6 @@
    font-size: 12px;
 }
 
-.textarea {
-	width: 400px;
-	height: 100px;
-}
-
 body {
     margin-left:  20%;
     margin-right: 20%;
@@ -17,6 +12,11 @@ h1 {
 	padding: 10px;
 }
 
+div.accountBar {
+    padding: 10px;
+	text-align: right;
+}
+
 div.content {
     padding: 10px;
 }
@@ -24,4 +24,19 @@ div.content {
 div.footer {
     font-size: 60%;
     text-align: right;
+}
+
+.textarea {
+    width: 400px;
+    height: 100px;
+}
+
+.infoMessage {
+    color:       #00ff00;
+    font-weight: bold;
+}
+
+.errorMessage {
+    color:       #ff0000;
+    font-weight: bold;
 }

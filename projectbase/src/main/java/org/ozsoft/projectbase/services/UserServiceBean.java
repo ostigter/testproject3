@@ -1,8 +1,11 @@
 package org.ozsoft.projectbase.services;
 
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
-import javax.ejb.Stateful;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.ozsoft.projectbase.entities.User;
 import org.ozsoft.projectbase.repositories.UserRepository;
@@ -12,14 +15,15 @@ import org.ozsoft.projectbase.repositories.UserRepository;
  * 
  * @author Oscar Stigter
  */
-@Stateful
-public class UserServiceBean implements UserService {
+@Named(value = "userService")
+@SessionScoped
+public class UserServiceBean implements UserService, Serializable {
+
+    private static final long serialVersionUID = -6210523350256140604L;
 
     private static final String ADMIN_USERNAME = "admin";
 
     private static final String DEFAULT_ADMIN_PASSWORD = "admin";
-
-    private static final String DEFAULT_ADMIN_NAME = "Administrator";
 
     @Inject
     private UserRepository userRepository;
@@ -28,14 +32,12 @@ public class UserServiceBean implements UserService {
 
     @PostConstruct
     public void init() {
-        // Make sure admin user exists.
-        // FIXME: Use 'username' instead of generic 'name' field.
-        User user = userRepository.retrieveByName(ADMIN_USERNAME);
+        // Make sure 'admin' user exists.
+        User user = userRepository.findByUsername(ADMIN_USERNAME);
         if (user == null) {
             user = new User();
             user.setUsername(ADMIN_USERNAME);
             user.setPassword(DEFAULT_ADMIN_PASSWORD);
-            user.setName(DEFAULT_ADMIN_NAME);
             userRepository.store(user);
         }
     }
@@ -47,8 +49,13 @@ public class UserServiceBean implements UserService {
 
     @Override
     public User logIn(String username, String password) {
-        // TODO
-        return null;
+        // FIXME: Authenticate user against database.
+        user = null;
+        if (username.equals("oscar") && password.equals("appel")) {
+            user = new User();
+            user.setUsername("oscar");
+        }
+        return user;
     }
 
     @Override

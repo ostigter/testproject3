@@ -14,9 +14,9 @@
                 </h:panelGroup>
                 <h:panelGrid columns="2">
                     <h:outputLabel for="code" value="Code:" />
-                    <p:inputText id="code" value="#{productBean.code}" style="width: 50px" />
+                    <p:inputText id="code" value="#{productBean.code}" maxlength="4" style="width: 50px" />
                     <h:outputLabel for="name" value="Name:" />
-                    <p:inputText id="name" value="#{productBean.name}" style="width: 200px" />
+                    <p:inputText id="name" value="#{productBean.name}" maxlength="30" style="width: 200px" />
                     <h:outputLabel for="description" value="Description:" />
                     <p:inputTextarea id="description" value="#{productBean.description}" autoResize="false" styleClass="textarea" />
                     &#160;

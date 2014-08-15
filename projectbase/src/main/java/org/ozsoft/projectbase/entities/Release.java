@@ -16,6 +16,9 @@ public class Release extends BaseEntity {
     @ManyToOne
     private Product product;
 
+    @Basic
+    private String name;
+
     @Temporal(TemporalType.DATE)
     private Date date;
 
@@ -28,6 +31,14 @@ public class Release extends BaseEntity {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getDate() {
@@ -44,5 +55,10 @@ public class Release extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Release(product = '%s', name = '%s')", product.getCode(), name);
     }
 }
