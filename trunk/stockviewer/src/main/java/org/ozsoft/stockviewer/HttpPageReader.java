@@ -1,6 +1,7 @@
 package org.ozsoft.stockviewer;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Authenticator;
 import java.net.HttpURLConnection;
@@ -17,29 +18,13 @@ import org.apache.commons.io.IOUtils;
  */
 public class HttpPageReader {
 
-    /**
-     * Whether to use an HTTP proxy.
-     */
+    private static final int CONNECT_TIMEOUT = 5000;
+    private static final int READ_TIMEOUT = 10000;
+
     private boolean useProxy = false;
-
-    /**
-     * The proxy host.
-     */
     private String proxyHost = "";
-
-    /**
-     * The proxy port.
-     */
     private int proxyPort = 8080;
-
-    /**
-     * The username for proxy authentication.
-     */
     private String proxyUsername = "";
-
-    /**
-     * The password for proxy authentication.
-     */
     private String proxyPassword = "";
 
     public void setUseProxy(boolean useProxy) {
@@ -70,7 +55,7 @@ public class HttpPageReader {
      * 
      * @return The content of the page in lines.
      */
-    public String[] read(String urlString) {
+    public String[] read(String urlString) throws IOException {
         ArrayList<String> lines = new ArrayList<String>();
 
         if (useProxy) {
@@ -83,6 +68,8 @@ public class HttpPageReader {
         try {
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(CONNECT_TIMEOUT);
+            connection.setReadTimeout(READ_TIMEOUT);
             br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line = null;
             while ((line = br.readLine()) != null) {
@@ -90,7 +77,7 @@ public class HttpPageReader {
             }
             br.close();
         } catch (Exception e) {
-            System.err.println("ERROR: Could not read HTTP page: " + e);
+            throw new IOException("ERROR: Could not read HTTP page", e);
         } finally {
             IOUtils.closeQuietly(br);
         }
