@@ -14,3 +14,10 @@ http://download.finance.yahoo.com/d/quotes.csv?s=IVV&f=d1t1l1
 
 Download CSV with full history:
 http://real-chart.finance.yahoo.com/table.csv?s=IVV
+
+Download charts:
+http://chart.finance.yahoo.com/z?s=IVV&t=5d&q=l&l=on&z=l&p=v&a=r14
+http://chart.finance.yahoo.com/z?s=IVV&t=3m&q=l&l=on&z=l&p=v&a=r14
+http://chart.finance.yahoo.com/z?s=IVV&t=1y&q=l&l=on&z=l&p=v&a=r14
+http://chart.finance.yahoo.com/z?s=IVV&t=5y&q=l&l=on&z=l&p=v&a=r14
+http://chart.finance.yahoo.com/z?s=IVV&t=my&q=l&l=on&z=l&p=v&a=r14
