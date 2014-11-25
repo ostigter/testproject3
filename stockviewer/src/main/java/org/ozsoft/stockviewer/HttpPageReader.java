@@ -19,7 +19,7 @@ import org.apache.commons.io.IOUtils;
 public class HttpPageReader {
 
     private static final int CONNECT_TIMEOUT = 5000;
-    private static final int READ_TIMEOUT = 10000;
+    private static final int READ_TIMEOUT = 30000;
 
     private boolean useProxy = false;
     private String proxyHost = "";
