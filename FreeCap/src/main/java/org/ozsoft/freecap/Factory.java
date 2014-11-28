@@ -1,33 +1,26 @@
 package org.ozsoft.freecap;
 
 public class Factory extends Business {
-    
+
     private int production;
-    
-    public Factory(String name, Product product, Company company, City city) {
-        super(name, product, company, city);
+
+    public Factory(BusinessType type, int id, Product product, Company company, City city) {
+        super(type, id, product, company, city);
         production = product.getBaseProduction();
     }
-    
+
     public int getProduction() {
         return production;
-    }
-    
-    @Override
-    public String toString() {
-        return name;
     }
 
     @Override
     public void doNextTurn() {
-        System.out.println(name + ": Processing next turn");
         produce();
     }
-    
+
     private void produce() {
-        System.out.format("%s: Producing %d units of %s\n", name, production, product);
+        System.out.format("%s produced %d units of %s.\n", getName(), production, product);
         InventoryItem item = getInventoryItem(product);
         item.setCount(item.getCount() + production);
     }
-
 }

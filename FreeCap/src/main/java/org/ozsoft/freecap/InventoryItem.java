@@ -26,5 +26,4 @@ public class InventoryItem {
     public String toString() {
         return String.format("%s: %d", product, count);
     }
-
 }
