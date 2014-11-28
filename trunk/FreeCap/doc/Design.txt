@@ -128,12 +128,13 @@ factory
 	wool mill (1 wool -> 1 wool thread)
 	clothing workshop (10 cotton thread -> 1 cotton pants, 10 wool thread -> 1 wool sweaters) 
 	beef workshop (1 cow -> 10 beef)
-	dairy workshop (1 milk -> 1 yoghurt/butter/cheese)
+	meat factory (1 cow -> 10 beef, 1 pig -> 10 pork) 
+	dairy workshop (10 milk -> 1 yoghurt + 1 butter + 1 cheese)
 
 store
-	grocery (bread, milk, yoghurt, butter, cheese, meat)
+	grocery (bread, milk, yoghurt, butter, cheese, beef, pork)
     bakery (bread, pastry)
-    clothes shop (clothes)
+    clothing store (clothes)
 	funature store (furnature)
 	
 R&D Center
@@ -299,3 +300,32 @@ Factory
         technology (machines)
         qualification (employees)
         experience (employees)
+
+
+Events
+------
+
+Wheat Farm 'WF001' built for $100,000.
+Wheat Farm 'WF001' produced 1000 units of Wheat.
+Wheat Farm 'WF001' sold 100 units of Wheat for $10 to Acme Corp.
+
+Flour Mill 'FM001' built for $500,000.
+Flour Mill "FM001' purchased 500 units of Wheat for $50 from Wheat Farm 'WF001'.
+Flour Mill "FM001' produced 250 units of Flour.
+WARNING: Flour Mill "FM001' has reached 83% of its storage capacity!
+
+Bakery 'BA001' built for $500,000.
+Bakery 'BA001' purchased 100 units of Flour for $75 from Flour Mill 'FM001'.
+Bakery 'BA001' produced 50 units of Bread.
+
+Grocery Shop 'GS001' built for $200,000.
+Grocery Shop 'GS001' purchased 50 units of Bread for $50 from Bakery 'BA001'.
+Grocery Shop 'GS001' sold 10 units of Bread for $12.
+
+Car Factory 'CF001' built for $2,500,000.
+Car Factory 'CF001' purchased 100 Tires for $5,000 from Tire Factory 'TF001'.  
+Car Factory 'CF001' produced 50 Cars. 
+
+Car Dealer 'CD001' built for $1,000,000.
+Car Dealer 'CD001' purchased 10 Cars for $150,000 from Car Factory 'CF001'.
+Car Deader 'CD001' sold 2 Cars for $40,000.

@@ -75,6 +75,6 @@ Cities
 
 Each business is located in a specific city. Each city has its own population
 demographics, determining the demand in local stores. A city can contain many
-businesses from many companies, all competing for the same customer demand. The
+businesses from many companies, all competing for the same consumer demand. The
 distance between cities determines the freight costs of transactions between
 businesses in different cities.
