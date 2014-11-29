@@ -2,15 +2,15 @@ package org.ozsoft.freecap;
 
 public class Factory extends Business {
 
-    private final int production;
+    private final int baseProduction;
 
-    public Factory(BusinessType type, int id, Product product, Company company, City city) {
-        super(type, id, product, company, city);
-        production = product.getBaseProduction();
+    public Factory(BusinessType type, int id, Company company, City city) {
+        super(type, id, company, city);
+        baseProduction = getProduct().getBaseProduction();
     }
 
     public int getProduction() {
-        return production;
+        return baseProduction;
     }
 
     @Override
@@ -19,18 +19,20 @@ public class Factory extends Business {
     }
 
     private void produce() {
+        Product product = getProduct();
+
         // Determine how many products can be produced based on available resources.
         int amountToProduce = getProduction();
-        for (Product ingredient : product.getIngredients().keySet()) {
-            int capacity = getInventory(ingredient) / product.getIngredients().get(ingredient);
+        for (Ingredient ingredient : product.getIngredients()) {
+            int capacity = getInventory(ingredient.getProduct()) / ingredient.getAmount();
             if (capacity < amountToProduce) {
                 amountToProduce = capacity;
             }
         }
 
         // Consume resources and create products.
-        for (Product ingredient : product.getIngredients().keySet()) {
-            decreaseInventory(ingredient, amountToProduce * product.getIngredients().get(ingredient));
+        for (Ingredient ingredient : product.getIngredients()) {
+            decreaseInventory(ingredient.getProduct(), amountToProduce * ingredient.getAmount());
         }
         increaseInventory(product, amountToProduce);
         System.out.format("%s produces %d units of %s.\n", getName(), amountToProduce, product);

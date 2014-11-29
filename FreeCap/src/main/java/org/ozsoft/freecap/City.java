@@ -40,31 +40,6 @@ public class City implements GameListener {
 
     @Override
     public void doNextTurn() {
-        System.out.println("\ndoNextTurn for city " + name);
-
-        // Produce raw products.
-        for (Business business : businesses.values()) {
-            Product product = business.getProduct();
-            if (product.getLevel() == ProductLevel.RAW) {
-                System.out.println("Raw product: " + product);
-            }
-        }
-
-        // Produce semi products.
-        for (Business business : businesses.values()) {
-            Product product = business.getProduct();
-            if (product.getLevel() == ProductLevel.INTERMEDIATE) {
-                System.out.println("Intermediate product: " + product);
-            }
-        }
-
-        // Produce consumer products and consume them.
-        for (Business business : businesses.values()) {
-            Product product = business.getProduct();
-            if (product.getLevel() == ProductLevel.FINISHED) {
-                int demand = population * product.getBaseDemand();
-                System.out.format("Finished product: %s (demand: %d)\n", product, demand);
-            }
-        }
+        // TODO
     }
 }

@@ -1,5 +1,6 @@
 package org.ozsoft.freecap;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,24 +19,25 @@ public class Company implements GameListener {
         return name;
     }
 
-    public void addBusiness(Business business) {
-        businesses.put(business.getName(), business);
+    public Collection<Business> getBusinesses() {
+        return businesses.values();
     }
 
     public Business getBusiness(String name) {
         return businesses.get(name);
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public void addBusiness(Business business) {
+        businesses.put(business.getName(), business);
     }
 
     @Override
     public void doNextTurn() {
-        for (Business business : businesses.values()) {
-            business.doNextTurn();
-        }
+        // TODO
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }
