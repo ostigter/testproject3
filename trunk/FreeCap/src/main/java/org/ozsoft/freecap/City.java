@@ -7,7 +7,7 @@ public class City implements GameListener {
 
     private final String name;
 
-    private int population;
+    private final int population;
 
     private final Map<String, Business> businesses;
 
@@ -25,11 +25,11 @@ public class City implements GameListener {
         return population;
     }
 
-    public void addEnterprise(Business enterprise) {
-        businesses.put(enterprise.getName(), enterprise);
+    public void addBusiness(Business business) {
+        businesses.put(business.getName(), business);
     }
 
-    public Business getEnterprise(String name) {
+    public Business getBusiness(String name) {
         return businesses.get(name);
     }
 
@@ -40,6 +40,31 @@ public class City implements GameListener {
 
     @Override
     public void doNextTurn() {
-        // TODO
+        System.out.println("\ndoNextTurn for city " + name);
+
+        // Produce raw products.
+        for (Business business : businesses.values()) {
+            Product product = business.getProduct();
+            if (product.getLevel() == ProductLevel.RAW) {
+                System.out.println("Raw product: " + product);
+            }
+        }
+
+        // Produce semi products.
+        for (Business business : businesses.values()) {
+            Product product = business.getProduct();
+            if (product.getLevel() == ProductLevel.INTERMEDIATE) {
+                System.out.println("Intermediate product: " + product);
+            }
+        }
+
+        // Produce consumer products and consume them.
+        for (Business business : businesses.values()) {
+            Product product = business.getProduct();
+            if (product.getLevel() == ProductLevel.FINISHED) {
+                int demand = population * product.getBaseDemand();
+                System.out.format("Finished product: %s (demand: %d)\n", product, demand);
+            }
+        }
     }
 }

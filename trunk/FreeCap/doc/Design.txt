@@ -21,16 +21,17 @@ city
     local suppliers
     
 industry
-    mining
     farming
+    mining
     manufacturing
     retail
     R&D
 
 product
-    raw product (farming, mining)
-    semi product (manufacturing)
-    consumer product (manufacturing, retail)
+    type
+        raw (farming, mining)
+        intermediate (manufacturing)
+        finished (manufacturing, retail)
     technology level
     necessity rating
     supply
@@ -68,7 +69,6 @@ business
         farm (farming)
             crop growing
             lifestock raising
-            lifestock processing
         mine (mining)
             forest (wood)
             quarry (stone)
@@ -176,10 +176,10 @@ Crop farm
 
 Four mill
 	Location: Smallville
-	Size: 500 square feet
-	Produces: 100 flour per week
+	Size: 500 square feet (small)
+	Production: 100 units per week
 	Employees:
-		10 x $50.00 = $500.00 salary per week
+		1 x $50.00 = $50.00 per week
 		Qualification: 1
 	Technology level: 1
 	Supplier: GreenLand Corp., 1,000 units wheat x $1.00 = $1,000.00 per week, quality 1
@@ -188,9 +188,9 @@ Four mill
 	Revenue: 1000 x $2.00 =             $2000.00
 	Fixed costs               $200.00
 	Supplier costs:          $1000.00
-	Salaries:    			  $500.00
+	Salaries:    			   $50.00
 							 --------
-	Total costs:                        $1700.00-
+	Total costs:                        $12500.00-
 									    --------
 	Profit								 $300.00 (15.0%)
 
@@ -215,6 +215,14 @@ Market
     Local suppliers
         Avg. quality    Avg. price
         30              $2.25
+
+Smallville
+    10,000 population
+    bread
+        demand (grocery):           10,000 per week (480,000 per year)
+        local suppliers (bakery):   10,000 per week (480,000 per year)
+        average price:              $ 3.50
+        average quality:            2
 
 Business
     Wheat farm
@@ -249,6 +257,29 @@ Business
             Flour       1           $0.35       $0.70           2,000
             Flour       2           $0.50       $1.00             500
 
+    Bakery
+        Size: 1,000 square feet
+        Production: 1,000 units per week
+        Technology level: 2
+        Fixed cost: $1,000 per week
+        Number of employees: 5
+        Avg. qualification: 2
+        Avg. salary: $75.00 per week
+        Salary costs: $500.00 per week
+        Quality: 2
+        Suppliers:
+            Name        Product     Quality     Unit price      Volume      Total price
+            OzCorp      Flour       2           $1.00           1,000       $1,000.00
+        Supply costs: $1,000.00 per week
+        Total costs:  $2,500.00 per week
+        Inventory
+            Product     Quality     Cost price  Sales price     Stock       Value
+            Flour       2           $1.00       -               1,000       $1,000.00
+            Bread       2           $1.50       $3.00           1,000       $3,000.00
+        Sale:           1,000 units per week
+        Total income:   $3,000.00 per week
+        Profit:         $500.00 per week
+        
 Market
     Product     Quality     Price       Stock
     Wheat       1           $0.48       10,000

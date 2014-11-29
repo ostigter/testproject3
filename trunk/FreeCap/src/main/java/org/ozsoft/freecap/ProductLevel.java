@@ -6,14 +6,14 @@ package org.ozsoft.freecap;
  * @author Oscar Stigter
  */
 public enum ProductLevel {
-    
-    /** Raw product. */
+
+    /** Raw product (farming and mining). */
     RAW,
-    
-    /** Semi-product. */
-    SEMI,
-    
-    /** Consumer product. */
-    CONSUMER,
+
+    /** Intermediate product (manufacturing). */
+    INTERMEDIATE,
+
+    /** Finished product (consumption). */
+    FINISHED,
 
 }
