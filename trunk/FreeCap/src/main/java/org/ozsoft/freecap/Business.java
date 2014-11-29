@@ -9,18 +9,15 @@ public abstract class Business implements GameListener {
 
     protected final int id;
 
-    protected final Product product;
-
     protected final Company company;
 
     protected final City city;
 
     protected final Map<Product, Integer> inventory;
 
-    public Business(BusinessType type, int id, Product product, Company company, City city) {
+    public Business(BusinessType type, int id, Company company, City city) {
         this.type = type;
         this.id = id;
-        this.product = product;
         this.company = company;
         this.city = city;
         inventory = new HashMap<Product, Integer>();
@@ -30,16 +27,16 @@ public abstract class Business implements GameListener {
         return String.format("%s '%s%02d'", type.getName(), type.getPrefix(), id);
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     public Company getCompany() {
         return company;
     }
 
     public City getCity() {
         return city;
+    }
+
+    public Product getProduct() {
+        return type.getProduct();
     }
 
     public int getInventory(Product product) {

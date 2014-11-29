@@ -7,13 +7,13 @@ package org.ozsoft.freecap;
  */
 public enum BusinessType {
 
-    WHEAT_FARM("Wheat Farm", "WF"),
+    WHEAT_FARM("Wheat Farm", "WF", Product.WHEAT),
 
-    FLOUR_MILL("Flour Mill", "FM"),
+    FLOUR_MILL("Flour Mill", "FM", Product.FLOUR),
 
-    BAKERY("Bakery", "BK"),
+    BAKERY("Bakery", "BK", Product.BREAD),
 
-    GROCERY_SHOP("Grocery Shop", "GS"),
+    GROCERY_SHOP("Grocery Shop", "GS", Product.BREAD),
 
     ;
 
@@ -21,9 +21,12 @@ public enum BusinessType {
 
     private final String prefix;
 
-    BusinessType(String name, String prefix) {
+    private final Product product;
+
+    BusinessType(String name, String prefix, Product product) {
         this.name = name;
         this.prefix = prefix;
+        this.product = product;
     }
 
     public String getName() {
@@ -32,5 +35,9 @@ public enum BusinessType {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    public Product getProduct() {
+        return product;
     }
 }
