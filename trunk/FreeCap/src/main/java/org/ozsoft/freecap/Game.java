@@ -60,11 +60,11 @@ public class Game implements GameListener {
         products.put(wheat.getName(), wheat);
 
         Product flour = new Product("flour", ProductLevel.INTERMEDIATE, 1000, 0);
-        flour.addIngredient(wheat, 1);
+        flour.addIngredient(wheat, 10);
         products.put(flour.getName(), flour);
 
         Product bread = new Product("bread", ProductLevel.FINISHED, 1000, 1);
-        flour.addIngredient(flour, 1);
+        bread.addIngredient(flour, 1);
         products.put(bread.getName(), bread);
     }
 
