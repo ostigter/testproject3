@@ -1,10 +1,5 @@
 package org.ozsoft.freecap;
 
-/**
- * Business types.
- * 
- * @author Oscar Stigter
- */
 public enum BusinessType {
 
     WHEAT_FARM("Wheat Farm", "WF", Product.WHEAT),
