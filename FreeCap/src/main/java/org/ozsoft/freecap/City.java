@@ -40,6 +40,6 @@ public class City implements GameListener {
 
     @Override
     public void doNextTurn() {
-        // TODO
+        // TODO: doNextTurn() for a city.
     }
 }

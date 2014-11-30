@@ -23,10 +23,9 @@ public class Factory extends Business {
         if (supplier != null) {
             Product product = getProduct();
             for (Ingredient ingredient : product.getIngredients()) {
-                // FIXME: Determine actual amount of resources to purchase.
-                int amount = 1000;
-                supplier.sellResource(ingredient.getProduct(), amount);
-                // TODO: Payment
+                int amount = ingredient.getProduct().getStockCapacity() - getStock(ingredient.getProduct());
+                amount = supplier.sellResource(ingredient.getProduct(), amount);
+                // TODO: Pay supplier.
                 increaseStock(ingredient.getProduct(), amount);
                 System.out.format("%s purchased %d units of %s from %s.\n", this, amount, ingredient.getProduct(),
                         supplier);

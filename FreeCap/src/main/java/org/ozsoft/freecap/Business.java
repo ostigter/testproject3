@@ -82,7 +82,7 @@ public abstract class Business implements GameListener {
         int amountInStock = getStock(product);
         int amountSold = (amountInStock >= amount) ? amount : amountInStock;
         decreaseStock(product, amountSold);
-        // TODO: Payment
+        // TODO: Pay supplier.
         return amountSold;
     }
 

@@ -25,10 +25,10 @@ public class Shop extends Business {
     private void purchaseProducts() {
         if (supplier != null) {
             Product product = getProduct();
-            // FIXME: Determine actual amount of resources to purchase.
-            int amount = 100;
+            int amount = product.getStockCapacity() - getStock(product);
+            amount = supplier.sellResource(product, amount);
             supplier.sellResource(product, amount);
-            // TODO: Payment
+            // TODO: Pay supplier.
             increaseStock(product, amount);
             System.out.format("%s purchased %d units of %s from %s.\n", this, amount, product, supplier);
         }
