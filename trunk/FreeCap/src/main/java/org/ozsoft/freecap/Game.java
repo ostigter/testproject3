@@ -22,8 +22,7 @@ public class Game implements GameListener {
         initCities();
         initCompanies();
         initBusinesses();
-
-        System.out.println();
+        setSuppliers();
 
         doNextTurn();
     }
@@ -40,6 +39,11 @@ public class Game implements GameListener {
         return cities.get(name);
     }
 
+    private void addBusiness(Business business) {
+        business.getCompany().addBusiness(business);
+        business.getCity().addBusiness(business);
+    }
+
     @Override
     public void doNextTurn() {
         // Produce raw products.
@@ -51,9 +55,6 @@ public class Game implements GameListener {
             }
         }
 
-        // Purchase raw products.
-        // TODO
-
         // Produce intermediate products.
         for (Company company : companies.values()) {
             for (Business business : company.getBusinesses()) {
@@ -62,9 +63,6 @@ public class Game implements GameListener {
                 }
             }
         }
-
-        // Purchase intermediate products.
-        // TODO
 
         // Produce and consume finished products.
         for (Company company : companies.values()) {
@@ -104,8 +102,17 @@ public class Game implements GameListener {
         addBusiness(new Shop(BusinessType.GROCERY_SHOP, 1, ozCorp, smallville));
     }
 
-    private void addBusiness(Business business) {
-        business.getCompany().addBusiness(business);
-        business.getCity().addBusiness(business);
+    private void setSuppliers() {
+        Company ozCorp = getCompany("OzCorp");
+
+        Business wheatFarm = ozCorp.getBusiness("Wheat Farm 'WF01'");
+        Factory flourMill = (Factory) ozCorp.getBusiness("Flour Mill 'FM01'");
+        flourMill.setSupplier(wheatFarm);
+
+        Factory bakery = (Factory) ozCorp.getBusiness("Bakery 'BK01'");
+        bakery.setSupplier(flourMill);
+
+        Business groceryShop = ozCorp.getBusiness("Grocery Shop 'GS01'");
+        groceryShop.setSupplier(bakery);
     }
 }
