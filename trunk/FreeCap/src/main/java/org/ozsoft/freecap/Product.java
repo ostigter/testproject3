@@ -2,11 +2,11 @@ package org.ozsoft.freecap;
 
 public enum Product {
 
-    WHEAT("Wheat", ProductLevel.RAW, 1000, 0),
+    WHEAT("Wheat", ProductLevel.RAW, 100000, 1000, 0),
 
-    FLOUR("Flour", ProductLevel.INTERMEDIATE, new Ingredient[] { new Ingredient(Product.WHEAT, 10) }, 100, 0),
+    FLOUR("Flour", ProductLevel.INTERMEDIATE, new Ingredient[] { new Ingredient(Product.WHEAT, 10) }, 10000, 100, 0),
 
-    BREAD("Bread", ProductLevel.FINISHED, new Ingredient[] { new Ingredient(Product.FLOUR, 1) }, 100, 1),
+    BREAD("Bread", ProductLevel.FINISHED, new Ingredient[] { new Ingredient(Product.FLOUR, 1) }, 1000, 100, 1),
 
     ;
 
@@ -16,22 +16,27 @@ public enum Product {
 
     private final Ingredient[] ingredients;
 
+    private final int stockCapactiy;
+
     private final int baseProduction;
 
     private final int baseDemand;
 
-    Product(String name, ProductLevel level, int baseProduction, int baseDemand) {
+    Product(String name, ProductLevel level, int stockCapacity, int baseProduction, int baseDemand) {
         this.name = name;
         this.level = level;
         this.ingredients = new Ingredient[0];
+        this.stockCapactiy = stockCapacity;
         this.baseProduction = baseProduction;
         this.baseDemand = baseDemand;
     }
 
-    Product(String name, ProductLevel level, Ingredient[] ingredients, int baseProduction, int baseDemand) {
+    Product(String name, ProductLevel level, Ingredient[] ingredients, int stockCapacity, int baseProduction,
+            int baseDemand) {
         this.name = name;
         this.level = level;
         this.ingredients = ingredients;
+        this.stockCapactiy = stockCapacity;
         this.baseProduction = baseProduction;
         this.baseDemand = baseDemand;
     }
@@ -46,6 +51,10 @@ public enum Product {
 
     public Ingredient[] getIngredients() {
         return ingredients;
+    }
+
+    public int getStockCapacity() {
+        return stockCapactiy;
     }
 
     public int getBaseProduction() {

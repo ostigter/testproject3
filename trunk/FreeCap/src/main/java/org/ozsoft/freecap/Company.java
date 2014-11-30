@@ -33,7 +33,7 @@ public class Company implements GameListener {
 
     @Override
     public void doNextTurn() {
-        // TODO
+        // TODO: doNextTurn for a company.
     }
 
     @Override
