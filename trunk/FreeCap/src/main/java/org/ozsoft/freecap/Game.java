@@ -88,8 +88,9 @@ public class Game implements GameListener {
     }
 
     private void initCompanies() {
-        Company ozCorp = new Company("OzCorp", 100000);
+        Company ozCorp = new Company("OzCorp", 0);
         addCompany(ozCorp);
+        ozCorp.loan(100000.00, 10, 8.0);
     }
 
     private void initBusinesses() {
