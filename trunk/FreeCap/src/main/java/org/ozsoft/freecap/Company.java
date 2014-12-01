@@ -10,13 +10,34 @@ public class Company implements GameListener {
 
     private final Map<String, Business> businesses;
 
-    public Company(String name) {
+    private double cash;
+
+    public Company(String name, double cash) {
         this.name = name;
+        this.cash = cash;
         businesses = new HashMap<String, Business>();
     }
 
     public String getName() {
         return name;
+    }
+
+    public double getCash() {
+        return cash;
+    }
+
+    public void pay(double amount) {
+        if (amount > cash) {
+            throw new IllegalArgumentException(String.format("%s has insufficient cash (%,.2f) to pay %,.2f!", this, cash, amount));
+        }
+
+        cash -= amount;
+        System.out.format("%s payed $%,.2f (cash: $%,.0f)\n", this, amount, cash);
+    }
+
+    public void receivePayment(double amount) {
+        cash += amount;
+        System.out.format("%s received $%,.2f (cash: $%,.0f)\n", this, amount, cash);
     }
 
     public Collection<Business> getBusinesses() {

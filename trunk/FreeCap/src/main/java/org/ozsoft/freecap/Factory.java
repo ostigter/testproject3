@@ -2,15 +2,12 @@ package org.ozsoft.freecap;
 
 public class Factory extends Business {
 
-    private final int baseProduction;
-
     public Factory(BusinessType type, int id, Company company, City city) {
         super(type, id, company, city);
-        baseProduction = getProduct().getBaseProduction();
     }
 
     public int getProduction() {
-        return baseProduction;
+        return type.getProduct().getBaseProduction();
     }
 
     @Override
@@ -25,10 +22,10 @@ public class Factory extends Business {
             for (Ingredient ingredient : product.getIngredients()) {
                 int amount = ingredient.getProduct().getStockCapacity() - getStock(ingredient.getProduct());
                 amount = supplier.sellResource(ingredient.getProduct(), amount);
-                // TODO: Pay supplier.
                 increaseStock(ingredient.getProduct(), amount);
-                System.out.format("%s purchased %d units of %s from %s.\n", this, amount, ingredient.getProduct(),
-                        supplier);
+                double cost = amount * supplier.getPrice();
+                pay(supplier, cost);
+                System.out.format("%s purchased %d units of %s for $%,.2f from %s.\n", this, amount, ingredient.getProduct(), cost, supplier);
             }
         }
     }

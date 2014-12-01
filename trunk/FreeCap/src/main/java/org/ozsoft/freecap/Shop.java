@@ -4,16 +4,13 @@ public class Shop extends Business {
 
     private final Product product;
 
-    private final int baseDemand;
-
     public Shop(BusinessType type, int id, Company company, City city) {
         super(type, id, company, city);
         product = type.getProduct();
-        baseDemand = product.getBaseDemand();
     }
 
     public int getDemand() {
-        return baseDemand * city.getPopulation();
+        return type.getProduct().getBaseDemand() * city.getPopulation();
     }
 
     @Override
@@ -28,22 +25,25 @@ public class Shop extends Business {
             int amount = product.getStockCapacity() - getStock(product);
             amount = supplier.sellResource(product, amount);
             supplier.sellResource(product, amount);
-            // TODO: Pay supplier.
             increaseStock(product, amount);
-            System.out.format("%s purchased %d units of %s from %s.\n", this, amount, product, supplier);
+            double cost = amount * supplier.getPrice();
+            pay(supplier, cost);
+            System.out.format("%s purchased %d units of %s for $%,.2f from %s.\n", this, amount, product, cost, supplier);
         }
     }
 
     private void sellProducts() {
         // Determine how many products to be sold based on local demand and availability.
-        int amountToSell = getDemand();
+        int amount = getDemand();
         int available = getStock(product);
-        if (available < amountToSell) {
-            amountToSell = available;
+        if (available < amount) {
+            amount = available;
         }
 
-        // Consume products.
-        decreaseStock(product, amountToSell);
-        System.out.format("%s sells %d units of %s.\n", this, amountToSell, product);
+        // Sell products.
+        decreaseStock(product, amount);
+        double payment = amount * price;
+        System.out.format("%s sells %d units of %s for $%,.2f.\n", this, amount, product, payment);
+        receivePayment(payment);
     }
 }
