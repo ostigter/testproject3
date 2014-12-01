@@ -17,6 +17,8 @@ public abstract class Business implements GameListener {
 
     protected Business supplier;
 
+    protected double price;
+
     public Business(BusinessType type, int id, Company company, City city) {
         this.type = type;
         this.id = id;
@@ -47,6 +49,15 @@ public abstract class Business implements GameListener {
 
     public void setSupplier(Business supplier) {
         this.supplier = supplier;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+        System.out.format("%s: Selling price set to $%,.2f.\n", this, price);
     }
 
     public int getStock(Product product) {
@@ -82,8 +93,16 @@ public abstract class Business implements GameListener {
         int amountInStock = getStock(product);
         int amountSold = (amountInStock >= amount) ? amount : amountInStock;
         decreaseStock(product, amountSold);
-        // TODO: Pay supplier.
         return amountSold;
+    }
+
+    public void pay(Business recipient, double amount) {
+        company.pay(amount);
+        recipient.receivePayment(amount);
+    }
+
+    public void receivePayment(double amount) {
+        company.receivePayment(amount);
     }
 
     @Override
