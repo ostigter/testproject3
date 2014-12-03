@@ -1,5 +1,7 @@
 package org.ozsoft.freecap;
 
+import static org.ozsoft.freecap.Utils.money;
+
 public class Shop extends Business {
 
     private final Product product;
@@ -17,6 +19,7 @@ public class Shop extends Business {
     public void doNextTurn() {
         purchaseProducts();
         sellProducts();
+        payWeeklyCosts();
     }
 
     private void purchaseProducts() {
@@ -26,9 +29,9 @@ public class Shop extends Business {
             amount = supplier.sellResource(product, amount);
             supplier.sellResource(product, amount);
             increaseStock(product, amount);
-            double cost = amount * supplier.getPrice();
+            double cost = amount * supplier.getSalesPrice();
             pay(supplier, cost);
-            System.out.format("%s purchased %d units of %s for $%,.2f from %s.\n", this, amount, product, cost, supplier);
+            System.out.format("%s purchased %d units of %s for %s from %s.\n", this, amount, product, money(cost), supplier);
         }
     }
 
@@ -42,8 +45,8 @@ public class Shop extends Business {
 
         // Sell products.
         decreaseStock(product, amount);
-        double payment = amount * price;
-        System.out.format("%s sells %d units of %s for $%,.2f.\n", this, amount, product, payment);
+        double payment = amount * salesPrice;
+        System.out.format("%s sells %d units of %s for %s.\n", this, amount, product, money(payment));
         receivePayment(payment);
     }
 }

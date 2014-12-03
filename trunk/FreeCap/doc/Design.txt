@@ -7,25 +7,31 @@ Concepts
 
 bank
     loan
+        amount
         interest rate
         duration
-        down payment
+        payment
 city
     population
-    wealth
+    wealth / income level
     unemployment
-    economic climate
-        booming
-        depression
     land value (wealth, demand, unemployment, economic climate)
     local suppliers
-    
+        average price
+        average quality
+economy
+    climate (-1.0 to 1.0)
+        -1.0 ------- -0.5 ----- 0 ----- 0.5 ------ 1.0 ----- 0.5 ----- 0 ----- -0.5 ------- -1.0
+        Depression  Recovery         Expansion     Boom    Cooldown          Recession    Depression
+    growth (-5.0 % to +10.0 %)
 industry
     farming
+    fishing
     mining
     manufacturing
     retail
     R&D
+    marketing
 
 product
     type

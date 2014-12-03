@@ -41,7 +41,6 @@ public class Game implements GameListener {
 
     private void addBusiness(Business business) {
         business.getCompany().addBusiness(business);
-        business.getCity().addBusiness(business);
     }
 
     @Override
@@ -90,7 +89,7 @@ public class Game implements GameListener {
     private void initCompanies() {
         Company ozCorp = new Company("OzCorp", 0);
         addCompany(ozCorp);
-        ozCorp.loan(100000.00, 10, 8.0);
+        ozCorp.loan(1000000.00, 10, 8.0);
     }
 
     private void initBusinesses() {
@@ -107,18 +106,18 @@ public class Game implements GameListener {
         Company ozCorp = getCompany("OzCorp");
 
         Business wheatFarm = ozCorp.getBusiness("Wheat Farm 'WF01'");
-        wheatFarm.setPrice(0.10);
+        wheatFarm.setSalesPrice(1.00);
 
         Factory flourMill = (Factory) ozCorp.getBusiness("Flour Mill 'FM01'");
         flourMill.setSupplier(wheatFarm);
-        flourMill.setPrice(0.50);
+        flourMill.setSalesPrice(1.50);
 
         Factory bakery = (Factory) ozCorp.getBusiness("Bakery 'BK01'");
         bakery.setSupplier(flourMill);
-        bakery.setPrice(0.75);
+        bakery.setSalesPrice(2.00);
 
         Business groceryShop = ozCorp.getBusiness("Grocery Shop 'GS01'");
         groceryShop.setSupplier(bakery);
-        groceryShop.setPrice(1.25);
+        groceryShop.setSalesPrice(2.50);
     }
 }

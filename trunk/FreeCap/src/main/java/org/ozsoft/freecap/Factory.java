@@ -1,5 +1,7 @@
 package org.ozsoft.freecap;
 
+import static org.ozsoft.freecap.Utils.money;
+
 public class Factory extends Business {
 
     public Factory(BusinessType type, int id, Company company, City city) {
@@ -14,6 +16,7 @@ public class Factory extends Business {
     public void doNextTurn() {
         purchaseResources();
         produceProducts();
+        payWeeklyCosts();
     }
 
     private void purchaseResources() {
@@ -23,9 +26,9 @@ public class Factory extends Business {
                 int amount = ingredient.getProduct().getStockCapacity() - getStock(ingredient.getProduct());
                 amount = supplier.sellResource(ingredient.getProduct(), amount);
                 increaseStock(ingredient.getProduct(), amount);
-                double cost = amount * supplier.getPrice();
+                double cost = amount * supplier.getSalesPrice();
                 pay(supplier, cost);
-                System.out.format("%s purchased %d units of %s for $%,.2f from %s.\n", this, amount, ingredient.getProduct(), cost, supplier);
+                System.out.format("%s purchased %,d units of %s for %s from %s.\n", this, amount, ingredient.getProduct(), money(cost), supplier);
             }
         }
     }
@@ -47,7 +50,7 @@ public class Factory extends Business {
             decreaseStock(ingredient.getProduct(), amountToProduce * ingredient.getAmount());
         }
         increaseStock(product, amountToProduce);
-        System.out.format("%s produces %d units of %s.\n", getName(), amountToProduce, product);
+        System.out.format("%s produces %,d units of %s.\n", getName(), amountToProduce, product);
         if (amountToProduce < getProduction()) {
             System.out.format("WARNING: %s producing below capacity due to lack of resources.\n", getName());
         }
