@@ -17,6 +17,8 @@ public class Market {
     }
 
     public void sell(int volume, double minPrice) {
+        System.out.format("Adding sell order for %d x $%.2f\n", volume, minPrice);
+
         Order order = null;
         for (Order o : buyQueue) {
             if (o.price >= minPrice) {
@@ -41,11 +43,12 @@ public class Market {
             order.volume = volume;
             order.price = minPrice;
             sellQueue.add(order);
-            System.out.format("Adding sell order for %d x $%.2f\n", order.volume, minPrice);
         }
     }
 
     public void buy(int volume, double maxPrice) {
+        System.out.format("Adding buy order for %d x $%.2f\n", volume, maxPrice);
+
         Order order = null;
         for (Order o : sellQueue) {
             if (o.price <= maxPrice) {
@@ -70,7 +73,6 @@ public class Market {
             order.volume = volume;
             order.price = maxPrice;
             buyQueue.add(order);
-            System.out.format("Adding buy order for %d x $%.2f\n", volume, maxPrice);
         }
     }
 

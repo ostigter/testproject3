@@ -1,5 +1,7 @@
 package org.ozsoft.freecap;
 
+import static org.ozsoft.freecap.Utils.money;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +19,7 @@ public abstract class Business implements GameListener {
 
     protected Business supplier;
 
-    protected double price;
+    protected double salesPrice;
 
     public Business(BusinessType type, int id, Company company, City city) {
         this.type = type;
@@ -43,6 +45,10 @@ public abstract class Business implements GameListener {
         return type.getProduct();
     }
 
+    public double getBuildingCost() {
+        return type.getBuildingCost();
+    }
+
     public Business getSupplier() {
         return supplier;
     }
@@ -51,13 +57,13 @@ public abstract class Business implements GameListener {
         this.supplier = supplier;
     }
 
-    public double getPrice() {
-        return price;
+    public double getSalesPrice() {
+        return salesPrice;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
-        System.out.format("%s: Selling price set to $%,.2f.\n", this, price);
+    public void setSalesPrice(double salesPrice) {
+        this.salesPrice = salesPrice;
+        System.out.format("%s sets sales price to %s.\n", this, money(salesPrice));
     }
 
     public int getStock(Product product) {
@@ -108,5 +114,11 @@ public abstract class Business implements GameListener {
     @Override
     public String toString() {
         return getName();
+    }
+
+    protected void payWeeklyCosts() {
+        double costs = type.getWeeklyCost();
+        System.out.format("%s pays %s for weekly costs.\n", this, money(costs));
+        company.pay(costs);
     }
 }

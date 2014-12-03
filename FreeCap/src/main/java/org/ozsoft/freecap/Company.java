@@ -1,5 +1,7 @@
 package org.ozsoft.freecap;
 
+import static org.ozsoft.freecap.Utils.money;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,7 +42,11 @@ public class Company implements GameListener {
     }
 
     public void addBusiness(Business business) {
+        double cost = business.getBuildingCost();
+        System.out.format("%s builds %s for %s.\n", this, business, money(cost));
         businesses.put(business.getName(), business);
+        business.getCity().addBusiness(business);
+        pay(cost);
     }
 
     /**
@@ -56,7 +62,7 @@ public class Company implements GameListener {
     public void loan(double amount, int period, double interestRate) {
         loans.add(new Loan(amount, period, interestRate));
         cash += amount;
-        System.out.format("%s takes a loan for $%,.0f against %.1f %%, to be paid in %d years.\n", this, amount, interestRate, period);
+        System.out.format("%s takes out a loan for %s against %.1f %%, to be paid in %d years.\n", this, money(amount), interestRate, period);
     }
 
     public List<Loan> getLoans() {
@@ -81,16 +87,16 @@ public class Company implements GameListener {
 
     public void pay(double amount) {
         if (amount > cash) {
-            throw new IllegalArgumentException(String.format("%s has insufficient cash (%,.2f) to pay %,.2f!", this, cash, amount));
+            throw new IllegalArgumentException(String.format("%s has insufficient cash (%s) to pay %s!", this, money(cash), money(amount)));
         }
 
         cash -= amount;
-        System.out.format("%s payed $%,.2f (cash: $%,.0f)\n", this, amount, cash);
+        // System.out.format("%s pays %s (cash: %s).\n", this, money(amount), money(cash));
     }
 
     public void receivePayment(double amount) {
         cash += amount;
-        System.out.format("%s received $%,.2f (cash: $%,.0f)\n", this, amount, cash);
+        // System.out.format("%s received %s (cash: %s).\n", this, money(amount), money(cash));
     }
 
     @Override
@@ -112,7 +118,7 @@ public class Company implements GameListener {
 
         }
         if (paid > 0) {
-            System.out.format("%s pays $%,.2f to the bank for outstanding loans.\n", this, paid);
+            System.out.format("%s pays %s to the bank for outstanding loans.\n", this, money(paid));
         }
     }
 }
