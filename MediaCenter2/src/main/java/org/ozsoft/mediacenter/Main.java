@@ -11,23 +11,23 @@ import javax.swing.JTabbedPane;
 
 public class Main extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	
-	private final Configuration config;
-	
-	private final Library library;
-	
-	public Main() {
-		super("Media Center");
-		config = new Configuration();
-		library = new Library(config);
-		createUI();
-		library.update();
-	}
-	
-	public static void main(String[] args) {
-		new Main();
-	}
+    private static final long serialVersionUID = 1L;
+
+    private final Configuration config;
+
+    private final Library library;
+
+    public Main() {
+        super("Media Center");
+        config = new Configuration();
+        library = new Library(config);
+        createUI();
+        library.update();
+    }
+
+    public static void main(String[] args) {
+        new Main();
+    }
 
     private void createUI() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,10 +37,10 @@ public class Main extends JFrame {
                 library.save();
             }
         });
-        
+
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
+
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setFont(Constants.FONT);
         MediaPanel seriesPanel = new ShowsMediaPanel(config, library);
@@ -57,11 +57,10 @@ public class Main extends JFrame {
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
         getContentPane().add(tabbedPane, gbc);
-        
+
         setSize(Constants.WIDTH, Constants.HEIGHT);
         setLocationRelativeTo(null);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setVisible(true);
     }
-
 }

@@ -9,20 +9,20 @@ import java.util.List;
 
 /**
  * The server configuration.
- *  
+ * 
  * @author Oscar Stigter
  */
 public class Configuration {
-	
+
     /** The path to the media player application. */
     private String playerPath;
-    
+
     /** The TV show root directories. */
     private final List<String> showRoots;
-    
+
     /** The movie root directories. */
     private final List<String> movieRoots;
-    
+
     /**
      * Constructor.
      */
@@ -31,7 +31,7 @@ public class Configuration {
         movieRoots = new ArrayList<String>();
         readConfigFile();
     }
-    
+
     /**
      * Returns the path to the media player.
      * 
@@ -40,16 +40,16 @@ public class Configuration {
     public String getPlayerPath() {
         return playerPath;
     }
-    
+
     /**
-	 * Returns the TV show root directories.
-	 * 
-	 * @return The TV show root directories.
-	 */
+     * Returns the TV show root directories.
+     * 
+     * @return The TV show root directories.
+     */
     public List<String> getShowRoots() {
-    	return showRoots;
+        return showRoots;
     }
-    
+
     /**
      * Returns the movie root directories.
      * 
@@ -58,21 +58,20 @@ public class Configuration {
     public List<String> getMovieRoots() {
         return movieRoots;
     }
-    
+
     /**
      * Reads the configuration file.
      */
     private void readConfigFile() {
         File file = new File(Constants.INI_FILE);
         if (!file.exists()) {
-        	String msg = String.format(
-        			"ERROR: Configuration file '%s' not found",
-        			Constants.INI_FILE);
+            String msg = String.format("ERROR: Configuration file '%s' not found", Constants.INI_FILE);
             throw new RuntimeException(msg);
         }
-        
+
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+            reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
                 int pos = line.indexOf('=');
@@ -83,22 +82,25 @@ public class Configuration {
                         if (new File(value).isFile()) {
                             playerPath = value;
                         } else {
-                            String msg = String.format("Error in configuration file: Media player executable not found: '%s'", value);
+                            String msg = String.format(
+                                    "Error in configuration file: Media player executable not found: '%s'", value);
                             throw new RuntimeException(msg);
                         }
-                        
+
                     } else if (key.equals("shows.root")) {
-                    	if (new File(value).isDirectory()) {
+                        if (new File(value).isDirectory()) {
                             showRoots.add(value);
-                    	} else {
-                    		String msg = String.format("Error in configuration file: Invalid TV shows root directory: '%s'", value);
-                    		throw new RuntimeException(msg);
-                    	}
+                        } else {
+                            String msg = String.format(
+                                    "Error in configuration file: Invalid TV shows root directory: '%s'", value);
+                            throw new RuntimeException(msg);
+                        }
                     } else if (key.equals("movies.root")) {
                         if (new File(value).isDirectory()) {
                             movieRoots.add(value);
                         } else {
-                            String msg = String.format("Error in configuration file: Invalid movies root directory: '%s'", value);
+                            String msg = String.format(
+                                    "Error in configuration file: Invalid movies root directory: '%s'", value);
                             throw new RuntimeException(msg);
                         }
                     } else {
@@ -107,10 +109,16 @@ public class Configuration {
                     }
                 }
             }
-            reader.close();
         } catch (IOException e) {
             throw new RuntimeException("Could not read configuration file", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    // Safe to igore.
+                }
+            }
         }
     }
-    
 }

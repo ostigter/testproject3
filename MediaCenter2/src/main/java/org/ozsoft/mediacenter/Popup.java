@@ -8,8 +8,8 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 public class Popup extends JFrame {
-    
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = -287314146522709108L;
 
     public Popup(String message) {
         setUndecorated(true);
@@ -23,5 +23,4 @@ public class Popup extends JFrame {
         pack();
         setLocationRelativeTo(null);
     }
-
 }
