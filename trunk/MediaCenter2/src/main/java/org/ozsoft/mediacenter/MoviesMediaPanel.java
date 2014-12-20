@@ -2,7 +2,7 @@ package org.ozsoft.mediacenter;
 
 public class MoviesMediaPanel extends MediaPanel {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -4843396523089981487L;
 
     public MoviesMediaPanel(Configuration config, Library library) {
         super(config, library);
@@ -13,5 +13,4 @@ public class MoviesMediaPanel extends MediaPanel {
         currentFolder = library.getMoviesRoot();
         updateList();
     }
-
 }

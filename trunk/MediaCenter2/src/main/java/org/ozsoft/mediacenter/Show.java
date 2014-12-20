@@ -5,36 +5,35 @@ import java.util.TreeSet;
 
 public class Show {
 
-	private static final Episode[] EMPTY_ARRAY = new Episode[0];
+    private static final Episode[] EMPTY_ARRAY = new Episode[0];
 
-	private String name;
+    private final String name;
 
-	private Set<Episode> episodes;
+    private final Set<Episode> episodes;
 
-	public Show(String name) {
-		this.name = name;
-		episodes = new TreeSet<Episode>();
-	}
+    public Show(String name) {
+        this.name = name;
+        episodes = new TreeSet<Episode>();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void addEpisode(Episode episode) {
-		episodes.add(episode);
-	}
-	
-	public void removeEpisode(Episode episode) {
-		episodes.remove(episode);
-	}
+    public void addEpisode(Episode episode) {
+        episodes.add(episode);
+    }
 
-	public Episode[] getEpisodes() {
-		return episodes.toArray(EMPTY_ARRAY);
-	}
+    public void removeEpisode(Episode episode) {
+        episodes.remove(episode);
+    }
 
-	@Override
-	public String toString() {
-		return name;
-	}
+    public Episode[] getEpisodes() {
+        return episodes.toArray(EMPTY_ARRAY);
+    }
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

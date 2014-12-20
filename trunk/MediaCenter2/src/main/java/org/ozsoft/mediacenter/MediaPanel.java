@@ -25,57 +25,58 @@ import javax.swing.event.ListSelectionListener;
 
 public abstract class MediaPanel extends JPanel implements LibraryListener {
 
-	private static final long serialVersionUID = 1L;
-	
-	private final Configuration config;
-	
-	protected final Library library;
-	
-	private JList list;
-	
+    private static final long serialVersionUID = 1L;
+
+    private final Configuration config;
+
+    protected final Library library;
+
+    private JList<MediaItem> list;
+
     private JButton deleteButton;
-    
-	private DefaultListModel listModel;
-	
-	protected MediaFolder currentFolder;
-	
-	public MediaPanel(Configuration config, Library library) {
-	    this.config = config;
-	    this.library = library;
-	    library.addListener(this);
-		createUI();
-	}
-	
+
+    private DefaultListModel<MediaItem> listModel;
+
+    protected MediaFolder currentFolder;
+
+    public MediaPanel(Configuration config, Library library) {
+        this.config = config;
+        this.library = library;
+        library.addListener(this);
+        createUI();
+    }
+
+    @Override
     public abstract void libraryUpdated();
 
-	protected void updateList() {
-		listModel.clear();
-		
-		// First add a phony parent folder (if any)...
-		MediaFolder parent = currentFolder.getParent();
-		if (parent != null) {
-			listModel.addElement(new MediaFolder(
-					Constants.PARENT_FOLDER_NAME, parent.getPath(), parent));
-		}
-		// ...then add any subfolders...
-		for (MediaFolder folder : currentFolder.getFolders()) {
-			listModel.addElement(folder);
-		}
-		// ...then any files.
-		for (MediaFile file : currentFolder.getFiles()) {
-			listModel.addElement(file);
-		}
-	}
-	
+    protected void updateList() {
+        listModel.clear();
+
+        // First add a phony parent folder (if any)...
+        MediaFolder parent = currentFolder.getParent();
+        if (parent != null) {
+            listModel.addElement(new MediaFolder(Constants.PARENT_FOLDER_NAME, parent.getPath(), parent));
+        }
+        // ...then add any subfolders...
+        for (MediaFolder folder : currentFolder.getFolders()) {
+            listModel.addElement(folder);
+        }
+        // ...then any files.
+        for (MediaFile file : currentFolder.getFiles()) {
+            listModel.addElement(file);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private void createUI() {
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        
-        listModel = new DefaultListModel();
 
-        list = new JList(listModel);
-        list.setBackground(Constants.BACKGROUND);       
-        list.setForeground(Constants.FOREGROUND);     
+        listModel = new DefaultListModel<MediaItem>();
+
+        list = new JList<MediaItem>(listModel);
+        list.setBackground(Constants.BACKGROUND);
+        list.setForeground(Constants.FOREGROUND);
         list.setCellRenderer(new MediaCellRenderer(library));
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         list.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -107,6 +108,7 @@ public abstract class MediaPanel extends JPanel implements LibraryListener {
         JButton refreshButton = new JButton("Refresh");
         refreshButton.setFont(Constants.FONT);
         refreshButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 library.update();
             }
@@ -121,11 +123,12 @@ public abstract class MediaPanel extends JPanel implements LibraryListener {
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
         add(refreshButton, gbc);
-        
+
         deleteButton = new JButton("Delete");
         deleteButton.setFont(Constants.FONT);
         deleteButton.setEnabled(false);
         deleteButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 delete();
             }
@@ -141,23 +144,23 @@ public abstract class MediaPanel extends JPanel implements LibraryListener {
         gbc.weighty = 0.0;
         add(deleteButton, gbc);
     }
-    
-	private void activateListItem() {
-		Object value = list.getSelectedValue();
-		if (value instanceof MediaFolder) {
-			MediaFolder folder = (MediaFolder) value;
-			if (folder.getName().equals(Constants.PARENT_FOLDER_NAME)) {
-				currentFolder = folder.getParent();
-			} else {
-				currentFolder = folder;
-			}
-			updateList();
-		} else {
-			playMedia((MediaFile) value);
-		}
-	}
-	
-	private void delete() {
+
+    private void activateListItem() {
+        Object value = list.getSelectedValue();
+        if (value instanceof MediaFolder) {
+            MediaFolder folder = (MediaFolder) value;
+            if (folder.getName().equals(Constants.PARENT_FOLDER_NAME)) {
+                currentFolder = folder.getParent();
+            } else {
+                currentFolder = folder;
+            }
+            updateList();
+        } else {
+            playMedia((MediaFile) value);
+        }
+    }
+
+    private void delete() {
         Object value = list.getSelectedValue();
         if (value instanceof MediaFile) {
             MediaFile mediaFile = (MediaFile) value;
@@ -166,22 +169,20 @@ public abstract class MediaPanel extends JPanel implements LibraryListener {
                 listModel.removeElement(mediaFile);
                 library.deleteShow(mediaFile);
             } else {
-                JOptionPane.showMessageDialog(this,
-                        "Could not delete media file.\n"
-                        + "It is probably being used by another application.",
-                        "MediaCenter",
-                        JOptionPane.ERROR_MESSAGE);
+                JOptionPane
+                        .showMessageDialog(this, "Could not delete media file.\n"
+                                + "It is probably being used by another application.", "MediaCenter",
+                                JOptionPane.ERROR_MESSAGE);
             }
         }
-	}
-	
-	private void playMedia(MediaFile file) {
-        ProcessBuilder pb = new ProcessBuilder(
-                config.getPlayerPath(), "/fullscreen", file.getPath());
+    }
+
+    private void playMedia(MediaFile file) {
+        ProcessBuilder pb = new ProcessBuilder(config.getPlayerPath(), "/fullscreen", file.getPath());
         Process process = null;
         try {
             process = pb.start();
-            long startTime = System.currentTimeMillis(); 
+            long startTime = System.currentTimeMillis();
             int exitValue = process.waitFor();
             if (exitValue == 0) {
                 long duration = (System.currentTimeMillis() - startTime) / 1000;
@@ -190,59 +191,58 @@ public abstract class MediaPanel extends JPanel implements LibraryListener {
                 }
             } else {
                 System.err.println("WARNING: Player exit value: " + exitValue);
-            } 
+            }
         } catch (Exception e) {
             System.err.println("ERROR: Could not start player: " + e);
-    	}
-	}
+        }
+    }
 
+    // -------------------------------------------------------------------------
+    // Inner classes
+    // -------------------------------------------------------------------------
 
-	//-------------------------------------------------------------------------
-	//  Inner classes
-    //-------------------------------------------------------------------------
-	
-	private static class MediaCellRenderer
-			extends JLabel implements ListCellRenderer {
+    private static class MediaCellRenderer extends JLabel implements ListCellRenderer {
 
-		private static final long serialVersionUID = 1L;
-		private final Library library;
-		
-		public MediaCellRenderer(Library library) {
-		    this.library = library;
-		}
-		
-		public Component getListCellRendererComponent(JList list, Object obj,
-				int index, boolean isSelected, boolean hasFocus) {
-			setOpaque(true);
-	        setBackground(Constants.BACKGROUND);     
-	        setForeground(Constants.FOREGROUND);     
-			setFont(Constants.FONT);
-			
+        private static final long serialVersionUID = -1372244827116154566L;
+
+        private final Library library;
+
+        public MediaCellRenderer(Library library) {
+            this.library = library;
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object obj, int index, boolean isSelected,
+                boolean hasFocus) {
+            setOpaque(true);
+            setBackground(Constants.BACKGROUND);
+            setForeground(Constants.FOREGROUND);
+            setFont(Constants.FONT);
+
             Color backColor = Constants.BACKGROUND;
-			Color foreColor = Constants.FOREGROUND;
-			boolean isSeen = false;
-			
-			if (obj instanceof MediaFolder) {
-				MediaFolder folder = (MediaFolder) obj;
-				setText(String.format("[%s]", folder.getName()));
-			} else if (obj instanceof MediaFile) {
-				MediaFile file = (MediaFile) obj;
-				setText(file.getName());
-				isSeen = library.isFileSeen(file.getName()); 
-			} else {
-				setText(obj.toString());
-			}
-			
-			if (isSelected) {
-                setForeground(Constants.FOREGROUND_SELECTION);
-				setBackground(Constants.BACKGROUND_SELECTION);
-			} else {
-    			setForeground(isSeen ? Constants.FOREGROUND_SEEN : foreColor);
-    			setBackground(backColor);
-			}
-			
-			return this;
-		}
-	}
+            Color foreColor = Constants.FOREGROUND;
+            boolean isSeen = false;
 
+            if (obj instanceof MediaFolder) {
+                MediaFolder folder = (MediaFolder) obj;
+                setText(String.format("[%s]", folder.getName()));
+            } else if (obj instanceof MediaFile) {
+                MediaFile file = (MediaFile) obj;
+                setText(file.getName());
+                isSeen = library.isFileSeen(file.getName());
+            } else {
+                setText(obj.toString());
+            }
+
+            if (isSelected) {
+                setForeground(Constants.FOREGROUND_SELECTION);
+                setBackground(Constants.BACKGROUND_SELECTION);
+            } else {
+                setForeground(isSeen ? Constants.FOREGROUND_SEEN : foreColor);
+                setBackground(backColor);
+            }
+
+            return this;
+        }
+    }
 }
