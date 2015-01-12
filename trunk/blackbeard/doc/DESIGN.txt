@@ -1,0 +1,88 @@
+BlackBeard design
+=================
+
+
+TV show info
+------------
+
+http://services.tvrage.com/feeds/search.php?show=arrow
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Results>
+    <show>
+        <showid>30715</showid>
+        <name>Arrow</name>
+        <link>http://www.tvrage.com/Arrow</link>
+        <country>US</country>
+        <started>2012</started>
+        <ended>0</ended>
+        <seasons>3</seasons>
+        <status>Returning Series</status>
+        <classification>Scripted</classification>
+        <genres>
+            <genre>Action</genre>
+            <genre>Super Heroes</genre>
+        </genres>
+    </show>
+</Results>
+
+http://services.tvrage.com/feeds/episode_list.php?sid=30715
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<Show>
+    <name>Arrow</name>
+    <totalseasons>3</totalseasons>
+    <Episodelist>
+        <Season no="1">
+            <episode>
+                <epnum>1</epnum>
+                <seasonnum>01</seasonnum>
+                <prodnum>29687B</prodnum>
+                <airdate>2012-10-10</airdate>
+                <link>http://www.tvrage.com/Arrow/episodes/1065165400</link>
+                <title>Pilot</title>
+            </episode>
+            <episode>
+                <epnum>2</epnum>
+                <seasonnum>02</seasonnum>
+                <prodnum>2J7302</prodnum>
+                <airdate>2012-10-17</airdate>
+                <link>http://www.tvrage.com/Arrow/episodes/1065218084</link>
+                <title>Honor Thy Father</title>
+            </episode>
+            <!-- ... -->
+            <episode>
+                <epnum>56</epnum>
+                <seasonnum>10</seasonnum>
+                <prodnum/>
+                <airdate>2015-01-21</airdate>
+                <link>http://www.tvrage.com/Arrow/episodes/1065728382</link>
+                <title>Left Behind</title>
+            </episode>
+        </Season>
+        <Special>
+            <episode>
+                <season>2</season>
+                <airdate>2013-10-02</airdate>
+                <link>http://www.tvrage.com/Arrow/episodes/1065395329</link>
+                <title>Year One</title>
+            </episode>
+        </Special>
+    </Episodelist>
+</Show>
+
+
+Search providers (Torrent index sites)
+--------------------------------------
+
+BitSnoop:
+http://bitsnoop.com/search/video/%s/c/d/%d/?fmt=rss
+http://bitsnoop.com/search/video/the walking dead s01e01/c/d/1/?fmt=rss
+
+KickAss:
+http://kickass.to/search/%s category:TV verified:1/?rss=1&page=%d
+http://kickass.so/search/the walking dead s01e01 category:TV verified:1/?rss=1
+
+Torrentz:
+http://torrentz.eu/feed?f=%s&p=%d
+http://torrentz.eu/feed?f=the walking dead s01e01&p=1
