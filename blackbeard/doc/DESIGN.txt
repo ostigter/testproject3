@@ -75,14 +75,10 @@ http://services.tvrage.com/feeds/episode_list.php?sid=30715
 Search providers (Torrent index sites)
 --------------------------------------
 
-BitSnoop:
-http://bitsnoop.com/search/video/%s/c/d/%d/?fmt=rss
-http://bitsnoop.com/search/video/the walking dead s01e01/c/d/1/?fmt=rss
-
 KickAss:
 http://kickass.to/search/%s category:TV verified:1/?rss=1&page=%d
 http://kickass.so/search/the walking dead s01e01 category:TV verified:1/?rss=1
 
-Torrentz:
-http://torrentz.eu/feed?f=%s&p=%d
-http://torrentz.eu/feed?f=the walking dead s01e01&p=1
+BitSnoop:
+http://bitsnoop.com/search/video/%s/c/d/%d/?fmt=rss
+http://bitsnoop.com/search/video/the walking dead s01e01/c/d/1/?fmt=rss
