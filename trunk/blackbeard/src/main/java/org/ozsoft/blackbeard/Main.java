@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.EpisodeListParser;
 import org.ozsoft.blackbeard.parsers.ShowListParser;
 import org.ozsoft.blackbeard.providers.AbstractSearchProvider;
+import org.ozsoft.blackbeard.providers.BitSnoopSearchProvider;
 import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
 import org.xml.sax.SAXException;
 
@@ -36,8 +38,7 @@ public class Main {
     static {
         searchProviders = new HashSet<AbstractSearchProvider>();
         searchProviders.add(new KickAssSearchProvider());
-        // searchProviders.add(new BitSnoopSearchProvider());
-        // searchProviders.add(new TorrentzSearchProvider());
+        searchProviders.add(new BitSnoopSearchProvider());
     }
 
     public static void main(String[] args) throws Exception {
@@ -47,10 +48,10 @@ public class Main {
         // }
         // updateEpisodes(shows.get(0));
 
-        Set<Torrent> torrents = searchTorrents("The Walking Dead s01e01 720p");
+        Set<Torrent> torrents = searchTorrents("Arrow s03e01 720p");
         for (Torrent torrent : torrents) {
-            System.out.format("'%s', %d bytes, %d seeders, %d leechers, %s\n", torrent.title, torrent.size,
-                    torrent.seederCount, torrent.leecherCount, torrent.magnetUri);
+            System.out.format("'%s', %d bytes, %d seeders, %d leechers, score: %d, %s\n", torrent.title, torrent.size,
+                    torrent.seederCount, torrent.leecherCount, torrent.score, torrent.magnetUri);
         }
         System.out.format("Found %d torrents.\n", torrents.size());
     }
@@ -90,17 +91,18 @@ public class Main {
         List<Episode> episodes = null;
         try {
             response = httpClient.execute(httpGet);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    episodes = EpisodeListParser.parse(entity.getContent());
-                }
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode == HttpStatus.SC_OK) {
+                episodes = EpisodeListParser.parse(response.getEntity().getContent());
+            } else {
+                System.err.format("ERROR: Could not retrieve episode list from URI '%s' (HTTP status: %d)\n", uri,
+                        statusCode);
             }
         } catch (IOException e) {
-            System.err.format("ERROR: Could not retrieve list of shows from URI '%s'\n", uri);
+            System.err.format("ERROR: Could not retrieve episode list from URI '%s'\n", uri);
             e.printStackTrace();
         } catch (SAXException | ParserConfigurationException e) {
-            System.err.format("ERROR: Could not parse list of shows from URI '%s'\n", uri);
+            System.err.format("ERROR: Could not parse episode list from URI '%s'\n", uri);
             e.printStackTrace();
         } finally {
             IOUtils.closeQuietly(response);
@@ -112,7 +114,7 @@ public class Main {
     }
 
     private static Set<Torrent> searchTorrents(String text) {
-        Set<Torrent> torrents = new HashSet<Torrent>();
+        Set<Torrent> torrents = new TreeSet<Torrent>();
         for (AbstractSearchProvider searchProvider : searchProviders) {
             torrents.addAll(searchProvider.search(text));
         }

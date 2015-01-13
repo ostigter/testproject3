@@ -5,7 +5,7 @@ package org.ozsoft.blackbeard.domain;
  * 
  * @author Oscar Stigter
  */
-public class Torrent {
+public class Torrent implements Comparable<Torrent> {
 
     /** Title (filename). */
     public String title;
@@ -22,9 +22,20 @@ public class Torrent {
     /** Magnet link URI. */
     public String magnetUri;
 
+    /** Whether this torrent has been verified. */
+    public boolean isVerified = false;
+
+    /** Score. */
+    public Integer score;
+
     @Override
     public String toString() {
         return title;
+    }
+
+    @Override
+    public int hashCode() {
+        return magnetUri.hashCode();
     }
 
     @Override
@@ -38,5 +49,10 @@ public class Torrent {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public int compareTo(Torrent other) {
+        return other.score.compareTo(this.score);
     }
 }

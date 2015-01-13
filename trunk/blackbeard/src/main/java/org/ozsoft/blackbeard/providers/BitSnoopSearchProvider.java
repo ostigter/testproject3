@@ -1,7 +1,7 @@
 package org.ozsoft.blackbeard.providers;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.ozsoft.blackbeard.domain.Torrent;
 
@@ -11,7 +11,7 @@ public class BitSnoopSearchProvider extends AbstractSearchProvider {
 
     @Override
     public Set<Torrent> search(String text) {
-        Set<Torrent> torrents = new HashSet<Torrent>();
+        Set<Torrent> torrents = new TreeSet<Torrent>();
 
         int page = 1;
         boolean hasNew = true;
