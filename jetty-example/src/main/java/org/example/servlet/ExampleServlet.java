@@ -16,6 +16,7 @@ public class ExampleServlet extends HttpServlet {
         response.setContentType("text/html");
         final Writer writer = response.getWriter();
         writer.write("<h1>Example servlet</h1>\n");
-        writer.write("<p>Hello World from a simple test servlet!\n");
+        writer.write("<p>Hello World from a simple test servlet!</p>\n");
+        writer.write("<p><a href=\"/webapp\">Back</a></p>\n");
     }
 }
