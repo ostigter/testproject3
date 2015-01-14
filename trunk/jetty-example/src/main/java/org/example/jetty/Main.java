@@ -25,7 +25,7 @@ public class Main {
 
     private static final int PORT = 8080;
 
-    private static final String WEB_APP_HOME = "./webapps";
+    private static final String WEB_APP_HOME = "./src/main/webapp";
 
     private static final File WORK_DIR = new File("./work");
 
@@ -37,7 +37,7 @@ public class Main {
         helloHandler.setHandler(new HelloHandler());
 
         // Standard WAR file using another context.
-        WebAppContext webApp = new WebAppContext(WEB_APP_HOME + "/javaee-servlet.war", "/webapp");
+        WebAppContext webApp = new WebAppContext(WEB_APP_HOME, "/webapp");
         if (!WORK_DIR.exists()) {
             WORK_DIR.mkdirs();
         }
