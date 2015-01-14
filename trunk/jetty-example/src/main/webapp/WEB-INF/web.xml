@@ -8,11 +8,16 @@
 
     <servlet>
         <servlet-name>ExampleServlet</servlet-name>
-        <servlet-class>org.example.servlet.ExampleServlet</servlet-class>
+        <servlet-class>org.example.servlet.ExampleServlet
+        </servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ExampleServlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/servlet</url-pattern>
     </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>
