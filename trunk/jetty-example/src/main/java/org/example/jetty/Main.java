@@ -1,23 +1,11 @@
 package org.example.jetty;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * Example console application with an embedded Jetty server.
+ * Example console application with an embedded Jetty server wit a dynamic web application.
  * 
  * @author Oscar Stigter
  */
@@ -25,66 +13,28 @@ public class Main {
 
     private static final int PORT = 8080;
 
-    private static final String WEB_APP_HOME = "./src/main/webapp";
-
-    private static final File WORK_DIR = new File("./work");
+    private static final String CONTEXT_PATH = "/";
 
     public static void main(String[] args) throws Exception {
-        Server server = new Server(PORT);
+        Server server = new Server();
 
-        // Custom Jetty handler using one context.
-        ContextHandler helloHandler = new ContextHandler("/hello");
-        helloHandler.setHandler(new HelloHandler());
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(PORT);
+        connector.setIdleTimeout(60 * 60 * 1000); // 1 hour
+        connector.setSoLingerTime(-1);
+        server.addConnector(connector);
 
-        // Standard WAR file using another context.
-        WebAppContext webApp = new WebAppContext(WEB_APP_HOME, "/webapp");
-        if (!WORK_DIR.exists()) {
-            WORK_DIR.mkdirs();
-        }
-        webApp.setTempDirectory(WORK_DIR);
+        WebAppContext webApp = new WebAppContext();
+        webApp.setContextPath(CONTEXT_PATH);
+        // Enable in production environment:
+        webApp.setWar(Main.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm());
+        // Enable in development environment:
+        // webApp.setWar("src/main/webapp");
 
-        ContextHandlerCollection contexts = new ContextHandlerCollection();
-        contexts.setHandlers(new Handler[] { helloHandler, webApp });
-        server.setHandler(contexts);
+        server.setHandler(webApp);
 
         server.start();
-        System.out.println("\nServer started -- press ENTER to shutdown.");
-
-        waitForEnterPressed();
-
-        server.stop();
-        deleteFile(WORK_DIR);
-        System.out.println("\nServer stopped.");
-    }
-
-    private static void waitForEnterPressed() {
-        try {
-            new BufferedReader(new InputStreamReader(System.in)).readLine();
-        } catch (IOException e) {
-            e.printStackTrace(System.err);
-        }
-    }
-
-    private static void deleteFile(File file) {
-        if (file.isDirectory()) {
-            for (File child : file.listFiles()) {
-                deleteFile(child);
-            }
-        }
-        file.delete();
-    }
-
-    /**
-     * Example Jetty handler.
-     * 
-     * @author Oscar Stigter
-     */
-    private static class HelloHandler extends AbstractHandler {
-
-        @Override
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
-            response.getWriter().println("<h1>Hello World</h1>");
-            baseRequest.setHandled(true);
-        }
+        server.setStopAtShutdown(true);
+        server.join();
     }
 }
