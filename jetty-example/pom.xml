@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Example console application with embedded Jetty server</description>
+    <description>Embedded Jetty server with a dynamic web application</description>
     <inceptionYear>2015</inceptionYear>
     <developers>
         <developer>
