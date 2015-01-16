@@ -1,5 +1,7 @@
 package org.example.jetty;
 
+import java.io.File;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -15,6 +17,8 @@ public class Main {
 
     private static final String CONTEXT_PATH = "/";
 
+    private static final String DEV_WEBAPP_DIR = "src/main/webapp";
+
     public static void main(String[] args) throws Exception {
         Server server = new Server();
 
@@ -26,10 +30,13 @@ public class Main {
 
         WebAppContext webApp = new WebAppContext();
         webApp.setContextPath(CONTEXT_PATH);
-        // Enable in production environment:
-        webApp.setWar(Main.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm());
-        // Enable in development environment:
-        // webApp.setWar("src/main/webapp");
+        if (new File(DEV_WEBAPP_DIR).exists()) {
+            // Development environment; use web application source tree.
+            webApp.setWar(DEV_WEBAPP_DIR);
+        } else {
+            // Production environment; use resources from within JAR file.
+            webApp.setWar(Main.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm());
+        }
 
         server.setHandler(webApp);
 
