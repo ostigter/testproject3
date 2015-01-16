@@ -20,8 +20,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.6</java.version>
-        <jsf.version>2.1.6</jsf.version>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <jsf.version>2.2.9</jsf.version>
     </properties>
 
     <dependencies>
@@ -40,18 +41,7 @@
     </dependencies>
 
     <build>
-        <finalName>jsf-example</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-        </plugins>
+        <finalName>${project.artifactId}</finalName>
     </build>
 
 </project>
