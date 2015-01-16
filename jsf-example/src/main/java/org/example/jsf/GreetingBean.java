@@ -6,7 +6,7 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class GreetingBean {
-    
+
     private String name;
 
     public String getName() {
@@ -16,7 +16,7 @@ public class GreetingBean {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String getGreeting() {
         if (name != null && !name.isEmpty()) {
             return String.format("Hello, %s!", name);
@@ -24,5 +24,4 @@ public class GreetingBean {
             return "";
         }
     }
-
 }
