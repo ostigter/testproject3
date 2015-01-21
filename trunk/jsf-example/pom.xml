@@ -23,6 +23,8 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <jsf.version>2.2.9</jsf.version>
+        <primefaces.version>5.0</primefaces.version>
+        <primefaces.glass-x.version>1.0.10</primefaces.glass-x.version>
     </properties>
 
     <dependencies>
@@ -36,10 +38,34 @@
             <artifactId>jsf-impl</artifactId>
             <version>${jsf.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.primefaces</groupId>
+            <artifactId>primefaces</artifactId>
+            <version>${primefaces.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>glass-x</artifactId>
+            <version>${primefaces.glass-x.version}</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>PrimeFaces</id>
+            <url>http://repository.primefaces.org</url>
+        </repository>
+    </repositories>
 
     <build>
         <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
