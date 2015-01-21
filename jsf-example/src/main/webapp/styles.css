@@ -1,7 +1,11 @@
+.ui-widget {
+   font-size: 12px;
+}
+
 body {
-	background: #f0f0f0;
-    margin-left:  5%;
-    margin-right: 5%;
+	background: #ffffff;
+    margin-left:  20%;
+    margin-right: 20%;
 	padding: 0;
 }
 
@@ -16,4 +20,13 @@ p {
 .greeting {
     font-size: 120%;
 	color: #ff0000;
+}
+
+div.content {
+    padding: 10px;
+}
+
+div.footer {
+    font-size: 60%;
+    text-align: right;
 }
