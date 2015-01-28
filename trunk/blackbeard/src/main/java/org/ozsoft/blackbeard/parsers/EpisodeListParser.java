@@ -3,6 +3,7 @@ package org.ozsoft.blackbeard.parsers;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,7 +63,17 @@ public class EpisodeListParser {
 
         private final StringBuilder text = new StringBuilder();
 
-        private Episode episode;
+        private Integer id;
+
+        private int seasonnum;
+
+        private int epnum;
+
+        private String title;
+
+        private Date airDate;
+
+        private String link;
 
         /**
          * Constructor.
@@ -84,21 +95,23 @@ public class EpisodeListParser {
         public void startElement(String uri, String localName, String qName, Attributes attributes) {
             nodePath = String.format("%s/%s", nodePath, localName);
             text.setLength(0);
-
-            if (nodePath.equals("/Show/Episodelist/Season/episode")) {
-                // Start of episode.
-                episode = new Episode();
-            }
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) {
-            if (nodePath.equals("/Show/Episodelist/Season/episode/epnum")) {
-                episode.episode = Integer.parseInt(text.toString());
-            } else if (nodePath.equals("/Show/Episodelist/Season/episode/seasonnum")) {
-                episode.season = Integer.parseInt(text.toString());
+            // System.out.format("### endElement: '%s', text = '%s'\n", localName, text.toString());
+            if (nodePath.equals("/Show/Episodelist/Season/episode/seasonnum")) {
+                seasonnum = Integer.parseInt(text.toString());
+            } else if (nodePath.equals("/Show/Episodelist/Season/episode/epnum")) {
+                epnum = Integer.parseInt(text.toString());
+            } else if (nodePath.equals("/Show/Episodelist/Season/episode/title")) {
+                title = text.toString();
+            } else if (nodePath.equals("/Show/Episodelist/Season/episode/airdate")) {
+                // airdate =
+            } else if (nodePath.equals("/Show/Episodelist/Season/episode/link")) {
+                link = text.toString();
             } else if (nodePath.equals("/Show/Episodelist/Season/episode")) {
-                episodes.add(episode);
+                episodes.add(new Episode(id, seasonnum, epnum, title, airDate, link));
             }
             nodePath = nodePath.substring(0, nodePath.lastIndexOf('/'));
         }

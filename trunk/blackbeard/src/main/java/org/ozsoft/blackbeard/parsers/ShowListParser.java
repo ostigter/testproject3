@@ -61,7 +61,13 @@ public class ShowListParser {
 
         private final StringBuilder text = new StringBuilder();
 
-        private Show show;
+        private Integer id;
+
+        private String name;
+
+        private String link;
+
+        private boolean isRunning;
 
         /**
          * Constructor.
@@ -83,21 +89,21 @@ public class ShowListParser {
         public void startElement(String uri, String localName, String qName, Attributes attributes) {
             nodePath = String.format("%s/%s", nodePath, localName);
             text.setLength(0);
-
-            if (nodePath.equals("/Results/show")) {
-                // Start of show.
-                show = new Show();
-            }
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) {
+            // System.out.format("### endElement: '%s', text = '%s'\n", localName, text.toString());
             if (nodePath.equals("/Results/show/showid")) {
-                show.id = Integer.parseInt(text.toString());
+                id = Integer.parseInt(text.toString());
             } else if (nodePath.equals("/Results/show/name")) {
-                show.name = text.toString();
+                name = text.toString();
+            } else if (nodePath.equals("/Results/show/link")) {
+                link = text.toString();
+            } else if (nodePath.equals("/Results/show/ended")) {
+                isRunning = !Boolean.parseBoolean(text.toString());
             } else if (nodePath.equals("/Results/show")) {
-                shows.add(show);
+                shows.add(new Show(id, name, link));
             }
             nodePath = nodePath.substring(0, nodePath.lastIndexOf('/'));
         }
