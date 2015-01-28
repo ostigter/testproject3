@@ -42,11 +42,11 @@ public class Main {
     }
 
     public static void main(String[] args) throws Exception {
-        // List<Show> shows = searchShows("Arrow");
-        // for (Show show : shows) {
-        // System.out.format("%s (%d)\n", show.name, show.id);
-        // }
-        // updateEpisodes(shows.get(0));
+        List<Show> shows = searchShows("Arrow");
+        for (Show show : shows) {
+            System.out.format("%s (%d)\n", show.getName(), show.getId());
+        }
+        updateEpisodes(shows.get(0));
 
         Set<Torrent> torrents = searchTorrents("Arrow s03e01 720p");
         for (Torrent torrent : torrents) {
@@ -84,7 +84,7 @@ public class Main {
     }
 
     private static void updateEpisodes(Show show) {
-        String uri = "http://services.tvrage.com/feeds/episode_list.php?sid=" + show.id;
+        String uri = "http://services.tvrage.com/feeds/episode_list.php?sid=" + show.getId();
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet httpGet = new HttpGet(uri);
         CloseableHttpResponse response = null;
@@ -109,7 +109,7 @@ public class Main {
         }
 
         for (Episode episode : episodes) {
-            System.out.format("%s - s%02de%02d\n", show.name, episode.season, episode.episode);
+            System.out.format("%s - %s\n", show, episode);
         }
     }
 
