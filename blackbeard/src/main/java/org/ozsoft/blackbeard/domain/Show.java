@@ -13,6 +13,8 @@ public class Show implements Serializable, Comparable<Show> {
 
     private static final long serialVersionUID = 5461098309462074246L;
 
+    private static final Episode[] EMPTY_EPISODE_ARRAY = new Episode[0];
+
     /** TVRage ID. */
     private final int id;
 
@@ -28,7 +30,7 @@ public class Show implements Serializable, Comparable<Show> {
     /** Known episodes. */
     private final Map<Integer, Episode> episodes;
 
-    public Show(Integer id, String name, String link) {
+    public Show(int id, String name, String link) {
         this.id = id;
         this.name = name;
         this.link = link;
@@ -38,7 +40,7 @@ public class Show implements Serializable, Comparable<Show> {
         episodes = new TreeMap<Integer, Episode>();
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
@@ -59,7 +61,7 @@ public class Show implements Serializable, Comparable<Show> {
     }
 
     public Episode[] getEpisodes() {
-        return episodes.entrySet().toArray(new Episode[0]);
+        return episodes.values().toArray(EMPTY_EPISODE_ARRAY);
     }
 
     public Episode getEpisode(int id) {
@@ -67,7 +69,7 @@ public class Show implements Serializable, Comparable<Show> {
     }
 
     public void addEpisode(Episode episode) {
-        episodes.put(episode.getId(), episode);
+        episodes.put(episode.getEpisodeNumber(), episode);
     }
 
     @Override

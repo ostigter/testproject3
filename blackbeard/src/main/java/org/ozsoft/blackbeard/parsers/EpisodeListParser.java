@@ -63,8 +63,6 @@ public class EpisodeListParser {
 
         private final StringBuilder text = new StringBuilder();
 
-        private Integer id;
-
         private int episodeNumber;
 
         private int seasonNumber;
@@ -111,7 +109,7 @@ public class EpisodeListParser {
             } else if (nodePath.equals("/Show/Episodelist/Season/episode/link")) {
                 link = text.toString();
             } else if (nodePath.equals("/Show/Episodelist/Season/episode")) {
-                episodes.add(new Episode(id, seasonNumber, episodeNumber, title, airDate, link));
+                episodes.add(new Episode(seasonNumber, episodeNumber, title, airDate, link));
             }
             nodePath = nodePath.substring(0, nodePath.lastIndexOf('/'));
         }
