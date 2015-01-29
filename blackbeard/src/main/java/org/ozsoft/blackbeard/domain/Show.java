@@ -14,13 +14,16 @@ public class Show implements Serializable, Comparable<Show> {
     private static final long serialVersionUID = 5461098309462074246L;
 
     /** TVRage ID. */
-    private final Integer id;
+    private final int id;
 
     /** Name. */
     private final String name;
 
     /** TVRage link. */
     private final String link;
+
+    /** Status. */
+    private ShowStatus status;
 
     /** Known episodes. */
     private final Map<Integer, Episode> episodes;
@@ -29,6 +32,9 @@ public class Show implements Serializable, Comparable<Show> {
         this.id = id;
         this.name = name;
         this.link = link;
+
+        setStatus(ShowStatus.RUNNING);
+
         episodes = new TreeMap<Integer, Episode>();
     }
 
@@ -44,11 +50,19 @@ public class Show implements Serializable, Comparable<Show> {
         return link;
     }
 
+    public ShowStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ShowStatus status) {
+        this.status = status;
+    }
+
     public Episode[] getEpisodes() {
         return episodes.entrySet().toArray(new Episode[0]);
     }
 
-    public Episode getEpisode(Long id) {
+    public Episode getEpisode(int id) {
         return episodes.get(id);
     }
 
@@ -58,7 +72,7 @@ public class Show implements Serializable, Comparable<Show> {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return id;
     }
 
     @Override

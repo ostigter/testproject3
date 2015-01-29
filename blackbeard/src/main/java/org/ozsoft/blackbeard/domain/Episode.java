@@ -13,42 +13,46 @@ public class Episode implements Serializable, Comparable<Episode> {
     private static final long serialVersionUID = -4265981374332614409L;
 
     /** TVRage episode ID. */
-    private final Integer id;
+    private final int id;
 
-    /** Season number. */
-    private final int season;
+    /** Episode (sequence) number within the show. */
+    private final int episodeNumber;
 
-    /** Episode number. */
-    private final int episode;
+    /** Episode number within the season. */
+    private final int seasonNumber;
 
     /** Title. */
     private final String title;
 
-    /** Air date. */
+    /** Air date (null if not yet aired). */
     private final Date airDate;
 
     /** TVRage link. */
     private final String link;
 
-    public Episode(Integer id, int season, int episode, String title, Date airDate, String link) {
+    /** Status (BlackBeard). */
+    private EpisodeStatus status;
+
+    public Episode(Integer id, int episodeNumber, int seasonNumber, String title, Date airDate, String link) {
         this.id = id;
-        this.season = season;
-        this.episode = episode;
+        this.episodeNumber = episodeNumber;
+        this.seasonNumber = seasonNumber;
         this.title = title;
         this.airDate = airDate;
         this.link = link;
+        setStatus(EpisodeStatus.NOT_YET_AIRED);
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public int getSeason() {
-        return season;
+    public int getEpisodeNumber() {
+        return episodeNumber;
     }
 
-    public int getEpisode() {
-        return episode;
+    public int getSeasonNumber() {
+        return seasonNumber;
     }
 
     public String getTitle() {
@@ -61,6 +65,14 @@ public class Episode implements Serializable, Comparable<Episode> {
 
     public String getLink() {
         return link;
+    }
+
+    public EpisodeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EpisodeStatus status) {
+        this.status = status;
     }
 
     @Override
@@ -83,11 +95,17 @@ public class Episode implements Serializable, Comparable<Episode> {
 
     @Override
     public String toString() {
-        return String.format("s%02de%02d - %s", season, episode, title);
+        return String.format("s%02de%02d - %s", seasonNumber, episodeNumber, title);
     }
 
     @Override
     public int compareTo(Episode other) {
-        return id.compareTo(other.getId());
+        if (episodeNumber < other.getEpisodeNumber()) {
+            return -1;
+        } else if (episodeNumber > other.getEpisodeNumber()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
