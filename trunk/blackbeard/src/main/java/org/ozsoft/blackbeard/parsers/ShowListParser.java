@@ -62,7 +62,7 @@ public class ShowListParser {
 
         private final StringBuilder text = new StringBuilder();
 
-        private Integer id;
+        private int id;
 
         private String name;
 

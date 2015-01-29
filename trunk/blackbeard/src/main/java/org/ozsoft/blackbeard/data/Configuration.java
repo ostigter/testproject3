@@ -21,7 +21,7 @@ public class Configuration implements Serializable {
         return new TreeSet<Show>(shows.values()).toArray(new Show[0]);
     }
 
-    public Show getShow(Integer id) {
+    public Show getShow(int id) {
         return shows.get(id);
     }
 
