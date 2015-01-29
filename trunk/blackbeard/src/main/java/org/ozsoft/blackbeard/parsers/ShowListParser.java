@@ -10,6 +10,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.ozsoft.blackbeard.domain.Show;
+import org.ozsoft.blackbeard.domain.ShowStatus;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -103,7 +104,9 @@ public class ShowListParser {
             } else if (nodePath.equals("/Results/show/ended")) {
                 isRunning = !Boolean.parseBoolean(text.toString());
             } else if (nodePath.equals("/Results/show")) {
-                shows.add(new Show(id, name, link));
+                Show show = new Show(id, name, link);
+                show.setStatus(isRunning ? ShowStatus.RUNNING : ShowStatus.ENDED);
+                shows.add(show);
             }
             nodePath = nodePath.substring(0, nodePath.lastIndexOf('/'));
         }

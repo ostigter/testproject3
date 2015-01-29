@@ -84,6 +84,38 @@ http://bitsnoop.com/search/video/%s/c/d/%d/?fmt=rss
 http://bitsnoop.com/search/video/the walking dead s01e01/c/d/1/?fmt=rss
 
 
+class Show {
+    int id
+    String name
+    String link
+    ShowStatus status
+    Map<Integer, Episode> episodes
+}
+
+enum ShowStatus {
+    RUNNING
+    RETURNING
+    ENDED
+    CANCELED
+}
+
+class Episode {
+    int episodenum
+    int seasonnum
+    String title
+    String link
+    EpisodeStatus status
+    Set<Torrent> torrents
+    Torrent selectedTorrent
+}
+
+enum EpisodeStatus {
+    TO_BE_AIRED
+    NEW
+    DOWNLOADED
+    WATCHED
+}
+
 Configuration
 -------------
 
@@ -91,44 +123,39 @@ Configuration {
     shows: [
         Show {
             name: "Arrow",
-            seasons: [
-                Season {
-                    number: 1,
-                    episodes: [
-                        Episode {
-                            epnum: 1,
-                            seasonnum: 1,
-                            title: "Pilot",
-                            airDate: 10-OCT-2012,
-                            link: "http://www.tvrage.com/Arrow/episodes/1065165400"
-                        },
-                        Episode {
-                            epnum: 2,
-                            seasonnum: 2,
-                            title: "Honor Thy Father",
-                            airDate: 17-OCT-2012,
-                            link: "http://www.tvrage.com/Arrow/episodes/1065218084"
-                        }
-                    ]
+            link: "http://www.tvrage.com/Arrow",
+            status: RUNNING,
+            episodes: [
+                Episode {
+                    epnum: 1,
+                    seasonnum: 1,
+                    title: "Pilot",
+                    airDate: 10-OCT-2012,
+                    link: "http://www.tvrage.com/Arrow/episodes/1065165400",
+                    status: WATCHED
                 },
-                Season {
-                    number: 2,
-                    episodes: [
-                        Episode {
-                            epnum: 3,
-                            seasonnum: 1,
-                            title: "s02e01",
-                            airDate: 2-NOV-2012,
-                            link: "..."
-                        },
-                        Episode {
-                            epnum: 4,
-                            seasonnum: 2,
-                            title: "s02e02",
-                            airDate: 9-NOV-2012,
-                            link: "..."
-                        }
-                    ]
+                Episode {
+                    epnum: 2,
+                    seasonnum: 2,
+                    title: "Honor Thy Father",
+                    airDate: 17-OCT-2012,
+                    link: "http://www.tvrage.com/Arrow/episodes/1065218084",
+                    status: DOWNLOADED
+                },
+                ...
+                Episode {
+                    epnum: 23,
+                    seasonnum: 1,
+                    title: "s02e01",
+                    airDate: 2-NOV-2012,
+                    link: "..."
+                },
+                Episode {
+                    epnum: 24,
+                    seasonnum: 2,
+                    title: "s02e02",
+                    airDate: 9-NOV-2012,
+                    link: "..."
                 }
             ]
         }
