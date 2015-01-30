@@ -63,9 +63,11 @@ public class EpisodeListParser {
 
         private final StringBuilder text = new StringBuilder();
 
-        private int episodeNumber;
-
         private int seasonNumber;
+
+        private int episodeId;
+
+        private int episodeNumber;
 
         private String title;
 
@@ -93,13 +95,17 @@ public class EpisodeListParser {
         public void startElement(String uri, String localName, String qName, Attributes attributes) {
             nodePath = String.format("%s/%s", nodePath, localName);
             text.setLength(0);
+
+            if (nodePath.equals("/Show/Episodelist/Season")) {
+                episodeNumber = Integer.parseInt(attributes.getValue("no"));
+            }
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) {
             // System.out.format("### endElement: '%s', text = '%s'\n", localName, text.toString());
             if (nodePath.equals("/Show/Episodelist/Season/episode/epnum")) {
-                episodeNumber = Integer.parseInt(text.toString());
+                episodeId = Integer.parseInt(text.toString());
             } else if (nodePath.equals("/Show/Episodelist/Season/episode/seasonnum")) {
                 seasonNumber = Integer.parseInt(text.toString());
             } else if (nodePath.equals("/Show/Episodelist/Season/episode/title")) {
@@ -109,7 +115,7 @@ public class EpisodeListParser {
             } else if (nodePath.equals("/Show/Episodelist/Season/episode/link")) {
                 link = text.toString();
             } else if (nodePath.equals("/Show/Episodelist/Season/episode")) {
-                episodes.add(new Episode(seasonNumber, episodeNumber, title, airDate, link));
+                episodes.add(new Episode(episodeId, seasonNumber, title, airDate, link));
             }
             nodePath = nodePath.substring(0, nodePath.lastIndexOf('/'));
         }
