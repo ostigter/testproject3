@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.HttpStatus;
 import org.ozsoft.blackbeard.domain.Episode;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.Torrent;
@@ -22,6 +21,7 @@ import org.ozsoft.blackbeard.providers.AbstractSearchProvider;
 import org.ozsoft.blackbeard.providers.BitSnoopSearchProvider;
 import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
 import org.ozsoft.blackbeard.util.http.HttpClient;
+import org.ozsoft.blackbeard.util.http.HttpRequest;
 import org.ozsoft.blackbeard.util.http.HttpResponse;
 import org.xml.sax.SAXException;
 
@@ -37,6 +37,11 @@ public class ShowService {
     private static final String TVRAGE_EPISODE_LIST_URL = "http://services.tvrage.com/feeds/episode_list.php?sid=%d";
 
     private static final Pattern EPISODE_PATTERN = Pattern.compile("^.*s(\\d+)e(\\d+).*$");
+
+    // private static final String PROXY_HOST = "146.106.91.10";
+    // private static final int PROXY_PORT = 8080;
+    // private static final String PROXY_USERNAME = "";
+    // private static final String PROXY_PASSWORD = "";
 
     private static final Set<AbstractSearchProvider> searchProviders;
 
@@ -54,10 +59,11 @@ public class ShowService {
 
     public ShowService() {
         httpClient = new HttpClient();
-    }
-
-    public static void main(String[] args) {
-        new ShowService();
+        // httpClient.setUseProxy(true);
+        // httpClient.setProxyHost(PROXY_HOST);
+        // httpClient.setProxyPort(PROXY_PORT);
+        // httpClient.setProxyUsername(PROXY_USERNAME);
+        // httpClient.setProxyPassword(PROXY_PASSWORD);
     }
 
     /**
@@ -71,10 +77,11 @@ public class ShowService {
         List<Show> shows = new ArrayList<Show>();
         String uri = String.format(TVRAGE_SHOW_SEARCH_URL, text);
         try {
-            HttpResponse response = httpClient.executeGet(uri);
-            int statusCode = response.getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                shows = ShowListParser.parse(response.getResponseBody());
+            HttpRequest httpRequest = httpClient.createGetRequest(uri);
+            HttpResponse httpResponse = httpRequest.execute();
+            int statusCode = httpResponse.getStatusCode();
+            if (statusCode == 200) {
+                shows = ShowListParser.parse(httpResponse.getBody());
             } else {
                 System.err.format("ERROR: Could not retrieve list of shows from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
@@ -89,10 +96,11 @@ public class ShowService {
     public void updateEpisodes(Show show) {
         String uri = String.format(TVRAGE_EPISODE_LIST_URL, show.getId());
         try {
-            HttpResponse response = httpClient.executeGet(uri);
-            int statusCode = response.getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                List<Episode> episodes = EpisodeListParser.parse(response.getResponseBody());
+            HttpRequest httpRequest = httpClient.createGetRequest(uri);
+            HttpResponse httpResponse = httpRequest.execute();
+            int statusCode = httpResponse.getStatusCode();
+            if (statusCode == 200) {
+                List<Episode> episodes = EpisodeListParser.parse(httpResponse.getBody());
                 for (Episode episode : episodes) {
                     Episode existingEpisode = show.getEpisode(episode.getEpisodeNumber());
                     if (existingEpisode != null) {

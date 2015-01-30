@@ -8,6 +8,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.ozsoft.blackbeard.domain.Torrent;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -39,7 +40,7 @@ public class TorrentRssParser {
     public static Set<Torrent> parse(String text) throws ParserConfigurationException, SAXException, IOException {
         SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
         RssHandler handler = new RssHandler();
-        parser.parse(new InputSource(text), handler);
+        parser.parse(new InputSource(IOUtils.toInputStream(text)), handler);
         return handler.getTorrent();
     }
 

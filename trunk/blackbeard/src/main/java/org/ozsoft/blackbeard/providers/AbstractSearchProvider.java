@@ -8,10 +8,10 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.http.HttpStatus;
 import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.TorrentRssParser;
 import org.ozsoft.blackbeard.util.http.HttpClient;
+import org.ozsoft.blackbeard.util.http.HttpRequest;
 import org.ozsoft.blackbeard.util.http.HttpResponse;
 import org.xml.sax.SAXException;
 
@@ -30,10 +30,11 @@ public abstract class AbstractSearchProvider implements SearchProvider {
         // System.out.format("### Searching torrents using URI '%s'\n", uri);
         Set<Torrent> torrents = EMPTY_SET;
         try {
-            HttpResponse response = httpClient.executeGet(uri);
-            int statusCode = response.getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                torrents = TorrentRssParser.parse(response.getResponseBody());
+            HttpRequest httpRequest = httpClient.createGetRequest(uri);
+            HttpResponse httpResponse = httpRequest.execute();
+            int statusCode = httpResponse.getStatusCode();
+            if (statusCode == 200) {
+                torrents = TorrentRssParser.parse(httpResponse.getBody());
             } else {
                 System.err.format("ERROR: Could not retrieve RSS feed with search results from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
