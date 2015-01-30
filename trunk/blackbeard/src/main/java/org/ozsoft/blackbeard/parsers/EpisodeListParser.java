@@ -1,7 +1,6 @@
 package org.ozsoft.blackbeard.parsers;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,10 +38,10 @@ public class EpisodeListParser {
         }
     }
 
-    public static List<Episode> parse(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+    public static List<Episode> parse(String text) throws ParserConfigurationException, SAXException, IOException {
         SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
         EpisodeListHandler handler = new EpisodeListHandler();
-        parser.parse(new InputSource(is), handler);
+        parser.parse(new InputSource(text), handler);
         return handler.getEpisodes();
     }
 

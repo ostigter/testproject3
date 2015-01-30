@@ -1,7 +1,7 @@
 package org.ozsoft.blackbeard.domain;
 
 /**
- * Torrent file.
+ * Respresents a torrent file.
  * 
  * @author Oscar Stigter
  */

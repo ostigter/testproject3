@@ -8,14 +8,11 @@ import java.util.TreeSet;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.TorrentRssParser;
+import org.ozsoft.blackbeard.util.http.HttpClient;
+import org.ozsoft.blackbeard.util.http.HttpResponse;
 import org.xml.sax.SAXException;
 
 public abstract class AbstractSearchProvider implements SearchProvider {
@@ -27,32 +24,22 @@ public abstract class AbstractSearchProvider implements SearchProvider {
     private static final Set<Torrent> EMPTY_SET = new TreeSet<Torrent>();
 
     @Override
-    public abstract Set<Torrent> search(String text);
+    public abstract Set<Torrent> search(String text, HttpClient httpClient);
 
-    protected static Set<Torrent> searchTorrentsFromRssFeed(String uri) {
+    protected static Set<Torrent> searchTorrentsFromRssFeed(String uri, HttpClient httpClient) {
         // System.out.format("### Searching torrents using URI '%s'\n", uri);
         Set<Torrent> torrents = EMPTY_SET;
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uri);
-        CloseableHttpResponse response = null;
         try {
-            response = httpClient.execute(httpGet);
-            int statusCode = response.getStatusLine().getStatusCode();
+            HttpResponse response = httpClient.executeGet(uri);
+            int statusCode = response.getStatusCode();
             if (statusCode == HttpStatus.SC_OK) {
-                torrents = TorrentRssParser.parse(response.getEntity().getContent());
+                torrents = TorrentRssParser.parse(response.getResponseBody());
             } else {
-                System.err.format(
-                        "ERROR: Could not retrieve RSS feed with search results from URI '%s' (HTTP status: %d)\n",
-                        uri, statusCode);
+                System.err.format("ERROR: Could not retrieve RSS feed with search results from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
-        } catch (IOException e) {
-            System.err.format("ERROR: Could not retrieve RSS feed with search results from URI '%s'\n", uri);
-            e.printStackTrace();
-        } catch (SAXException | ParserConfigurationException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             System.err.format("ERROR: Could not parse RSS feed with search results from URI '%s'\n", uri);
             e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(response);
         }
 
         return torrents;

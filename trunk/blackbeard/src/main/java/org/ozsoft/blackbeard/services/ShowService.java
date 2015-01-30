@@ -12,13 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.ozsoft.blackbeard.domain.Episode;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.Torrent;
@@ -27,6 +21,8 @@ import org.ozsoft.blackbeard.parsers.ShowListParser;
 import org.ozsoft.blackbeard.providers.AbstractSearchProvider;
 import org.ozsoft.blackbeard.providers.BitSnoopSearchProvider;
 import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
+import org.ozsoft.blackbeard.util.http.HttpClient;
+import org.ozsoft.blackbeard.util.http.HttpResponse;
 import org.xml.sax.SAXException;
 
 /**
@@ -44,6 +40,8 @@ public class ShowService {
 
     private static final Set<AbstractSearchProvider> searchProviders;
 
+    private final HttpClient httpClient;
+
     /**
      * Static initializer.
      */
@@ -52,6 +50,14 @@ public class ShowService {
         searchProviders = new HashSet<AbstractSearchProvider>();
         searchProviders.add(new KickAssSearchProvider());
         searchProviders.add(new BitSnoopSearchProvider());
+    }
+
+    public ShowService() {
+        httpClient = new HttpClient();
+    }
+
+    public static void main(String[] args) {
+        new ShowService();
     }
 
     /**
@@ -64,25 +70,17 @@ public class ShowService {
     public List<Show> searchShows(String text) {
         List<Show> shows = new ArrayList<Show>();
         String uri = String.format(TVRAGE_SHOW_SEARCH_URL, text);
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uri);
-        CloseableHttpResponse response = null;
         try {
-            response = httpClient.execute(httpGet);
-            if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    shows = ShowListParser.parse(entity.getContent());
-                }
+            HttpResponse response = httpClient.executeGet(uri);
+            int statusCode = response.getStatusCode();
+            if (statusCode == HttpStatus.SC_OK) {
+                shows = ShowListParser.parse(response.getResponseBody());
+            } else {
+                System.err.format("ERROR: Could not retrieve list of shows from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
-        } catch (IOException e) {
-            System.err.format("ERROR: Could not retrieve list of shows from URI '%s'\n", uri);
-            e.printStackTrace();
-        } catch (SAXException | ParserConfigurationException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             System.err.format("ERROR: Could not parse list of shows from URI '%s'\n", uri);
             e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(response);
         }
 
         return shows;
@@ -90,14 +88,11 @@ public class ShowService {
 
     public void updateEpisodes(Show show) {
         String uri = String.format(TVRAGE_EPISODE_LIST_URL, show.getId());
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet httpGet = new HttpGet(uri);
-        CloseableHttpResponse response = null;
         try {
-            response = httpClient.execute(httpGet);
-            int statusCode = response.getStatusLine().getStatusCode();
+            HttpResponse response = httpClient.executeGet(uri);
+            int statusCode = response.getStatusCode();
             if (statusCode == HttpStatus.SC_OK) {
-                List<Episode> episodes = EpisodeListParser.parse(response.getEntity().getContent());
+                List<Episode> episodes = EpisodeListParser.parse(response.getResponseBody());
                 for (Episode episode : episodes) {
                     Episode existingEpisode = show.getEpisode(episode.getEpisodeNumber());
                     if (existingEpisode != null) {
@@ -106,24 +101,18 @@ public class ShowService {
                     show.addEpisode(episode);
                 }
             } else {
-                System.err.format("ERROR: Could not retrieve episode list from URI '%s' (HTTP status: %d)\n", uri,
-                        statusCode);
+                System.err.format("ERROR: Could not retrieve episode list from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
-        } catch (IOException e) {
-            System.err.format("ERROR: Could not retrieve episode list from URI '%s'\n", uri);
-            e.printStackTrace();
-        } catch (SAXException | ParserConfigurationException e) {
+        } catch (IOException | SAXException | ParserConfigurationException e) {
             System.err.format("ERROR: Could not parse episode list from URI '%s'\n", uri);
             e.printStackTrace();
-        } finally {
-            IOUtils.closeQuietly(response);
         }
     }
 
     public List<Torrent> searchTorrents(String text) {
         Set<Torrent> torrents = new TreeSet<Torrent>();
         for (AbstractSearchProvider searchProvider : searchProviders) {
-            torrents.addAll(searchProvider.search(text));
+            torrents.addAll(searchProvider.search(text, httpClient));
         }
 
         filterTorrents(torrents);
