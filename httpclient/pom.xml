@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <name>httpclient</name>
-    <description>HTTP client library based on HttpURLConnection</description>
+    <description>HTTP client library based on the JDK's HttpURLConnection</description>
     <inceptionYear>2011</inceptionYear>
     <developers>
         <developer>
@@ -20,7 +20,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <commons.io.version>2.0.1</commons.io.version>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <commons.io.version>2.4</commons.io.version>
     </properties>
     
     <dependencies>
@@ -28,22 +30,7 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons.io.version}</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
