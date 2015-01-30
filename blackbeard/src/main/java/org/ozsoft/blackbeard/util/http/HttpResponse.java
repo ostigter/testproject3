@@ -1,9 +1,7 @@
 package org.ozsoft.blackbeard.util.http;
 
 /**
- * Wrapper around Apache's HttpResponse (convenience). <br />
- * 
- * The response body is always returned as a <code>String</code>, therefore this wrapper should not be used in case
+ * HTTP response.
  * 
  * @author Oscar Stigter
  */
@@ -11,18 +9,25 @@ public class HttpResponse {
 
     private final int statusCode;
 
-    private final String responseBody;
+    private final String statusMessage;
 
-    public HttpResponse(int statusCode, String responseBody) {
+    private final String body;
+
+    /* package */HttpResponse(int statusCode, String statusMessage, String body) {
         this.statusCode = statusCode;
-        this.responseBody = responseBody;
+        this.statusMessage = statusMessage;
+        this.body = body;
     }
 
     public int getStatusCode() {
         return statusCode;
     }
 
-    public String getResponseBody() {
-        return responseBody;
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public String getBody() {
+        return body;
     }
 }

@@ -8,6 +8,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.ShowStatus;
 import org.xml.sax.Attributes;
@@ -40,7 +41,7 @@ public class ShowListParser {
     public static List<Show> parse(String text) throws ParserConfigurationException, SAXException, IOException {
         SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
         ShowListHandler handler = new ShowListHandler();
-        parser.parse(new InputSource(text), handler);
+        parser.parse(new InputSource(IOUtils.toInputStream(text)), handler);
         return handler.getShows();
     }
 

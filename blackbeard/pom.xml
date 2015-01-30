@@ -22,7 +22,6 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<commons-io.version>2.4</commons-io.version>
-		<httpcomponents.version>4.3.6</httpcomponents.version>
         <jsf.version>2.2.9</jsf.version>
         <primefaces.version>5.1.RC1</primefaces.version>
         <primefaces.glass-x.version>1.0.10</primefaces.glass-x.version>
@@ -34,11 +33,6 @@
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
         </dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>${httpcomponents.version}</version>
-		</dependency>
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-api</artifactId>

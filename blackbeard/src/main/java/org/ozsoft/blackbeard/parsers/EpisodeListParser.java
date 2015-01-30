@@ -9,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.ozsoft.blackbeard.domain.Episode;
 import org.ozsoft.blackbeard.domain.Show;
 import org.xml.sax.Attributes;
@@ -41,7 +42,7 @@ public class EpisodeListParser {
     public static List<Episode> parse(String text) throws ParserConfigurationException, SAXException, IOException {
         SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
         EpisodeListHandler handler = new EpisodeListHandler();
-        parser.parse(new InputSource(text), handler);
+        parser.parse(new InputSource(IOUtils.toInputStream(text)), handler);
         return handler.getEpisodes();
     }
 
