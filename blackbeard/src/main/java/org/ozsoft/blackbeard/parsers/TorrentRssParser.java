@@ -1,7 +1,6 @@
 package org.ozsoft.blackbeard.parsers;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -37,10 +36,10 @@ public class TorrentRssParser {
         }
     }
 
-    public static Set<Torrent> parse(InputStream is) throws ParserConfigurationException, SAXException, IOException {
+    public static Set<Torrent> parse(String text) throws ParserConfigurationException, SAXException, IOException {
         SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
         RssHandler handler = new RssHandler();
-        parser.parse(new InputSource(is), handler);
+        parser.parse(new InputSource(text), handler);
         return handler.getTorrent();
     }
 
@@ -102,8 +101,7 @@ public class TorrentRssParser {
                 torrent.seederCount = Integer.parseInt(text.toString());
             } else if (nodePath.equals("/rss/channel/item/peers") || nodePath.equals("/rss/channel/item/numLeechers")) {
                 torrent.leecherCount = Integer.parseInt(text.toString());
-            } else if (nodePath.equals("/rss/channel/item/magnetURI")
-                    || nodePath.equals("/rss/channel/item/torrent/magnetURI")) {
+            } else if (nodePath.equals("/rss/channel/item/magnetURI") || nodePath.equals("/rss/channel/item/torrent/magnetURI")) {
                 torrent.magnetUri = text.toString().trim();
             } else if (nodePath.equals("/rss/channel/item/torrent/verified")) {
                 torrent.isVerified = (text.toString().equals("1"));
