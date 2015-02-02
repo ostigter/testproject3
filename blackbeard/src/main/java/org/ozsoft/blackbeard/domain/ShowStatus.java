@@ -8,14 +8,26 @@ package org.ozsoft.blackbeard.domain;
 public enum ShowStatus {
 
     /** Running, active season (continuing). */
-    RUNNING,
+    RUNNING("Running"),
 
     /** Running, waiting for the start of the next season. */
-    RETURNING,
+    RETURNING("Returning"),
 
     /** Ended according to schedule (last episode has been aired). */
-    ENDED,
+    ENDED("Ended"),
 
     /** Canceled, possibly ending without conclusion. */
-    CANCELED,
+    CANCELED("Canceled"),
+
+    ;
+
+    private final String name;
+
+    ShowStatus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

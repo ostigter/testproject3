@@ -10,15 +10,17 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.ozsoft.blackbeard.data.Configuration;
 import org.ozsoft.blackbeard.domain.Episode;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.EpisodeListParser;
 import org.ozsoft.blackbeard.parsers.ShowListParser;
 import org.ozsoft.blackbeard.providers.AbstractSearchProvider;
-import org.ozsoft.blackbeard.providers.BitSnoopSearchProvider;
 import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
 import org.ozsoft.blackbeard.util.http.HttpClient;
 import org.ozsoft.blackbeard.util.http.HttpRequest;
@@ -30,6 +32,8 @@ import org.xml.sax.SAXException;
  * 
  * @author Oscar Stigter
  */
+@ManagedBean(name = "showService")
+@ApplicationScoped
 public class ShowService {
 
     private static final String TVRAGE_SHOW_SEARCH_URL = "http://services.tvrage.com/feeds/search.php?show=%s";
@@ -47,6 +51,8 @@ public class ShowService {
 
     private final HttpClient httpClient;
 
+    private final Configuration config;
+
     /**
      * Static initializer.
      */
@@ -54,16 +60,23 @@ public class ShowService {
         // Set torrent search providers.
         searchProviders = new HashSet<AbstractSearchProvider>();
         searchProviders.add(new KickAssSearchProvider());
-        searchProviders.add(new BitSnoopSearchProvider());
+        // searchProviders.add(new BitSnoopSearchProvider());
     }
 
     public ShowService() {
+        config = new Configuration();
+        config.load();
+
         httpClient = new HttpClient();
         // httpClient.setUseProxy(true);
         // httpClient.setProxyHost(PROXY_HOST);
         // httpClient.setProxyPort(PROXY_PORT);
         // httpClient.setProxyUsername(PROXY_USERNAME);
         // httpClient.setProxyPassword(PROXY_PASSWORD);
+    }
+
+    public Show[] getShows() {
+        return config.getShows();
     }
 
     /**
