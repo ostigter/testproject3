@@ -25,3 +25,54 @@ div.footer {
     font-size: 60%;
     text-align: right;
 }
+
+table.boxed {
+    border: 0 solid #c0c0c0;
+    width: 100%;
+}
+
+th {
+    color: #000000;
+	background: #c0c0c0;
+}
+
+th.showName {
+    width: 300px;
+    text-align: left;
+    color: red;
+}
+
+td.showName {
+    width: 300px;
+    text-align: left;
+}
+
+th.showInfo {
+    width: 0px;
+    text-align: center;
+}
+
+td.showInfo{
+    width: 0px;
+    text-align: center;
+}
+
+th.showStatus {
+    width: 50px;
+    text-align: center;
+}
+
+td.showStatus{
+    width: 50px;
+    text-align: center;
+}
+
+tr.odd {
+    color: #000000;
+	background: #ffffff;
+}
+
+tr.even {
+    color: #000000;
+	background: #f0f0f0;
+}

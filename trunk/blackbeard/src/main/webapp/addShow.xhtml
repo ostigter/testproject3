@@ -1,0 +1,21 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:h="http://java.sun.com/jsf/html"
+	    xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+	    template="template.xhtml">
+	<ui:define name="title">Add Show</ui:define>
+	<ui:define name="content">
+		<h:form>
+			<fieldset id="addShowPanel">
+      			<h:panelGrid columns="2">
+					<h:outputLabel value="Search for:" for="name" />
+					<h:inputText id="name" value="#{addShowBean.name}" style="width: 200px;" />
+      			</h:panelGrid>
+	            <h:commandButton value="Search" action="#{addShowBean.search}" />
+	            &#160;
+				<h:commandButton value="Cancel" action="listShows.xhtml" immediate="true" />
+			</fieldset>
+		</h:form>
+	</ui:define>
+</ui:composition>

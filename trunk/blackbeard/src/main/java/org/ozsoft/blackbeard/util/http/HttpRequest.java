@@ -14,8 +14,10 @@ import org.apache.commons.io.IOUtils;
  */
 public abstract class HttpRequest {
 
+    private static final int HTTP_CLIENT_ERROR = 400;
+
     /** Timeout used for the HTTP connection. */
-    protected static final int TIMEOUT = 5000;
+    protected static final int TIMEOUT = 10000;
 
     /** HTTP client. */
     protected final HttpClient client;
@@ -43,7 +45,7 @@ public abstract class HttpRequest {
         String responseBody = null;
         try {
             InputStream is = null;
-            if (statusCode < 400) {
+            if (statusCode < HTTP_CLIENT_ERROR) {
                 is = con.getInputStream();
             } else {
                 is = con.getErrorStream();
