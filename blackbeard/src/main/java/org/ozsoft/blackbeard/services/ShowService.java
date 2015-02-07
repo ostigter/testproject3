@@ -1,6 +1,8 @@
 package org.ozsoft.blackbeard.services;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +43,8 @@ public class ShowService {
     private static final String TVRAGE_EPISODE_LIST_URL = "http://services.tvrage.com/feeds/episode_list.php?sid=%d";
 
     private static final Pattern EPISODE_PATTERN = Pattern.compile("^.*s(\\d+)e(\\d+).*$");
+
+    private static final String UTF8 = "UTF-8";
 
     // private static final String PROXY_HOST = "146.106.91.10";
     // private static final int PROXY_PORT = 8080;
@@ -88,7 +92,7 @@ public class ShowService {
      */
     public List<Show> searchShows(String text) {
         List<Show> shows = new ArrayList<Show>();
-        String uri = String.format(TVRAGE_SHOW_SEARCH_URL, text);
+        String uri = String.format(TVRAGE_SHOW_SEARCH_URL, encodeUrl(text));
         try {
             HttpRequest httpRequest = httpClient.createGetRequest(uri);
             HttpResponse httpResponse = httpRequest.execute();
@@ -163,5 +167,14 @@ public class ShowService {
         } catch (IOException e) {
             System.err.format("ERROR: Failed to download torrent '%s'\n", torrent.title);
         }
+    }
+
+    private static String encodeUrl(String uri) {
+        try {
+            uri = URLEncoder.encode(uri, UTF8);
+        } catch (UnsupportedEncodingException e) {
+            // Can never happen, because UTF-8 is supported by default.
+        }
+        return uri;
     }
 }

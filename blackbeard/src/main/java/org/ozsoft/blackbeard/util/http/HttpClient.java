@@ -101,8 +101,8 @@ public class HttpClient {
      * 
      * @return The GET request.
      */
-    public HttpRequest createGetRequest(String url) {
-        return new HttpGet(this, url);
+    public HttpRequest createGetRequest(String uri) {
+        return new HttpGet(this, uri);
     }
 
     /**

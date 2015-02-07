@@ -8,13 +8,17 @@
 	<ui:define name="content">
 		<h:form>
 			<fieldset id="addShowPanel">
-      			<h:panelGrid columns="2">
+      			<h:panelGrid columns="4">
 					<h:outputLabel value="Search for:" for="name" />
 					<h:inputText id="name" value="#{addShowBean.name}" style="width: 200px;" />
+                    <h:commandButton value="Search" action="#{addShowBean.search}" />
+                    <h:commandLink value="Cancel" action="listShows.xhtml" immediate="true" />
       			</h:panelGrid>
-	            <h:commandButton value="Search" action="#{addShowBean.search}" />
-	            &#160;
-				<h:commandButton value="Cancel" action="listShows.xhtml" immediate="true" />
+      			<br />
+                <h:selectManyListbox value="#{addShowBean.selectedShow}" rendered="#{not empty addShowBean.shows}"
+                       style="width: 350px; height: 200px">
+                    <f:selectItems value="#{addShowBean.shows}" var="show" itemLabel="#{show.name}" itemValue="#{show.id}" />
+                </h:selectManyListbox>
 			</fieldset>
 		</h:form>
 	</ui:define>
