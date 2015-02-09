@@ -15,10 +15,12 @@
                     <h:commandLink value="Cancel" action="listShows.xhtml" immediate="true" />
       			</h:panelGrid>
       			<br />
-                <h:selectManyListbox value="#{addShowBean.selectedShow}" rendered="#{not empty addShowBean.shows}"
-                       style="width: 350px; height: 200px">
-                    <f:selectItems value="#{addShowBean.shows}" var="show" itemLabel="#{show.name}" itemValue="#{show.id}" />
-                </h:selectManyListbox>
+      			<h:panelGrid columns="2" rendered="#{not empty addShowBean.shows}">
+	                <h:selectOneListbox value="#{addShowBean.selectedShowId}" style="width: 350px; height: 200px">
+	                    <f:selectItems value="#{addShowBean.shows}" var="show" itemValue="#{show.id}" itemLabel="#{show.name}" />
+	                </h:selectOneListbox>
+	                <h:commandButton value="Add" action="#{addShowBean.add}" />
+                </h:panelGrid>
 			</fieldset>
 		</h:form>
 	</ui:define>
