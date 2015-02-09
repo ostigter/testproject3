@@ -4,20 +4,20 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.services.ShowService;
 
-@ManagedBean
+@Named
 @ViewScoped
 public class AddShowBean implements Serializable {
 
     private static final long serialVersionUID = 307051394346077352L;
 
-    @ManagedProperty(value = "#{showService}")
+    @Inject
     private ShowService showService;
 
     private String name;
