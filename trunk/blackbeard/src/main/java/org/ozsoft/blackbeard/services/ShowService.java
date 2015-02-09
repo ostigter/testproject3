@@ -1,6 +1,7 @@
 package org.ozsoft.blackbeard.services;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -12,8 +13,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.ozsoft.blackbeard.data.Configuration;
@@ -34,9 +35,11 @@ import org.xml.sax.SAXException;
  * 
  * @author Oscar Stigter
  */
-@ManagedBean(name = "showService")
+@Named
 @ApplicationScoped
-public class ShowService {
+public class ShowService implements Serializable {
+
+    private static final long serialVersionUID = 9026865382985469495L;
 
     private static final String TVRAGE_SHOW_SEARCH_URL = "http://services.tvrage.com/feeds/search.php?show=%s";
 
@@ -81,6 +84,14 @@ public class ShowService {
 
     public Show[] getShows() {
         return config.getShows();
+    }
+
+    public Show getShow(int id) {
+        return config.getShow(id);
+    }
+
+    public void addShow(Show show) {
+        config.addShow(show);
     }
 
     /**

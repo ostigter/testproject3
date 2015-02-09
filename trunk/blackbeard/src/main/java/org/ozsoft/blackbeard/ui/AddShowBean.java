@@ -6,16 +6,16 @@ import java.util.List;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.services.ShowService;
 
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class AddShowBean implements Serializable {
 
-    private static final long serialVersionUID = -897134941768788958L;
+    private static final long serialVersionUID = 307051394346077352L;
 
     @ManagedProperty(value = "#{showService}")
     private ShowService showService;
@@ -24,7 +24,7 @@ public class AddShowBean implements Serializable {
 
     private List<Show> matchingShows;
 
-    private Show selectedShow;
+    private int selectedShowId;
 
     public void setShowService(ShowService showService) {
         this.showService = showService;
@@ -48,11 +48,21 @@ public class AddShowBean implements Serializable {
         return matchingShows;
     }
 
-    public Show getSelectedShow() {
-        return selectedShow;
+    public int getSelectedShowId() {
+        return selectedShowId;
     }
 
-    public void setSelectedShow(Show show) {
-        this.selectedShow = show;
+    public void setSelectedShowId(int showId) {
+        this.selectedShowId = showId;
+    }
+
+    public String add() {
+        for (Show matchingShow : matchingShows) {
+            if (matchingShow.getId() == selectedShowId) {
+                showService.addShow(matchingShow);
+                break;
+            }
+        }
+        return "listShows";
     }
 }
