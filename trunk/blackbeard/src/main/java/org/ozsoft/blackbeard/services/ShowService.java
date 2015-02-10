@@ -17,6 +17,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.http.HttpStatus;
 import org.ozsoft.blackbeard.data.Configuration;
 import org.ozsoft.blackbeard.domain.Episode;
 import org.ozsoft.blackbeard.domain.Show;
@@ -26,7 +27,6 @@ import org.ozsoft.blackbeard.parsers.ShowListParser;
 import org.ozsoft.blackbeard.providers.AbstractSearchProvider;
 import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
 import org.ozsoft.blackbeard.util.http.HttpClient;
-import org.ozsoft.blackbeard.util.http.HttpRequest;
 import org.ozsoft.blackbeard.util.http.HttpResponse;
 import org.xml.sax.SAXException;
 
@@ -49,10 +49,10 @@ public class ShowService implements Serializable {
 
     private static final String UTF8 = "UTF-8";
 
-    // private static final String PROXY_HOST = "146.106.91.10";
-    // private static final int PROXY_PORT = 8080;
-    // private static final String PROXY_USERNAME = "";
-    // private static final String PROXY_PASSWORD = "";
+    private static final String PROXY_HOST = "146.106.91.10";
+    private static final int PROXY_PORT = 8080;
+    private static final String PROXY_USERNAME = "ostigter";
+    private static final String PROXY_PASSWORD = "Ost1gt4!";
 
     private static final Set<AbstractSearchProvider> searchProviders;
 
@@ -74,12 +74,8 @@ public class ShowService implements Serializable {
         config = new Configuration();
         config.load();
 
-        httpClient = new HttpClient();
-        // httpClient.setUseProxy(true);
-        // httpClient.setProxyHost(PROXY_HOST);
-        // httpClient.setProxyPort(PROXY_PORT);
-        // httpClient.setProxyUsername(PROXY_USERNAME);
-        // httpClient.setProxyPassword(PROXY_PASSWORD);
+        // httpClient = new HttpClient();
+        httpClient = new HttpClient(PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD);
     }
 
     public Show[] getShows() {
@@ -105,10 +101,9 @@ public class ShowService implements Serializable {
         List<Show> shows = new ArrayList<Show>();
         String uri = String.format(TVRAGE_SHOW_SEARCH_URL, encodeUrl(text));
         try {
-            HttpRequest httpRequest = httpClient.createGetRequest(uri);
-            HttpResponse httpResponse = httpRequest.execute();
+            HttpResponse httpResponse = httpClient.executeGet(uri);
             int statusCode = httpResponse.getStatusCode();
-            if (statusCode == 200) {
+            if (statusCode == HttpStatus.SC_OK) {
                 shows = ShowListParser.parse(httpResponse.getBody());
             } else {
                 System.err.format("ERROR: Could not retrieve list of shows from URI '%s' (HTTP status: %d)\n", uri, statusCode);
@@ -124,10 +119,9 @@ public class ShowService implements Serializable {
     public void updateEpisodes(Show show) {
         String uri = String.format(TVRAGE_EPISODE_LIST_URL, show.getId());
         try {
-            HttpRequest httpRequest = httpClient.createGetRequest(uri);
-            HttpResponse httpResponse = httpRequest.execute();
+            HttpResponse httpResponse = httpClient.executeGet(uri);
             int statusCode = httpResponse.getStatusCode();
-            if (statusCode == 200) {
+            if (statusCode == HttpStatus.SC_OK) {
                 List<Episode> episodes = EpisodeListParser.parse(httpResponse.getBody());
                 for (Episode episode : episodes) {
                     Episode existingEpisode = show.getEpisode(episode.getEpisodeNumber());
