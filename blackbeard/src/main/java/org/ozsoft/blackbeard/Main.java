@@ -33,18 +33,18 @@ public class Main {
         }
 
         // Search torrents for episode.
-        List<Torrent> torrents = showService.searchTorrents("Arrow s03e01 720p");
+        List<Torrent> torrents = showService.searchTorrents("arrow s03e11 720p");
         for (Torrent torrent : torrents) {
             System.out.format("'%s', %d bytes, %d seeders, %d leechers, score: %d, %s\n", torrent.title, torrent.size, torrent.seederCount,
                     torrent.leecherCount, torrent.score, torrent.magnetUri);
         }
         System.out.format("Found %d torrents.\n", torrents.size());
 
-        // Select torrent with highest ranking score.
-        Torrent torrent = torrents.get(0);
-
-        // Download episode.
-        System.out.println("Download torrent: " + torrent);
-        // showService.downloadTorrent(torrent);
+        if (!torrents.isEmpty()) {
+            // Download torrent with highest ranking score.
+            Torrent torrent = torrents.get(0);
+            System.out.println("Download torrent: " + torrent);
+            // showService.downloadTorrent(torrent);
+        }
     }
 }
