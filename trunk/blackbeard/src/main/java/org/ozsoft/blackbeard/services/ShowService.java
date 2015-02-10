@@ -25,6 +25,7 @@ import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.EpisodeListParser;
 import org.ozsoft.blackbeard.parsers.ShowListParser;
 import org.ozsoft.blackbeard.providers.AbstractSearchProvider;
+import org.ozsoft.blackbeard.providers.BitSnoopSearchProvider;
 import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
 import org.ozsoft.blackbeard.util.http.HttpClient;
 import org.ozsoft.blackbeard.util.http.HttpResponse;
@@ -49,10 +50,10 @@ public class ShowService implements Serializable {
 
     private static final String UTF8 = "UTF-8";
 
-    private static final String PROXY_HOST = "146.106.91.10";
-    private static final int PROXY_PORT = 8080;
-    private static final String PROXY_USERNAME = "ostigter";
-    private static final String PROXY_PASSWORD = "Ost1gt4!";
+    // private static final String PROXY_HOST = "146.106.91.10";
+    // private static final int PROXY_PORT = 8080;
+    // private static final String PROXY_USERNAME = "";
+    // private static final String PROXY_PASSWORD = "";
 
     private static final Set<AbstractSearchProvider> searchProviders;
 
@@ -67,15 +68,15 @@ public class ShowService implements Serializable {
         // Set torrent search providers.
         searchProviders = new HashSet<AbstractSearchProvider>();
         searchProviders.add(new KickAssSearchProvider());
-        // searchProviders.add(new BitSnoopSearchProvider());
+        searchProviders.add(new BitSnoopSearchProvider());
     }
 
     public ShowService() {
         config = new Configuration();
         config.load();
 
-        // httpClient = new HttpClient();
-        httpClient = new HttpClient(PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD);
+        httpClient = new HttpClient();
+        // httpClient = new HttpClient(PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD);
     }
 
     public Show[] getShows() {
