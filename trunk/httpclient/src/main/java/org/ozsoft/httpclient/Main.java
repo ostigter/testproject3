@@ -9,18 +9,19 @@ import java.io.IOException;
  */
 public class Main {
 
-    private static final String PROXY_HOST = "146.106.91.10";
-    private static final int PROXY_PORT = 8080;
-    private static final String PROXY_USERNAME = "";
-    private static final String PROXY_PASSWORD = "";
+    // private static final String PROXY_HOST = "146.106.91.10";
+    // private static final int PROXY_PORT = 8080;
+    // private static final String PROXY_USERNAME = "";
+    // private static final String PROXY_PASSWORD = "";
 
     public static void main(String[] args) {
-        HttpClient httpClient = new HttpClient(PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD);
+        HttpClient httpClient = new HttpClient();
+        // HttpClient httpClient = new HttpClient(PROXY_HOST, PROXY_PORT, PROXY_USERNAME, PROXY_PASSWORD);
         String uri = "http://www.google.nl";
         try {
             HttpResponse httpResponse = httpClient.executeGet(uri);
-            System.out.println(httpResponse.getStatusCode());
-            System.out.println(httpResponse.getBody());
+            System.out.println("HTTP status code: " + httpResponse.getStatusCode());
+            System.out.println("HTTP response body:\n" + httpResponse.getBody());
         } catch (IOException e) {
             e.printStackTrace(System.err);
         } finally {
