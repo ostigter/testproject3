@@ -33,7 +33,7 @@ public class Main {
         }
 
         // Search torrents for episode.
-        List<Torrent> torrents = showService.searchTorrents("arrow s03e11 720p");
+        List<Torrent> torrents = showService.searchTorrents("arrow s03e12 720p");
         for (Torrent torrent : torrents) {
             System.out.format("'%s', %d bytes, %d seeders, %d leechers, score: %d, %s\n", torrent.title, torrent.size, torrent.seederCount,
                     torrent.leecherCount, torrent.score, torrent.magnetUri);

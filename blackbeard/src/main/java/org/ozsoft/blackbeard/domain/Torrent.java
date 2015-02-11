@@ -54,12 +54,6 @@ public class Torrent implements Comparable<Torrent> {
     @Override
     public int compareTo(Torrent other) {
         // Sort torrents by score (descending).
-        if (score > other.score) {
-            return -1;
-        } else if (score < other.score) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return other.score - score;
     }
 }
