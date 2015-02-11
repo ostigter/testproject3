@@ -12,11 +12,14 @@ public class Episode implements Serializable, Comparable<Episode> {
 
     private static final long serialVersionUID = -4265981374332614409L;
 
-    /** Global (consequitive) episode number. */
-    private final int episodeNumber;
+    /** ID = global (consequitive) episode number. */
+    private final int id;
+
+    /** Season this episode is part of. */
+    private final int seasonNumber;
 
     /** Episode number within the season. */
-    private final int seasonNumber;
+    private final int episodeNumber;
 
     /** Title. */
     private final String title;
@@ -30,13 +33,18 @@ public class Episode implements Serializable, Comparable<Episode> {
     /** Status (BlackBeard). */
     private EpisodeStatus status;
 
-    public Episode(int episodeNumber, int seasonNumber, String title, Date airDate, String link) {
-        this.episodeNumber = episodeNumber;
+    public Episode(int id, int seasonNumber, int episodeNumber, String title, Date airDate, String link) {
+        this.id = id;
         this.seasonNumber = seasonNumber;
+        this.episodeNumber = episodeNumber;
         this.title = title;
         this.airDate = airDate;
         this.link = link;
         setStatus(EpisodeStatus.NOT_YET_AIRED);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public int getEpisodeNumber() {
@@ -69,14 +77,14 @@ public class Episode implements Serializable, Comparable<Episode> {
 
     @Override
     public int hashCode() {
-        return episodeNumber;
+        return id;
     }
 
     @Override
     public boolean equals(Object other) {
         if (other != null) {
             if (other instanceof Episode) {
-                return ((Episode) other).getEpisodeNumber() == episodeNumber;
+                return ((Episode) other).getId() == id;
             } else {
                 return false;
             }
@@ -93,12 +101,6 @@ public class Episode implements Serializable, Comparable<Episode> {
     @Override
     public int compareTo(Episode other) {
         // Sort episodes based on global episode number (ascending).
-        if (episodeNumber < other.getEpisodeNumber()) {
-            return -1;
-        } else if (episodeNumber > other.getEpisodeNumber()) {
-            return 1;
-        } else {
-            return 0;
-        }
+        return id - other.getId();
     }
 }

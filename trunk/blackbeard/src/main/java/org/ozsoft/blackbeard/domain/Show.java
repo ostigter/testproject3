@@ -69,7 +69,7 @@ public class Show implements Serializable, Comparable<Show> {
     }
 
     public void addEpisode(Episode episode) {
-        episodes.put(episode.getEpisodeNumber(), episode);
+        episodes.put(episode.getId(), episode);
     }
 
     @Override
