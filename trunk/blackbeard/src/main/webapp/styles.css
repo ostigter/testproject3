@@ -36,34 +36,41 @@ th {
 	background: #c0c0c0;
 }
 
-th.showName {
-    width: 300px;
-    text-align: left;
-    color: red;
-}
-
-td.showName {
-    width: 300px;
+th.name {
     text-align: left;
 }
 
-th.showInfo {
-    width: 0px;
-    text-align: center;
+td.name {
+    text-align: left;
 }
 
-td.showInfo{
-    width: 0px;
-    text-align: center;
-}
-
-th.showStatus {
+th.info {
     width: 50px;
     text-align: center;
 }
 
-td.showStatus{
+td.info {
     width: 50px;
+    text-align: center;
+}
+
+th.date {
+    width: 75px;
+    text-align: center;
+}
+
+td.date {
+    width: 75px;
+    text-align: center;
+}
+
+th.status {
+    width: 100px;
+    text-align: center;
+}
+
+td.status {
+    width: 100px;
     text-align: center;
 }
 

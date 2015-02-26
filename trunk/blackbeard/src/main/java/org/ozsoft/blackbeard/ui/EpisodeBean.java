@@ -9,12 +9,19 @@ import org.ozsoft.blackbeard.services.ShowService;
 
 @Named
 @RequestScoped
-public class ShowBean {
+public class EpisodeBean {
 
     @Inject
     private ShowService showService;
 
-    public Show[] getShows() {
-        return showService.getShows();
+    private Show show;
+
+    public Show getShow() {
+        return show;
+    }
+
+    public void setShow(Show show) {
+        this.show = show;
+        showService.updateEpisodes(show);
     }
 }

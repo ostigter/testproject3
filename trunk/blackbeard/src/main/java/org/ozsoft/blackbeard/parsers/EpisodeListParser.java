@@ -1,6 +1,9 @@
 package org.ozsoft.blackbeard.parsers;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +60,8 @@ public class EpisodeListParser {
      */
     private static class EpisodeListHandler extends DefaultHandler {
 
+        private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
         private final List<Episode> episodes;
 
         private String nodePath = "";
@@ -71,9 +76,9 @@ public class EpisodeListParser {
 
         private String title;
 
-        private Date airDate;
-
         private String link;
+
+        private Date airDate;
 
         /**
          * Constructor.
@@ -111,7 +116,11 @@ public class EpisodeListParser {
             } else if (nodePath.equals("/Show/Episodelist/Season/episode/title")) {
                 title = text.toString();
             } else if (nodePath.equals("/Show/Episodelist/Season/episode/airdate")) {
-                // airdate =
+                try {
+                    airDate = DATE_FORMAT.parse(text.toString());
+                } catch (ParseException e) {
+                    // Invalid air date.
+                }
             } else if (nodePath.equals("/Show/Episodelist/Season/episode/link")) {
                 link = text.toString();
             } else if (nodePath.equals("/Show/Episodelist/Season/episode")) {

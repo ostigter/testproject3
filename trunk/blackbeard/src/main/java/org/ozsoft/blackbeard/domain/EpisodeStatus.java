@@ -8,15 +8,27 @@ package org.ozsoft.blackbeard.domain;
 public enum EpisodeStatus {
 
     /** Planned, but not yet aired on TV. */
-    NOT_YET_AIRED,
+    NOT_YET_AIRED("Not aired yet"),
 
     /** Aired on TV, but not downloaded yet. */
-    NEW,
+    NEW("New"),
 
     /** Downloaded, but not yet watched. */
-    DOWNLOADED,
+    DOWNLOADED("Downloaded"),
 
     /** Watched. */
-    WATCHED,
+    WATCHED("Watched"),
+
+    ;
+
+    private final String name;
+
+    EpisodeStatus(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 }
