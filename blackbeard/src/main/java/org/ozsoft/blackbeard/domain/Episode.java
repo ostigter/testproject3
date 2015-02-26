@@ -38,9 +38,13 @@ public class Episode implements Serializable, Comparable<Episode> {
         this.seasonNumber = seasonNumber;
         this.episodeNumber = episodeNumber;
         this.title = title;
-        this.airDate = airDate;
         this.link = link;
-        setStatus(EpisodeStatus.NOT_YET_AIRED);
+        this.airDate = airDate;
+        if (airDate.after(new Date())) {
+            setStatus(EpisodeStatus.NOT_YET_AIRED);
+        } else {
+            setStatus(EpisodeStatus.NEW);
+        }
     }
 
     public int getId() {
