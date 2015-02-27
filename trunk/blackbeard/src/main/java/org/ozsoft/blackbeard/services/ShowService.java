@@ -89,6 +89,7 @@ public class ShowService implements Serializable {
 
     public void addShow(Show show) {
         config.addShow(show);
+        config.save();
     }
 
     /**
