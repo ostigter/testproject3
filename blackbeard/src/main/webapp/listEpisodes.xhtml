@@ -4,10 +4,12 @@
         xmlns:ui="http://java.sun.com/jsf/facelets"
         xmlns:p="http://primefaces.org/ui"
         template="template.xhtml">
-    <ui:define name="title">Episodes</ui:define>
+    <ui:define name="title">#{episodeBean.show.name}</ui:define>
     <ui:define name="content">
         <div class="content ui-widget ui-widget-content ui-corner-all">
             <h:form>
+                <p><h:commandLink value="Back to shows" action="listShows" /></p>
+                <p><h:commandButton value="Delete show" action="#{episodeBean.deleteShow}" /></p>
 	            <h:dataTable rendered="#{not empty episodeBean.show.episodes}"
 	                    value="#{episodeBean.show.episodes}" var="episode" rules="all"
                     styleClass="boxed"

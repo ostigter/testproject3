@@ -8,10 +8,12 @@ import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
@@ -22,13 +24,17 @@ import org.apache.http.util.EntityUtils;
  */
 public class HttpClient {
 
+    private static final int TIMEOUT = 30000;
+
     private CloseableHttpClient httpClient;
 
     /**
      * Constructor for a default HTTP client.
      */
     public HttpClient() {
-        httpClient = HttpClients.createDefault();
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT).setSocketTimeout(TIMEOUT)
+                .build();
+        httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).build();
     }
 
     /**
@@ -40,8 +46,10 @@ public class HttpClient {
      *            Proxy port.
      */
     public HttpClient(String host, int port) {
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT).setSocketTimeout(TIMEOUT)
+                .build();
         HttpHost proxy = new HttpHost(host, port);
-        httpClient = HttpClients.custom().setProxy(proxy).build();
+        httpClient = HttpClientBuilder.create().setDefaultRequestConfig(config).setProxy(proxy).build();
     }
 
     /**
@@ -57,10 +65,12 @@ public class HttpClient {
      *            Proxy password.
      */
     public HttpClient(String host, int port, String username, String password) {
+        RequestConfig config = RequestConfig.custom().setConnectTimeout(TIMEOUT).setConnectionRequestTimeout(TIMEOUT).setSocketTimeout(TIMEOUT)
+                .build();
         HttpHost proxy = new HttpHost(host, port);
         CredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(new AuthScope(host, port), new UsernamePasswordCredentials(username, password));
-        httpClient = HttpClients.custom().setProxy(proxy).setDefaultCredentialsProvider(credsProvider).build();
+        httpClient = HttpClients.custom().setDefaultRequestConfig(config).setProxy(proxy).setDefaultCredentialsProvider(credsProvider).build();
     }
 
     /**

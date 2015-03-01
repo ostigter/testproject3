@@ -92,6 +92,11 @@ public class ShowService implements Serializable {
         config.save();
     }
 
+    public void deleteShow(Show show) {
+        config.deleteShow(show);
+        config.save();
+    }
+
     /**
      * Searches for shows by name.
      * 
@@ -111,7 +116,7 @@ public class ShowService implements Serializable {
                 System.err.format("ERROR: Could not retrieve list of shows from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
         } catch (IOException | SAXException | ParserConfigurationException e) {
-            System.err.format("ERROR: Could not parse list of shows from URI '%s'\n", uri);
+            System.err.format("ERROR: Could not retrieve or parse list of shows from URI '%s'\n", uri);
             e.printStackTrace();
         }
 
@@ -133,7 +138,7 @@ public class ShowService implements Serializable {
                     show.addEpisode(episode);
                 }
             } else {
-                System.err.format("ERROR: Could not retrieve episode list from URI '%s' (HTTP status: %d)\n", uri, statusCode);
+                System.err.format("ERROR: Could not retrieve or parse episode list from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
         } catch (IOException | SAXException | ParserConfigurationException e) {
             System.err.format("ERROR: Could not parse episode list from URI '%s'\n", uri);
