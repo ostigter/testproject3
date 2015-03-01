@@ -68,7 +68,7 @@ public class Configuration implements Serializable {
         shows.put(show.getId(), show);
     }
 
-    public void deleteShow(int id) {
-        shows.remove(id);
+    public void deleteShow(Show show) {
+        shows.remove(show.getId());
     }
 }

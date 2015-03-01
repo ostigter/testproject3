@@ -1,6 +1,8 @@
 package org.ozsoft.blackbeard.ui;
 
-import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
+
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -8,8 +10,10 @@ import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.services.ShowService;
 
 @Named
-@RequestScoped
-public class EpisodeBean {
+@SessionScoped
+public class EpisodeBean implements Serializable {
+
+    private static final long serialVersionUID = 1343652914148184382L;
 
     @Inject
     private ShowService showService;
@@ -23,5 +27,10 @@ public class EpisodeBean {
     public void setShow(Show show) {
         this.show = show;
         showService.updateEpisodes(show);
+    }
+
+    public String deleteShow() {
+        showService.deleteShow(show);
+        return "listShows";
     }
 }
