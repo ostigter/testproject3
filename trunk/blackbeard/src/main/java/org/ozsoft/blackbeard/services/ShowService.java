@@ -20,6 +20,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.http.HttpStatus;
 import org.ozsoft.blackbeard.data.Configuration;
 import org.ozsoft.blackbeard.domain.Episode;
+import org.ozsoft.blackbeard.domain.EpisodeStatus;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.EpisodeListParser;
@@ -133,7 +134,10 @@ public class ShowService implements Serializable {
                 for (Episode episode : episodes) {
                     Episode existingEpisode = show.getEpisode(episode.getEpisodeNumber());
                     if (existingEpisode != null) {
-                        episode.setStatus(existingEpisode.getStatus());
+                        EpisodeStatus currentStatus = existingEpisode.getStatus();
+                        if (currentStatus == EpisodeStatus.DOWNLOADED || currentStatus == EpisodeStatus.WATCHED) {
+                            episode.setStatus(currentStatus);
+                        }
                     }
                     show.addEpisode(episode);
                 }
