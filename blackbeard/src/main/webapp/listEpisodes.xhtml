@@ -15,7 +15,7 @@
                     styleClass="boxed"
                     headerClasses="name,info,date,status,actions"
                     columnClasses="name,info,date,status,actions"
-                    rowClasses="odd, even">
+                    rowClasses="odd,even">
 	                <h:column>
 	                    <f:facet name="header">Name</f:facet>
 	                    <h:outputText value="#{episode}" />
@@ -36,9 +36,14 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">Actions</f:facet>
-                        <h:commandButton value="Download" action="#{episodeBean.downloadEpisode}" rendered="#{episode.status == 'NEW'}">
-                            <f:setPropertyActionListener target="#{episodeBean.episode}" value="${episode}" />
-                        </h:commandButton>
+                        <h:commandButton value="Download" action="#{episodeBean.download(episode)}"
+                                class="action" rendered="#{episode.status == 'NEW'}" />
+                        <h:commandButton value="Watched" action="#{episodeBean.watched(episode)}"
+                                class="action" rendered="#{episode.status == 'DOWNLOADED'}" />
+                        <h:commandLink value="Re-download" action="#{episodeBean.download(episode)}"
+                                class="action" rendered="#{episode.status == 'DOWNLOADED'}" />
+                        <h:commandLink value="Reset" action="#{episodeBean.reset(episode)}"
+                                class="action" rendered="#{episode.status == 'WATCHED'}" />
                     </h:column>
 	            </h:dataTable>
 	            <h:outputText value="No episodes found." rendered="#{empty episodeBean.show.episodes}" />

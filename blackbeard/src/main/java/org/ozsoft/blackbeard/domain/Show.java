@@ -30,6 +30,9 @@ public class Show implements Serializable, Comparable<Show> {
     /** Known episodes. */
     private final Map<Integer, Episode> episodes;
 
+    /** Timestamp of last update. */
+    private transient long updateTime;
+
     public Show(int id, String name, String link) {
         this.id = id;
         this.name = name;
@@ -70,6 +73,14 @@ public class Show implements Serializable, Comparable<Show> {
 
     public void addEpisode(Episode episode) {
         episodes.put(episode.getId(), episode);
+    }
+
+    public long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(long updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override

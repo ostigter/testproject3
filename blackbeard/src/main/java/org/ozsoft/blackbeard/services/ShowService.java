@@ -51,6 +51,8 @@ public class ShowService implements Serializable {
 
     private static final String UTF8 = "UTF-8";
 
+    private static final long MIN_UPDATE_INTERVAL = 60 * 60 * 1000L; // 1 hour
+
     // private static final String PROXY_HOST = "146.106.91.10";
     // private static final int PROXY_PORT = 8080;
     // private static final String PROXY_USERNAME = "";
@@ -90,11 +92,15 @@ public class ShowService implements Serializable {
 
     public void addShow(Show show) {
         config.addShow(show);
-        config.save();
+        save();
     }
 
     public void deleteShow(Show show) {
         config.deleteShow(show);
+        save();
+    }
+
+    public void save() {
         config.save();
     }
 
@@ -125,28 +131,33 @@ public class ShowService implements Serializable {
     }
 
     public void updateEpisodes(Show show) {
-        String uri = String.format(TVRAGE_EPISODE_LIST_URL, show.getId());
-        try {
-            HttpResponse httpResponse = httpClient.executeGet(uri);
-            int statusCode = httpResponse.getStatusCode();
-            if (statusCode == HttpStatus.SC_OK) {
-                List<Episode> episodes = EpisodeListParser.parse(httpResponse.getBody());
-                for (Episode episode : episodes) {
-                    Episode existingEpisode = show.getEpisode(episode.getEpisodeNumber());
-                    if (existingEpisode != null) {
-                        EpisodeStatus currentStatus = existingEpisode.getStatus();
-                        if (currentStatus == EpisodeStatus.DOWNLOADED || currentStatus == EpisodeStatus.WATCHED) {
-                            episode.setStatus(currentStatus);
+        if ((System.currentTimeMillis() - show.getUpdateTime()) > MIN_UPDATE_INTERVAL) {
+            String uri = String.format(TVRAGE_EPISODE_LIST_URL, show.getId());
+            try {
+                HttpResponse httpResponse = httpClient.executeGet(uri);
+                int statusCode = httpResponse.getStatusCode();
+                if (statusCode == HttpStatus.SC_OK) {
+                    List<Episode> episodes = EpisodeListParser.parse(httpResponse.getBody());
+                    for (Episode episode : episodes) {
+                        Episode existingEpisode = show.getEpisode(episode.getEpisodeNumber());
+                        if (existingEpisode != null) {
+                            EpisodeStatus currentStatus = existingEpisode.getStatus();
+                            if (currentStatus == EpisodeStatus.DOWNLOADED || currentStatus == EpisodeStatus.WATCHED) {
+                                episode.setStatus(currentStatus);
+                            }
                         }
+                        show.addEpisode(episode);
                     }
-                    show.addEpisode(episode);
+                } else {
+                    System.err.format("ERROR: Could not retrieve or parse episode list from URI '%s' (HTTP status: %d)\n", uri, statusCode);
                 }
-            } else {
-                System.err.format("ERROR: Could not retrieve or parse episode list from URI '%s' (HTTP status: %d)\n", uri, statusCode);
+            } catch (IOException | SAXException | ParserConfigurationException e) {
+                System.err.format("ERROR: Could not parse episode list from URI '%s'\n", uri);
+                e.printStackTrace();
             }
-        } catch (IOException | SAXException | ParserConfigurationException e) {
-            System.err.format("ERROR: Could not parse episode list from URI '%s'\n", uri);
-            e.printStackTrace();
+
+            show.setUpdateTime(System.currentTimeMillis());
+            save();
         }
     }
 
