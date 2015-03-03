@@ -13,8 +13,8 @@
 	            <h:dataTable rendered="#{not empty episodeBean.show.episodes}"
 	                    value="#{episodeBean.show.episodes}" var="episode" rules="all"
                     styleClass="boxed"
-                    headerClasses="name, info, status"
-                    columnClasses="name, info, status"
+                    headerClasses="name,info,date,status,actions"
+                    columnClasses="name,info,date,status,actions"
                     rowClasses="odd, even">
 	                <h:column>
 	                    <f:facet name="header">Name</f:facet>
@@ -33,6 +33,12 @@
                     <h:column>
                         <f:facet name="header">Status</f:facet>
                         <h:outputText value="#{episode.status.name}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandButton value="Download" action="#{episodeBean.downloadEpisode}" rendered="#{episode.status == 'NEW'}">
+                            <f:setPropertyActionListener target="#{episodeBean.episode}" value="${episode}" />
+                        </h:commandButton>
                     </h:column>
 	            </h:dataTable>
 	            <h:outputText value="No episodes found." rendered="#{empty episodeBean.show.episodes}" />

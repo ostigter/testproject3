@@ -34,6 +34,11 @@ table.boxed {
 th {
     color: #000000;
 	background: #c0c0c0;
+    height: 2.0em;
+}
+
+td {
+    height: 2.0em;
 }
 
 th.name {
@@ -55,12 +60,12 @@ td.info {
 }
 
 th.date {
-    width: 75px;
+    width: 100px;
     text-align: center;
 }
 
 td.date {
-    width: 75px;
+    width: 100px;
     text-align: center;
 }
 
@@ -70,6 +75,16 @@ th.status {
 }
 
 td.status {
+    width: 100px;
+    text-align: center;
+}
+
+th.actions {
+    width: 100px;
+    text-align: center;
+}
+
+td.actions {
     width: 100px;
     text-align: center;
 }
