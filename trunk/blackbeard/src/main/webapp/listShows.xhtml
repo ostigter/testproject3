@@ -14,9 +14,9 @@
 	            <h:dataTable rendered="#{not empty showBean.shows}"
 	                    value="#{showBean.shows}" var="show" rules="all"
                     styleClass="boxed"
-                    headerClasses="name, info, status"
-                    columnClasses="name, info, status"
-                    rowClasses="odd, even">
+                    headerClasses="name,info,status"
+                    columnClasses="name,info,status"
+                    rowClasses="odd,even">
 	                <h:column>
 	                    <f:facet name="header">Name</f:facet>
 	                    <h:commandLink value="#{show.name}" action="listEpisodes">

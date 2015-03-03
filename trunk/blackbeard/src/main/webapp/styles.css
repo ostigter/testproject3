@@ -80,12 +80,12 @@ td.status {
 }
 
 th.actions {
-    width: 100px;
+    width: 200px;
     text-align: center;
 }
 
 td.actions {
-    width: 100px;
+    width: 200px;
     text-align: center;
 }
 
@@ -97,4 +97,9 @@ tr.odd {
 tr.even {
     color: #000000;
 	background: #f0f0f0;
+}
+
+.action {
+    margin-left: 5px;	
+    margin-right: 5px;   
 }

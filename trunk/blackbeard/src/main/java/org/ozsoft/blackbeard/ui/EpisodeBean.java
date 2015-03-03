@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.ozsoft.blackbeard.domain.Episode;
+import org.ozsoft.blackbeard.domain.EpisodeStatus;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.services.ShowService;
 
@@ -20,8 +21,6 @@ public class EpisodeBean implements Serializable {
     private ShowService showService;
 
     private Show show;
-
-    private Episode episode;
 
     public Show getShow() {
         return show;
@@ -37,15 +36,19 @@ public class EpisodeBean implements Serializable {
         return "listShows";
     }
 
-    public Episode getEpisode() {
-        return episode;
+    public void download(Episode episode) {
+        // TODO: Download episode
+        episode.setStatus(EpisodeStatus.DOWNLOADED);
+        showService.save();
     }
 
-    public void setEpisode(Episode episode) {
-        this.episode = episode;
+    public void watched(Episode episode) {
+        episode.setStatus(EpisodeStatus.WATCHED);
+        showService.save();
     }
 
-    public void downloadEpisode() {
-        System.out.println("### Download episode: " + episode);
+    public void reset(Episode episode) {
+        episode.setStatus(EpisodeStatus.DOWNLOADED);
+        showService.save();
     }
 }

@@ -104,7 +104,8 @@ public class Episode implements Serializable, Comparable<Episode> {
 
     @Override
     public int compareTo(Episode other) {
-        // Sort episodes based on global episode number (ascending).
-        return id - other.getId();
+        // Sort episodes based on global episode number (newest first).
+        // FIXME: Sort episodes newest to oldest
+        return other.getId() - id;
     }
 }
