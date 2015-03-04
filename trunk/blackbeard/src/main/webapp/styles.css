@@ -4,8 +4,8 @@
 
 body {
 	background: #ffffff;
-    margin-left:  20%;
-    margin-right: 20%;
+    margin-left:  15%;
+    margin-right: 15%;
 	padding: 0;
 }
 
@@ -27,8 +27,7 @@ div.footer {
 }
 
 table.boxed {
-    border: 0 solid #c0c0c0;
-    width: 100%;
+    border: 1px solid #808080;
 }
 
 th {
@@ -86,6 +85,24 @@ th.actions {
 
 td.actions {
     width: 200px;
+    text-align: center;
+}
+
+th.torrent-actions {
+    text-align: center;
+}
+
+td.torrent-actions {
+    text-align: center;
+}
+
+th.size {
+    width: 80px;
+    text-align: center;
+}
+
+td.size {
+    width: 80px;
     text-align: center;
 }
 

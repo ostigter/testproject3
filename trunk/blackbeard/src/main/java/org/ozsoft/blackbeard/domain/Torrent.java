@@ -1,11 +1,15 @@
 package org.ozsoft.blackbeard.domain;
 
+import java.io.Serializable;
+
 /**
  * Respresents a torrent file.
  * 
  * @author Oscar Stigter
  */
-public class Torrent implements Comparable<Torrent> {
+public class Torrent implements Serializable, Comparable<Torrent> {
+
+    private static final long serialVersionUID = 4899913829337667040L;
 
     private static final long MB = 1024 * 1024;
 

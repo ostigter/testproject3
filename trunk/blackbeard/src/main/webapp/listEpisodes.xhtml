@@ -12,7 +12,7 @@
                 <p><h:commandButton value="Delete show" action="#{episodeBean.deleteShow}" /></p>
 	            <h:dataTable rendered="#{not empty episodeBean.show.episodes}"
 	                    value="#{episodeBean.show.episodes}" var="episode" rules="all"
-                    styleClass="boxed"
+                    styleClass="boxed" width="100%"
                     headerClasses="name,info,date,status,actions"
                     columnClasses="name,info,date,status,actions"
                     rowClasses="odd,even">

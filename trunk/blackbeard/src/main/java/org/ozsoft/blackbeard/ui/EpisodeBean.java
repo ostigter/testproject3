@@ -24,6 +24,8 @@ public class EpisodeBean implements Serializable {
 
     private Show show;
 
+    private Episode episode;
+
     private List<Torrent> torrents;
 
     public Show getShow() {
@@ -41,9 +43,8 @@ public class EpisodeBean implements Serializable {
     }
 
     public String download(Episode episode) {
+        this.episode = episode;
         torrents = showService.getTorrents(show, episode);
-        episode.setStatus(EpisodeStatus.DOWNLOADED);
-        showService.save();
         return "listTorrents";
     }
 
@@ -52,8 +53,10 @@ public class EpisodeBean implements Serializable {
     }
 
     public String download(Torrent torrent) {
-        System.out.println("### Download torrent: " + torrent);
-        // TODO: Download episode
+        if (showService.downloadTorrent(torrent)) {
+            episode.setStatus(EpisodeStatus.DOWNLOADED);
+            showService.save();
+        }
         return "listEpisodes";
     }
 
