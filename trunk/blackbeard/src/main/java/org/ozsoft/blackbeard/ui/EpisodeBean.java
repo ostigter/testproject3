@@ -1,6 +1,7 @@
 package org.ozsoft.blackbeard.ui;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -9,6 +10,7 @@ import javax.inject.Named;
 import org.ozsoft.blackbeard.domain.Episode;
 import org.ozsoft.blackbeard.domain.EpisodeStatus;
 import org.ozsoft.blackbeard.domain.Show;
+import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.services.ShowService;
 
 @Named
@@ -21,6 +23,8 @@ public class EpisodeBean implements Serializable {
     private ShowService showService;
 
     private Show show;
+
+    private List<Torrent> torrents;
 
     public Show getShow() {
         return show;
@@ -36,10 +40,21 @@ public class EpisodeBean implements Serializable {
         return "listShows";
     }
 
-    public void download(Episode episode) {
-        // TODO: Download episode
+    public String download(Episode episode) {
+        torrents = showService.getTorrents(show, episode);
         episode.setStatus(EpisodeStatus.DOWNLOADED);
         showService.save();
+        return "listTorrents";
+    }
+
+    public List<Torrent> getTorrents() {
+        return torrents;
+    }
+
+    public String download(Torrent torrent) {
+        System.out.println("### Download torrent: " + torrent);
+        // TODO: Download episode
+        return "listEpisodes";
     }
 
     public void watched(Episode episode) {

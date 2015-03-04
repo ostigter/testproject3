@@ -161,10 +161,11 @@ public class ShowService implements Serializable {
         }
     }
 
-    public List<Torrent> searchTorrents(String text) {
+    public List<Torrent> getTorrents(Show show, Episode episode) {
+        String searchText = String.format("%s s%02de%02d", show.getName(), episode.getSeasonNumber(), episode.getEpisodeNumber());
         Set<Torrent> torrents = new TreeSet<Torrent>();
         for (AbstractSearchProvider searchProvider : searchProviders) {
-            torrents.addAll(searchProvider.search(text, httpClient));
+            torrents.addAll(searchProvider.search(searchText, httpClient));
         }
 
         filterTorrents(torrents);
@@ -172,17 +173,17 @@ public class ShowService implements Serializable {
         return new ArrayList<Torrent>(torrents);
     }
 
-    public void filterTorrents(Set<Torrent> torrents) {
+    private void filterTorrents(Set<Torrent> torrents) {
         Iterator<Torrent> it = torrents.iterator();
         while (it.hasNext()) {
             Torrent torrent = it.next();
-            String name = torrent.title.replaceAll("\\.", " ").toLowerCase();
-            Matcher m = EPISODE_PATTERN.matcher(name);
-            if (m.matches()) {
-                // int season = Integer.parseInt(m.group(1));
-                // int episode = Integer.parseInt(m.group(2));
-                // System.out.format("%s (season: %d, episode: %d)\n", name, season, episode);
-            } else {
+
+            // Clean up the title (e.g. replacing all dots with spaces).
+            String title = torrent.getTitle().replaceAll("\\.", " ").toLowerCase();
+
+            // Filter out torrents that are not TV show episodes.
+            Matcher m = EPISODE_PATTERN.matcher(title);
+            if (!m.matches()) {
                 it.remove();
             }
         }
@@ -190,9 +191,9 @@ public class ShowService implements Serializable {
 
     public void downloadTorrent(Torrent torrent) {
         try {
-            Runtime.getRuntime().exec("cmd /c start " + torrent.magnetUri);
+            Runtime.getRuntime().exec("cmd /c start " + torrent.getMagnetUri());
         } catch (IOException e) {
-            System.err.format("ERROR: Failed to download torrent '%s'\n", torrent.title);
+            System.err.format("ERROR: Failed to download torrent '%s'\n", torrent);
         }
     }
 

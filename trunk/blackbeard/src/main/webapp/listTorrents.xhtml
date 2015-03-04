@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="template.xhtml">
+    <ui:define name="title">Download torrents</ui:define>
+    <ui:define name="content">
+        <div class="content ui-widget ui-widget-content ui-corner-all">
+            <h:form>
+                <p><h:commandLink value="Cancel" action="listEpisodes" /></p>
+	            <h:dataTable rendered="#{not empty episodeBean.torrents}"
+	                    value="#{episodeBean.torrents}" var="torrent" rules="all"
+                    styleClass="boxed"
+                    headerClasses="name,info,info,info,info,actions"
+                    columnClasses="name,info,info,info,info,actions"
+                    rowClasses="odd,even">
+	                <h:column>
+	                    <f:facet name="header">Title</f:facet>
+	                    <h:outputText value="#{torrent.title}" />
+	                </h:column>
+                    <h:column>
+                        <f:facet name="header">Size</f:facet>
+                        <h:outputText value="#{torrent.size} MB">
+                            <f:convertNumber groupingUsed="true" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Seeders</f:facet>
+                        <h:outputText value="#{torrent.seederCount}">
+                            <f:convertNumber groupingUsed="true" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Leechers</f:facet>
+                        <h:outputText value="#{torrent.leecherCount}">
+                            <f:convertNumber groupingUsed="true" />
+                        </h:outputText>
+                    </h:column>
+                    <!--
+                    <h:column>
+                        <f:facet name="header">Verified</f:facet>
+                        <h:outputText value="#{torrent.isVerified}" />
+                    </h:column>
+                    -->
+                    <h:column>
+                        <f:facet name="header">Score</f:facet>
+                        <h:outputText value="#{torrent.score}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandButton value="Download" action="#{episodeBean.download(torrent)}" class="action" />
+                    </h:column>
+	            </h:dataTable>
+	            <h:outputText value="No torrents found." rendered="#{empty episodeBean.torrents}" />
+            </h:form>            
+        </div>
+    </ui:define>
+</ui:composition>
