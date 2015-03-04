@@ -101,7 +101,7 @@ public class TorrentRssParser {
                 leecherCount = Integer.parseInt(text.toString());
             } else if (nodePath.equals("/rss/channel/item/magnetURI") || nodePath.equals("/rss/channel/item/torrent/magnetURI")) {
                 magnetUri = text.toString().trim();
-            } else if (nodePath.equals("/rss/channel/item/torrent/verified")) {
+            } else if (nodePath.equals("/rss/channel/item/verified") || nodePath.equals("/rss/channel/item/torrent/verified")) {
                 isVerified = (text.toString().equals("1"));
             } else if (nodePath.equals("/rss/channel/item")) {
                 torrents.add(new Torrent(title, size, seederCount, leecherCount, magnetUri, isVerified));

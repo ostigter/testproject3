@@ -189,12 +189,15 @@ public class ShowService implements Serializable {
         }
     }
 
-    public void downloadTorrent(Torrent torrent) {
+    public boolean downloadTorrent(Torrent torrent) {
+        boolean isDownloaded = false;
         try {
             Runtime.getRuntime().exec("cmd /c start " + torrent.getMagnetUri());
+            isDownloaded = true;
         } catch (IOException e) {
             System.err.format("ERROR: Failed to download torrent '%s'\n", torrent);
         }
+        return isDownloaded;
     }
 
     private static String encodeUrl(String uri) {
