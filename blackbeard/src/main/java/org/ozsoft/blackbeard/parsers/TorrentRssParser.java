@@ -57,13 +57,15 @@ public class TorrentRssParser {
      */
     private static class RssHandler extends DefaultHandler {
 
-        private final Set<Torrent> torrents;
-
         private String nodePath = "";
-
         private final StringBuilder text = new StringBuilder();
-
-        private Torrent torrent;
+        private String title;
+        private long size;
+        private int seederCount;
+        private int leecherCount;
+        private String magnetUri;
+        private boolean isVerified;
+        private final Set<Torrent> torrents;
 
         /**
          * Constructor.
@@ -85,32 +87,24 @@ public class TorrentRssParser {
         public void startElement(String uri, String localName, String qName, Attributes attributes) {
             nodePath = String.format("%s/%s", nodePath, localName);
             text.setLength(0);
-
-            if (nodePath.equals("/rss/channel/item")) {
-                // Start of document.
-                torrent = new Torrent();
-            }
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) {
             if (nodePath.equals("/rss/channel/item/title")) {
-                torrent.title = text.toString();
+                title = text.toString();
             } else if (nodePath.equals("/rss/channel/item/contentLength") || nodePath.equals("/rss/channel/item/size")) {
-                torrent.size = Long.parseLong(text.toString());
+                size = Long.parseLong(text.toString());
             } else if (nodePath.equals("/rss/channel/item/seeds") || nodePath.equals("/rss/channel/item/numSeeders")) {
-                torrent.seederCount = Integer.parseInt(text.toString());
+                seederCount = Integer.parseInt(text.toString());
             } else if (nodePath.equals("/rss/channel/item/peers") || nodePath.equals("/rss/channel/item/numLeechers")) {
-                torrent.leecherCount = Integer.parseInt(text.toString());
+                leecherCount = Integer.parseInt(text.toString());
             } else if (nodePath.equals("/rss/channel/item/magnetURI") || nodePath.equals("/rss/channel/item/torrent/magnetURI")) {
-                torrent.magnetUri = text.toString().trim();
+                magnetUri = text.toString().trim();
             } else if (nodePath.equals("/rss/channel/item/torrent/verified")) {
-                torrent.isVerified = (text.toString().equals("1"));
+                isVerified = (text.toString().equals("1"));
             } else if (nodePath.equals("/rss/channel/item")) {
-                calculateScore(torrent);
-                torrents.add(torrent);
-                // System.out.format("### Found torrent: '%s', %d bytes, %d seeders, %d leechers, %s\n", torrent.title,
-                // torrent.size, torrent.seederCount, torrent.leecherCount, torrent.magnetUri);
+                torrents.add(new Torrent(title, size, seederCount, leecherCount, magnetUri, isVerified));
             }
             nodePath = nodePath.substring(0, nodePath.lastIndexOf('/'));
         }
@@ -118,32 +112,6 @@ public class TorrentRssParser {
         @Override
         public void characters(char[] buffer, int start, int length) {
             text.append(String.copyValueOf(buffer, start, length));
-        }
-
-        private static void calculateScore(Torrent torrent) {
-            int score = 0;
-
-            if (torrent.isVerified) {
-                score += 1;
-            }
-
-            if (torrent.title.contains("[eztv]") || torrent.title.contains("[ettv]")) {
-                score += 2;
-            }
-
-            if (torrent.title.contains("DIMENSION") || torrent.title.contains("LOL") || torrent.title.contains("YIFY")) {
-                score += 2;
-            }
-
-            if (torrent.seederCount > 100) {
-                score += 2;
-            } else if (torrent.seederCount > 10) {
-                score += 1;
-            } else if (torrent.seederCount == 0) {
-                score -= 5;
-            }
-
-            torrent.score = score;
         }
     }
 }

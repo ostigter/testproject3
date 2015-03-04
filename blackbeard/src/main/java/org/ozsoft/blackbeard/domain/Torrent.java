@@ -7,30 +7,65 @@ package org.ozsoft.blackbeard.domain;
  */
 public class Torrent implements Comparable<Torrent> {
 
+    private static final long MB = 1024 * 1024;
+
     /** Title (filename). */
-    public String title;
+    private final String title;
 
     /** File size. */
-    public long size;
+    private final long size;
 
     /** Number of seeders. */
-    public int seederCount;
+    private final int seederCount;
 
     /** Number of leechers. */
-    public int leecherCount;
+    private final int leecherCount;
 
     /** Magnet link URI. */
-    public String magnetUri;
+    private final String magnetUri;
 
     /** Whether this torrent has been verified. */
-    public boolean isVerified = false;
+    private final boolean isVerified;
 
     /** Score. */
-    public int score;
+    private int score;
 
-    @Override
-    public String toString() {
+    public Torrent(String title, long size, int seederCount, int leecherCount, String magnetUri, boolean isVerified) {
+        this.title = title;
+        this.size = size;
+        this.seederCount = seederCount;
+        this.leecherCount = leecherCount;
+        this.magnetUri = magnetUri;
+        this.isVerified = isVerified;
+        calculateScore();
+    }
+
+    public String getTitle() {
         return title;
+    }
+
+    public long getSize() {
+        return size / MB;
+    }
+
+    public int getSeederCount() {
+        return seederCount;
+    }
+
+    public int getLeecherCount() {
+        return leecherCount;
+    }
+
+    public String getMagnetUri() {
+        return magnetUri;
+    }
+
+    public boolean isVerified() {
+        return isVerified;
+    }
+
+    public int getScore() {
+        return score;
     }
 
     @Override
@@ -55,5 +90,36 @@ public class Torrent implements Comparable<Torrent> {
     public int compareTo(Torrent other) {
         // Sort torrents by score (descending).
         return other.score - score;
+    }
+
+    @Override
+    public String toString() {
+        return title;
+    }
+
+    private void calculateScore() {
+        int score = 0;
+
+        if (title.contains("[eztv]") || title.contains("[ettv]")) {
+            score += 2;
+        }
+
+        if (title.contains("DIMENSION") || title.contains("LOL") || title.contains("YIFY")) {
+            score += 2;
+        }
+
+        if (seederCount > 100) {
+            score += 2;
+        } else if (seederCount > 10) {
+            score += 1;
+        } else if (seederCount == 0) {
+            score -= 5;
+        }
+
+        if (isVerified) {
+            score += 1;
+        }
+
+        this.score = score;
     }
 }
