@@ -12,7 +12,7 @@
 					<h:outputLabel value="Search for:" for="name" />
 					<h:inputText id="name" value="#{addShowBean.name}" style="width: 200px;" />
                     <h:commandButton value="Search" action="#{addShowBean.search}" />
-                    <h:commandLink value="Cancel" action="listShows.xhtml" immediate="true" />
+                    <h:commandLink value="Cancel" action="listShows.xhtml?faces-redirect=true" />
       			</h:panelGrid>
       			<br />
       			<h:panelGrid columns="2" rendered="#{not empty addShowBean.shows}">

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-import javax.faces.bean.ViewScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -12,7 +12,7 @@ import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.services.ShowService;
 
 @Named
-@ViewScoped
+@SessionScoped
 public class AddShowBean implements Serializable {
 
     private static final long serialVersionUID = 307051394346077352L;
@@ -25,10 +25,6 @@ public class AddShowBean implements Serializable {
     private List<Show> matchingShows;
 
     private int selectedShowId;
-
-    public void setShowService(ShowService showService) {
-        this.showService = showService;
-    }
 
     public String getName() {
         return name;
