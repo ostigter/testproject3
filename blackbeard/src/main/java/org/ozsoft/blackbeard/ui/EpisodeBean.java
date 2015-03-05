@@ -39,13 +39,13 @@ public class EpisodeBean implements Serializable {
 
     public String deleteShow() {
         showService.deleteShow(show);
-        return "listShows";
+        return "listShows?faces-redirect=true";
     }
 
     public String download(Episode episode) {
         this.episode = episode;
         torrents = showService.getTorrents(show, episode);
-        return "listTorrents";
+        return "listTorrents?faces-redirect=true";
     }
 
     public List<Torrent> getTorrents() {
@@ -57,7 +57,7 @@ public class EpisodeBean implements Serializable {
             episode.setStatus(EpisodeStatus.DOWNLOADED);
             showService.save();
         }
-        return "listEpisodes";
+        return "listEpisodes?faces-redirect=true";
     }
 
     public void watched(Episode episode) {

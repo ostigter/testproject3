@@ -8,7 +8,7 @@
     <ui:define name="content">
         <div class="content ui-widget ui-widget-content ui-corner-all">
             <h:form>
-                <p><h:commandLink value="Back to episodes" action="listEpisodes" /></p>
+                <p><h:commandLink value="Back to episodes" action="listEpisodes?faces-redirect=true" /></p>
 	            <h:dataTable rendered="#{not empty episodeBean.torrents}"
 	                    value="#{episodeBean.torrents}" var="torrent" rules="all"
                     styleClass="boxed" width="100%"
