@@ -28,16 +28,16 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<javaee.version>7.0</javaee.version>
-		<war.plugin.version>2.4</war.plugin.version>
+		<javaee-web-api.version>6.0</javaee-web-api.version>
+		<maven-war-plugin.version>2.6</maven-war-plugin.version>
 	</properties>
 
 	<dependencies>
 		<!-- Java EE API -->
 		<dependency>
 			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<version>${javaee.version}</version>
+			<artifactId>javaee-web-api</artifactId>
+			<version>${javaee-web-api.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -47,7 +47,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${war.plugin.version}</version>
+                <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
