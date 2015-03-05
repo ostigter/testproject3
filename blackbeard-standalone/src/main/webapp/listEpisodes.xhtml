@@ -1,0 +1,53 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="template.xhtml">
+    <ui:define name="title">#{episodeBean.show.name}</ui:define>
+    <ui:define name="content">
+        <div class="content ui-widget ui-widget-content ui-corner-all">
+            <h:form>
+                <p><h:commandLink value="Back to shows" action="listShows" /></p>
+                <p><h:commandButton value="Delete show" action="#{episodeBean.deleteShow}" /></p>
+	            <h:dataTable rendered="#{not empty episodeBean.show.episodes}"
+	                    value="#{episodeBean.show.episodes}" var="episode" rules="all"
+                    styleClass="boxed" width="100%"
+                    headerClasses="name,info,date,status,actions"
+                    columnClasses="name,info,date,status,actions"
+                    rowClasses="odd,even">
+	                <h:column>
+	                    <f:facet name="header">Name</f:facet>
+	                    <h:outputText value="#{episode}" />
+	                </h:column>
+                    <h:column>
+                        <f:facet name="header">Info</f:facet>
+                        <h:outputLink value="#{episode.link}" target="_new">Info</h:outputLink>  
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Air date</f:facet>
+                        <h:outputText value="#{episode.airDate}">
+                            <f:convertDateTime pattern="MMM d, yyyy" />
+                        </h:outputText>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Status</f:facet>
+                        <h:outputText value="#{episode.status.name}" />
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandButton value="Download" action="#{episodeBean.download(episode)}"
+                                class="action" rendered="#{episode.status == 'NEW'}" />
+                        <h:commandButton value="Watched" action="#{episodeBean.watched(episode)}"
+                                class="action" rendered="#{episode.status == 'DOWNLOADED'}" />
+                        <h:commandLink value="Re-download" action="#{episodeBean.download(episode)}"
+                                class="action" rendered="#{episode.status == 'DOWNLOADED'}" />
+                        <h:commandLink value="Reset" action="#{episodeBean.reset(episode)}"
+                                class="action" rendered="#{episode.status == 'WATCHED'}" />
+                    </h:column>
+	            </h:dataTable>
+	            <h:outputText value="No episodes found." rendered="#{empty episodeBean.show.episodes}" />
+            </h:form>            
+        </div>
+    </ui:define>
+</ui:composition>
