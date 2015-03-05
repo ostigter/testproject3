@@ -9,7 +9,7 @@
         <div class="content ui-widget ui-widget-content ui-corner-all">
             <h:form>
                 <p>
-                    <h:commandButton value="Add Show" action="addShow.xhtml" />
+                    <h:commandButton value="Add Show" action="addShow.xhtml?faces-redirect=true" />
                 </p>
 	            <h:dataTable rendered="#{not empty showBean.shows}"
 	                    value="#{showBean.shows}" var="show" rules="all"
@@ -19,7 +19,7 @@
                     rowClasses="odd,even">
 	                <h:column>
 	                    <f:facet name="header">Name</f:facet>
-	                    <h:commandLink value="#{show.name}" action="listEpisodes">
+	                    <h:commandLink value="#{show.name}" action="listEpisodes?faces-redirect=true">
 	                        <f:setPropertyActionListener target="#{episodeBean.show}" value="${show}" />
 	                    </h:commandLink>
 	                </h:column>
