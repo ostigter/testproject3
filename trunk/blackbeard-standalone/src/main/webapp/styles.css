@@ -1,0 +1,122 @@
+.ui-widget {
+   font-size: 12px;
+}
+
+body {
+	background: #ffffff;
+    margin-left:  15%;
+    margin-right: 15%;
+	padding: 0;
+}
+
+h1 {
+	color: #000000;
+}
+
+p {
+	color: #000000;
+}
+
+div.content {
+    padding: 10px;
+}
+
+div.footer {
+    font-size: 60%;
+    text-align: right;
+}
+
+table.boxed {
+    border: 1px solid #808080;
+}
+
+th {
+    color: #000000;
+	background: #c0c0c0;
+    height: 2.0em;
+}
+
+td {
+    height: 2.0em;
+}
+
+th.name {
+    text-align: left;
+}
+
+td.name {
+    text-align: left;
+}
+
+th.info {
+    width: 50px;
+    text-align: center;
+}
+
+td.info {
+    width: 50px;
+    text-align: center;
+}
+
+th.date {
+    width: 100px;
+    text-align: center;
+}
+
+td.date {
+    width: 100px;
+    text-align: center;
+}
+
+th.status {
+    width: 100px;
+    text-align: center;
+}
+
+td.status {
+    width: 100px;
+    text-align: center;
+}
+
+th.actions {
+    width: 200px;
+    text-align: center;
+}
+
+td.actions {
+    width: 200px;
+    text-align: center;
+}
+
+th.torrent-actions {
+    text-align: center;
+}
+
+td.torrent-actions {
+    text-align: center;
+}
+
+th.size {
+    width: 80px;
+    text-align: center;
+}
+
+td.size {
+    width: 80px;
+    text-align: center;
+}
+
+tr.odd {
+    color: #000000;
+	background: #ffffff;
+}
+
+tr.even {
+    color: #000000;
+	background: #f0f0f0;
+}
+
+.action {
+    margin-left: 5px;
+    margin-right: 5px;
+}
