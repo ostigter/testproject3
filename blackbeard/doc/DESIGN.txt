@@ -89,28 +89,27 @@ class Show {
     String name
     String link
     ShowStatus status
-    Map<Integer, Episode> episodes
+    List<Episode> episodes
 }
 
 enum ShowStatus {
     RUNNING
     RETURNING
-    ENDED
+    FINISHED
     CANCELED
 }
 
 class Episode {
-    int episodenum
-    int seasonnum
+    int id
+    int seasonNumber
+    int episodeNumber
     String title
     String link
     EpisodeStatus status
-    Set<Torrent> torrents
-    Torrent selectedTorrent
 }
 
 enum EpisodeStatus {
-    TO_BE_AIRED
+    NOT_YET_AIRED
     NEW
     DOWNLOADED
     WATCHED
@@ -127,16 +126,18 @@ Configuration {
             status: RUNNING,
             episodes: [
                 Episode {
-                    epnum: 1,
-                    seasonnum: 1,
+                    id: 1,
+                    seasonNumber: 1,
+                    episodeNumber: 1,
                     title: "Pilot",
                     airDate: 10-OCT-2012,
                     link: "http://www.tvrage.com/Arrow/episodes/1065165400",
                     status: WATCHED
                 },
                 Episode {
-                    epnum: 2,
-                    seasonnum: 2,
+                    id: 2,
+                    seasonNumber: 1,
+                    episodeNumber: 2,
                     title: "Honor Thy Father",
                     airDate: 17-OCT-2012,
                     link: "http://www.tvrage.com/Arrow/episodes/1065218084",
@@ -144,15 +145,17 @@ Configuration {
                 },
                 ...
                 Episode {
-                    epnum: 23,
-                    seasonnum: 1,
+                    id: 13,
+                    seasonNumber: 2,
+                    episodeNumber: 1,
                     title: "s02e01",
                     airDate: 2-NOV-2012,
                     link: "..."
                 },
                 Episode {
-                    epnum: 24,
-                    seasonnum: 2,
+                    id: 14,
+                    seasonNumber: 2,
+                    episodeNumber: 2,
                     title: "s02e02",
                     airDate: 9-NOV-2012,
                     link: "..."
@@ -161,3 +164,128 @@ Configuration {
         }
     ]
 }
+
+
+REST interface
+--------------
+
+Search show:
+    GET /shows/search/doctor+who
+    [
+        {
+            id: 456
+            name: "Doctor Who",
+            link: "http://www.tvrage.com/Doctor+Who",
+            status: RETURNING
+        },
+        {
+            ...
+        }
+    }
+
+Add show:
+    POST /shows
+    {
+        id: 456,
+        name: "Doctor Who",
+        link: "http://www.tvrage.com/Doctor+Who",
+        status: RETURNING
+    }
+
+List shows:
+    GET /shows
+    [
+        {
+            id: 123,
+            name: "Arrow",
+            link: "http://www.tvrage.com/Arrow",
+            status: RUNNING
+        },
+        {
+            id: 456
+            name: "Doctor Who",
+            link: "http://www.tvrage.com/Doctor+Who",
+            status: RETURNING
+        }
+    ]
+        
+Get show by ID:
+    GET /shows/456
+    {
+        id: 456,
+        name: "Doctor Who",
+        link: "http://www.tvrage.com/Doctor+Who",
+        status: RETURNING
+    }
+
+Delete show:
+    DELETE /shows/123
+    
+Get episodes by show ID:
+    GET /shows/123/episodes
+    [
+        {
+            id: 1
+            seasonNumber: 1,
+            episodeNumber: 1,
+            title: "Pilot",
+            link: "http://www.tvrage.com/episode/99887442",
+            airDate: 49823744732,
+            status: WATCHED
+        },
+        {
+            id: 2
+            seasonNumber: 1,
+            episodeNumber: 2,
+            title: "Honor Thy Father",
+            link: "http://www.tvrage.com/episode/87463832",
+            airDate: 4982387578,
+            status: NEW
+        }
+    ]
+    
+Get episode details:
+    GET /shows/123/episodes/1
+    {
+        id: 1
+        seasonNumber: 1,
+        episodeNumber: 1,
+        title: "Pilot",
+        link: "http://www.tvrage.com/episode/99887442",
+        airDate: 49823744732,
+        status: WATCHED
+    }
+
+Find episode torrents:
+    GET /shows/123/episodes/1/torrents
+    [
+        {
+            title: "arrow s01e01 720p-DIMENSION-[eztv]",
+            quality: HD_720P,
+            seedersCount: 56,
+            isVerified: true,
+            magnetUri: "magnet:?xt=urn:sha1:YNCKHTQCWBTRNJIV4WNAE52SJUQCZO5C",
+            score: 6
+        },
+        {
+            ...
+        }
+    ]
+
+Download torrent:
+    POST  /shows/123/episodes/1/torrent/magnet:?xt=urn:sha1:YNCKHTQCWBTRNJIV4WNAE52SJUQCZO5C
+
+Mark episode as 'watched':
+    POST /shows/123/episodes/1/watched
+
+Reset episode status:
+    POST /shows/123/episodes/1/reset
+
+Set minimum video quality:
+    POST /config/minVideoQuality/SD
+
+Set maximum video quality:
+    POST /config/maxVideoQuality/HD_720P
+
+Set refresh interval in minutes:
+    POST /config/refreshInterval/240   // 4 hours
