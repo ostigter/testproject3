@@ -6,11 +6,10 @@
 	<groupId>org.example.rest</groupId>
 	<artifactId>embedded-rest-example</artifactId>
 	<version>0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>${project.artifactId}</name>
-	<description>Example project with embedded Jetty and Jersey JAX-RX (REST)</description>
-
+	<description>Embedded Jetty server with Jersey JAX-RX (REST)</description>
 	<inceptionYear>2015</inceptionYear>
 	<developers>
 		<developer>
@@ -23,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<maven-war-plugin.version>2.6</maven-war-plugin.version>
+		<maven-shade-plugin.version>1.6</maven-shade-plugin.version>
 		<jetty.version>9.3.0.M1</jetty.version>
 		<jersey.version>2.16</jersey.version>
 	</properties>
@@ -46,11 +45,41 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>${maven-war-plugin.version}</version>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>${maven-shade-plugin.version}</version>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
 				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Main-Class>org.example.rest.App</Main-Class>
+									</manifestEntries>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
