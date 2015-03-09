@@ -19,7 +19,7 @@ public class Main {
 
     private static final String DEV_WEBAPP_DIR = "src/main/webapp";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         Server server = new Server();
 
         ServerConnector connector = new ServerConnector(server);
@@ -40,8 +40,14 @@ public class Main {
 
         server.setHandler(webApp);
 
-        server.start();
-        server.setStopAtShutdown(true);
-        server.join();
+        try {
+            server.start();
+            server.join();
+        } catch (Exception e) {
+            System.err.println("ERROR: Could not start Jetty server");
+            e.printStackTrace(System.err);
+        } finally {
+            server.setStopAtShutdown(true);
+        }
     }
 }
