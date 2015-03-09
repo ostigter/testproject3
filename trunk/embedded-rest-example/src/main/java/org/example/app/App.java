@@ -1,4 +1,4 @@
-package org.example.rest;
+package org.example.app;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -9,20 +9,17 @@ public class App {
 
     private static final int PORT = 8080;
 
-    private static final String CONTEXT = "/";
+    private static final String CONTEXT = "/embedded-rest-example";
 
     public static void main(String[] args) {
+        Server jettyServer = new Server(PORT);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath(CONTEXT);
-
-        Server jettyServer = new Server(PORT);
         jettyServer.setHandler(context);
 
-        ServletHolder jerseyServlet = context.addServlet(ServletContainer.class, "/*");
+        ServletHolder jerseyServlet = context.addServlet(ServletContainer.class, "/rest/*");
         jerseyServlet.setInitOrder(0);
-
-        // Tells the Jersey Servlet which REST service/class to load.
-        jerseyServlet.setInitParameter("jersey.config.server.provider.classnames", UserResource.class.getCanonicalName());
+        jerseyServlet.setInitParameter("jersey.config.server.provider.packages", "org.example.app.rest");
 
         try {
             jettyServer.start();
