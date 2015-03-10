@@ -20,8 +20,8 @@ public class ExampleServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
         final Writer writer = response.getWriter();
-        writer.write("<h1>Example servlet</h1>\n");
-        writer.write("<p>Hello World from a simple test servlet!</p>\n");
-        writer.write("<p><a href=\"/\">Back</a></p>\n");
+        writer.write("<h1>Example servlet</h1>");
+        writer.write("<p>Hello World from a simple test servlet!</p>");
+        writer.write("<p><a href=\"/\">Back</a></p>");
     }
 }

@@ -1,0 +1,18 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+    <ui:define name="title">JSF 2.x example</ui:define>
+    <ui:define name="content">
+	    <h:form>
+	        Please enter your name:
+	        <h:inputText id="name" value="#{greetingBean.name}" />
+	        <h:commandButton value="Get greeting">
+	            <f:ajax execute="name" render="greeting" />
+	        </h:commandButton>
+	        <p><h:outputText id="greeting" value="#{greetingBean.greeting}" styleClass="greeting" /></p>
+	        <p><h:outputLink value="/servlet">Example servlet</h:outputLink></p>
+	    </h:form>
+    </ui:define>
+</ui:composition>
