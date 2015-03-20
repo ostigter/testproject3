@@ -33,14 +33,12 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.varia.DenyAllFilter;
-import org.gudy.azureus2.core3.config.COConfigurationManager;
 import org.gudy.azureus2.core3.util.Constants;
 
 import com.aelitis.azureus.core.AzureusCore;
 import com.aelitis.azureus.core.AzureusCoreException;
 import com.aelitis.azureus.core.AzureusCoreFactory;
 import com.aelitis.azureus.core.impl.AzureusCoreSingleInstanceClient;
-import com.aelitis.azureus.launcher.Launcher;
 
 /**
  * 
@@ -305,8 +303,8 @@ public class Main {
             if (commands.hasOption('e')) {
                 if (conConsoleInput != null) {
                     try {
-                        Object params[] = { commands.getOptionValue('e'), new_core, new FileReader(commands.getOptionValue('e')), System.out,
-                                Boolean.FALSE };
+                        Object params[] =
+                                { commands.getOptionValue('e'), new_core, new FileReader(commands.getOptionValue('e')), System.out, Boolean.FALSE };
                         conConsoleInput.newInstance(params);
                     } catch (java.io.FileNotFoundException e) {
                         Logger.getLogger("azureus2").error("Script file not found: " + e.toString());

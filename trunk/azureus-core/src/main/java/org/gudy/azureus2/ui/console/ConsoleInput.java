@@ -727,12 +727,12 @@ public class ConsoleInput extends Thread {
             pi.getPluginState().setDisabled(true);
         }
 
-        pi = pm.getPluginInterfaceByClass(UpdaterUpdateChecker.class);
-
-        if (pi != null) {
-
-            pi.getPluginState().setDisabled(true);
-        }
+        // pi = pm.getPluginInterfaceByClass(UpdaterUpdateChecker.class);
+        //
+        // if (pi != null) {
+        //
+        // pi.getPluginState().setDisabled(true);
+        // }
 
         UpdateManager update_manager = azureus_core.getPluginManager().getDefaultPluginInterface().getUpdateManager();
 
