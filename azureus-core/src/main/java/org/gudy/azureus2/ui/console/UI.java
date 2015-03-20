@@ -32,8 +32,6 @@ import org.gudy.azureus2.plugins.ui.toolbar.UIToolBarManager;
 import org.gudy.azureus2.ui.common.IUserInterface;
 import org.gudy.azureus2.ui.common.UIConst;
 import org.gudy.azureus2.ui.common.UIInstanceBase;
-import org.gudy.azureus2.ui.console.multiuser.UserManager;
-import org.gudy.azureus2.ui.console.multiuser.commands.UserCommand;
 
 /**
  * 
@@ -107,10 +105,10 @@ public class UI extends org.gudy.azureus2.ui.common.UITemplateHeadless implement
         TorrentDownloaderFactory
                 .initManager(UIConst.getGlobalManager(), true, true, COConfigurationManager.getStringParameter("Default save path"));
 
-        if (created_console && System.getProperty("azureus.console.multiuser") != null) {
-            UserManager manager = UserManager.getInstance(pi);
-            console.registerCommand(new UserCommand(manager));
-        }
+        // if (created_console && System.getProperty("azureus.console.multiuser") != null) {
+        // UserManager manager = UserManager.getInstance(pi);
+        // console.registerCommand(new UserCommand(manager));
+        // }
 
     }
 
