@@ -16,17 +16,9 @@ public interface TorrentManager {
 
     Torrent getTorrent(String id) throws TorrentException;
 
-    void startTorrent(Torrent torrent) throws TorrentException;
+    int getGlobalDownloadSpeed() throws TorrentException;
 
-    void stopTorrent(Torrent torrent) throws TorrentException;
-
-    void removeTorrent(Torrent torrent) throws TorrentException;
-
-    void deleteTorrent(Torrent torrent) throws TorrentException;
-
-    int getDownloadSpeed() throws TorrentException;
-
-    int getUploadSpeed() throws TorrentException;
+    int getGlobalUploadSpeed() throws TorrentException;
 
     long getTotalBytesReceived() throws TorrentException;
 

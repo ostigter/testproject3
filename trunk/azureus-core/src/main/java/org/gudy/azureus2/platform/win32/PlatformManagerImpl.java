@@ -129,28 +129,29 @@ public class PlatformManagerImpl implements PlatformManager, AEWin32AccessListen
 
                     init_tried = true;
 
-                    try {
-                        singleton = new PlatformManagerImpl();
-
-                        // gotta separate this so that a recursive call due to config access during
-                        // patching finds the singleton
-
-                        // OSTI: Disable patches.
-                        // singleton.applyPatches();
-
-                    } catch (PlatformManagerException e) {
-
-                        throw (e);
-
-                    } catch (Throwable e) {
-
-                        if (e instanceof PlatformManagerException) {
-
-                            throw ((PlatformManagerException) e);
-                        }
-
-                        throw (new PlatformManagerException("Win32Platform: failed to initialise", e));
-                    }
+                    // OSTI: Disabled to avoid Win32 PlatformManager error.
+                    // try {
+                    // singleton = new PlatformManagerImpl();
+                    //
+                    // // gotta separate this so that a recursive call due to config access during
+                    // // patching finds the singleton
+                    //
+                    // // OSTI: Disable patches.
+                    // // singleton.applyPatches();
+                    //
+                    // } catch (PlatformManagerException e) {
+                    //
+                    // throw (e);
+                    //
+                    // } catch (Throwable e) {
+                    //
+                    // if (e instanceof PlatformManagerException) {
+                    //
+                    // throw ((PlatformManagerException) e);
+                    // }
+                    //
+                    // throw (new PlatformManagerException("Win32Platform: failed to initialise", e));
+                    // }
                 }
             } finally {
 

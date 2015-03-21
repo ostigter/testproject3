@@ -3,7 +3,7 @@ package org.ozsoft.azureus;
 public class Main {
 
     public static void main(String[] args) {
-        TorrentManager torrentManager = new DefaultTorrentManager();
+        TorrentManager torrentManager = TorrentManagerFactory.createTorrentManager();
 
         try {
             torrentManager.start();
