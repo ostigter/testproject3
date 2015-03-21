@@ -1,30 +1,42 @@
 package org.ozsoft.azureus;
 
-import java.util.UUID;
+import java.io.File;
 
-public class Torrent {
+public interface Torrent {
 
-    private final String id;
+    String getId();
 
-    private final String title;
+    String getTitle();
 
-    private final String magnetUri;
+    String getMagnetUri();
 
-    public Torrent(String title, String magnetUri) {
-        this.id = UUID.randomUUID().toString();
-        this.title = title;
-        this.magnetUri = magnetUri;
-    }
+    long getSize();
 
-    public String getId() {
-        return id;
-    }
+    File[] getFiles();
 
-    public String getTitle() {
-        return title;
-    }
+    TorrentStatus getStatus();
 
-    public String getMagnetUri() {
-        return magnetUri;
-    }
+    void start() throws TorrentException;
+
+    void stop() throws TorrentException;
+
+    void remove() throws TorrentException;
+
+    void delete() throws TorrentException;
+
+    int getSeedCount();
+
+    int getPeerCount();
+
+    int getDownloadSpeed();
+
+    int getUploadSpeed();
+
+    int getBytesReceived();
+
+    int getBytesSent();
+
+    double getProgress();
+
+    int getRemainingTime();
 }

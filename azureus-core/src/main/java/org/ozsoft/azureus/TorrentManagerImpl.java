@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultTorrentManager implements TorrentManager {
+public class TorrentManagerImpl implements TorrentManager {
 
     private final Map<String, Torrent> torrents;
 
     private boolean isStarted;
 
-    public DefaultTorrentManager() {
+    /* package */TorrentManagerImpl() {
         torrents = new HashMap<String, Torrent>();
         isStarted = false;
     }
@@ -19,6 +19,7 @@ public class DefaultTorrentManager implements TorrentManager {
     public void start() throws TorrentException {
         if (!isStarted) {
             isStarted = true;
+            System.out.println("TorrentManager started.");
         }
     }
 
@@ -26,6 +27,7 @@ public class DefaultTorrentManager implements TorrentManager {
     public void stop() throws TorrentException {
         if (isStarted) {
             isStarted = false;
+            System.out.println("TorrentManager stopped.");
         }
     }
 
@@ -52,53 +54,31 @@ public class DefaultTorrentManager implements TorrentManager {
         return torrents.get(id);
     }
 
-    @Override
-    public void startTorrent(Torrent torrent) throws TorrentException {
-        verifyIsStarted();
+    private void verifyIsStarted() throws TorrentException {
+        if (!isStarted) {
+            throw new TorrentException("TorrentManager not started");
+        }
     }
 
     @Override
-    public void stopTorrent(Torrent torrent) throws TorrentException {
-        verifyIsStarted();
-    }
-
-    @Override
-    public void removeTorrent(Torrent torrent) throws TorrentException {
-        verifyIsStarted();
-    }
-
-    @Override
-    public void deleteTorrent(Torrent torrent) throws TorrentException {
-        verifyIsStarted();
-    }
-
-    @Override
-    public int getDownloadSpeed() throws TorrentException {
-        verifyIsStarted();
+    public int getGlobalDownloadSpeed() throws TorrentException {
         return 0;
     }
 
     @Override
-    public int getUploadSpeed() throws TorrentException {
-        verifyIsStarted();
+    public int getGlobalUploadSpeed() throws TorrentException {
         return 0;
     }
 
     @Override
     public long getTotalBytesReceived() throws TorrentException {
         verifyIsStarted();
-        return 0;
+        return 0L;
     }
 
     @Override
     public long getTotalBytesSent() throws TorrentException {
         verifyIsStarted();
-        return 0;
-    }
-
-    private void verifyIsStarted() throws TorrentException {
-        if (!isStarted) {
-            throw new TorrentException("TorrentManager not started");
-        }
+        return 0L;
     }
 }
