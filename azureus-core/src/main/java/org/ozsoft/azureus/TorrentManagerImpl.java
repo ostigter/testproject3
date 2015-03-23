@@ -1,5 +1,6 @@
 package org.ozsoft.azureus;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +42,16 @@ public class TorrentManagerImpl implements TorrentManager {
             LOGGER.debug("Starting");
             try {
                 azureusServer = new StartServer();
-                azureusCore = AzureusCoreFactory.create();
                 azureusServer.start();
+
+                azureusCore = AzureusCoreFactory.create();
                 azureusCore.start();
+
+                globalManager = azureusCore.getGlobalManager();
+
                 isStarted = true;
                 LOGGER.info("Started");
+
             } catch (Exception e) {
                 throw new TorrentException("Could not start Azureus", e);
             }
@@ -88,15 +94,25 @@ public class TorrentManagerImpl implements TorrentManager {
     }
 
     private Torrent downloadFromLocalTorrent(String path) throws TorrentException {
-        DownloadManager dm = globalManager.addDownloadManager(path, DOWNLOAD_PATH);
-        long startTime = System.currentTimeMillis();
-        while (dm.getState() != DownloadManager.STATE_DOWNLOADING) {
-            long duration = System.currentTimeMillis() - startTime;
-            if (duration > TORRENT_TIMEOUT) {
-                // Download takes too long to start; abort and delete.
-                dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
-                throw new TorrentException("Download failed to start time-out)");
+        File torrentFile = new File(path);
+        if (!torrentFile.isFile()) {
+            throw new TorrentException("Torrent file not found: " + path);
+        }
+
+        DownloadManager dm = null;
+        try {
+            dm = globalManager.addDownloadManager(torrentFile.getAbsolutePath(), DOWNLOAD_PATH);
+            long startTime = System.currentTimeMillis();
+            while (dm.getState() != DownloadManager.STATE_DOWNLOADING) {
+                long duration = System.currentTimeMillis() - startTime;
+                if (duration > TORRENT_TIMEOUT) {
+                    // Download takes too long to start; abort and delete.
+                    dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
+                    throw new TorrentException("Download failed to start time-out)");
+                }
             }
+        } catch (Exception e) {
+            throw new TorrentException(String.format("Could not start torrent from file '%s'", path), e);
         }
 
         Torrent torrent = new TorrentImpl(dm);

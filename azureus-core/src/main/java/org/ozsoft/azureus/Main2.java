@@ -1,7 +1,5 @@
 package org.ozsoft.azureus;
 
-import java.util.Locale;
-
 import org.apache.log4j.Appender;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Logger;
@@ -24,8 +22,6 @@ public class Main2 {
     private static final String TORRENT_PATH = "src/test/resources/test.torrent";
     private static final String MAGNET_URI = "magnet:?xt=urn:btih:11B23FCAD37A547F1173E12EEA6521C112C98072&dn=arrow+s03e15+hdtv+x264+lol+ettv";
     private static final String DOWNLOAD_PATH = "D:/Downloads/Torrents";
-    private static final int KILOBYTE = 1024;
-    private static final int MEGABYTE = 1024 * KILOBYTE;
 
     private static DownloadManager dm;
 
@@ -96,8 +92,8 @@ public class Main2 {
             System.out.println("Torrent state: " + dm.getState());
             System.out.println("Torrent seed count:     " + dm.getNbSeeds());
             System.out.println("Torrent peer count:     " + dm.getNbPeers());
-            System.out.println("Download speed:         " + throughputToString(pmStats.getDataReceiveRate()));
-            System.out.println("Upload speed:           " + throughputToString(pmStats.getDataSendRate()));
+            System.out.println("Download speed:         " + TorrentUtils.throughputToString(pmStats.getDataReceiveRate()));
+            System.out.println("Upload speed:           " + TorrentUtils.throughputToString(pmStats.getDataSendRate()));
             System.out.format("Completed:              %.1f %%\n", dm.getStats().getDownloadCompleted(true) / 10.0);
 
             Thread.sleep(3000L);
@@ -127,13 +123,5 @@ public class Main2 {
         app.setName("ConsoleAppender");
         app.addFilter(new DenyAllFilter()); // 'log off' by default
         Logger.getRootLogger().addAppender(app);
-    }
-
-    private static String throughputToString(long speed) {
-        if (speed > MEGABYTE) {
-            return String.format(Locale.US, "%.2f MB/s", speed / (double) MEGABYTE);
-        } else {
-            return String.format(Locale.US, "%d kB/s", speed / KILOBYTE);
-        }
     }
 }
