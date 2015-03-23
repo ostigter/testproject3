@@ -1,20 +1,35 @@
 package org.ozsoft.azureus;
 
 import java.io.File;
+import java.util.List;
 
 public interface Torrent {
 
     String getId();
 
-    String getTitle();
-
-    String getMagnetUri();
+    String getName();
 
     long getSize();
 
-    File[] getFiles();
+    List<File> getFiles();
 
     TorrentStatus getStatus();
+
+    int getPeerCount();
+
+    int getSeedCount();
+
+    long getDownloadSpeed();
+
+    long getUploadSpeed();
+
+    long getBytesReceived();
+
+    long getBytesSent();
+
+    double getProgress();
+
+    long getRemainingTime();
 
     void start() throws TorrentException;
 
@@ -23,20 +38,4 @@ public interface Torrent {
     void remove() throws TorrentException;
 
     void delete() throws TorrentException;
-
-    int getSeedCount();
-
-    int getPeerCount();
-
-    int getDownloadSpeed();
-
-    int getUploadSpeed();
-
-    int getBytesReceived();
-
-    int getBytesSent();
-
-    double getProgress();
-
-    int getRemainingTime();
 }
