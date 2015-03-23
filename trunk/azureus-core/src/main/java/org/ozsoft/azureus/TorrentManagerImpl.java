@@ -55,11 +55,12 @@ public class TorrentManagerImpl implements TorrentManager {
     @Override
     public void stop() throws TorrentException {
         if (isStarted) {
+            LOGGER.debug("Stopping");
             try {
                 azureusCore.stop();
                 azureusServer.stopIt();
                 isStarted = false;
-                System.out.println("TorrentManager stopped.");
+                LOGGER.info("Stopped");
             } catch (Exception e) {
                 throw new TorrentException("Could not stop Azureus", e);
             }
@@ -98,7 +99,7 @@ public class TorrentManagerImpl implements TorrentManager {
             }
         }
 
-        Torrent torrent = new TorrentImpl(dm.getDisplayName(), null);
+        Torrent torrent = new TorrentImpl(dm);
         torrents.put(torrent.getId(), torrent);
 
         return torrent;

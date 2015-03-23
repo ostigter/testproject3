@@ -1,20 +1,29 @@
 package org.ozsoft.azureus;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.gudy.azureus2.core3.download.DownloadManager;
+import org.gudy.azureus2.core3.torrent.TOTorrent;
+import org.gudy.azureus2.core3.torrent.TOTorrentFile;
 
 public class TorrentImpl implements Torrent {
 
+    private static final Logger LOGGER = Logger.getLogger(TorrentImpl.class);
+
     private final String id;
 
-    private final String title;
+    private final String name;
 
-    private final String magnetUri;
+    private final DownloadManager dm;
 
-    /* package */TorrentImpl(String title, String magnetUri) {
+    /* package */TorrentImpl(DownloadManager dm) {
         this.id = UUID.randomUUID().toString();
-        this.title = title;
-        this.magnetUri = magnetUri;
+        this.name = dm.getDisplayName();
+        this.dm = dm;
     }
 
     @Override
@@ -23,83 +32,113 @@ public class TorrentImpl implements Torrent {
     }
 
     @Override
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     @Override
-    public String getMagnetUri() {
-        return magnetUri;
+    public long getDownloadSpeed() {
+        return dm.getStats().getDataReceiveRate();
     }
 
     @Override
-    public void start() throws TorrentException {
-    }
-
-    @Override
-    public void stop() throws TorrentException {
-    }
-
-    @Override
-    public void remove() throws TorrentException {
-    }
-
-    @Override
-    public void delete() throws TorrentException {
-    }
-
-    @Override
-    public int getDownloadSpeed() {
-        return 0;
-    }
-
-    @Override
-    public int getUploadSpeed() {
-        return 0;
+    public long getUploadSpeed() {
+        return dm.getStats().getDataSendRate();
     }
 
     @Override
     public long getSize() {
-        return 0L;
+        return dm.getSize();
     }
 
     @Override
-    public File[] getFiles() {
-        return null;
+    public List<File> getFiles() {
+        TOTorrent torrent = dm.getTorrent();
+        List<File> files = new ArrayList<File>();
+        for (TOTorrentFile torrentFile : torrent.getFiles()) {
+            String path = torrentFile.getRelativePath();
+            // TODO
+            LOGGER.debug("### Torrent file: " + path);
+        }
+        return files;
     }
 
     @Override
     public TorrentStatus getStatus() {
-        return TorrentStatus.STOPPED;
-    }
-
-    @Override
-    public int getSeedCount() {
-        return 0;
+        if (dm.isDownloadComplete(true)) {
+            return TorrentStatus.DOWNLOADED;
+        } else {
+            int state = dm.getState();
+            if (state == DownloadManager.STATE_STOPPED || state == DownloadManager.STATE_STOPPING) {
+                return TorrentStatus.STOPPED;
+            } else if (state == DownloadManager.STATE_ERROR) {
+                return TorrentStatus.FAILED;
+            } else {
+                return TorrentStatus.DOWNLOADING;
+            }
+        }
     }
 
     @Override
     public int getPeerCount() {
-        return 0;
+        return dm.getNbPeers();
     }
 
     @Override
-    public int getBytesReceived() {
-        return 0;
+    public int getSeedCount() {
+        return dm.getNbSeeds();
     }
 
     @Override
-    public int getBytesSent() {
-        return 0;
+    public long getBytesReceived() {
+        return dm.getStats().getTotalDataBytesReceived();
+    }
+
+    @Override
+    public long getBytesSent() {
+        return dm.getStats().getTotalDataBytesSent();
     }
 
     @Override
     public double getProgress() {
-        return 0;
+        return dm.getStats().getDownloadCompleted(true) / 10.0;
     }
 
     @Override
-    public int getRemainingTime() {
-        return 0;
+    public long getRemainingTime() {
+        return dm.getPeerManager().getRemaining();
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
+
+    @Override
+    public void start() throws TorrentException {
+        if (dm.getState() == DownloadManager.STATE_STOPPED) {
+            dm.startDownload();
+            LOGGER.info(String.format("Torrent '%s' started", name));
+        } else {
+            throw new TorrentException("Torrent not stopped");
+        }
+    }
+
+    @Override
+    public void stop() throws TorrentException {
+        dm.stopIt(DownloadManager.STATE_STOPPED, false, false);
+        LOGGER.info(String.format("Torrent '%s' stopped", name));
+    }
+
+    @Override
+    public void remove() throws TorrentException {
+        dm.stopIt(DownloadManager.STATE_STOPPED, false, false);
+        LOGGER.info(String.format("Torrent '%s' removed", name));
+    }
+
+    @Override
+    public void delete() throws TorrentException {
+        dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
+        LOGGER.info(String.format("Torrent '%s' deleted", name));
     }
 }
