@@ -754,7 +754,8 @@ public class AzureusCoreImpl implements AzureusCore {
 
             // Not using localised text - not sure it's safe to this early.
             Logger.log(new LogAlert(LogAlert.UNREPEATABLE, LogEvent.LT_WARNING, "You are running " + Constants.APP_NAME + " in safe mode - you "
-                    + "can change your configuration, but any downloads added will " + "not be remembered when you close " + Constants.APP_NAME + "."));
+                    + "can change your configuration, but any downloads added will " + "not be remembered when you close " + Constants.APP_NAME
+                    + "."));
         }
 
         /**
@@ -993,7 +994,8 @@ public class AzureusCoreImpl implements AzureusCore {
             global_manager.resumeDownloads();
         }
 
-        VersionCheckClient.getSingleton().initialise();
+        // OSTI: Disabled version check.
+        // VersionCheckClient.getSingleton().initialise();
 
         instance_manager.initialize();
 
@@ -1058,7 +1060,8 @@ public class AzureusCoreImpl implements AzureusCore {
                                         return;
                                     }
 
-                                    Logger.log(new LogEvent(LOGID, "Network interfaces have changed (new=" + na.getNetworkInterfacesAsString() + ")"));
+                                    Logger.log(new LogEvent(LOGID, "Network interfaces have changed (new=" + na.getNetworkInterfacesAsString()
+                                            + ")"));
 
                                     announceAll(false);
 

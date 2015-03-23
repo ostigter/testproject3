@@ -110,11 +110,6 @@ public class TorrentImpl implements Torrent {
     }
 
     @Override
-    public String toString() {
-        return name;
-    }
-
-    @Override
     public void start() throws TorrentException {
         if (dm.getState() == DownloadManager.STATE_STOPPED) {
             dm.startDownload();
@@ -140,5 +135,10 @@ public class TorrentImpl implements Torrent {
     public void delete() throws TorrentException {
         dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
         LOGGER.info(String.format("Torrent '%s' deleted", name));
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s (%s)", name, getStatus());
     }
 }

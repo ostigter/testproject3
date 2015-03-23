@@ -2,13 +2,23 @@ package org.ozsoft.azureus;
 
 public class Main {
 
+    private static final String TORRENT_PATH = "src/test/resources/test.torrent";
+    private static final String MAGNET_URI = "magnet:?xt=urn:btih:11B23FCAD37A547F1173E12EEA6521C112C98072&dn=arrow+s03e15+hdtv+x264+lol+ettv";
+    private static final String DOWNLOAD_PATH = "D:/Downloads/Torrents";
+
     public static void main(String[] args) {
-        TorrentManager torrentManager = TorrentManagerFactory.createTorrentManager();
+        TorrentManager tm = TorrentManagerFactory.createTorrentManager();
 
         try {
-            torrentManager.start();
+            tm.start();
 
-            torrentManager.stop();
+            tm.downloadTorrent(TORRENT_PATH);
+
+            for (Torrent torrent : tm.getTorrents()) {
+                System.out.println("Torrent: " + torrent);
+            }
+
+            tm.stop();
 
         } catch (TorrentException e) {
             System.err.println("ERROR: " + e);
