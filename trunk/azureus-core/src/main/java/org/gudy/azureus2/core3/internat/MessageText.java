@@ -55,12 +55,11 @@ import org.gudy.azureus2.core3.util.SystemProperties;
  * 
  * @author CrazyAlchemist Added keyExistsForDefaultLocale
  */
-@SuppressWarnings("restriction")
 public class MessageText {
 
     public static final Locale LOCALE_ENGLISH = Constants.LOCALE_ENGLISH;
 
-    public static final Locale LOCALE_DEFAULT = new Locale("", ""); // == english
+    public static final Locale LOCALE_DEFAULT = new Locale("en", "");
 
     private static Locale LOCALE_CURRENT = LOCALE_DEFAULT;
 
@@ -166,7 +165,8 @@ public class MessageText {
                 e.printStackTrace();
 
                 Logger.log(new LogAlert(LogAlert.REPEATABLE, LogAlert.AT_ERROR, "Failed to load resource bundle. One possible cause is "
-                        + "that you have installed " + Constants.APP_NAME + " into a directory " + "with a '!' in it. If so, please remove the '!'."));
+                        + "that you have installed " + Constants.APP_NAME + " into a directory "
+                        + "with a '!' in it. If so, please remove the '!'."));
             }
 
             return (new ResourceBundle() {
@@ -630,12 +630,10 @@ public class MessageText {
                 URL[] urls = { userBundleFile.toURL(), appBundleFile.toURL(), jarURL };
 
                 /*
-                 * This is debugging code, use it when things go wrong :) The line number is approximate as the input
-                 * stream is buffered by the reader... { LineNumberInputStream lnis = null; try{ ClassLoader fff = new
-                 * URLClassLoader(urls); java.io.InputStream stream =
-                 * fff.getResourceAsStream("MessagesBundle_th_TH.properties"); lnis = new LineNumberInputStream( stream
-                 * ); new java.util.PropertyResourceBundle(lnis); }catch( Throwable e ){ System.out.println(
-                 * lnis.getLineNumber()); e.printStackTrace(); } }
+                 * This is debugging code, use it when things go wrong :) The line number is approximate as the input stream is buffered by the
+                 * reader... { LineNumberInputStream lnis = null; try{ ClassLoader fff = new URLClassLoader(urls); java.io.InputStream stream =
+                 * fff.getResourceAsStream("MessagesBundle_th_TH.properties"); lnis = new LineNumberInputStream( stream ); new
+                 * java.util.PropertyResourceBundle(lnis); }catch( Throwable e ){ System.out.println( lnis.getLineNumber()); e.printStackTrace(); } }
                  */
 
                 newResourceBundle = getResourceBundle("MessagesBundle", newLocale, new URLClassLoader(urls));
@@ -739,18 +737,15 @@ public class MessageText {
     }
 
     /**
-     * Reverts Locale back to default, and removes the config settin. Notifications of change should be done by the
-     * caller.
+     * Reverts Locale back to default, and removes the config settin. Notifications of change should be done by the caller.
      */
     /*
-     * @SuppressWarnings("restriction") public static void revertToDefaultLocale() { // Aside from the last 2 lines,
-     * this is Sun's code that is run // at startup to determine the locale. Too bad they didn't provide // a way to
-     * call this code explicitly.. String language, region, country, variant; language =
-     * System.getProperty("user.language", "en"); // for compatibility, check for old user.region property region =
-     * System.getProperty("user.region"); if (region != null) { // region can be of form country, country_variant, or
-     * _variant int i = region.indexOf('_'); if (i >= 0) { country = region.substring(0, i); variant =
-     * region.substring(i + 1); } else { country = region; variant = ""; } } else { country =
-     * System.getProperty("user.country", ""); variant = System.getProperty("user.variant", ""); } changeLocale(new
+     * @SuppressWarnings("restriction") public static void revertToDefaultLocale() { // Aside from the last 2 lines, this is Sun's code that is run //
+     * at startup to determine the locale. Too bad they didn't provide // a way to call this code explicitly.. String language, region, country,
+     * variant; language = System.getProperty("user.language", "en"); // for compatibility, check for old user.region property region =
+     * System.getProperty("user.region"); if (region != null) { // region can be of form country, country_variant, or _variant int i =
+     * region.indexOf('_'); if (i >= 0) { country = region.substring(0, i); variant = region.substring(i + 1); } else { country = region; variant =
+     * ""; } } else { country = System.getProperty("user.country", ""); variant = System.getProperty("user.variant", ""); } changeLocale(new
      * Locale(language, country, variant)); COConfigurationManager.removeParameter("locale"); }
      */
 
@@ -759,9 +754,9 @@ public class MessageText {
     }
 
     /**
-     * Sometime a localization key has 2 different returned values: one for Classic UI and another for the Vuze UI This
-     * method will attempt to locate the given key (with the prefix v3. ) if applicable, if found then it will return
-     * the key with the prepended prefix. Otherwise it will return the key as given
+     * Sometime a localization key has 2 different returned values: one for Classic UI and another for the Vuze UI This method will attempt to locate
+     * the given key (with the prefix v3. ) if applicable, if found then it will return the key with the prepended prefix. Otherwise it will return
+     * the key as given
      * 
      * @param localizationKey
      * @return
@@ -788,9 +783,9 @@ public class MessageText {
     }
 
     /**
-     * Sometime a accelerator key has 2 different returned values: one for Classic UI and another for the Vuze UI This
-     * method will attempt to locate the given key (with the prefix v3. ) if applicable, if found then it will return
-     * the key with the prepended prefix. Otherwise it will return the key as given
+     * Sometime a accelerator key has 2 different returned values: one for Classic UI and another for the Vuze UI This method will attempt to locate
+     * the given key (with the prefix v3. ) if applicable, if found then it will return the key with the prepended prefix. Otherwise it will return
+     * the key as given
      * 
      * @param acceleratorKey
      * @return
