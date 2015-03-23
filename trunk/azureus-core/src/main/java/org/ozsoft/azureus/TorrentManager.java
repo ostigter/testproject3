@@ -10,11 +10,15 @@ public interface TorrentManager {
 
     boolean isStarted();
 
+    void addTorrentListener(TorrentListener listener);
+
+    void removeTorrentListener(TorrentListener listener);
+
     Torrent downloadTorrent(String location) throws TorrentException;
 
     Collection<Torrent> getTorrents() throws TorrentException;
 
-    Torrent getTorrent(String id) throws TorrentException;
+    boolean hasActiveDownloads();
 
     int getGlobalDownloadSpeed() throws TorrentException;
 

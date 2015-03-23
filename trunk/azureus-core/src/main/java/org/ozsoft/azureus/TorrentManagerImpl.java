@@ -1,9 +1,12 @@
 package org.ozsoft.azureus;
 
 import java.io.File;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.gudy.azureus2.core3.download.DownloadManager;
@@ -21,18 +24,21 @@ public class TorrentManagerImpl implements TorrentManager {
 
     private static final String DOWNLOAD_PATH = "D:/Downloads/torrents";
 
-    private final Map<String, Torrent> torrents;
-
     private StartServer azureusServer;
 
     private AzureusCore azureusCore;
 
     private GlobalManager globalManager;
 
+    private final Map<Torrent, TorrentWatcher> watchers;
+
+    private final Set<TorrentListener> listeners;
+
     private boolean isStarted;
 
     /* package */TorrentManagerImpl() {
-        torrents = new HashMap<String, Torrent>();
+        watchers = new HashMap<Torrent, TorrentWatcher>();
+        listeners = new HashSet<TorrentListener>();
         isStarted = false;
     }
 
@@ -48,6 +54,8 @@ public class TorrentManagerImpl implements TorrentManager {
                 azureusCore.start();
 
                 globalManager = azureusCore.getGlobalManager();
+
+                initWatchers();
 
                 isStarted = true;
                 LOGGER.info("Started");
@@ -76,6 +84,16 @@ public class TorrentManagerImpl implements TorrentManager {
     @Override
     public boolean isStarted() {
         return isStarted;
+    }
+
+    @Override
+    public void addTorrentListener(TorrentListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void removeTorrentListener(TorrentListener listener) {
+        listeners.remove(listener);
     }
 
     @Override
@@ -116,21 +134,33 @@ public class TorrentManagerImpl implements TorrentManager {
         }
 
         Torrent torrent = new TorrentImpl(dm);
-        torrents.put(torrent.getId(), torrent);
+
+        TorrentWatcher watcher = new TorrentWatcher(torrent, this);
+        watchers.put(torrent, watcher);
+        watcher.start();
 
         return torrent;
     }
 
     @Override
-    public Collection<Torrent> getTorrents() throws TorrentException {
+    public List<Torrent> getTorrents() throws TorrentException {
         verifyIsStarted();
-        return torrents.values();
+        List<Torrent> torrents = new ArrayList<Torrent>();
+        for (DownloadManager dm : globalManager.getDownloadManagers()) {
+            torrents.add(new TorrentImpl(dm));
+        }
+        return torrents;
     }
 
     @Override
-    public Torrent getTorrent(String id) throws TorrentException {
-        verifyIsStarted();
-        return torrents.get(id);
+    public boolean hasActiveDownloads() {
+        for (DownloadManager dm : globalManager.getDownloadManagers()) {
+            // System.out.println("### state = " + dm.getState());
+            if (!dm.isDownloadComplete(true)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -155,6 +185,28 @@ public class TorrentManagerImpl implements TorrentManager {
     public long getTotalBytesSent() throws TorrentException {
         verifyIsStarted();
         return globalManager.getStats().getTotalDataBytesSent();
+    }
+
+    /* package */void fireDownloadCompleted(Torrent torrent) {
+        for (TorrentListener listener : listeners) {
+            listener.downloadCompleted(torrent);
+        }
+    }
+
+    /* package */void fireDownloadFailed(Torrent torrent) {
+        for (TorrentListener listener : listeners) {
+            listener.downloadFailed(torrent);
+        }
+    }
+
+    private void initWatchers() {
+        for (DownloadManager dm : globalManager.getDownloadManagers()) {
+            Torrent torrent = new TorrentImpl(dm);
+            TorrentWatcher watcher = new TorrentWatcher(torrent, this);
+            watchers.put(torrent, watcher);
+            watcher.start();
+            LOGGER.debug(String.format("Watching torrent: '%s' (%d)\n", torrent, dm.getState()));
+        }
     }
 
     private void verifyIsStarted() throws TorrentException {

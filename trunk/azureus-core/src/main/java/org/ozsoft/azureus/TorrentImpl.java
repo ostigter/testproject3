@@ -3,10 +3,12 @@ package org.ozsoft.azureus;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.gudy.azureus2.core3.download.DownloadManager;
+import org.gudy.azureus2.core3.global.GlobalManagerDownloadRemovalVetoException;
 import org.gudy.azureus2.core3.torrent.TOTorrent;
 import org.gudy.azureus2.core3.torrent.TOTorrentFile;
 
@@ -127,18 +129,28 @@ public class TorrentImpl implements Torrent {
 
     @Override
     public void remove() throws TorrentException {
-        dm.stopIt(DownloadManager.STATE_STOPPED, false, false);
+        try {
+            dm.stopIt(DownloadManager.STATE_STOPPED, false, false);
+            dm.getGlobalManager().removeDownloadManager(dm);
+        } catch (GlobalManagerDownloadRemovalVetoException e) {
+            LOGGER.error(String.format("Could not remove torrent '%s'", name), e);
+        }
         LOGGER.info(String.format("Torrent '%s' removed", name));
     }
 
     @Override
     public void delete() throws TorrentException {
-        dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
-        LOGGER.info(String.format("Torrent '%s' deleted", name));
+        try {
+            dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
+            dm.getGlobalManager().removeDownloadManager(dm);
+            LOGGER.info(String.format("Torrent '%s' deleted", name));
+        } catch (Exception e) {
+            LOGGER.error(String.format("Could not delete torrent '%s'", name), e);
+        }
     }
 
     @Override
     public String toString() {
-        return String.format("%s (%s)", name, getStatus());
+        return String.format(Locale.US, "'%s' (%s, %.1f %%)", name, getStatus(), getProgress());
     }
 }
