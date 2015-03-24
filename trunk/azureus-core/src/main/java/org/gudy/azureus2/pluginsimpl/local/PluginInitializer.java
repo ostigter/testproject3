@@ -106,7 +106,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
     // report if not present
     // force re-enable if disabled by config
 
-    private String[][] builtin_plugins = {
+    private final String[][] builtin_plugins = {
             { PluginManagerDefaults.PID_START_STOP_RULES, "com.aelitis.azureus.plugins.startstoprules.defaultplugin.StartStopRulesDefaultPlugin",
                     "azbpstartstoprules", "", "true", "true" },
             { PluginManagerDefaults.PID_REMOVE_RULES, "com.aelitis.azureus.plugins.removerules.DownloadRemoveRulesPlugin", "azbpremovalrules", "",
@@ -121,8 +121,8 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
                     "true", "false" },
             { PluginManagerDefaults.PID_MAGNET, "com.aelitis.azureus.plugins.magnet.MagnetPlugin", "azbpmagnet", "Magnet URI Handler", "true",
                     "false" },
-            { PluginManagerDefaults.PID_CORE_UPDATE_CHECKER, "org.gudy.azureus2.update.CoreUpdateChecker", "azbpcoreupdater", "CoreUpdater",
-                    "true", "true" },
+            { PluginManagerDefaults.PID_CORE_UPDATE_CHECKER, "org.gudy.azureus2.update.CoreUpdateChecker", "azbpcoreupdater", "CoreUpdater", "true",
+                    "true" },
             { PluginManagerDefaults.PID_CORE_PATCH_CHECKER, "org.gudy.azureus2.update.CorePatchChecker", "azbpcorepatcher", "CorePatcher", "true",
                     "true" },
             { PluginManagerDefaults.PID_PLATFORM_CHECKER, "org.gudy.azureus2.platform.PlatformManagerPluginDelegate", "azplatform2", "azplatform2",
@@ -142,7 +142,8 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             { PluginManagerDefaults.PID_RSS, "com.aelitis.azureus.core.rssgen.RSSGeneratorPlugin", "azintrss", "azintrss", "true", "false" },
     /*
      * disable until we can get some tracker admins to work on this { PluginManagerDefaults.PID_TRACKER_PEER_AUTH,
-     * "com.aelitis.azureus.plugins.tracker.peerauth.TrackerPeerAuthPlugin", "aztrackerpeerauth", "aztrackerpeerauth", "true", "false" },
+     * "com.aelitis.azureus.plugins.tracker.peerauth.TrackerPeerAuthPlugin", "aztrackerpeerauth", "aztrackerpeerauth",
+     * "true", "false" },
      */
     };
 
@@ -157,8 +158,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
     // these can be removed one day
 
-    private static String[][] default_version_details =
-            { { "org.cneclipse.multiport.MultiPortPlugin", "multi-ports", "Mutli-Port Trackers", "1.0" }, };
+    private static String[][] default_version_details = { { "org.cneclipse.multiport.MultiPortPlugin", "multi-ports", "Mutli-Port Trackers", "1.0" }, };
 
     private static PluginInitializer singleton;
     private static AEMonitor class_mon = new AEMonitor("PluginInitializer");
@@ -170,27 +170,27 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
     private static AsyncDispatcher async_dispatcher = new AsyncDispatcher();
     private static List<PluginEvent> plugin_event_history = new ArrayList<PluginEvent>();
 
-    private AzureusCoreOperation core_operation;
+    private final AzureusCoreOperation core_operation;
 
-    private AzureusCore azureus_core;
+    private final AzureusCore azureus_core;
 
     private PluginInterfaceImpl default_plugin;
-    private PluginManager plugin_manager;
+    private final PluginManager plugin_manager;
 
     private ClassLoader root_class_loader = getClass().getClassLoader();
 
-    private List loaded_pi_list = new ArrayList();
+    private final List loaded_pi_list = new ArrayList();
 
     private static boolean loading_builtin;
 
-    private List<Plugin> s_plugins = new ArrayList<Plugin>();
-    private List<PluginInterfaceImpl> s_plugin_interfaces = new ArrayList<PluginInterfaceImpl>();
+    private final List<Plugin> s_plugins = new ArrayList<Plugin>();
+    private final List<PluginInterfaceImpl> s_plugin_interfaces = new ArrayList<PluginInterfaceImpl>();
 
     private boolean initialisation_complete;
 
     private volatile boolean plugins_initialised;
 
-    private Set<String> vc_disabled_plugins = VersionCheckClient.getSingleton().getDisabledPluginIDs();
+    private final Set<String> vc_disabled_plugins = VersionCheckClient.getSingleton().getDisabledPluginIDs();
 
     public static PluginInitializer getSingleton(AzureusCore azureus_core, AzureusCoreOperation core_operation) {
         try {
@@ -360,6 +360,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
         AEDiagnostics.addEvidenceGenerator(this);
 
         azureus_core.addLifecycleListener(new AzureusCoreLifecycleAdapter() {
+            @Override
             public void componentCreated(AzureusCore core, AzureusCoreComponent comp) {
                 if (comp instanceof GlobalManager) {
 
@@ -372,7 +373,8 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
         core_operation = _core_operation;
 
-        UpdateManagerImpl.getSingleton(azureus_core); // initialise the update manager
+        // OSTI: Disabled update manager.
+        // UpdateManagerImpl.getSingleton(azureus_core); // initialise the update manager
 
         plugin_manager = PluginManagerImpl.getSingleton(this);
 
@@ -394,7 +396,8 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             }
         }
 
-        UpdaterUtils.checkBootstrapPlugins();
+        // OSTI: Disabled update plugin.
+        // UpdaterUtils.checkBootstrapPlugins();
     }
 
     protected void fireCreated(PluginInterfaceImpl pi) {
@@ -628,8 +631,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
                     if (Logger.isEnabled())
                         Logger.log(new LogEvent(LOGID, "Share class loader extended by " + files[i].toString()));
 
-                    root_class_loader =
-                            PluginLauncherImpl.addFileToClassPath(PluginInitializer.class.getClassLoader(), root_class_loader, files[i]);
+                    root_class_loader = PluginLauncherImpl.addFileToClassPath(PluginInitializer.class.getClassLoader(), root_class_loader, files[i]);
                 }
             }
         }
@@ -692,8 +694,11 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
         return dirLoadedPIs;
     }
 
-    private List loadPluginFromDir(File directory, boolean bSkipAlreadyLoaded, boolean loading_for_startup, boolean initialise) // initialise setting
-                                                                                                                                // is used if
+    private List loadPluginFromDir(File directory, boolean bSkipAlreadyLoaded, boolean loading_for_startup, boolean initialise) // initialise
+                                                                                                                                // setting
+                                                                                                                                // is
+                                                                                                                                // used
+                                                                                                                                // if
                                                                                                                                 // loading_for_startup
                                                                                                                                 // isnt
 
@@ -1045,9 +1050,8 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
                                 try {
                                     try {
-                                        Class<Plugin> c =
-                                                (Class<Plugin>) PlatformManagerFactory.getPlatformManager().loadClass(plugin_class_loader,
-                                                        plugin_class);
+                                        Class<Plugin> c = (Class<Plugin>) PlatformManagerFactory.getPlatformManager().loadClass(plugin_class_loader,
+                                                plugin_class);
 
                                         // Class c = plugin_class_loader.loadClass(plugin_class);
 
@@ -1129,11 +1133,11 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
                         MessageText.integratePluginMessages((String) props.get("plugin.langfile"), plugin_class_loader);
 
-                        PluginInterfaceImpl plugin_interface =
-                                new PluginInterfaceImpl(plugin, this, directory, plugin_class_loader, verified_files, directory.getName(), // key for
-                                                                                                                                           // config
-                                                                                                                                           // values
-                                        new_props, directory.getAbsolutePath(), pid, plugin_version[0]);
+                        PluginInterfaceImpl plugin_interface = new PluginInterfaceImpl(plugin, this, directory, plugin_class_loader, verified_files,
+                                directory.getName(), // key for
+                                                     // config
+                                                     // values
+                                new_props, directory.getAbsolutePath(), pid, plugin_version[0]);
 
                         boolean bEnabled = (loading_for_startup) ? plugin_interface.getPluginState().isLoadedAtStartup() : initialise;
 
@@ -1162,23 +1166,20 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
                             if (!pid.equals(UpdaterUpdateChecker.getPluginID())) {
 
-                                String msg =
-                                        MessageText.getString("plugin.init.load.failed", new String[] {
-                                                plugin_name == null ? pluginName : plugin_name, directory.getAbsolutePath() });
+                                String msg = MessageText.getString("plugin.init.load.failed", new String[] {
+                                        plugin_name == null ? pluginName : plugin_name, directory.getAbsolutePath() });
 
                                 LogAlert la;
 
                                 if (load_failure instanceof UnsupportedClassVersionError) {
 
-                                    la =
-                                            new LogAlert(LogAlert.UNREPEATABLE, LogAlert.AT_ERROR, msg + ".\n\n"
-                                                    + MessageText.getString("plugin.install.class_version_error"));
+                                    la = new LogAlert(LogAlert.UNREPEATABLE, LogAlert.AT_ERROR, msg + ".\n\n"
+                                            + MessageText.getString("plugin.install.class_version_error"));
 
                                 } else if (load_failure instanceof ClassNotFoundException) {
 
-                                    la =
-                                            new LogAlert(LogAlert.UNREPEATABLE, LogAlert.AT_ERROR, msg + ".\n\n"
-                                                    + MessageText.getString("plugin.init.load.failed.classmissing") + "\n\n", load_failure);
+                                    la = new LogAlert(LogAlert.UNREPEATABLE, LogAlert.AT_ERROR, msg + ".\n\n"
+                                            + MessageText.getString("plugin.init.load.failed.classmissing") + "\n\n", load_failure);
 
                                 } else {
 
@@ -1234,6 +1235,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             for (int i = 0; i < loaded_pi_list.size(); i++) {
                 final int idx = i;
                 initQueue.add(new Runnable() {
+                    @Override
                     public void run() {
                         try {
                             List l = (List) loaded_pi_list.get(idx);
@@ -1274,6 +1276,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             // now do built in ones
 
             initQueue.add(new Runnable() {
+                @Override
                 public void run() {
                     if (Logger.isEnabled())
                         Logger.log(new LogEvent(LOGID, "Initializing built-in plugins"));
@@ -1287,6 +1290,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
                 final int idx = i;
 
                 initQueue.add(new Runnable() {
+                    @Override
                     public void run() {
                         if (def.isDefaultPluginEnabled(builtin_plugins[idx][0])) {
                             String id = builtin_plugins[idx][2];
@@ -1328,6 +1332,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             }
 
             initQueue.add(new Runnable() {
+                @Override
                 public void run() {
                     if (Logger.isEnabled())
                         Logger.log(new LogEvent(LOGID, "Initializing dynamically registered plugins"));
@@ -1339,6 +1344,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
                 final int idx = i;
 
                 initQueue.add(new Runnable() {
+                    @Override
                     public void run() {
                         try {
                             Object entry = registration_queue.get(idx);
@@ -1363,6 +1369,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             }
 
             AEThread2 secondaryInitializer = new AEThread2("2nd PluginInitializer Thread", true) {
+                @Override
                 public void run() {
 
                     try {
@@ -1477,6 +1484,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             try {
 
                 UtilitiesImpl.callWithPluginThreadContext(plugin_interface, new runnableWithException<PluginException>() {
+                    @Override
                     public void run() throws PluginException {
                         fireCreated(plugin_interface);
 
@@ -1561,9 +1569,8 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
             properties.put("plugin.name", plugin_name);
 
-            final PluginInterfaceImpl plugin_interface =
-                    new PluginInterfaceImpl(plugin, this, plugin_class, plugin_class.getClassLoader(), null, plugin_config_key, properties, "",
-                            plugin_id, null);
+            final PluginInterfaceImpl plugin_interface = new PluginInterfaceImpl(plugin, this, plugin_class, plugin_class.getClassLoader(), null,
+                    plugin_config_key, properties, "", plugin_id, null);
 
             boolean bEnabled = (loading_for_startup) ? plugin_interface.getPluginState().isLoadedAtStartup() : initialise;
 
@@ -1581,6 +1588,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             final boolean f_enabled = bEnabled;
 
             UtilitiesImpl.callWithPluginThreadContext(plugin_interface, new runnableWithException<PluginException>() {
+                @Override
                 public void run() throws PluginException {
                     try {
 
@@ -1640,11 +1648,11 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
     throws PluginException {
         try {
-            final PluginInterfaceImpl plugin_interface =
-                    new PluginInterfaceImpl(plugin, this, plugin.getClass(), plugin.getClass().getClassLoader(), null, plugin_config_key,
-                            new Properties(), "", plugin_id, null);
+            final PluginInterfaceImpl plugin_interface = new PluginInterfaceImpl(plugin, this, plugin.getClass(), plugin.getClass().getClassLoader(),
+                    null, plugin_config_key, new Properties(), "", plugin_id, null);
 
             UtilitiesImpl.callWithPluginThreadContext(plugin_interface, new UtilitiesImpl.runnableWithException<PluginException>() {
+                @Override
                 public void run()
 
                 throws PluginException {
@@ -1751,6 +1759,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
                 try {
                     default_plugin = new PluginInterfaceImpl(new Plugin() {
+                        @Override
                         public void initialize(PluginInterface pi) {
                         }
                     }, this, getClass(), getClass().getClassLoader(), null, "default", new Properties(), null, INTERNAL_PLUGIN_ID, null);
@@ -1765,12 +1774,15 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
         return (default_plugin);
     }
 
+    @Override
     public void downloadManagerAdded(DownloadManager dm) {
     }
 
+    @Override
     public void downloadManagerRemoved(DownloadManager dm) {
     }
 
+    @Override
     public void destroyInitiated() {
         List plugin_interfaces;
 
@@ -1790,6 +1802,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
         }
     }
 
+    @Override
     public void destroyed() {
         List plugin_interfaces;
 
@@ -1809,6 +1822,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
         }
     }
 
+    @Override
     public void seedingStatusChanged(boolean seeding_only_mode, boolean b) {
         /* nothing */
     }
@@ -1823,12 +1837,15 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
     protected void fireEventSupport(final int type, final Object value) {
         async_dispatcher.dispatch(new AERunnable() {
+            @Override
             public void runSupport() {
                 PluginEvent ev = new PluginEvent() {
+                    @Override
                     public int getType() {
                         return (type);
                     }
 
+                    @Override
                     public Object getValue() {
                         return (value);
                     }
@@ -1884,6 +1901,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             final AESemaphore sem = new AESemaphore("waiter");
 
             async_dispatcher.dispatch(new AERunnable() {
+                @Override
                 public void runSupport() {
                     sem.release();
                 }
@@ -2016,6 +2034,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
         return (null);
     }
 
+    @Override
     public void generate(IndentWriter writer) {
         writer.println("Plugins");
 
@@ -2140,9 +2159,9 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
 
         private volatile boolean initialised;
 
-        private AESemaphore request_sem = new AESemaphore("ValueHolder");
+        private final AESemaphore request_sem = new AESemaphore("ValueHolder");
 
-        private List<Object[]> request_queue = new ArrayList<Object[]>();
+        private final List<Object[]> request_queue = new ArrayList<Object[]>();
 
         private VerifiedPluginHolder() {
             Class[] context = SESecurityManager.getClassContext();
@@ -2160,6 +2179,7 @@ public class PluginInitializer implements GlobalManagerListener, AEDiagnosticsEv
             }
 
             AEThread2 t = new AEThread2("PluginVerifier") {
+                @Override
                 public void run() {
                     Map<Object, Object> values = new IdentityHashMap<Object, Object>();
 

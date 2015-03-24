@@ -14,7 +14,7 @@ public interface TorrentManager {
 
     void removeTorrentListener(TorrentListener listener);
 
-    Torrent downloadTorrent(String location) throws TorrentException;
+    Torrent downloadTorrent(String location, String savePath) throws TorrentException;
 
     Collection<Torrent> getTorrents() throws TorrentException;
 
