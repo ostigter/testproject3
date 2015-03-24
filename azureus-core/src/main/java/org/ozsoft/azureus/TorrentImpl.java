@@ -58,9 +58,7 @@ public class TorrentImpl implements Torrent {
         TOTorrent torrent = dm.getTorrent();
         List<File> files = new ArrayList<File>();
         for (TOTorrentFile torrentFile : torrent.getFiles()) {
-            String path = torrentFile.getRelativePath();
-            // TODO
-            LOGGER.debug("### Torrent file: " + path);
+            files.add(new File(torrentFile.getRelativePath()));
         }
         return files;
     }
@@ -108,7 +106,7 @@ public class TorrentImpl implements Torrent {
 
     @Override
     public long getRemainingTime() {
-        return dm.getPeerManager().getRemaining();
+        return dm.getStats().getSmoothedETA();
     }
 
     @Override
@@ -130,7 +128,6 @@ public class TorrentImpl implements Torrent {
     @Override
     public void remove() throws TorrentException {
         try {
-            dm.stopIt(DownloadManager.STATE_STOPPED, false, false);
             dm.getGlobalManager().removeDownloadManager(dm);
         } catch (GlobalManagerDownloadRemovalVetoException e) {
             LOGGER.error(String.format("Could not remove torrent '%s'", name), e);

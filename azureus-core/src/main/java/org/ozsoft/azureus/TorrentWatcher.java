@@ -17,7 +17,6 @@ public class TorrentWatcher extends Thread {
 
     @Override
     public void run() {
-        System.out.println("### Watching torrent: " + torrent);
         while (true) {
             if (torrent.getStatus() == TorrentStatus.DOWNLOADED) {
                 torrentManager.fireDownloadCompleted(torrent);

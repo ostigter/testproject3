@@ -22,8 +22,6 @@ public class TorrentManagerImpl implements TorrentManager {
 
     private static final Logger LOGGER = Logger.getLogger(TorrentManagerImpl.class);
 
-    private static final String DOWNLOAD_PATH = "D:/Downloads/torrents";
-
     private StartServer azureusServer;
 
     private AzureusCore azureusCore;
@@ -97,21 +95,21 @@ public class TorrentManagerImpl implements TorrentManager {
     }
 
     @Override
-    public Torrent downloadTorrent(String location) throws TorrentException {
+    public Torrent downloadTorrent(String location, String savePath) throws TorrentException {
         verifyIsStarted();
         if (location.startsWith("magnet:") || location.startsWith("http://")) {
-            return downloadFromRemoteTorrent(location);
+            return downloadFromRemoteTorrent(location, savePath);
         } else {
-            return downloadFromLocalTorrent(location);
+            return downloadFromLocalTorrent(location, savePath);
         }
     }
 
-    private Torrent downloadFromRemoteTorrent(String uri) throws TorrentException {
+    private Torrent downloadFromRemoteTorrent(String uri, String savePath) throws TorrentException {
         // TODO: Download remote torrent (magnet URI or HTTP)
         return null;
     }
 
-    private Torrent downloadFromLocalTorrent(String path) throws TorrentException {
+    private Torrent downloadFromLocalTorrent(String path, String savePath) throws TorrentException {
         File torrentFile = new File(path);
         if (!torrentFile.isFile()) {
             throw new TorrentException("Torrent file not found: " + path);
@@ -119,7 +117,7 @@ public class TorrentManagerImpl implements TorrentManager {
 
         DownloadManager dm = null;
         try {
-            dm = globalManager.addDownloadManager(torrentFile.getAbsolutePath(), DOWNLOAD_PATH);
+            dm = globalManager.addDownloadManager(torrentFile.getAbsolutePath(), savePath);
             long startTime = System.currentTimeMillis();
             while (dm.getState() != DownloadManager.STATE_DOWNLOADING) {
                 long duration = System.currentTimeMillis() - startTime;
@@ -155,7 +153,6 @@ public class TorrentManagerImpl implements TorrentManager {
     @Override
     public boolean hasActiveDownloads() {
         for (DownloadManager dm : globalManager.getDownloadManagers()) {
-            // System.out.println("### state = " + dm.getState());
             if (!dm.isDownloadComplete(true)) {
                 return true;
             }
@@ -205,7 +202,6 @@ public class TorrentManagerImpl implements TorrentManager {
             TorrentWatcher watcher = new TorrentWatcher(torrent, this);
             watchers.put(torrent, watcher);
             watcher.start();
-            LOGGER.debug(String.format("Watching torrent: '%s' (%d)\n", torrent, dm.getState()));
         }
     }
 
