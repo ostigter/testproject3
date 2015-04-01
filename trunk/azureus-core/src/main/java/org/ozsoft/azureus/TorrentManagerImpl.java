@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.gudy.azureus2.core3.download.DownloadManager;
 import org.gudy.azureus2.core3.global.GlobalManager;
+import org.gudy.azureus2.core3.global.GlobalManagerDownloadRemovalVetoException;
 import org.gudy.azureus2.ui.common.StartServer;
 
 import com.aelitis.azureus.core.AzureusCore;
@@ -123,21 +124,27 @@ public class TorrentManagerImpl implements TorrentManager {
                 long duration = System.currentTimeMillis() - startTime;
                 if (duration > TORRENT_TIMEOUT) {
                     // Download takes too long to start; abort and delete.
-                    dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
+                    // dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
+                    try {
+                        dm.getGlobalManager().removeDownloadManager(dm);
+                    } catch (GlobalManagerDownloadRemovalVetoException e) {
+                        // Nothing we can do here.
+                    }
                     throw new TorrentException("Download failed to start time-out)");
                 }
             }
+
+            Torrent torrent = new TorrentImpl(dm);
+
+            TorrentWatcher watcher = new TorrentWatcher(torrent, this);
+            watchers.put(torrent, watcher);
+            watcher.start();
+
+            return torrent;
+
         } catch (Exception e) {
             throw new TorrentException(String.format("Could not start torrent from file '%s'", path), e);
         }
-
-        Torrent torrent = new TorrentImpl(dm);
-
-        TorrentWatcher watcher = new TorrentWatcher(torrent, this);
-        watchers.put(torrent, watcher);
-        watcher.start();
-
-        return torrent;
     }
 
     @Override

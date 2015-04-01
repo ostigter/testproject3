@@ -1,0 +1,8 @@
+-injars       target/azureus-core.jar
+-outjars      target/azureus-core-minimal.jar
+-libraryjars  <java.home>/lib/rt.jar
+-printusage   target/proguard_usage.txt
+
+-keep public class org.ozsoft.azureus.Main {
+    public static void main(java.lang.String[]);
+}
