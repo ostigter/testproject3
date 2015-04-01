@@ -63,11 +63,7 @@ public class MessageText {
 
     private static Locale LOCALE_CURRENT = LOCALE_DEFAULT;
 
-    private static final String BUNDLE_NAME;
-
-    static {
-        BUNDLE_NAME = System.getProperty("az.factory.internat.bundle", "org.gudy.azureus2.internat.MessagesBundle");
-    }
+    private static final String BUNDLE_NAME = "MessagesBundle";
 
     private static Map pluginLocalizationPaths = new HashMap();
     private static Collection pluginResourceBundles = new ArrayList();
