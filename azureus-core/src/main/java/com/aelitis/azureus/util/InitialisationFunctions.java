@@ -19,18 +19,8 @@
 
 package com.aelitis.azureus.util;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import org.gudy.azureus2.core3.config.COConfigurationManager;
-import org.gudy.azureus2.core3.disk.DiskManagerFileInfo;
 import org.gudy.azureus2.core3.download.DownloadManagerState;
 import org.gudy.azureus2.core3.download.DownloadManagerStateAttributeListener;
-import org.gudy.azureus2.core3.internat.MessageText;
-import org.gudy.azureus2.core3.util.Debug;
 import org.gudy.azureus2.plugins.PluginInterface;
 import org.gudy.azureus2.plugins.download.Download;
 import org.gudy.azureus2.plugins.download.DownloadManager;
@@ -41,23 +31,9 @@ import org.gudy.azureus2.pluginsimpl.local.PluginCoreUtils;
 import org.gudy.azureus2.pluginsimpl.local.PluginInitializer;
 
 import com.aelitis.azureus.core.AzureusCore;
-import com.aelitis.azureus.core.cnetwork.ContentNetworkManagerFactory;
-import com.aelitis.azureus.core.content.AzureusPlatformContentDirectory;
-import com.aelitis.azureus.core.content.RelatedContentManager;
-import com.aelitis.azureus.core.devices.Device;
-import com.aelitis.azureus.core.devices.DeviceManager;
-import com.aelitis.azureus.core.devices.DeviceManagerFactory;
-import com.aelitis.azureus.core.devices.DeviceMediaRenderer;
 import com.aelitis.azureus.core.download.DownloadManagerEnhancer;
-import com.aelitis.azureus.core.metasearch.MetaSearchManagerFactory;
-import com.aelitis.azureus.core.metasearch.MetaSearchManagerListener;
 import com.aelitis.azureus.core.peer.cache.CacheDiscovery;
-import com.aelitis.azureus.core.subs.Subscription;
-import com.aelitis.azureus.core.subs.SubscriptionManagerFactory;
 import com.aelitis.azureus.core.torrent.PlatformTorrentUtils;
-import com.aelitis.azureus.core.util.AZ3Functions;
-import com.aelitis.azureus.ui.UIFunctions;
-import com.aelitis.azureus.ui.UIFunctionsManager;
 
 public class InitialisationFunctions {
     private static final String EXTENSION_PREFIX = "azid";
@@ -70,197 +46,21 @@ public class InitialisationFunctions {
 
         hookDownloadAddition();
 
-        AzureusPlatformContentDirectory.register();
+        // AzureusPlatformContentDirectory.register();
 
         CacheDiscovery.initialise(dme);
 
-        ContentNetworkManagerFactory.preInitialise();
+        // ContentNetworkManagerFactory.preInitialise();
 
-        MetaSearchManagerFactory.preInitialise();
+        // MetaSearchManagerFactory.preInitialise();
 
-        SubscriptionManagerFactory.preInitialise();
+        // SubscriptionManagerFactory.preInitialise();
 
-        DeviceManagerFactory.preInitialise();
+        // DeviceManagerFactory.preInitialise();
 
         NavigationHelper.initialise();
 
-        RelatedContentManager.preInitialise(core);
-
-        AZ3Functions.setProvider(new AZ3Functions.provider() {
-            public String getDefaultContentNetworkURL(int type, Object[] params) {
-                return ConstantsVuze.getDefaultContentNetwork().getServiceURL(type, params);
-            }
-
-            public void subscribeToRSS(String name, URL url, int interval, boolean is_public, String creator_ref)
-
-            throws Exception {
-                Subscription subs = SubscriptionManagerFactory.getSingleton().createSingletonRSS(name, url, interval);
-
-                if (!subs.getName(false).equals(name)) {
-
-                    subs.setName(name);
-                }
-
-                if (subs.isPublic() != is_public) {
-
-                    subs.setPublic(is_public);
-                }
-
-                if (!subs.isSubscribed()) {
-
-                    subs.setSubscribed(true);
-                }
-                if (creator_ref != null) {
-
-                    subs.setCreatorRef(creator_ref);
-                }
-            }
-
-            public void openRemotePairingWindow() {
-                UIFunctions uif = UIFunctionsManager.getUIFunctions();
-
-                if (uif == null) {
-
-                    Debug.out("UIFunctions not available, can't open remote pairing window");
-
-                } else {
-
-                    uif.openRemotePairingWindow();
-                }
-            }
-
-            public void setOpened(org.gudy.azureus2.core3.download.DownloadManager dm, boolean opened) {
-                PlatformTorrentUtils.setHasBeenOpened(dm, opened);
-            }
-
-            public boolean canPlay(org.gudy.azureus2.core3.download.DownloadManager dm, int file_index) {
-                return (PlayUtils.canPlayDS(dm, file_index) || PlayUtils.canStreamDS(dm, file_index));
-            }
-
-            public void play(org.gudy.azureus2.core3.download.DownloadManager dm, int file_index) {
-                Object ds = dm;
-                if (file_index >= 0) {
-                    DiskManagerFileInfo[] files = dm.getDiskManagerFileInfoSet().getFiles();
-                    if (file_index < files.length) {
-                        ds = files[file_index];
-                    }
-                }
-
-                UIFunctions uif = UIFunctionsManager.getUIFunctions();
-
-                if (uif == null) {
-
-                    Debug.out("UIFunctions not available, can't open play/stream content");
-
-                } else {
-                    if (PlayUtils.canPlayDS(dm, file_index)) {
-
-                        uif.playOrStreamDataSource(ds, DLReferals.DL_REFERAL_PLAYDM, false, true);
-
-                    } else if (PlayUtils.canStreamDS(dm, file_index)) {
-
-                        uif.playOrStreamDataSource(ds, DLReferals.DL_REFERAL_PLAYDM, true, false);
-                    }
-                }
-            }
-
-            public TranscodeTarget[] getTranscodeTargets() {
-                List<TranscodeTarget> result = new ArrayList<TranscodeTarget>();
-
-                if (!COConfigurationManager.getStringParameter("ui").equals("az2")) {
-
-                    try {
-                        DeviceManager dm = DeviceManagerFactory.getSingleton();
-
-                        Device[] devices = dm.getDevices();
-
-                        for (final Device d : devices) {
-
-                            if (d instanceof DeviceMediaRenderer) {
-
-                                final DeviceMediaRenderer dmr = (DeviceMediaRenderer) d;
-
-                                boolean hide_device = d.isHidden();
-
-                                if (COConfigurationManager.getBooleanParameter("device.sidebar.ui.rend.hidegeneric", true)) {
-
-                                    if (dmr.isNonSimple()) {
-
-                                        hide_device = true;
-                                    }
-                                }
-
-                                if (hide_device) {
-
-                                    continue;
-                                }
-
-                                result.add(new TranscodeTarget() {
-                                    public String getName() {
-                                        return (d.getName());
-                                    }
-
-                                    public String getID() {
-                                        return (d.getID());
-                                    }
-
-                                    public TranscodeProfile[] getProfiles() {
-                                        List<TranscodeProfile> ps = new ArrayList<TranscodeProfile>();
-
-                                        com.aelitis.azureus.core.devices.TranscodeProfile[] profs = dmr.getTranscodeProfiles();
-
-                                        if (profs.length == 0) {
-
-                                            if (dmr.getTranscodeRequirement() == com.aelitis.azureus.core.devices.TranscodeTarget.TRANSCODE_NEVER) {
-
-                                                ps.add(new TranscodeProfile() {
-                                                    public String getUID() {
-                                                        return (dmr.getID() + "/" + dmr.getBlankProfile().getName());
-                                                    }
-
-                                                    public String getName() {
-                                                        return (MessageText.getString("devices.profile.direct"));
-                                                    }
-                                                });
-                                            }
-                                        } else {
-
-                                            for (final com.aelitis.azureus.core.devices.TranscodeProfile prof : profs) {
-
-                                                ps.add(new TranscodeProfile() {
-                                                    public String getUID() {
-                                                        return (prof.getUID());
-                                                    }
-
-                                                    public String getName() {
-                                                        return (prof.getName());
-                                                    }
-                                                });
-                                            }
-                                        }
-
-                                        return (ps.toArray(new TranscodeProfile[ps.size()]));
-                                    }
-                                });
-                            }
-                        }
-
-                    } catch (Throwable e) {
-
-                        Debug.out(e);
-                    }
-                }
-
-                Collections.sort(result, new Comparator<TranscodeTarget>() {
-                    public int compare(TranscodeTarget o1, TranscodeTarget o2) {
-                        return (o1.getName().compareTo(o2.getName()));
-                    }
-                });
-
-                return (result.toArray(new TranscodeTarget[result.size()]));
-            }
-
-        });
+        // RelatedContentManager.preInitialise(core);
     }
 
     public static void lateInitialisation(AzureusCore core) {
@@ -268,28 +68,28 @@ public class InitialisationFunctions {
 
         PluginInitializer.getDefaultInterface().getUtilities().createDelayedTask(new Runnable() {
             public void run() {
-                MetaSearchManagerFactory.getSingleton();
+                // MetaSearchManagerFactory.getSingleton();
 
-                SubscriptionManagerFactory.getSingleton();
+                // SubscriptionManagerFactory.getSingleton();
 
-                try {
-                    RelatedContentManager.getSingleton();
-
-                } catch (Throwable e) {
-
-                    Debug.out(e);
-                }
-
-                try {
-                    MetaSearchManagerFactory.getSingleton().addListener(new MetaSearchManagerListener() {
-                        public void searchRequest(String term) {
-                            UIFunctionsManager.getUIFunctions().doSearch(term);
-                        }
-                    });
-                } catch (Throwable e) {
-
-                    Debug.out(e);
-                }
+                // try {
+                // RelatedContentManager.getSingleton();
+                //
+                // } catch (Throwable e) {
+                //
+                // Debug.out(e);
+                // }
+                //
+                // try {
+                // MetaSearchManagerFactory.getSingleton().addListener(new MetaSearchManagerListener() {
+                // public void searchRequest(String term) {
+                // UIFunctionsManager.getUIFunctions().doSearch(term);
+                // }
+                // });
+                // } catch (Throwable e) {
+                //
+                // Debug.out(e);
+                // }
             }
         }).queue();
     }

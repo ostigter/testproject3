@@ -44,7 +44,6 @@ import org.gudy.azureus2.pluginsimpl.local.torrent.TorrentImpl;
 
 import com.aelitis.azureus.core.AzureusCore;
 import com.aelitis.azureus.core.AzureusCoreFactory;
-import com.aelitis.azureus.core.cnetwork.ContentNetwork;
 
 /**
  * @author TuxPaper
@@ -303,27 +302,27 @@ public class PlatformTorrentUtils {
         setContentMapLong(torrent, TOR_AZ_PROP_QOS_CLASS, cla);
     }
 
-    public static long getContentNetworkID(TOTorrent torrent) {
-        return (getContentNetworkID(torrent, ContentNetwork.CONTENT_NETWORK_UNKNOWN));
-    }
-
-    public static long getContentNetworkID(TOTorrent torrent, long def) {
-        long id = getContentMapLong(torrent, TOR_AZ_PROP_CONTENT_NETWORK, ContentNetwork.CONTENT_NETWORK_UNKNOWN);
-        if (id == ContentNetwork.CONTENT_NETWORK_UNKNOWN) {
-            return isContent(torrent, false) ? ContentNetwork.CONTENT_NETWORK_VUZE : def;
-        }
-        return id;
-    }
-
-    public static void setContentNetworkID(TOTorrent torrent, long cnet) {
-        setContentMapLong(torrent, TOR_AZ_PROP_CONTENT_NETWORK, cnet);
-    }
-
-    public static boolean isFeaturedContent(TOTorrent torrent) {
-        String content_type = getContentType(torrent);
-
-        return (content_type != null && content_type.equalsIgnoreCase("featured"));
-    }
+    // public static long getContentNetworkID(TOTorrent torrent) {
+    // return (getContentNetworkID(torrent, ContentNetwork.CONTENT_NETWORK_UNKNOWN));
+    // }
+    //
+    // public static long getContentNetworkID(TOTorrent torrent, long def) {
+    // long id = getContentMapLong(torrent, TOR_AZ_PROP_CONTENT_NETWORK, ContentNetwork.CONTENT_NETWORK_UNKNOWN);
+    // if (id == ContentNetwork.CONTENT_NETWORK_UNKNOWN) {
+    // return isContent(torrent, false) ? ContentNetwork.CONTENT_NETWORK_VUZE : def;
+    // }
+    // return id;
+    // }
+    //
+    // public static void setContentNetworkID(TOTorrent torrent, long cnet) {
+    // setContentMapLong(torrent, TOR_AZ_PROP_CONTENT_NETWORK, cnet);
+    // }
+    //
+    // public static boolean isFeaturedContent(TOTorrent torrent) {
+    // String content_type = getContentType(torrent);
+    //
+    // return (content_type != null && content_type.equalsIgnoreCase("featured"));
+    // }
 
     private static void putOrRemove(Map map, String key, Object obj) {
         if (obj == null) {

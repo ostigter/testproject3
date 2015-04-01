@@ -74,8 +74,6 @@ import org.gudy.azureus2.pluginsimpl.local.utils.UtilitiesImpl;
 
 import com.aelitis.azureus.core.AzureusCore;
 import com.aelitis.azureus.core.AzureusCoreFactory;
-import com.aelitis.azureus.core.clientmessageservice.ClientMessageService;
-import com.aelitis.azureus.core.clientmessageservice.ClientMessageServiceClient;
 import com.aelitis.azureus.core.impl.AzureusCoreImpl;
 import com.aelitis.azureus.core.networkmanager.admin.NetworkAdmin;
 import com.aelitis.azureus.core.networkmanager.admin.NetworkAdminASN;
@@ -812,25 +810,25 @@ public class VersionCheckClient {
         if (Logger.isEnabled())
             Logger.log(new LogEvent(LOGID, "VersionCheckClient retrieving " + "version information from " + host + ":" + AZ_MSG_SERVER_PORT));
 
-        ClientMessageService msg_service = null;
+        // ClientMessageService msg_service = null;
         Map reply = null;
 
-        try {
-            msg_service = ClientMessageServiceClient.getServerService(host, AZ_MSG_SERVER_PORT, 20, MESSAGE_TYPE_ID);
-
-            msg_service.sendMessage(data_to_send); // send our version message
-
-            reply = msg_service.receiveMessage(); // get the server reply
-
-            preProcessReply(reply, v6);
-
-        } finally {
-
-            if (msg_service != null) {
-
-                msg_service.close();
-            }
-        }
+        // try {
+        // msg_service = ClientMessageServiceClient.getServerService(host, AZ_MSG_SERVER_PORT, 20, MESSAGE_TYPE_ID);
+        //
+        // msg_service.sendMessage(data_to_send); // send our version message
+        //
+        // reply = msg_service.receiveMessage(); // get the server reply
+        //
+        // preProcessReply(reply, v6);
+        //
+        // } finally {
+        //
+        // if (msg_service != null) {
+        //
+        // msg_service.close();
+        // }
+        // }
 
         return (reply);
     }

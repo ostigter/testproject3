@@ -48,7 +48,6 @@ import org.gudy.azureus2.pluginsimpl.local.PluginCoreUtils;
 import org.gudy.azureus2.pluginsimpl.local.disk.DiskManagerChannelImpl;
 
 import com.aelitis.azureus.core.AzureusCore;
-import com.aelitis.azureus.core.cnetwork.ContentNetwork;
 import com.aelitis.azureus.core.tag.Tag;
 import com.aelitis.azureus.core.tag.TagManager;
 import com.aelitis.azureus.core.tag.TagManagerFactory;
@@ -592,7 +591,7 @@ public class DownloadManagerEnhancer {
 
             if (torrent != null) {
 
-                boolean is_vhdn = PlatformTorrentUtils.getContentNetworkID(torrent) == ContentNetwork.CONTENT_NETWORK_VHDNL;
+                boolean is_vhdn = false; // PlatformTorrentUtils.getContentNetworkID(torrent) == ContentNetwork.CONTENT_NETWORK_VHDNL;
 
                 String content_type = PlatformTorrentUtils.getContentType(torrent);
 
@@ -608,10 +607,10 @@ public class DownloadManagerEnhancer {
                     handleAutoTag(dm, "tag.type.man.vhdn", "image.sidebar.tag.vhdn");
                 }
 
-                if (PlatformTorrentUtils.isFeaturedContent(torrent)) {
-
-                    handleAutoTag(dm, "tag.type.man.featcon", "image.sidebar.tag.featcon");
-                }
+                // if (PlatformTorrentUtils.isFeaturedContent(torrent)) {
+                //
+                // handleAutoTag(dm, "tag.type.man.featcon", "image.sidebar.tag.featcon");
+                // }
             }
         } catch (Throwable e) {
 

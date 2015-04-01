@@ -44,7 +44,6 @@ import org.gudy.azureus2.plugins.utils.FeatureManager;
 import org.gudy.azureus2.pluginsimpl.local.PluginCoreUtils;
 import org.gudy.azureus2.pluginsimpl.local.PluginInitializer;
 
-import com.aelitis.azureus.activities.VuzeActivitiesEntry;
 import com.aelitis.azureus.core.AzureusCoreFactory;
 import com.aelitis.azureus.core.download.DownloadManagerEnhancer;
 import com.aelitis.azureus.core.download.EnhancedDownloadManager;
@@ -189,9 +188,9 @@ public class PlayUtils {
         if (torrent != null) {
             return canPlay(torrent, file_index);
         }
-        if (ds instanceof VuzeActivitiesEntry) {
-            return ((VuzeActivitiesEntry) ds).isPlayable();
-        }
+        // if (ds instanceof VuzeActivitiesEntry) {
+        // return ((VuzeActivitiesEntry) ds).isPlayable();
+        // }
 
         if (ds instanceof SelectedContentV3) {
             SelectedContentV3 sel = (SelectedContentV3) ds;

@@ -25,16 +25,9 @@ import org.gudy.azureus2.core3.util.Base32;
 import org.gudy.azureus2.core3.util.Debug;
 import org.gudy.azureus2.core3.util.HashWrapper;
 import org.gudy.azureus2.plugins.disk.DiskManagerFileInfo;
-import org.gudy.azureus2.plugins.download.Download;
-import org.gudy.azureus2.plugins.download.DownloadException;
-import org.gudy.azureus2.plugins.torrent.Torrent;
 import org.gudy.azureus2.pluginsimpl.local.PluginCoreUtils;
 
-import com.aelitis.azureus.activities.VuzeActivitiesEntry;
 import com.aelitis.azureus.core.AzureusCoreFactory;
-import com.aelitis.azureus.core.devices.DeviceOfflineDownload;
-import com.aelitis.azureus.core.devices.TranscodeFile;
-import com.aelitis.azureus.core.devices.TranscodeJob;
 import com.aelitis.azureus.core.torrent.PlatformTorrentUtils;
 import com.aelitis.azureus.ui.selectedcontent.DownloadUrlInfo;
 import com.aelitis.azureus.ui.selectedcontent.ISelectedContent;
@@ -56,19 +49,19 @@ public class DataSourceUtils {
                 int idx = sc.getFileIndex();
                 DownloadManager dm = sc.getDownloadManager();
                 return dm.getDiskManagerFileInfoSet().getFiles()[idx];
-            } else if (ds instanceof TranscodeJob) {
-                TranscodeJob tj = (TranscodeJob) ds;
-                try {
-                    return PluginCoreUtils.unwrap(tj.getFile());
-                } catch (DownloadException e) {
-                }
-            } else if (ds instanceof TranscodeFile) {
-                TranscodeFile tf = (TranscodeFile) ds;
-                try {
-                    DiskManagerFileInfo file = tf.getSourceFile();
-                    return PluginCoreUtils.unwrap(file);
-                } catch (DownloadException e) {
-                }
+                // } else if (ds instanceof TranscodeJob) {
+                // TranscodeJob tj = (TranscodeJob) ds;
+                // try {
+                // return PluginCoreUtils.unwrap(tj.getFile());
+                // } catch (DownloadException e) {
+                // }
+                // } else if (ds instanceof TranscodeFile) {
+                // TranscodeFile tf = (TranscodeFile) ds;
+                // try {
+                // DiskManagerFileInfo file = tf.getSourceFile();
+                // return PluginCoreUtils.unwrap(file);
+                // } catch (DownloadException e) {
+                // }
             }
 
         } catch (Exception e) {
@@ -81,60 +74,60 @@ public class DataSourceUtils {
         try {
             if (ds instanceof DownloadManager) {
                 return (DownloadManager) ds;
-            } else if (ds instanceof VuzeActivitiesEntry) {
-                VuzeActivitiesEntry entry = (VuzeActivitiesEntry) ds;
-                DownloadManager dm = entry.getDownloadManger();
-                if (dm == null) {
-                    String assetHash = entry.getAssetHash();
-                    if (assetHash != null && AzureusCoreFactory.isCoreRunning()) {
-                        GlobalManager gm = AzureusCoreFactory.getSingleton().getGlobalManager();
-                        dm = gm.getDownloadManager(new HashWrapper(Base32.decode(assetHash)));
-                        entry.setDownloadManager(dm);
-                    }
-                }
-                return dm;
+                // } else if (ds instanceof VuzeActivitiesEntry) {
+                // VuzeActivitiesEntry entry = (VuzeActivitiesEntry) ds;
+                // DownloadManager dm = entry.getDownloadManger();
+                // if (dm == null) {
+                // String assetHash = entry.getAssetHash();
+                // if (assetHash != null && AzureusCoreFactory.isCoreRunning()) {
+                // GlobalManager gm = AzureusCoreFactory.getSingleton().getGlobalManager();
+                // dm = gm.getDownloadManager(new HashWrapper(Base32.decode(assetHash)));
+                // entry.setDownloadManager(dm);
+                // }
+                // }
+                // return dm;
             } else if ((ds instanceof TOTorrent) && AzureusCoreFactory.isCoreRunning()) {
                 GlobalManager gm = AzureusCoreFactory.getSingleton().getGlobalManager();
                 return gm.getDownloadManager((TOTorrent) ds);
             } else if (ds instanceof ISelectedContent) {
                 return getDM(((ISelectedContent) ds).getDownloadManager());
-            } else if (ds instanceof TranscodeJob) {
-                TranscodeJob tj = (TranscodeJob) ds;
-                try {
-                    DiskManagerFileInfo file = tj.getFile();
-                    if (file != null) {
-                        Download download = tj.getFile().getDownload();
-                        if (download != null) {
-                            return PluginCoreUtils.unwrap(download);
-                        }
-                    }
-                } catch (DownloadException e) {
-                }
-            } else if (ds instanceof TranscodeFile) {
-                TranscodeFile tf = (TranscodeFile) ds;
-                try {
-                    DiskManagerFileInfo file = tf.getSourceFile();
-                    if (file != null) {
-                        Download download = file.getDownload();
-                        if (download != null) {
-                            return PluginCoreUtils.unwrap(download);
-                        }
-                    }
-                } catch (DownloadException e) {
-                }
-            } else if (ds instanceof DeviceOfflineDownload) {
-                return (PluginCoreUtils.unwrap(((DeviceOfflineDownload) ds).getDownload()));
-            } else if ((ds instanceof String) && AzureusCoreFactory.isCoreRunning()) {
-                String hash = (String) ds;
-                try {
-                    GlobalManager gm = AzureusCoreFactory.getSingleton().getGlobalManager();
-                    DownloadManager dm = gm.getDownloadManager(new HashWrapper(Base32.decode(hash)));
-                    if (dm != null) {
-                        return dm;
-                    }
-                } catch (Exception e) {
-                    // ignore
-                }
+                // } else if (ds instanceof TranscodeJob) {
+                // TranscodeJob tj = (TranscodeJob) ds;
+                // try {
+                // DiskManagerFileInfo file = tj.getFile();
+                // if (file != null) {
+                // Download download = tj.getFile().getDownload();
+                // if (download != null) {
+                // return PluginCoreUtils.unwrap(download);
+                // }
+                // }
+                // } catch (DownloadException e) {
+                // }
+                // } else if (ds instanceof TranscodeFile) {
+                // TranscodeFile tf = (TranscodeFile) ds;
+                // try {
+                // DiskManagerFileInfo file = tf.getSourceFile();
+                // if (file != null) {
+                // Download download = file.getDownload();
+                // if (download != null) {
+                // return PluginCoreUtils.unwrap(download);
+                // }
+                // }
+                // } catch (DownloadException e) {
+                // }
+                // } else if (ds instanceof DeviceOfflineDownload) {
+                // return (PluginCoreUtils.unwrap(((DeviceOfflineDownload) ds).getDownload()));
+                // } else if ((ds instanceof String) && AzureusCoreFactory.isCoreRunning()) {
+                // String hash = (String) ds;
+                // try {
+                // GlobalManager gm = AzureusCoreFactory.getSingleton().getGlobalManager();
+                // DownloadManager dm = gm.getDownloadManager(new HashWrapper(Base32.decode(hash)));
+                // if (dm != null) {
+                // return dm;
+                // }
+                // } catch (Exception e) {
+                // // ignore
+                // }
             }
 
         } catch (Exception e) {
@@ -154,59 +147,59 @@ public class DataSourceUtils {
                 return torrent;
             }
         }
-        if (ds instanceof VuzeActivitiesEntry) {
-            TOTorrent torrent = ((VuzeActivitiesEntry) ds).getTorrent();
-            if (torrent == null) {
-                // getDM will check hash as well
-                DownloadManager dm = getDM(ds);
-                if (dm != null) {
-                    torrent = dm.getTorrent();
-                }
-            }
-            return torrent;
-        }
-
-        if (ds instanceof TranscodeFile) {
-            TranscodeFile tf = (TranscodeFile) ds;
-            try {
-                DiskManagerFileInfo file = tf.getSourceFile();
-                if (file != null) {
-                    Download download = file.getDownload();
-                    if (download != null) {
-                        Torrent torrent = download.getTorrent();
-                        if (torrent != null) {
-                            return PluginCoreUtils.unwrap(torrent);
-                        }
-                    }
-                }
-            } catch (Throwable e) {
-            }
-        }
-
-        if (ds instanceof TranscodeJob) {
-            TranscodeJob tj = (TranscodeJob) ds;
-            try {
-                DiskManagerFileInfo file = tj.getFile();
-                if (file != null) {
-                    Download download = tj.getFile().getDownload();
-
-                    if (download != null) {
-                        Torrent torrent = download.getTorrent();
-                        if (torrent != null) {
-                            return PluginCoreUtils.unwrap(torrent);
-                        }
-                    }
-                }
-            } catch (DownloadException e) {
-            }
-        }
-
-        if (ds instanceof DeviceOfflineDownload) {
-            Torrent torrent = ((DeviceOfflineDownload) ds).getDownload().getTorrent();
-            if (torrent != null) {
-                return PluginCoreUtils.unwrap(torrent);
-            }
-        }
+        // if (ds instanceof VuzeActivitiesEntry) {
+        // TOTorrent torrent = ((VuzeActivitiesEntry) ds).getTorrent();
+        // if (torrent == null) {
+        // // getDM will check hash as well
+        // DownloadManager dm = getDM(ds);
+        // if (dm != null) {
+        // torrent = dm.getTorrent();
+        // }
+        // }
+        // return torrent;
+        // }
+        //
+        // if (ds instanceof TranscodeFile) {
+        // TranscodeFile tf = (TranscodeFile) ds;
+        // try {
+        // DiskManagerFileInfo file = tf.getSourceFile();
+        // if (file != null) {
+        // Download download = file.getDownload();
+        // if (download != null) {
+        // Torrent torrent = download.getTorrent();
+        // if (torrent != null) {
+        // return PluginCoreUtils.unwrap(torrent);
+        // }
+        // }
+        // }
+        // } catch (Throwable e) {
+        // }
+        // }
+        //
+        // if (ds instanceof TranscodeJob) {
+        // TranscodeJob tj = (TranscodeJob) ds;
+        // try {
+        // DiskManagerFileInfo file = tj.getFile();
+        // if (file != null) {
+        // Download download = tj.getFile().getDownload();
+        //
+        // if (download != null) {
+        // Torrent torrent = download.getTorrent();
+        // if (torrent != null) {
+        // return PluginCoreUtils.unwrap(torrent);
+        // }
+        // }
+        // }
+        // } catch (DownloadException e) {
+        // }
+        // }
+        //
+        // if (ds instanceof DeviceOfflineDownload) {
+        // Torrent torrent = ((DeviceOfflineDownload) ds).getDownload().getTorrent();
+        // if (torrent != null) {
+        // return PluginCoreUtils.unwrap(torrent);
+        // }
+        // }
 
         if (ds instanceof ISelectedContent) {
             return ((ISelectedContent) ds).getTorrent();
@@ -238,9 +231,9 @@ public class DataSourceUtils {
         if (torrent != null) {
             return PlatformTorrentUtils.isContent(torrent, true);
         }
-        if (ds instanceof VuzeActivitiesEntry) {
-            return true;
-        }
+        // if (ds instanceof VuzeActivitiesEntry) {
+        // return true;
+        // }
 
         return false;
     }
@@ -251,11 +244,11 @@ public class DataSourceUtils {
                 return ((DownloadManager) ds).getTorrent().getHashWrapper().toBase32String();
             } else if (ds instanceof TOTorrent) {
                 return ((TOTorrent) ds).getHashWrapper().toBase32String();
-            } else if (ds instanceof DeviceOfflineDownload) {
-                return (getHash(PluginCoreUtils.unwrap(((DeviceOfflineDownload) ds).getDownload())));
-            } else if (ds instanceof VuzeActivitiesEntry) {
-                VuzeActivitiesEntry entry = (VuzeActivitiesEntry) ds;
-                return entry.getAssetHash();
+                // } else if (ds instanceof DeviceOfflineDownload) {
+                // return (getHash(PluginCoreUtils.unwrap(((DeviceOfflineDownload) ds).getDownload())));
+                // } else if (ds instanceof VuzeActivitiesEntry) {
+                // VuzeActivitiesEntry entry = (VuzeActivitiesEntry) ds;
+                // return entry.getAssetHash();
             } else if (ds instanceof ISelectedContent) {
                 return ((ISelectedContent) ds).getHash();
             } else if (ds instanceof String) {
