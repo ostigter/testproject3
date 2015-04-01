@@ -73,7 +73,6 @@ import org.gudy.azureus2.ui.console.commands.RunState;
 import org.gudy.azureus2.ui.console.commands.Set;
 import org.gudy.azureus2.ui.console.commands.Share;
 import org.gudy.azureus2.ui.console.commands.Show;
-import org.gudy.azureus2.ui.console.commands.Subscriptions;
 import org.gudy.azureus2.ui.console.commands.Tags;
 import org.gudy.azureus2.ui.console.commands.TorrentArchive;
 import org.gudy.azureus2.ui.console.commands.TorrentCheck;
@@ -88,11 +87,9 @@ import org.gudy.azureus2.ui.console.commands.TorrentStop;
 import org.gudy.azureus2.ui.console.commands.XML;
 import org.gudy.azureus2.ui.console.util.TextWrap;
 import org.gudy.azureus2.update.CorePatchChecker;
-import org.gudy.azureus2.update.UpdaterUpdateChecker;
 
 import com.aelitis.azureus.core.AzureusCore;
 import com.aelitis.azureus.core.AzureusCoreLifecycleAdapter;
-import com.aelitis.azureus.core.subs.SubscriptionManagerFactory;
 
 /**
  * @author Tobias Minich
@@ -194,12 +191,12 @@ public class ConsoleInput extends Thread {
                     public void started(AzureusCore core) {
                         registerUpdateChecker();
 
-                        try {
-                            SubscriptionManagerFactory.getSingleton();
-
-                        } catch (Throwable e) {
-
-                        }
+                        // try {
+                        // SubscriptionManagerFactory.getSingleton();
+                        //
+                        // } catch (Throwable e) {
+                        //
+                        // }
                     }
                 });
             }
@@ -344,11 +341,11 @@ public class ConsoleInput extends Thread {
         registerCommand(new Pairing());
         registerCommand(new Archive());
 
-        try {
-            registerCommand(new Subscriptions());
-        } catch (Throwable e) {
-
-        }
+        // try {
+        // registerCommand(new Subscriptions());
+        // } catch (Throwable e) {
+        //
+        // }
         registerCommand(new Tags());
 
     }

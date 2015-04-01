@@ -20,8 +20,6 @@ package com.aelitis.azureus.util;
 
 import org.gudy.azureus2.core3.util.Base32;
 
-import com.aelitis.azureus.core.cnetwork.ContentNetwork;
-import com.aelitis.azureus.core.cnetwork.ContentNetworkManagerFactory;
 import com.aelitis.azureus.core.crypto.VuzeCryptoManager;
 
 /**
@@ -33,15 +31,15 @@ public class ConstantsVuze {
 
     public static final String AZID = Base32.encode(VuzeCryptoManager.getSingleton().getPlatformAZID());
 
-    public static final long DEFAULT_CONTENT_NETWORK_ID = ContentNetwork.CONTENT_NETWORK_VUZE;
+    // public static final long DEFAULT_CONTENT_NETWORK_ID = ContentNetwork.CONTENT_NETWORK_VUZE;
 
     public static final boolean DIAG_TO_STDOUT = System.getProperty("DIAG_TO_STDOUT", "0").equals("1");
 
-    /**
-     * @return the dEFAULT_CONTENT_NETWORK
-     */
-    public static ContentNetwork getDefaultContentNetwork() {
-        return ContentNetworkManagerFactory.getSingleton().getContentNetwork(DEFAULT_CONTENT_NETWORK_ID);
-    }
+    // /**
+    // * @return the dEFAULT_CONTENT_NETWORK
+    // */
+    // public static ContentNetwork getDefaultContentNetwork() {
+    // return ContentNetworkManagerFactory.getSingleton().getContentNetwork(DEFAULT_CONTENT_NETWORK_ID);
+    // }
 
 }

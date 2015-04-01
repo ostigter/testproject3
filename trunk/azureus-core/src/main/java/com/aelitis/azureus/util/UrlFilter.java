@@ -24,11 +24,6 @@ import org.gudy.azureus2.core3.util.AEMonitor;
 import org.gudy.azureus2.core3.util.Constants;
 import org.gudy.azureus2.core3.util.Debug;
 
-import com.aelitis.azureus.core.cnetwork.ContentNetwork;
-import com.aelitis.azureus.core.cnetwork.ContentNetworkListener;
-import com.aelitis.azureus.core.cnetwork.ContentNetworkManager;
-import com.aelitis.azureus.core.cnetwork.ContentNetworkManagerFactory;
-import com.aelitis.azureus.core.messenger.PlatformMessenger;
 import com.aelitis.azureus.core.util.CopyOnWriteList;
 
 /**
@@ -41,9 +36,9 @@ public class UrlFilter {
 
     // private String RPC_WHITELIST = "AZMSG%3B[0-9]+%3B.*";
 
-    private String default_site_host = (String) ConstantsVuze.getDefaultContentNetwork().getProperty(ContentNetwork.PROPERTY_SITE_HOST);
+    // private String default_site_host = (String) ConstantsVuze.getDefaultContentNetwork().getProperty(ContentNetwork.PROPERTY_SITE_HOST);
 
-    private String DEFAULT_RPC_WHITELIST = "https?://" + default_site_host.replaceAll("\\.", "\\\\.") + ":?[0-9]*/" + ".*";
+    // private String DEFAULT_RPC_WHITELIST = "https?://" + default_site_host.replaceAll("\\.", "\\\\.") + ":?[0-9]*/" + ".*";
 
     private CopyOnWriteList<String> listUrlBlacklist = new CopyOnWriteList<String>();
 
@@ -61,57 +56,57 @@ public class UrlFilter {
     }
 
     public UrlFilter() {
-        listUrlWhitelist.add(DEFAULT_RPC_WHITELIST);
+        // listUrlWhitelist.add(DEFAULT_RPC_WHITELIST);
         listUrlWhitelist.add("https?://[^/]*\\.vuze\\.com:?[0-9]*/.*");
         // for +1 button
         listUrlWhitelist.add("https?://plusone\\.google\\.com/.*");
         listUrlWhitelist.add("https?://clients[0-9]\\.google\\.com/.*");
 
-        ContentNetworkManager cmn = ContentNetworkManagerFactory.getSingleton();
-        ContentNetwork[] contentNetworks = cmn.getContentNetworks();
-        cmn.addListener(new ContentNetworkListener() {
-            public void networkRemoved(ContentNetwork network) {
-            }
-
-            public void networkChanged(ContentNetwork network) {
-            }
-
-            public void networkAdded(ContentNetwork network) {
-                addNetworkFilters(network);
-            }
-
-            public void networkAddFailed(long network_id, Throwable error) {
-            }
-        });
-
-        for (ContentNetwork cn : contentNetworks) {
-            addNetworkFilters(cn);
-        }
+        // ContentNetworkManager cmn = ContentNetworkManagerFactory.getSingleton();
+        // ContentNetwork[] contentNetworks = cmn.getContentNetworks();
+        // cmn.addListener(new ContentNetworkListener() {
+        // public void networkRemoved(ContentNetwork network) {
+        // }
+        //
+        // public void networkChanged(ContentNetwork network) {
+        // }
+        //
+        // public void networkAdded(ContentNetwork network) {
+        // addNetworkFilters(network);
+        // }
+        //
+        // public void networkAddFailed(long network_id, Throwable error) {
+        // }
+        // });
+        //
+        // for (ContentNetwork cn : contentNetworks) {
+        // addNetworkFilters(cn);
+        // }
     }
 
-    /**
-     * Ensure whitelist has important network urls
-     * 
-     * @param network
-     * 
-     * @since 4.0.0.5
-     */
-    protected void addNetworkFilters(ContentNetwork network) {
-        if (network == null) {
-            return;
-        }
-
-        int[] whitelist_services =
-                { ContentNetwork.SERVICE_SITE, ContentNetwork.SERVICE_AUTH_RPC, ContentNetwork.SERVICE_RELAY_RPC, ContentNetwork.SERVICE_RPC, };
-
-        for (int service : whitelist_services) {
-
-            if (network.isServiceSupported(service)) {
-
-                addUrlWhitelist(network.getServiceURL(service) + ".*");
-            }
-        }
-    }
+    // /**
+    // * Ensure whitelist has important network urls
+    // *
+    // * @param network
+    // *
+    // * @since 4.0.0.5
+    // */
+    // protected void addNetworkFilters(ContentNetwork network) {
+    // if (network == null) {
+    // return;
+    // }
+    //
+    // int[] whitelist_services =
+    // { ContentNetwork.SERVICE_SITE, ContentNetwork.SERVICE_AUTH_RPC, ContentNetwork.SERVICE_RELAY_RPC, ContentNetwork.SERVICE_RPC, };
+    //
+    // for (int service : whitelist_services) {
+    //
+    // if (network.isServiceSupported(service)) {
+    //
+    // addUrlWhitelist(network.getServiceURL(service) + ".*");
+    // }
+    // }
+    // }
 
     public void addUrlWhitelist(String string) {
         addUrlWhitelistSupport(string);
@@ -126,10 +121,10 @@ public class UrlFilter {
         mon.enter();
         try {
             if (!listUrlWhitelist.contains(string)) {
-                PlatformMessenger.debug("add whitelist of " + string);
+                // PlatformMessenger.debug("add whitelist of " + string);
                 listUrlWhitelist.add(string);
             } else {
-                PlatformMessenger.debug("whitelist already exists: " + string);
+                // PlatformMessenger.debug("whitelist already exists: " + string);
             }
         } finally {
             mon.exit();
@@ -140,7 +135,7 @@ public class UrlFilter {
         mon.enter();
         try {
             if (!listUrlBlacklist.contains(string)) {
-                PlatformMessenger.debug("add blacklist of " + string);
+                // PlatformMessenger.debug("add blacklist of " + string);
                 listUrlBlacklist.add(string);
             }
         } finally {
