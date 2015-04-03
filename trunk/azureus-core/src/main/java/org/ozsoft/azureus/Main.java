@@ -4,17 +4,23 @@ import java.io.File;
 
 public class Main implements TorrentListener {
 
-    private static final String TORRENT_PATH = "src/test/resources/test.torrent";
+    private static final String TORRENT_PATH = "test.torrent";
 
     // private static final String MAGNET_URI =
     // "magnet:?xt=urn:btih:11B23FCAD37A547F1173E12EEA6521C112C98072&dn=arrow+s03e15+hdtv+x264+lol+ettv";
-    private static final String SAVE_PATH = "D:/Downloads/Torrents";
+    private String savePath;
 
     public static void main(String[] args) {
-        new Main().run();
+        new Main().run(args);
     }
 
-    private void run() {
+    private void run(String[] args) {
+        if (args.length < 1) {
+            System.err.println("ERROR: No save path specified");
+            System.exit(1);
+        }
+        savePath = args[0];
+
         TorrentManager tm = TorrentManagerFactory.createTorrentManager();
 
         tm.addTorrentListener(this);
@@ -26,7 +32,7 @@ public class Main implements TorrentListener {
                 torrent.delete();
             }
 
-            tm.downloadTorrent(TORRENT_PATH, SAVE_PATH);
+            tm.downloadTorrent(TORRENT_PATH, savePath);
 
             while (tm.hasActiveDownloads()) {
                 for (Torrent torrent : tm.getTorrents()) {
