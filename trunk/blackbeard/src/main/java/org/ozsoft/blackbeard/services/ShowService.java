@@ -139,7 +139,7 @@ public class ShowService implements Serializable {
                 if (statusCode == HttpStatus.SC_OK) {
                     List<Episode> episodes = EpisodeListParser.parse(httpResponse.getBody());
                     for (Episode episode : episodes) {
-                        Episode existingEpisode = show.getEpisode(episode.getEpisodeNumber());
+                        Episode existingEpisode = show.getEpisode(episode.getId());
                         if (existingEpisode != null) {
                             EpisodeStatus currentStatus = existingEpisode.getStatus();
                             if (currentStatus == EpisodeStatus.DOWNLOADED || currentStatus == EpisodeStatus.WATCHED) {

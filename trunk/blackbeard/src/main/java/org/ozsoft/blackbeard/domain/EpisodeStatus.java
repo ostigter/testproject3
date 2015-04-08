@@ -30,5 +30,4 @@ public enum EpisodeStatus {
     public String getName() {
         return name;
     }
-
 }
