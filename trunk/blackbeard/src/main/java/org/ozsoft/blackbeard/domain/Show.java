@@ -1,6 +1,10 @@
 package org.ozsoft.blackbeard.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -64,7 +68,15 @@ public class Show implements Serializable, Comparable<Show> {
     }
 
     public Episode[] getEpisodes() {
-        return episodes.values().toArray(EMPTY_EPISODE_ARRAY);
+        // FIXME: Hack to sort episodes in reverse order.
+        List<Episode> list = new ArrayList<Episode>(episodes.values());
+        Collections.sort(list, new Comparator<Episode>() {
+            @Override
+            public int compare(Episode o1, Episode o2) {
+                return o2.getId() - o1.getId();
+            }
+        });
+        return list.toArray(EMPTY_EPISODE_ARRAY);
     }
 
     public Episode getEpisode(int id) {
