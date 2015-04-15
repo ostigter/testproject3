@@ -60,7 +60,7 @@ public class EpisodeBean implements Serializable {
         return "listEpisodes?faces-redirect=true";
     }
 
-    public void watched(Episode episode) {
+    public void setWatched(Episode episode) {
         episode.setStatus(EpisodeStatus.WATCHED);
         showService.save();
     }

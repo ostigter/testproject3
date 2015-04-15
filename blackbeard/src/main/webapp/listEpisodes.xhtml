@@ -10,8 +10,8 @@
             <h:form>
                 <p><h:commandLink value="Back to shows" action="listShows?faces-redirect=true" /></p>
                 <p><h:commandButton value="Delete show" action="#{episodeBean.deleteShow}" /></p>
-	            <h:dataTable rendered="#{not empty episodeBean.show.episodes}"
-	                    value="#{episodeBean.show.episodes}" var="episode" rules="all"
+	            <h:dataTable value="#{episodeBean.show.episodes}" var="episode" rules="all"
+	                   rendered="#{not empty episodeBean.show.episodes}"
                     styleClass="boxed" width="100%"
                     headerClasses="name,info,date,status,actions"
                     columnClasses="name,info,date,status,actions"
@@ -38,12 +38,18 @@
                         <f:facet name="header">Actions</f:facet>
                         <h:commandButton value="Download" action="#{episodeBean.download(episode)}"
                                 class="action" rendered="#{episode.status == 'NEW'}" />
-                        <h:commandButton value="Watched" action="#{episodeBean.watched(episode)}"
-                                class="action" rendered="#{episode.status == 'DOWNLOADED'}" />
+                        <h:commandButton value="Watched" action="#{episodeBean.setWatched(episode)}"
+                                class="action" rendered="#{episode.status == 'DOWNLOADED'}">
+                            <f:ajax render="@form" />
+                        </h:commandButton>
                         <h:commandLink value="Re-download" action="#{episodeBean.download(episode)}"
-                                class="action" rendered="#{episode.status == 'DOWNLOADED'}" />
+                                class="action" rendered="#{episode.status == 'DOWNLOADED'}">
+                            <f:ajax render="@form" />
+                        </h:commandLink>
                         <h:commandLink value="Reset" action="#{episodeBean.reset(episode)}"
-                                class="action" rendered="#{episode.status == 'WATCHED'}" />
+                                class="action" rendered="#{episode.status == 'WATCHED'}">
+                            <f:ajax render="@form" />
+                        </h:commandLink>
                     </h:column>
 	            </h:dataTable>
 	            <h:outputText value="No episodes found." rendered="#{empty episodeBean.show.episodes}" />
