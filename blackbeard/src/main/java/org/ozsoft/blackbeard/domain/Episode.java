@@ -8,7 +8,7 @@ import java.util.Date;
  * 
  * @author Oscar Stigter
  */
-public class Episode implements Serializable, Comparable<Episode> {
+public class Episode implements Serializable {
 
     private static final long serialVersionUID = -4265981374332614409L;
 
@@ -100,12 +100,5 @@ public class Episode implements Serializable, Comparable<Episode> {
     @Override
     public String toString() {
         return String.format("s%02de%02d - %s", seasonNumber, episodeNumber, title);
-    }
-
-    @Override
-    public int compareTo(Episode other) {
-        // Sort episodes based on global episode number (newest first).
-        // FIXME: Sort episodes newest to oldest
-        return other.getId() - id;
     }
 }
