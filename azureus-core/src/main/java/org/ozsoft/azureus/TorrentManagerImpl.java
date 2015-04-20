@@ -12,6 +12,10 @@ import org.apache.log4j.Logger;
 import org.gudy.azureus2.core3.download.DownloadManager;
 import org.gudy.azureus2.core3.global.GlobalManager;
 import org.gudy.azureus2.core3.global.GlobalManagerDownloadRemovalVetoException;
+import org.gudy.azureus2.core3.torrentdownloader.TorrentDownloader;
+import org.gudy.azureus2.core3.torrentdownloader.TorrentDownloaderCallBackInterface;
+import org.gudy.azureus2.core3.torrentdownloader.TorrentDownloaderFactory;
+import org.gudy.azureus2.core3.torrentdownloader.impl.TorrentDownloaderManager;
 import org.gudy.azureus2.ui.common.StartServer;
 
 import com.aelitis.azureus.core.AzureusCore;
@@ -60,7 +64,9 @@ public class TorrentManagerImpl implements TorrentManager {
                 LOGGER.info("Started");
 
             } catch (Exception e) {
-                throw new TorrentException("Could not start Azureus", e);
+                String msg = "Could not start Azureus";
+                LOGGER.error(msg, e);
+                throw new TorrentException(msg, e);
             }
         }
     }
@@ -75,7 +81,9 @@ public class TorrentManagerImpl implements TorrentManager {
                 isStarted = false;
                 LOGGER.info("Stopped");
             } catch (Exception e) {
-                throw new TorrentException("Could not stop Azureus", e);
+                String msg = "Could not gracefully stop Azureus";
+                LOGGER.error(msg, e);
+                throw new TorrentException(msg, e);
             }
         }
     }
@@ -105,11 +113,6 @@ public class TorrentManagerImpl implements TorrentManager {
         }
     }
 
-    private Torrent downloadFromRemoteTorrent(String uri, String savePath) throws TorrentException {
-        // TODO: Download remote torrent (magnet URI or HTTP)
-        return null;
-    }
-
     private Torrent downloadFromLocalTorrent(String path, String savePath) throws TorrentException {
         File torrentFile = new File(path);
         if (!torrentFile.isFile()) {
@@ -124,7 +127,6 @@ public class TorrentManagerImpl implements TorrentManager {
                 long duration = System.currentTimeMillis() - startTime;
                 if (duration > TORRENT_TIMEOUT) {
                     // Download takes too long to start; abort and delete.
-                    // dm.stopIt(DownloadManager.STATE_STOPPED, true, true);
                     try {
                         dm.getGlobalManager().removeDownloadManager(dm);
                     } catch (GlobalManagerDownloadRemovalVetoException e) {
@@ -140,11 +142,40 @@ public class TorrentManagerImpl implements TorrentManager {
             watchers.put(torrent, watcher);
             watcher.start();
 
+            LOGGER.info(String.format("Download started from torrent file '%s'", torrentFile));
+
             return torrent;
 
         } catch (Exception e) {
-            throw new TorrentException(String.format("Could not start torrent from file '%s'", path), e);
+            String msg = String.format("Could not start torrent from file '%s'", path);
+            throw new TorrentException(msg, e);
         }
+    }
+
+    private Torrent downloadFromRemoteTorrent(final String uri, final String savePath) throws TorrentException {
+        TorrentDownloader downloader = TorrentDownloaderFactory.create(new TorrentDownloaderCallBackInterface() {
+            @Override
+            public void TorrentDownloaderEvent(int state, TorrentDownloader td) {
+                if (state == TorrentDownloader.STATE_FINISHED) {
+                    File torrentFile = td.getFile();
+                    LOGGER.info("Torrent file downloaded: " + torrentFile);
+                    TorrentDownloaderManager.getInstance().remove(td);
+                    try {
+                        downloadFromLocalTorrent(torrentFile.getAbsolutePath(), savePath);
+                    } catch (TorrentException e) {
+                        LOGGER.error("Could not start download", e);
+                    }
+                } else if (state == TorrentDownloader.STATE_ERROR) {
+                    LOGGER.error("Could not download torrent file: " + td.getError());
+                }
+                TorrentDownloaderManager.getInstance().TorrentDownloaderEvent(state, td);
+            }
+        }, uri, null, null, false);
+        downloader.start();
+
+        LOGGER.info(String.format("Download of torrent from '%s' started", uri));
+
+        return null;
     }
 
     @Override
