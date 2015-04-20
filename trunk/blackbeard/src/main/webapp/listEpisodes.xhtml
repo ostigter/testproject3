@@ -9,7 +9,18 @@
         <div class="content ui-widget ui-widget-content ui-corner-all">
             <h:form>
                 <p><h:commandLink value="Back to shows" action="listShows?faces-redirect=true" /></p>
-                <p><h:commandButton value="Delete show" action="#{episodeBean.deleteShow}" /></p>
+                
+                <p style="text-align: right">
+                    <p:commandButton value="Delete show" action="#{episodeBean.deleteShow}">
+                        <p:confirm header="Warning" message="Are you sure you wish to delete the show '#{episodeBean.show.name}'?" icon="ui-icon-alert" />
+                    </p:commandButton>
+                </p>
+                
+                <p:confirmDialog global="true">
+                    <p:commandButton value="Delete" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                    <p:commandButton value="Cancel" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                </p:confirmDialog>
+                
 	            <h:dataTable value="#{episodeBean.show.episodes}" var="episode" rules="all"
 	                   rendered="#{not empty episodeBean.show.episodes}"
                     styleClass="boxed" width="100%"
@@ -52,6 +63,7 @@
                         </h:commandLink>
                     </h:column>
 	            </h:dataTable>
+	            
 	            <h:outputText value="No episodes found." rendered="#{empty episodeBean.show.episodes}" />
             </h:form>            
         </div>
