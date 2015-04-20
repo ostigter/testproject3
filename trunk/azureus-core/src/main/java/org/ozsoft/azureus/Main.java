@@ -6,21 +6,15 @@ public class Main implements TorrentListener {
 
     private static final String TORRENT_PATH = "test.torrent";
 
-    // private static final String MAGNET_URI =
-    // "magnet:?xt=urn:btih:11B23FCAD37A547F1173E12EEA6521C112C98072&dn=arrow+s03e15+hdtv+x264+lol+ettv";
-    private String savePath;
+    private static final String MAGNET_URI = "magnet:?xt=urn:btih:53896C2A6391A69A672041139E023C018C0F4AFF&dn=arrow+s03e19+hdtv+x264+lol+ettv&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337";
+
+    private static final String SAVE_PATH = "D:/Downloads/Torrents";
 
     public static void main(String[] args) {
         new Main().run(args);
     }
 
     private void run(String[] args) {
-        if (args.length < 1) {
-            System.err.println("ERROR: No save path specified");
-            System.exit(1);
-        }
-        savePath = args[0];
-
         TorrentManager tm = TorrentManagerFactory.createTorrentManager();
 
         tm.addTorrentListener(this);
@@ -32,18 +26,14 @@ public class Main implements TorrentListener {
                 torrent.delete();
             }
 
-            tm.downloadTorrent(TORRENT_PATH, savePath);
+            tm.downloadTorrent(MAGNET_URI, SAVE_PATH);
+            sleep(45000L);
 
             while (tm.hasActiveDownloads()) {
                 for (Torrent torrent : tm.getTorrents()) {
                     System.out.println("Torrent: " + torrent);
                 }
-
-                try {
-                    Thread.sleep(3000L);
-                } catch (InterruptedException e) {
-                    // Safe to ignore.
-                }
+                sleep(3000L);
             }
 
             System.out.println("No more active downloads.");
@@ -78,6 +68,14 @@ public class Main implements TorrentListener {
             torrent.remove();
         } catch (TorrentException e) {
             e.printStackTrace(System.err);
+        }
+    }
+
+    private static void sleep(long duration) {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            // Safe to ignore.
         }
     }
 }

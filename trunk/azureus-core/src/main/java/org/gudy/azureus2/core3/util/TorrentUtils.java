@@ -79,6 +79,7 @@ public class TorrentUtils {
 
     static {
         AEDiagnostics.addEvidenceGenerator(new AEDiagnosticsEvidenceGenerator() {
+            @Override
             public void generate(IndentWriter writer) {
                 writer.println("DNS TXT Records");
 
@@ -98,7 +99,7 @@ public class TorrentUtils {
 
                                 String str = "";
 
-                                List<byte[]> txts = (List<byte[]>) COConfigurationManager.getListParameter(name, null);
+                                List<byte[]> txts = COConfigurationManager.getListParameter(name, null);
 
                                 if (txts != null) {
 
@@ -147,6 +148,7 @@ public class TorrentUtils {
     private static final Set created_torrents_set;
 
     private static ThreadLocal<Map<String, Object>> tls = new ThreadLocal<Map<String, Object>>() {
+        @Override
         public Map<String, Object> initialValue() {
             return (new HashMap<String, Object>());
         }
@@ -157,8 +159,7 @@ public class TorrentUtils {
     private static boolean bSaveTorrentBackup;
 
     private static CopyOnWriteList<torrentAttributeListener> torrent_attribute_listeners = new CopyOnWriteList<torrentAttributeListener>();
-    private static CopyOnWriteList<TorrentAnnounceURLChangeListener> torrent_url_changed_listeners =
-            new CopyOnWriteList<TorrentAnnounceURLChangeListener>();
+    private static CopyOnWriteList<TorrentAnnounceURLChangeListener> torrent_url_changed_listeners = new CopyOnWriteList<TorrentAnnounceURLChangeListener>();
 
     private static AsyncDispatcher dispatcher = new AsyncDispatcher();
 
@@ -172,6 +173,7 @@ public class TorrentUtils {
 
     static {
         SimpleTimer.addPeriodicEvent("TU:dnstimer", DNS_HISTORY_TIMEOUT / 2, new TimerEventPerformer() {
+            @Override
             public void perform(TimerEvent event) {
                 if (DNS_HANDLING_ENABLE) {
 
@@ -186,13 +188,14 @@ public class TorrentUtils {
     static {
         COConfigurationManager.addAndFireParameterListeners(new String[] { "Save Torrent Backup", "Tracker DNS Records Enable", "Enable.Proxy" },
                 new ParameterListener() {
+                    @Override
                     public void parameterChanged(String _name) {
                         bSaveTorrentBackup = COConfigurationManager.getBooleanParameter("Save Torrent Backup");
 
                         boolean enable_proxy = COConfigurationManager.getBooleanParameter("Enable.Proxy");
 
-                        DNS_HANDLING_ENABLE =
-                                dns_utils != null && COConfigurationManager.getBooleanParameter("Tracker DNS Records Enable") && !enable_proxy;
+                        DNS_HANDLING_ENABLE = dns_utils != null && COConfigurationManager.getBooleanParameter("Tracker DNS Records Enable")
+                                && !enable_proxy;
                     }
                 });
 
@@ -215,9 +218,9 @@ public class TorrentUtils {
     }
 
     /**
-     * If you set "create_delegate" to true then you must understand that this results is piece hashes being discarded and then re-read from the
-     * torrent file if needed Therefore, if you delete the original torrent file you're going to get errors if you access the pieces after this (and
-     * they've been discarded)
+     * If you set "create_delegate" to true then you must understand that this results is piece hashes being discarded
+     * and then re-read from the torrent file if needed Therefore, if you delete the original torrent file you're going
+     * to get errors if you access the pieces after this (and they've been discarded)
      * 
      * @param file
      * @param create_delegate
@@ -452,10 +455,12 @@ public class TorrentUtils {
                 return;
             }
 
-            if (!new File(str).delete()) {
-
-                throw (new TOTorrentException("TorrentUtils::delete: failed to delete '" + str + "'", TOTorrentException.RT_WRITE_FAILS));
-            }
+            new File(str).delete();
+            // if (!new File(str).delete()) {
+            //
+            // throw (new TOTorrentException("TorrentUtils::delete: failed to delete '" + str + "'",
+            // TOTorrentException.RT_WRITE_FAILS));
+            // }
 
             new File(str + ".bak").delete();
 
@@ -799,8 +804,10 @@ public class TorrentUtils {
     }
 
     public static void listToAnnounceGroups(List<List<String>> groups, TOTorrent torrent) {
-        // if the new groups no longer contain the main announce url then we replace this with the first in the groups. The primary reason for this
-        // is that the DNS TXT record munging code always considers the announce-url as input to the generation of (potentially) modified URLs and if
+        // if the new groups no longer contain the main announce url then we replace this with the first in the groups.
+        // The primary reason for this
+        // is that the DNS TXT record munging code always considers the announce-url as input to the generation of
+        // (potentially) modified URLs and if
         // we
         // leave the announce-url there it will magically re-appear
         //
@@ -810,7 +817,7 @@ public class TorrentUtils {
 
             if (groups.size() == 1) {
 
-                List set = (List) groups.get(0);
+                List set = groups.get(0);
 
                 if (set.size() == 1) {
 
@@ -830,7 +837,7 @@ public class TorrentUtils {
 
             for (int i = 0; i < groups.size(); i++) {
 
-                List<String> set = (List<String>) groups.get(i);
+                List<String> set = groups.get(i);
 
                 URL[] urls = new URL[set.size()];
 
@@ -843,7 +850,7 @@ public class TorrentUtils {
                         announce_url = null;
                     }
 
-                    urls[j] = new URL((String) set.get(j));
+                    urls[j] = new URL(set.get(j));
 
                     if (first_url == null) {
 
@@ -1683,7 +1690,7 @@ public class TorrentUtils {
                 }
                 if (_links != null) {// && TorrentUtils.isCreatedTorrent( torrent )){
 
-                    Map<String, String> links = (Map<String, String>) BDecoder.decodeStrings(_links);
+                    Map<String, String> links = BDecoder.decodeStrings(_links);
 
                     for (Map.Entry<String, String> entry : links.entrySet()) {
 
@@ -1894,6 +1901,7 @@ public class TorrentUtils {
                 // first time - add the listener
 
                 COConfigurationManager.addParameterListener("File.Torrent.IgnoreFiles", new ParameterListener() {
+                    @Override
                     public void parameterChanged(String parameterName) {
                         getIgnoreSetSupport(true);
                     }
@@ -1942,6 +1950,7 @@ public class TorrentUtils {
 
     static {
         SimpleTimer.addPeriodicEvent("TorrentUtils:pieceDiscard", PIECE_HASH_TIMEOUT / 2, new TimerEventPerformer() {
+            @Override
             public void perform(TimerEvent event) {
                 long now = SystemTime.getCurrentTime();
 
@@ -1962,8 +1971,8 @@ public class TorrentUtils {
     private static Map fluffThombstone = new HashMap(1);
 
     /**
-     * Register keys that are used for heavyweight maps that should be discarded when the torrent is not in use Make sure these keys are only ever
-     * used for Map objects!
+     * Register keys that are used for heavyweight maps that should be discarded when the torrent is not in use Make
+     * sure these keys are only ever used for Map objects!
      */
     public static void registerMapFluff(String[] fluff) {
         synchronized (TorrentUtils.class) {
@@ -1981,8 +1990,8 @@ public class TorrentUtils {
     }
 
     public static class torrentDelegate extends LogRelation implements ExtendedTorrent {
-        private TOTorrent delegate;
-        private File file;
+        private final TOTorrent delegate;
+        private final File file;
 
         private boolean fluff_dirty;
 
@@ -2006,6 +2015,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public void setDiscardFluff(boolean discard) {
             if (discard && !torrentFluffKeyset.isEmpty()) {
 
@@ -2046,48 +2056,59 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public byte[] getName() {
             return (delegate.getName());
         }
 
+        @Override
         public boolean isSimpleTorrent() {
             return (delegate.isSimpleTorrent());
         }
 
+        @Override
         public byte[] getComment() {
             return (delegate.getComment());
         }
 
+        @Override
         public void setComment(String comment) {
             delegate.setComment(comment);
         }
 
+        @Override
         public long getCreationDate() {
             return (delegate.getCreationDate());
         }
 
+        @Override
         public void setCreationDate(long date) {
             delegate.setCreationDate(date);
         }
 
+        @Override
         public byte[] getCreatedBy() {
             return (delegate.getCreatedBy());
         }
 
+        @Override
         public void setCreatedBy(byte[] cb) {
             delegate.setCreatedBy(cb);
         }
 
+        @Override
         public boolean isCreated() {
             return (delegate.isCreated());
         }
 
+        @Override
         public boolean isDecentralised() {
             URL url = getAnnounceURLSupport();
 
             return (TorrentUtils.isDecentralised(url));
         }
 
+        @Override
         public URL getAnnounceURL() {
             URL url = getAnnounceURLSupport();
 
@@ -2107,6 +2128,7 @@ public class TorrentUtils {
             return (url_mod_last_post);
         }
 
+        @Override
         public TOTorrentAnnounceURLGroup getAnnounceURLGroup() {
             TOTorrentAnnounceURLGroup group = getAnnounceURLGroupSupport();
 
@@ -2183,6 +2205,7 @@ public class TorrentUtils {
             return (delegate.getAnnounceURL());
         }
 
+        @Override
         public boolean setAnnounceURL(URL url) {
             return delegate.setAnnounceURL(url);
         }
@@ -2221,6 +2244,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public byte[][] getPieces()
 
         throws TOTorrentException {
@@ -2315,60 +2339,72 @@ public class TorrentUtils {
          * @return
          */
 
+        @Override
         public byte[][] peekPieces()
 
         throws TOTorrentException {
             return (delegate.getPieces());
         }
 
+        @Override
         public void setPieces(byte[][] pieces)
 
         throws TOTorrentException {
             throw (new TOTorrentException("Unsupported Operation", TOTorrentException.RT_WRITE_FAILS));
         }
 
+        @Override
         public long getPieceLength() {
             return (delegate.getPieceLength());
         }
 
+        @Override
         public int getNumberOfPieces() {
             return (delegate.getNumberOfPieces());
         }
 
+        @Override
         public long getSize() {
             return (delegate.getSize());
         }
 
+        @Override
         public int getFileCount() {
             return (delegate.getFileCount());
         }
 
+        @Override
         public TOTorrentFile[] getFiles() {
             return (delegate.getFiles());
         }
 
+        @Override
         public byte[] getHash()
 
         throws TOTorrentException {
             return (delegate.getHash());
         }
 
+        @Override
         public HashWrapper getHashWrapper()
 
         throws TOTorrentException {
             return (delegate.getHashWrapper());
         }
 
+        @Override
         public void setHashOverride(byte[] hash)
 
         throws TOTorrentException {
             throw (new TOTorrentException("Not supported", TOTorrentException.RT_HASH_FAILS));
         }
 
+        @Override
         public boolean getPrivate() {
             return (delegate.getPrivate());
         }
 
+        @Override
         public void setPrivate(boolean _private)
 
         throws TOTorrentException {
@@ -2377,42 +2413,52 @@ public class TorrentUtils {
             throw (new TOTorrentException("Can't amend private attribute", TOTorrentException.RT_WRITE_FAILS));
         }
 
+        @Override
         public boolean hasSameHashAs(TOTorrent other) {
             return (delegate.hasSameHashAs(other));
         }
 
+        @Override
         public void setAdditionalStringProperty(String name, String value) {
             delegate.setAdditionalStringProperty(name, value);
         }
 
+        @Override
         public String getAdditionalStringProperty(String name) {
             return (delegate.getAdditionalStringProperty(name));
         }
 
+        @Override
         public void setAdditionalByteArrayProperty(String name, byte[] value) {
             delegate.setAdditionalByteArrayProperty(name, value);
         }
 
+        @Override
         public byte[] getAdditionalByteArrayProperty(String name) {
             return (delegate.getAdditionalByteArrayProperty(name));
         }
 
+        @Override
         public void setAdditionalLongProperty(String name, Long value) {
             delegate.setAdditionalLongProperty(name, value);
         }
 
+        @Override
         public Long getAdditionalLongProperty(String name) {
             return (delegate.getAdditionalLongProperty(name));
         }
 
+        @Override
         public void setAdditionalListProperty(String name, List value) {
             delegate.setAdditionalListProperty(name, value);
         }
 
+        @Override
         public List getAdditionalListProperty(String name) {
             return (delegate.getAdditionalListProperty(name));
         }
 
+        @Override
         public void setAdditionalMapProperty(String name, Map value) {
             if (torrentFluffKeyset.contains(name)) {
 
@@ -2435,6 +2481,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public Map getAdditionalMapProperty(String name) {
             if (torrentFluffKeyset.contains(name)) {
 
@@ -2468,6 +2515,7 @@ public class TorrentUtils {
             return (delegate.getAdditionalMapProperty(name));
         }
 
+        @Override
         public Object getAdditionalProperty(String name) {
             if (torrentFluffKeyset.contains(name)) {
                 try {
@@ -2494,6 +2542,7 @@ public class TorrentUtils {
             return delegate.getAdditionalProperty(name);
         }
 
+        @Override
         public void setAdditionalProperty(String name, Object value) {
             if (torrentFluffKeyset.contains(name)) {
 
@@ -2516,6 +2565,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public void removeAdditionalProperty(String name) {
             if (delegate.getAdditionalProperty(name) == null)
                 return;
@@ -2541,6 +2591,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public void removeAdditionalProperties() {
             try {
                 getMonitor().enter();
@@ -2555,6 +2606,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public void serialiseToBEncodedFile(File target_file)
 
         throws TOTorrentException {
@@ -2590,6 +2642,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public Map serialiseToMap()
 
         throws TOTorrentException {
@@ -2623,6 +2676,7 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public void serialiseToXMLFile(File target_file)
 
         throws TOTorrentException {
@@ -2653,34 +2707,41 @@ public class TorrentUtils {
             }
         }
 
+        @Override
         public void addListener(TOTorrentListener l) {
             delegate.addListener(l);
         }
 
+        @Override
         public void removeListener(TOTorrentListener l) {
             delegate.removeListener(l);
         }
 
+        @Override
         public AEMonitor getMonitor() {
             return (delegate.getMonitor());
         }
 
+        @Override
         public void print() {
             delegate.print();
         }
 
+        @Override
         public String getRelationText() {
             if (delegate instanceof LogRelation)
                 return ((LogRelation) delegate).getRelationText();
             return delegate.toString();
         }
 
+        @Override
         public Object[] getQueryableInterfaces() {
             if (delegate instanceof LogRelation)
                 return ((LogRelation) delegate).getQueryableInterfaces();
             return super.getQueryableInterfaces();
         }
 
+        @Override
         public String getUTF8Name() {
             return delegate.getUTF8Name();
         }
@@ -2753,9 +2814,9 @@ public class TorrentUtils {
     }
 
     /**
-     * Deletes the given dir and all dirs underneath if empty. Don't delete default save path or completed files directory, however, allow deletion of
-     * their empty subdirectories Files defined to be ignored for the sake of torrent creation are automatically deleted For example, by default this
-     * includes thumbs.db
+     * Deletes the given dir and all dirs underneath if empty. Don't delete default save path or completed files
+     * directory, however, allow deletion of their empty subdirectories Files defined to be ignored for the sake of
+     * torrent creation are automatically deleted For example, by default this includes thumbs.db
      */
     public static void recursiveEmptyDirDelete(File f) {
         TorrentUtils.recursiveEmptyDirDelete(f, true);
@@ -2849,7 +2910,8 @@ public class TorrentUtils {
             try {
                 byte[] hash = torrent.getHash();
 
-                // System.out.println( "addCreated:" + new String(torrent.getName()) + "/" + ByteFormatter.encodeString( hash ));
+                // System.out.println( "addCreated:" + new String(torrent.getName()) + "/" + ByteFormatter.encodeString(
+                // hash ));
 
                 if (created_torrents.size() == 0) {
 
@@ -2880,7 +2942,8 @@ public class TorrentUtils {
 
                 byte[] hash = hw.getBytes();
 
-                // System.out.println( "removeCreated:" + new String(torrent.getName()) + "/" + ByteFormatter.encodeString( hash ));
+                // System.out.println( "removeCreated:" + new String(torrent.getName()) + "/" +
+                // ByteFormatter.encodeString( hash ));
 
                 Iterator it = created_torrents.iterator();
 
@@ -2919,7 +2982,8 @@ public class TorrentUtils {
                     res = torrent.isCreated();
                 }
 
-                // System.out.println( "isCreated:" + new String(torrent.getName()) + "/" + ByteFormatter.encodeString( hw.getBytes()) + " -> " + res
+                // System.out.println( "isCreated:" + new String(torrent.getName()) + "/" + ByteFormatter.encodeString(
+                // hw.getBytes()) + " -> " + res
                 // );
 
                 return (res);
@@ -2938,14 +3002,14 @@ public class TorrentUtils {
 
     throws IOException {
         try {
-            byte[] bytes =
-                    FileUtil.readInputStreamAsByteArray(new ResourceDownloaderFactoryImpl().create(url).download(), BDecoder.MAX_BYTE_ARRAY_SIZE);
+            byte[] bytes = FileUtil.readInputStreamAsByteArray(new ResourceDownloaderFactoryImpl().create(url).download(),
+                    BDecoder.MAX_BYTE_ARRAY_SIZE);
 
             return (TOTorrentFactory.deserialiseFromBEncodedByteArray(bytes));
 
         } catch (IOException e) {
 
-            throw ((IOException) e);
+            throw (e);
 
         } catch (Throwable e) {
 
@@ -3025,6 +3089,7 @@ public class TorrentUtils {
         if (hosts.size() > 0) {
 
             new AEThread2("DNS:updates") {
+                @Override
                 public void run() {
                     for (String host : hosts) {
 
@@ -3098,6 +3163,7 @@ public class TorrentUtils {
                     final DNSTXTEntry f_txt_entry = txt_entry;
 
                     dns_threads.run(new AERunnable() {
+                        @Override
                         public void runSupport() {
                             try {
                                 List<String> txts = dns_utils.getTXTRecords(host);
@@ -3173,7 +3239,8 @@ public class TorrentUtils {
 
                     List txts_cache = COConfigurationManager.getListParameter(config_key, null);
 
-                    // if we have a cache and this isn't a force update and start of day then well just go with the cache
+                    // if we have a cache and this isn't a force update and start of day then well just go with the
+                    // cache
 
                     if (old_txt_entry != null || txts_cache == null || force_update) {
 
@@ -3265,6 +3332,7 @@ public class TorrentUtils {
                         dns_mapping_seq_count++;
 
                         dispatcher.dispatch(new AERunnable() {
+                            @Override
                             public void runSupport() {
                                 for (TorrentAnnounceURLChangeListener l : torrent_url_changed_listeners) {
 
@@ -3505,7 +3573,7 @@ public class TorrentUtils {
     }
 
     private static class URLGroup implements TOTorrentAnnounceURLGroup {
-        private TOTorrentAnnounceURLGroup delegate;
+        private final TOTorrentAnnounceURLGroup delegate;
         private TOTorrentAnnounceURLSet[] sets;
 
         private boolean modified;
@@ -3516,10 +3584,12 @@ public class TorrentUtils {
             sets = mod_sets.toArray(new TOTorrentAnnounceURLSet[mod_sets.size()]);
         }
 
+        @Override
         public TOTorrentAnnounceURLSet[] getAnnounceURLSets() {
             return (sets);
         }
 
+        @Override
         public void setAnnounceURLSets(TOTorrentAnnounceURLSet[] _sets) {
             modified = true;
 
@@ -3528,6 +3598,7 @@ public class TorrentUtils {
             delegate.setAnnounceURLSets(_sets);
         }
 
+        @Override
         public TOTorrentAnnounceURLSet createAnnounceURLSet(URL[] urls) {
             return (delegate.createAnnounceURLSet(urls));
         }
@@ -3538,12 +3609,12 @@ public class TorrentUtils {
     }
 
     private static class DNSTXTEntry {
-        private long create_time = SystemTime.getMonotonousTime();
+        private final long create_time = SystemTime.getMonotonousTime();
 
-        private AESemaphore sem = new AESemaphore("DNSTXTEntry");
+        private final AESemaphore sem = new AESemaphore("DNSTXTEntry");
 
         private boolean has_records;
-        private List<DNSTXTPortInfo> ports = new ArrayList<DNSTXTPortInfo>();
+        private final List<DNSTXTPortInfo> ports = new ArrayList<DNSTXTPortInfo>();
 
         private long getCreateTime() {
             return (create_time);
@@ -3617,8 +3688,8 @@ public class TorrentUtils {
     }
 
     private static class DNSTXTPortInfo {
-        private boolean is_tcp;
-        private int port;
+        private final boolean is_tcp;
+        private final int port;
 
         private DNSTXTPortInfo(boolean _is_tcp, int _port) {
             is_tcp = _is_tcp;
