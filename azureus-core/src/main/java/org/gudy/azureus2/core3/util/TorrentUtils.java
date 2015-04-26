@@ -473,7 +473,8 @@ public class TorrentUtils {
     public static void delete(File torrent_file, boolean force_no_recycle) {
         if (!FileUtil.deleteWithRecycle(torrent_file, force_no_recycle)) {
 
-            Debug.out("TorrentUtils::delete: failed to delete '" + torrent_file + "'");
+            // OSTI: Removed warning (does not add anything).
+            // Debug.out("TorrentUtils::delete: failed to delete '" + torrent_file + "'");
         }
 
         new File(torrent_file.toString() + ".bak").delete();
