@@ -148,6 +148,7 @@ public class TorrentImpl implements Torrent {
 
     @Override
     public String toString() {
-        return String.format(Locale.US, "'%s' (%s, %.1f %%)", name, getStatus(), getProgress());
+        String downloadSpeed = TorrentUtils.throughputToString(getDownloadSpeed());
+        return String.format(Locale.US, "'%s' (%s, %.1f %%, %s)", name, getStatus(), getProgress(), downloadSpeed);
     }
 }
