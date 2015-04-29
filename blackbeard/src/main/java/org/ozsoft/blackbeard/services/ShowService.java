@@ -25,9 +25,9 @@ import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.EpisodeListParser;
 import org.ozsoft.blackbeard.parsers.ShowListParser;
-import org.ozsoft.blackbeard.providers.AbstractSearchProvider;
 import org.ozsoft.blackbeard.providers.BitSnoopSearchProvider;
 import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
+import org.ozsoft.blackbeard.providers.SearchProvider;
 import org.ozsoft.blackbeard.util.http.HttpClient;
 import org.ozsoft.blackbeard.util.http.HttpResponse;
 import org.xml.sax.SAXException;
@@ -58,7 +58,7 @@ public class ShowService implements Serializable {
     // private static final String PROXY_USERNAME = "";
     // private static final String PROXY_PASSWORD = "";
 
-    private static final Set<AbstractSearchProvider> searchProviders;
+    private static final Set<SearchProvider> searchProviders;
 
     private final HttpClient httpClient;
 
@@ -69,7 +69,7 @@ public class ShowService implements Serializable {
      */
     static {
         // Set torrent search providers.
-        searchProviders = new HashSet<AbstractSearchProvider>();
+        searchProviders = new HashSet<SearchProvider>();
         searchProviders.add(new KickAssSearchProvider());
         searchProviders.add(new BitSnoopSearchProvider());
     }
@@ -164,7 +164,7 @@ public class ShowService implements Serializable {
     public List<Torrent> getTorrents(Show show, Episode episode) {
         String searchText = String.format("%s s%02de%02d", show.getName(), episode.getSeasonNumber(), episode.getEpisodeNumber());
         Set<Torrent> torrents = new TreeSet<Torrent>();
-        for (AbstractSearchProvider searchProvider : searchProviders) {
+        for (SearchProvider searchProvider : searchProviders) {
             torrents.addAll(searchProvider.search(searchText, httpClient));
         }
 

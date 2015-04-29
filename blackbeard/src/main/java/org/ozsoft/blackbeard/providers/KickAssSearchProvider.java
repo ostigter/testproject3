@@ -7,7 +7,7 @@ import org.ozsoft.blackbeard.util.http.HttpClient;
 
 public class KickAssSearchProvider extends AbstractSearchProvider {
 
-    private static final String URI = "http://kickass.to/search/%s/?rss=1";
+    private static final String URI = "http://kickass.to/usearch/%s/?rss=1";
 
     @Override
     public Set<Torrent> search(String text, HttpClient httpClient) {
