@@ -21,7 +21,7 @@ public interface Library {
     @GET
     @Path("/book/{id}")
     @Produces("application/json")
-    Book getBook(@PathParam("id") long id);
+    Book getBook(@PathParam("id") long id) throws BookNotFoundException;
 
     @PUT
     @Path("/book")
@@ -31,5 +31,4 @@ public interface Library {
     @DELETE
     @Path("/book/{id}")
     void deleteBook(@PathParam("id") long id);
-
 }

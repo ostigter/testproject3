@@ -1,6 +1,5 @@
 package org.example.library.client;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -13,9 +12,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
-public class LibraryClient extends HttpServlet {
-
-    private static final long serialVersionUID = 3900650587710494019L;
+public class LibraryClient {
 
     private static final String BASE_URL = "http://localhost:8080/jaxrs-example/rest";
 
