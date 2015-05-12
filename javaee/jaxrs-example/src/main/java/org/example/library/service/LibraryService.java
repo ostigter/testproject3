@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.example.library.api.Book;
+import org.example.library.api.BookNotFoundException;
 import org.example.library.api.Library;
 
 public class LibraryService implements Library {
@@ -21,8 +22,13 @@ public class LibraryService implements Library {
     }
 
     @Override
-    public Book getBook(long id) {
-        return books.get(id);
+    public Book getBook(long id) throws BookNotFoundException {
+        Book book = books.get(id);
+        if (book != null) {
+            return book;
+        } else {
+            throw new BookNotFoundException(id);
+        }
     }
 
     @Override
