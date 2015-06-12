@@ -6,9 +6,10 @@
 	<groupId>org.ozsoft.stockviewer</groupId>
 	<artifactId>stockviewer</artifactId>
 	<version>0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
 	<name>${project.artifactId}</name>
-	<description>Swing GUI application for viewing stock prices</description>
-	
+	<description>Swing GUI application for managing stock portfolios</description>
     <inceptionYear>2014</inceptionYear>
     <developers>
         <developer>
