@@ -1,12 +1,12 @@
 --------------------------------------------------------------------------------------------------------------------
-        Latest update                                   Portfolio                                 All time
-Symbol  Date         Time     Price   Change  Change %  Position      Value    Result  Result %    Result   Result %
---------------------------------------------------------------------------------------------------------------------
-IVV     07-Nov-2014  16:00  110.000  +10.000  +10.00 %  10        1,100.000  +100.000  +10.00 %  +100.000   +10.00 %
-APPL    07-Nov-2014  16:00   95.000   -5.000   -5.00 %  -                                         -50.000    -5.00 %
---------------------------------------------------------------------------------------------------------------------
-Total                                                             1,100.000  +100.000   10.00 %   +50.000    +5.00 %
---------------------------------------------------------------------------------------------------------------------
+        Latest update                                   Current position                           All time
+Symbol  Date         Time     Price   Change  Change %  Owned     Value      Result    Result %    Result    Result %
+---------------------------------------------------------------------------------------------------------------------
+IVV     07-Nov-2014  16:00  110.000  +10.00   +10.00 %  10        1,100.000  +100.000  +10.00 %   +100.000   +10.00 %
+APPL    07-Nov-2014  16:00   95.000   -5.00    -5.00 %                                             -50.000    -5.00 %
+---------------------------------------------------------------------------------------------------------------------
+Total                                                             1,100.000  +100.000   10.00 %   +50.000     +5.00 %
+---------------------------------------------------------------------------------------------------------------------
 
 
 Download CSV file with latest price info:
@@ -21,3 +21,123 @@ http://chart.finance.yahoo.com/z?s=IVV&t=3m&q=l&l=on&z=l&p=v&a=r14
 http://chart.finance.yahoo.com/z?s=IVV&t=1y&q=l&l=on&z=l&p=v&a=r14
 http://chart.finance.yahoo.com/z?s=IVV&t=5y&q=l&l=on&z=l&p=v&a=r14
 http://chart.finance.yahoo.com/z?s=IVV&t=my&q=l&l=on&z=l&p=v&a=r14
+
+
+http://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.quotes where symbol = "PER"&env=http://datatables.org/alltables.env&format=json
+
+{
+	"query": {
+		"count": 1,
+		"created": "2015-06-11T13:32:15Z",
+		"lang": "en-US",
+		"results": {
+			"quote": {
+				"symbol": "PER",
+				"Ask": "7.79",
+				"AverageDailyVolume": "368852",
+				"Bid": "7.61",
+				"AskRealtime": null,
+				"BidRealtime": null,
+				"BookValue": "7.43",
+				"Change_PercentChange": "+0.00 - +0.00%",
+				"Change": "+0.00",
+				"Commission": null,
+				"Currency": "USD",
+				"ChangeRealtime": null,
+				"AfterHoursChangeRealtime": null,
+				"DividendShare": "2.56",
+				"LastTradeDate": "6/10/2015",
+				"TradeDate": null,
+				"EarningsShare": "2.25",
+				"ErrorIndicationreturnedforsymbolchangedinvalid": null,
+				"EPSEstimateCurrentYear": "2.78",
+				"EPSEstimateNextYear": "1.36",
+				"EPSEstimateNextQuarter": "0.00",
+				"DaysLow": null,
+				"DaysHigh": null,
+				"YearLow": "5.60",
+				"YearHigh": "13.08",
+				"HoldingsGainPercent": null,
+				"AnnualizedGain": null,
+				"HoldingsGain": null,
+				"HoldingsGainPercentRealtime": null,
+				"HoldingsGainRealtime": null,
+				"MoreInfo": null,
+				"OrderBookRealtime": null,
+				"MarketCapitalization": "402.68M",
+				"MarketCapRealtime": null,
+				"EBITDA": "0.00",
+				"ChangeFromYearLow": "2.07",
+				"PercentChangeFromYearLow": "+36.96%",
+				"LastTradeRealtimeWithTime": null,
+				"ChangePercentRealtime": null,
+				"ChangeFromYearHigh": "-5.41",
+				"PercebtChangeFromYearHigh": "-41.36%",
+				"LastTradeWithTime": "4:06pm - <b>7.67</b>",
+				"LastTradePriceOnly": "7.67",
+				"HighLimit": null,
+				"LowLimit": null,
+				"DaysRange": null,
+				"DaysRangeRealtime": null,
+				"FiftydayMovingAverage": "7.86",
+				"TwoHundreddayMovingAverage": "7.31",
+				"ChangeFromTwoHundreddayMovingAverage": "0.36",
+				"PercentChangeFromTwoHundreddayMovingAverage": "+4.88%",
+				"ChangeFromFiftydayMovingAverage": "-0.19",
+				"PercentChangeFromFiftydayMovingAverage": "-2.39%",
+				"Name": "SandRidge Permian Trust Common",
+				"Notes": null,
+				"Open": null,
+				"PreviousClose": "7.67",
+				"PricePaid": null,
+				"ChangeinPercent": "+0.00%",
+				"PriceSales": "3.40",
+				"PriceBook": "1.03",
+				"ExDividendDate": "5/13/2015",
+				"PERatio": "3.41",
+				"DividendPayDate": "5/29/2015",
+				"PERatioRealtime": null,
+				"PEGRatio": "0.00",
+				"PriceEPSEstimateCurrentYear": null,
+				"PriceEPSEstimateNextYear": null,
+				"Symbol": "PER",
+				"SharesOwned": null,
+				"ShortRatio": "2.10",
+				"LastTradeTime": "4:06pm",
+				"TickerTrend": null,
+				"OneyrTargetPrice": "7.00",
+				"Volume": "0",
+				"HoldingsValue": null,
+				"HoldingsValueRealtime": null,
+				"YearRange": "5.60 - 13.08",
+				"DaysValueChange": null,
+				"DaysValueChangeRealtime": null,
+				"StockExchange": "NYQ",
+				"DividendYield": "33.80",
+				"PercentChange": "+0.00%"
+			}
+		}
+	}
+}
+
+
+http://finance.google.com/finance/info?client=ig&q=NYSE:PER
+
+//[{
+	"id": "662959",
+	"t": "PER",
+	"e": "NYSE",
+	"l": "7.74",
+	"l_fix": "7.74",
+	"l_cur": "7.74",
+	"s": "0",
+	"ltt": "9:44AM EDT",
+	"lt": "Jun 11, 9:44AM EDT",
+	"lt_dts": "2015-06-11T09:44:09Z",
+	"c": "+0.07",
+	"c_fix": "0.07",
+	"cp": "0.91",
+	"cp_fix": "0.91",
+	"ccol": "chg",
+	"pcls_fix": "7.67"
+}]
