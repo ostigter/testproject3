@@ -53,6 +53,15 @@ public class Stock {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (other instanceof Stock) {
+            return ((Stock) other).getName().equals(name);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
     public String toString() {
         return String.format("%s (%s)", name, symbol);
     }

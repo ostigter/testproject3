@@ -30,25 +30,52 @@ public class Portfolio {
 
     public int getCurrentNoOfShares(Stock stock) {
         int noOfShares = 0;
-        // TODO
+        for (Transaction transaction : transactions) {
+            if (transaction.getStock().equals(stock)) {
+                if (transaction instanceof BuyTransaction) {
+                    noOfShares += ((BuyTransaction) transaction).getNoOfShares();
+                } else if (transaction instanceof SellTransaction) {
+                    noOfShares -= ((SellTransaction) transaction).getNoOfShares();
+                }
+            }
+        }
         return noOfShares;
     }
 
     public BigDecimal getCurrentInvestment(Stock stock) {
         BigDecimal investment = BigDecimal.ZERO;
-        // TODO
+        int noOfShares = 0;
+        BigDecimal avgPrice = BigDecimal.ZERO;
+        for (Transaction transaction : transactions) {
+            if (transaction.getStock().equals(stock)) {
+                if (transaction instanceof BuyTransaction) {
+                    BuyTransaction buy = (BuyTransaction) transaction;
+                    noOfShares += buy.getNoOfShares();
+                    investment = investment.add(buy.getStockPrice().multiply(BigDecimal.valueOf(buy.getNoOfShares()))).add(buy.getTransactionCosts());
+                    avgPrice = investment.divide(BigDecimal.valueOf(noOfShares));
+                } else if (transaction instanceof SellTransaction) {
+                    SellTransaction sell = (SellTransaction) transaction;
+                    noOfShares += sell.getNoOfShares();
+                    investment = investment.subtract((avgPrice.multiply(BigDecimal.valueOf(sell.getNoOfShares()))));
+                }
+            }
+        }
         return investment;
     }
 
     public BigDecimal getCurrentValue(Stock stock) {
-        BigDecimal value = BigDecimal.ZERO;
-        // TODO
-        return value;
+        return stock.getPrice().multiply(BigDecimal.valueOf(getCurrentNoOfShares(stock)));
     }
 
     public BigDecimal getCurrentResult(Stock stock) {
-        BigDecimal value = BigDecimal.ZERO;
-        // TODO
-        return value;
+        BigDecimal dividends = BigDecimal.ZERO;
+        for (Transaction transaction : transactions) {
+            if (transaction.getStock().equals(stock) && (transaction instanceof DividendTransaction)) {
+                DividendTransaction dividend = (DividendTransaction) transaction;
+                // FIXME: Determine number of shares.
+                dividends = dividends.add(dividend.getDividendPerShare());
+            }
+        }
+        return getCurrentValue(stock).subtract(getCurrentInvestment(stock)).add(dividends);
     }
 }
