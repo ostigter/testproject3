@@ -9,51 +9,32 @@ public class PortfolioTest {
 
     @Test
     public void test() {
+        // Create some stock.
         Stock stock = new Stock("TST", "Test Stock");
-        stock.setPrice(20.00);
 
+        // Create new (empty) portfolio.
         Portfolio portfolio = new Portfolio("Test");
-
-        // Buy 100 @ $20.00 ($2.00 costs)
-        portfolio.addTransaction(new Transaction(1L, TransactionType.BUY, stock, 100, 20.00, 2.00));
-        portfolio.updatePositions();
         Position position = portfolio.getPosition(stock);
-        Assert.assertNotNull("Position not found", stock);
-        Assert.assertEquals(100, position.getNoOfShares());
-        Assert.assertEquals(2002.00, position.getCurrentInvestment(), DELTA);
-        Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
-        Assert.assertEquals(-2.00, position.getCurrentResult(), DELTA);
-        Assert.assertEquals(-0.10, position.getCurrentResultPercentage(), DELTA);
-        Assert.assertEquals(2002.00, position.getOverallInvestment(), DELTA);
-        Assert.assertEquals(0.00, position.getOverallResult(), DELTA);
-        Assert.assertEquals(0.00, position.getOverallResultPercentage(), DELTA);
+        Assert.assertNull(position);
 
-        // Buy 100 @ $10.00 ($2.00 costs)
-        stock.setPrice(10.00);
-        portfolio.addTransaction(new Transaction(2L, TransactionType.BUY, stock, 100, 10.00, 2.00));
+        // Add some transactions.
+        portfolio.addTransaction(new Transaction(1L, TransactionType.BUY, stock, 100, 20.00, 5.00));
+        portfolio.addTransaction(new Transaction(2L, TransactionType.DIVIDEND, stock, 100, 1.00, 0.00));
+        portfolio.addTransaction(new Transaction(3L, TransactionType.BUY, stock, 100, 10.00, 5.00));
+        portfolio.addTransaction(new Transaction(4L, TransactionType.DIVIDEND, stock, 200, 1.25, 0.00));
+        portfolio.addTransaction(new Transaction(5L, TransactionType.SELL, stock, 200, 20.00, 10.00));
         portfolio.updatePositions();
-        position = portfolio.getPosition(stock);
-        Assert.assertEquals(200, position.getNoOfShares());
-        Assert.assertEquals(3004.00, position.getCurrentInvestment(), DELTA);
-        Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
-        Assert.assertEquals(-1004.00, position.getCurrentResult(), DELTA);
-        Assert.assertEquals(-33.42, position.getCurrentResultPercentage(), DELTA);
-        Assert.assertEquals(3004.00, position.getOverallInvestment(), DELTA);
-        Assert.assertEquals(0.00, position.getOverallResult(), DELTA);
-        Assert.assertEquals(0.00, position.getOverallResultPercentage(), DELTA);
 
-        // Sell 200 @ $20.00 ($2.00 costs)
-        stock.setPrice(20.00);
-        portfolio.addTransaction(new Transaction(3L, TransactionType.SELL, stock, 200, 20.00, 2.00));
-        portfolio.updatePositions();
+        // Check position.
         position = portfolio.getPosition(stock);
+        Assert.assertNotNull(position);
         Assert.assertEquals(0, position.getNoOfShares());
         Assert.assertEquals(0.00, position.getCurrentInvestment(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentValue(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentResultPercentage(), DELTA);
-        Assert.assertEquals(3006.00, position.getOverallInvestment(), DELTA);
-        Assert.assertEquals(+994.00, position.getOverallResult(), DELTA);
-        Assert.assertEquals(+33.07, position.getOverallResultPercentage(), DELTA);
+        Assert.assertEquals(3020.00, position.getOverallInvestment(), DELTA);
+        Assert.assertEquals(+1330.00, position.getOverallResult(), DELTA);
+        Assert.assertEquals(+44.04, position.getOverallResultPercentage(), DELTA);
     }
 }
