@@ -1,72 +1,56 @@
 package org.ozsoft.portfolio;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Portfolio {
 
     private final String name;
 
-    private final Set<Transaction> transactions;
+    private final List<Transaction> transactions;
+
+    private final Map<Stock, Position> positions;
 
     public Portfolio(String name) {
         this.name = name;
-        transactions = new TreeSet<Transaction>();
+        transactions = new ArrayList<Transaction>();
+        positions = new TreeMap<Stock, Position>();
     }
 
     public String getName() {
         return name;
     }
 
-    public Set<Transaction> getTransactions() {
-        return Collections.unmodifiableSet(transactions);
+    public List<Transaction> getTransactions() {
+        return Collections.unmodifiableList(transactions);
     }
 
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
     }
 
-    public int getCurrentNoOfShares(Stock stock) {
-        int noOfShares = 0;
-        for (Transaction tx : transactions) {
-            if (tx.getStock().equals(stock)) {
-                if (tx.getType() == TransactionType.BUY) {
-                    noOfShares += tx.getNoOfShares();
-                } else if (tx.getType() == TransactionType.SELL) {
-                    noOfShares -= tx.getNoOfShares();
-                }
+    public Collection<Position> getPositions() {
+        return positions.values();
+    }
+
+    public Position getPosition(Stock stock) {
+        return positions.get(stock);
+    }
+
+    public void updatePositions() {
+        positions.clear();
+        for (Transaction transaction : transactions) {
+            Stock stock = transaction.getStock();
+            Position position = positions.get(stock);
+            if (position == null) {
+                position = new Position(stock);
+                positions.put(stock, position);
             }
+            position.addTransaction(transaction);
         }
-        return noOfShares;
-    }
-
-    public double getCurrentInvestment(Stock stock) {
-        double investment = 0.0;
-        int noOfShares = 0;
-        for (Transaction tx : transactions) {
-            if (tx.getStock().equals(stock)) {
-                if (tx.getType() == TransactionType.BUY) {
-                    investment += tx.getNoOfShares() * tx.getPrice() + tx.getCosts();
-                    noOfShares += tx.getNoOfShares();
-                } else if (tx.getType() == TransactionType.SELL) {
-                    investment -= tx.getNoOfShares() * (investment / noOfShares) - tx.getCosts();
-                    noOfShares -= tx.getNoOfShares();
-                }
-            }
-        }
-        return investment;
-    }
-
-    public double getCurrentValue(Stock stock) {
-        return getCurrentNoOfShares(stock) * stock.getPrice();
-    }
-
-    public double getCurrentChange(Stock stock) {
-        return getCurrentValue(stock) - getCurrentInvestment(stock);
-    }
-
-    public double getCurrentChangePercentage(Stock stock) {
-        return getCurrentChange(stock) / getCurrentInvestment(stock) * 100.0;
     }
 }
