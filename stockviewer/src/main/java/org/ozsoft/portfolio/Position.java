@@ -1,6 +1,6 @@
 package org.ozsoft.portfolio;
 
-public class Position {
+public class Position implements Comparable<Position> {
 
     private final Stock stock;
 
@@ -66,24 +66,34 @@ public class Position {
         }
     }
 
-    public void buy(int noOfShares, double price, double costs) {
-        this.noOfShares += noOfShares;
-        currentInvestment += (noOfShares * price) + costs;
-        overallInvestment += (noOfShares * price) + costs;
-    }
-
-    public void sell(int noOfShares, double price, double costs) {
-        if (noOfShares > this.noOfShares) {
-            throw new IllegalArgumentException("Cannot sell more shares than owned");
+    public void addTransaction(Transaction tx) {
+        switch (tx.getType()) {
+            case BUY:
+                this.noOfShares += tx.getNoOfShares();
+                double investment = (tx.getNoOfShares() * tx.getPrice()) + tx.getCosts();
+                currentInvestment += investment;
+                overallInvestment += investment;
+                break;
+            case SELL:
+                if (tx.getNoOfShares() > noOfShares) {
+                    throw new IllegalArgumentException("Cannot sell more shares than owned");
+                }
+                double avgPrice = currentInvestment / noOfShares;
+                currentInvestment -= (tx.getNoOfShares() * avgPrice);
+                overallInvestment += tx.getCosts();
+                overallResult += tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCosts();
+                noOfShares -= tx.getNoOfShares();
+                break;
+            case DIVIDEND:
+                overallResult += noOfShares * tx.getPrice();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid transaction type");
         }
-
-        double avgPrice = currentInvestment / this.noOfShares;
-        currentInvestment -= (noOfShares * avgPrice);
-        overallResult += noOfShares * (price - avgPrice) - costs;
-        this.noOfShares -= noOfShares;
     }
 
-    public void receiveDividend(double price) {
-        overallResult += noOfShares * price;
+    @Override
+    public int compareTo(Position other) {
+        return stock.compareTo(other.getStock());
     }
 }

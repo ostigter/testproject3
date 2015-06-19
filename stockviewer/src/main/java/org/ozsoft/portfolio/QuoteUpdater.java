@@ -1,7 +1,6 @@
-package org.ozsoft.stockviewer;
+package org.ozsoft.portfolio;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -42,9 +41,9 @@ public class QuoteUpdater {
                     Calendar date = Calendar.getInstance();
                     date.setTime(DATE_FORMAT.parse(dateString));
                     if (date.after(stock.getDate())) {
-                        stock.setDate(date);
+                        stock.setDate(date.getTimeInMillis());
                         stock.setPreviousPrice(stock.getPrice());
-                        stock.setPrice(new BigDecimal(fields[2]));
+                        stock.setPrice(Double.valueOf(fields[2]));
                     }
                 } catch (ParseException e) {
                     System.err.format("ERROR: Could not parse date '%s'\n", dateString);

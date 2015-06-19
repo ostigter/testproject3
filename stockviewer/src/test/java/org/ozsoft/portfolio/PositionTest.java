@@ -24,7 +24,7 @@ public class PositionTest {
 
         // BUY 100 @ $20 ($5 costs)
         stock.setPrice(20.00);
-        position.buy(100, 20.00, 5.00);
+        position.addTransaction(new Transaction(1L, TransactionType.BUY, stock, 100, 20.00, 5.00));
         Assert.assertEquals(100, position.getNoOfShares());
         Assert.assertEquals(2005.00, position.getCurrentInvestment(), DELTA);
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
@@ -34,7 +34,7 @@ public class PositionTest {
         Assert.assertEquals(0.00, position.getOverallResultPercentage(), DELTA);
 
         // DIVIDEND 100 @ $1.00
-        position.receiveDividend(1.00);
+        position.addTransaction(new Transaction(2L, TransactionType.DIVIDEND, stock, 100, 1.00, 0.00));
         Assert.assertEquals(100, position.getNoOfShares());
         Assert.assertEquals(2005.00, position.getCurrentInvestment(), DELTA);
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
@@ -55,7 +55,7 @@ public class PositionTest {
         Assert.assertEquals(+4.99, position.getOverallResultPercentage(), DELTA);
 
         // BUY another 100 @ $10 ($5 costs)
-        position.buy(100, 10.00, 5.00);
+        position.addTransaction(new Transaction(3L, TransactionType.BUY, stock, 100, 10.00, 5.00));
         Assert.assertEquals(200, position.getNoOfShares());
         Assert.assertEquals(3010.00, position.getCurrentInvestment(), DELTA);
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
@@ -77,7 +77,7 @@ public class PositionTest {
         Assert.assertEquals(+3.32, position.getOverallResultPercentage(), DELTA);
 
         // DIVIDEND 200 @ $1.25
-        position.receiveDividend(1.25);
+        position.addTransaction(new Transaction(3L, TransactionType.DIVIDEND, stock, 200, 1.25, 0.00));
         Assert.assertEquals(200, position.getNoOfShares());
         Assert.assertEquals(3010.00, position.getCurrentInvestment(), DELTA);
         Assert.assertEquals(4000.00, position.getCurrentValue(), DELTA);
@@ -88,14 +88,14 @@ public class PositionTest {
         Assert.assertEquals(+11.63, position.getOverallResultPercentage(), DELTA);
 
         // SELL 200 @ $20 ($10 costs)
-        position.sell(200, 20.00, 10.00);
+        position.addTransaction(new Transaction(4L, TransactionType.SELL, stock, 200, 20.00, 10.00));
         Assert.assertEquals(0, position.getNoOfShares());
         Assert.assertEquals(0.00, position.getCurrentInvestment(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentValue(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentResultPercentage(), DELTA);
-        Assert.assertEquals(3010.00, position.getOverallInvestment(), DELTA);
+        Assert.assertEquals(3020.00, position.getOverallInvestment(), DELTA);
         Assert.assertEquals(+1330.00, position.getOverallResult(), DELTA);
-        Assert.assertEquals(+44.19, position.getOverallResultPercentage(), DELTA);
+        Assert.assertEquals(+44.04, position.getOverallResultPercentage(), DELTA);
     }
 }

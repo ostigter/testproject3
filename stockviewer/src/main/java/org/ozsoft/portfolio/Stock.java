@@ -1,6 +1,6 @@
 package org.ozsoft.portfolio;
 
-public class Stock {
+public class Stock implements Comparable<Stock> {
 
     private final String symbol;
 
@@ -61,5 +61,10 @@ public class Stock {
     @Override
     public String toString() {
         return String.format("%s (%s)", name, symbol);
+    }
+
+    @Override
+    public int compareTo(Stock other) {
+        return symbol.compareTo(other.getSymbol());
     }
 }
