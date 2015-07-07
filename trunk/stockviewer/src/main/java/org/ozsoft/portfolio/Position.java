@@ -54,7 +54,7 @@ public class Position implements Comparable<Position> {
     }
 
     public double getOverallResult() {
-        return overallResult;
+        return getCurrentResult() + overallResult;
     }
 
     public double getOverallResultPercentage() {
