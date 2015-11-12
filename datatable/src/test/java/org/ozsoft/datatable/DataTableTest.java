@@ -36,10 +36,10 @@ public class DataTableTest {
         row.setCellValue(2, 50.00);
         Assert.assertEquals(50.00, row.getCellValue(2));
 
-        // Read and write cells directly
-        Assert.assertEquals("Realty Income", table.getCellValue(1, 1));
-        Assert.assertEquals(45.10, table.getCellValue(1, 2));
-        table.setCellValue(0, 2, 51.00);
-        Assert.assertEquals(51.00, table.getCellValue(0, 2));
+        // // Read and write cells directly
+        // Assert.assertEquals("Realty Income", table.getCellValue(1, 1));
+        // Assert.assertEquals(45.10, table.getCellValue(1, 2));
+        // table.setCellValue(0, 2, 51.00);
+        // Assert.assertEquals(51.00, table.getCellValue(0, 2));
     }
 }
