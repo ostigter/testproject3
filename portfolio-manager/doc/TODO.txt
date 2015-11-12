@@ -1,0 +1,11 @@
+Portfolio Manager - TODO
+========================
+
+* View owned portfolio ('Owned' tab)
+* View transactions ('Transactions' tab)
+* Add transaction
+* Delete transaction
+* View income overview ('Income' tab)
+* Task progress indicators
+* Sectors
+* Industries
