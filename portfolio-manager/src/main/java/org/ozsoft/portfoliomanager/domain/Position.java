@@ -81,30 +81,30 @@ public class Position implements Comparable<Position> {
 
     public void addTransaction(Transaction tx) {
         switch (tx.getType()) {
-            case BUY:
-                this.noOfShares += tx.getNoOfShares();
-                double cost = (tx.getNoOfShares() * tx.getPrice()) + tx.getCost();
-                currentCost += cost;
-                totalCost += cost;
-                break;
-            case SELL:
-                if (tx.getNoOfShares() > noOfShares) {
-                    throw new IllegalArgumentException("Cannot sell more shares than owned");
-                }
-                double avgPrice = currentCost / noOfShares;
-                double value = tx.getNoOfShares() * avgPrice;
-                currentCost -= value;
-                totalCost += tx.getCost();
-                totalReturn += tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCost();
-                noOfShares -= tx.getNoOfShares();
-                break;
-            case DIVIDEND:
-                double income = noOfShares * tx.getPrice();
-                totalIncome += income;
-                totalReturn += income;
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid transaction type");
+        case BUY:
+            this.noOfShares += tx.getNoOfShares();
+            double cost = (tx.getNoOfShares() * tx.getPrice()) + tx.getCost();
+            currentCost += cost;
+            totalCost += cost;
+            break;
+        case SELL:
+            if (tx.getNoOfShares() > noOfShares) {
+                throw new IllegalArgumentException("Cannot sell more shares than owned");
+            }
+            double avgPrice = currentCost / noOfShares;
+            double value = tx.getNoOfShares() * avgPrice;
+            currentCost -= value;
+            totalCost += tx.getCost();
+            totalReturn += tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCost();
+            noOfShares -= tx.getNoOfShares();
+            break;
+        case DIVIDEND:
+            double income = tx.getNoOfShares() * tx.getPrice();
+            totalIncome += income;
+            totalReturn += income;
+            break;
+        default:
+            throw new IllegalArgumentException("Invalid transaction type");
         }
     }
 

@@ -1,24 +1,14 @@
 Portfolio Manager - DESIGN
 ==========================
 
---------------------------------------------------------------------------------------------------------------------
-        Latest update                                   Current position                           All time
-Symbol  Date         Time     Price   Change  Change %  Owned     Value      Result    Result %    Result    Result %
----------------------------------------------------------------------------------------------------------------------
-IVV     07-Nov-2014  16:00  110.000  +10.00   +10.00 %  10        1,100.000  +100.000  +10.00 %   +100.000   +10.00 %
-APPL    07-Nov-2014  16:00   95.000   -5.00    -5.00 %                                             -50.000    -5.00 %
----------------------------------------------------------------------------------------------------------------------
-Total                                                             1,100.000  +100.000   10.00 %   +50.000     +5.00 %
----------------------------------------------------------------------------------------------------------------------
-
 
 Download CSV file with latest price info:
     http://download.finance.yahoo.com/d/quotes.csv?s=IVV&f=d1t1l1
 Response:
     "9/30/2015","4:06pm",9.25
 
-Download CSV with full history:
-    http://real-chart.finance.yahoo.com/table.csv?s=IVV
+Download CSV with all-time price history:
+    http://ichart.finance.yahoo.com/table.csv?s=JNJ
 Response:
     Date,Open,High,Low,Close,Volume,Adj Close
     2015-09-30,191.490005,192.880005,190.490005,192.720001,7586700,192.720001
@@ -26,6 +16,15 @@ Response:
     2015-09-28,192.850006,192.949997,188.710007,189.009995,11841600,189.009995
     [...]
 
+
+Download CSV with all-time dividend history:
+    http://ichart.finance.yahoo.com/table.csv?s=JNJ&g=v
+Response:
+    Date,Dividends
+    2015-08-21,0.750000
+    2015-05-21,0.750000
+    2015-02-20,0.700000
+    [...]
 
 Download charts with different date ranges:
     http://chart.finance.yahoo.com/z?s=IVV&t=1d&q=l&l=on&z=l&p=v&a=r14
@@ -35,7 +34,6 @@ Download charts with different date ranges:
     http://chart.finance.yahoo.com/z?s=IVV&t=1y&q=l&l=on&z=l&p=v&a=r14
     http://chart.finance.yahoo.com/z?s=IVV&t=5y&q=l&l=on&z=l&p=v&a=r14
     http://chart.finance.yahoo.com/z?s=IVV&t=my&q=l&l=on&z=l&p=v&a=r14
-
 
 http://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.quotes where symbol = "PER"&env=http://datatables.org/alltables.env&format=json
 

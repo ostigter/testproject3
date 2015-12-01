@@ -1,11 +1,14 @@
 Portfolio Manager - TODO
 ========================
 
-* View owned portfolio ('Owned' tab)
+* Show totals in 'Owned' tab
+* View valuation score
+* Edit target price
+* Show target price score
 * View transactions ('Transactions' tab)
 * Add transaction
 * Delete transaction
 * View income overview ('Income' tab)
-* Task progress indicators
 * Sectors
 * Industries
+* Task progress indicators
