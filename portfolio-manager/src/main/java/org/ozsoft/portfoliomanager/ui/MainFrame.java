@@ -160,7 +160,7 @@ public class MainFrame extends JFrame {
         if (addStockDialog.show() == Dialog.OK) {
             config.addStock(addStockDialog.getStock());
             updateTables();
-            tabbedPane.setSelectedIndex(1); // 'Watch' tab
+            tabbedPane.setSelectedIndex(2); // 'Watch' tab
         }
     }
 

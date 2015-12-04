@@ -60,6 +60,10 @@ public class DataTable extends JPanel {
         mainTable.setCellValue(rowIndex, columnIndex, value);
     }
 
+    public int getSelectedRow() {
+        return mainTable.getSelectedRow();
+    }
+
     public void addRow(Object... cellValues) {
         mainTable.addRow(cellValues);
     }
