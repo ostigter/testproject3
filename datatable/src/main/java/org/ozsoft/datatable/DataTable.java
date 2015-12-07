@@ -2,10 +2,12 @@ package org.ozsoft.datatable;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -29,7 +31,12 @@ public class DataTable extends JPanel {
         JScrollPane mainScrollPane = new JScrollPane(mainTable);
 
         setLayout(new BorderLayout());
-        add(mainScrollPane, BorderLayout.NORTH);
+        add(mainScrollPane, BorderLayout.CENTER);
+    }
+
+    @Override
+    public void addMouseListener(MouseListener listener) {
+        mainTable.addMouseListener(listener);
     }
 
     public void setColumns(List<Column> columns) {
@@ -74,6 +81,11 @@ public class DataTable extends JPanel {
 
     public void clear() {
         mainTable.clear();
+    }
+
+    @Override
+    public void setComponentPopupMenu(JPopupMenu menu) {
+        mainTable.setComponentPopupMenu(menu);
     }
 
     private static class Table extends JTable {
