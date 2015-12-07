@@ -6,6 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.EncryptedDocumentException;
@@ -16,8 +23,12 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellReference;
+import org.ozsoft.portfoliomanager.domain.ClosingPrice;
 import org.ozsoft.portfoliomanager.domain.Configuration;
 import org.ozsoft.portfoliomanager.domain.Stock;
+import org.ozsoft.portfoliomanager.domain.StockAnalysis;
+import org.ozsoft.portfoliomanager.domain.StockPerformance;
+import org.ozsoft.portfoliomanager.domain.TimeRange;
 import org.ozsoft.portfoliomanager.util.HttpPageReader;
 
 import com.google.gson.JsonElement;
@@ -40,7 +51,13 @@ public class UpdateService {
 
     private static final String SIMPLE_STOCK_QUOTE_URI = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=l1";
 
-    // private static final DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy h:mma");
+    private static final String HISTORICAL_CLOSINGS_URL = "http://ichart.finance.yahoo.com/table.csv?s=%s";
+
+    private static final String HISTORICAL_DIVIDENDS_URL = "http://ichart.finance.yahoo.com/table.csv?s=%s&g=v";
+
+    private static final DateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("yyyy-MM-dd");
+
+    // private static final DateFormat DATE_FORMAT_LONG = new SimpleDateFormat("MM/dd/yyyy h:mma");
 
     private final Configuration config = Configuration.getInstance();
 
@@ -48,10 +65,67 @@ public class UpdateService {
 
     public void updateStockData() {
         System.out.println("Updating stocks");
-        // readNewStocks();
         updateStatistics();
         updateAllPrices();
         Configuration.save();
+    }
+
+    public void updatePrice(Stock stock) {
+        String symbol = stock.getSymbol();
+        try {
+            String quote = IOUtils.toString(httpPageReader.downloadFile(String.format(SIMPLE_STOCK_QUOTE_URI, symbol)));
+            double newPrice = Double.parseDouble(quote);
+            stock.setPreviousPrice(stock.getPrice());
+            stock.setPrice(newPrice);
+        } catch (IOException e) {
+            System.err.format("ERROR: Failed to retrieve quote for '%s': %s\n", symbol, e.getMessage());
+        }
+    }
+
+    public void analyzeAllStocks() {
+        System.out.println("\nAnalyzing stocks...");
+        List<StockAnalysis> analyses = new ArrayList<StockAnalysis>();
+        for (Stock stock : config.getStocks()) {
+            System.out.format("  %s\n", stock);
+            analyses.add(analyzeStock(stock));
+        }
+        Collections.sort(analyses);
+
+        System.out.println("\nStocks sorted by score:");
+        for (StockAnalysis analysis : analyses) {
+            System.out.println(analysis);
+        }
+    }
+
+    public StockAnalysis analyzeStock(Stock stock) {
+        List<ClosingPrice> prices = getClosingPrices(stock);
+
+        StockPerformance perf10yr = new StockPerformance(prices, TimeRange.TEN_YEAR);
+        StockPerformance perf5yr = new StockPerformance(prices, TimeRange.FIVE_YEAR);
+        StockPerformance perf1yr = new StockPerformance(prices, TimeRange.ONE_YEAR);
+
+        double score = 20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
+                * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
+
+        StockAnalysis analysis = new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(),
+                perf1yr.getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
+
+        return analysis;
+    }
+
+    public void printStockAnalysis(Stock stock) {
+        StockAnalysis analysis = analyzeStock(stock);
+        System.out.format("\nAnalysis for %s:\n\n", analysis.getStock());
+        System.out.format("10-year CAGR:        %+.2f %%\n", analysis.getCagr10yr());
+        System.out.format(" 5-year CAGR:        %+.2f %%\n", analysis.getCagr5yr());
+        System.out.format(" 1-year change:      %+.2f %%\n", analysis.getChange1yr());
+        System.out.format("10-year volatility:   %.2f %%\n", analysis.getVolatility());
+        System.out.format("52-week high:       $ %.2f\n", analysis.getHigh52wk());
+        System.out.format("52-week low:        $ %.2f\n", analysis.getLow52wk());
+        System.out.format("Current price:      $ %.2f\n", analysis.getCurrentPrice());
+        System.out.format(" 5-year discount:    %.2f %%\n", analysis.getDiscount5yr());
+        System.out.format(" 1-year discount:    %.2f %%\n", analysis.getDiscount1yr());
+        System.out.format("Score:               %.2f\n", analysis.getScore());
     }
 
     private void updateStatistics() {
@@ -144,28 +218,66 @@ public class UpdateService {
         System.out.format("%d stock prices updated\n", count);
     }
 
-    public void updatePrice(Stock stock) {
+    public List<ClosingPrice> getClosingPrices(Stock stock) {
         String symbol = stock.getSymbol();
-
+        String uri = String.format(HISTORICAL_CLOSINGS_URL, symbol);
+        List<ClosingPrice> prices = new ArrayList<ClosingPrice>();
+        boolean inHeader = true;
         try {
-            String quote = IOUtils.toString(httpPageReader.downloadFile(String.format(SIMPLE_STOCK_QUOTE_URI, symbol)));
-            double newPrice = Double.parseDouble(quote);
-            // String[] fields = quote.split(",");
-            // String dateString = stripQuotes(fields[0]) + " " + stripQuotes(fields[1]);
-            // try {
-            // Calendar date = Calendar.getInstance();
-            // date.setTime(DATE_FORMAT.parse(dateString));
-            stock.setPreviousPrice(stock.getPrice());
-            // stock.setPrice(Double.valueOf(fields[2]));
-            stock.setPrice(newPrice);
-            // } catch (ParseException e) {
-            // System.err.format("ERROR: Could not parse date '%s'\n", dateString);
-            // e.printStackTrace(System.err);
-            // }
-
+            String response = httpPageReader.read(uri);
+            for (String line : response.split("\n")) {
+                if (inHeader) {
+                    inHeader = false;
+                } else {
+                    String[] fields = line.split(",");
+                    if (fields.length == 7) {
+                        try {
+                            Date date = DATE_FORMAT_SHORT.parse(fields[0]);
+                            double value = Double.parseDouble(fields[6]);
+                            prices.add(new ClosingPrice(date, value));
+                        } catch (ParseException e) {
+                            System.err.format("ERROR: Could not parse price quote: '%s'\n", line);
+                        }
+                    }
+                }
+            }
         } catch (IOException e) {
-            System.err.format("ERROR: Failed to retrieve quote for '%s': %s\n", symbol, e.getMessage());
+            System.err.format("ERROR: Could retrieve historical prices for '%s': %s\n", symbol, e.getMessage());
+            e.printStackTrace(System.err);
         }
+
+        return prices;
+    }
+
+    public List<ClosingPrice> getDividends(Stock stock) {
+        String symbol = stock.getSymbol();
+        String uri = String.format(HISTORICAL_DIVIDENDS_URL, symbol);
+        List<ClosingPrice> prices = new ArrayList<ClosingPrice>();
+        boolean inHeader = true;
+        try {
+            String response = httpPageReader.read(uri);
+            for (String line : response.split("\n")) {
+                if (inHeader) {
+                    inHeader = false;
+                } else {
+                    String[] fields = line.split(",");
+                    if (fields.length == 2) {
+                        try {
+                            Date date = DATE_FORMAT_SHORT.parse(fields[0]);
+                            double value = Double.parseDouble(fields[1]);
+                            prices.add(new ClosingPrice(date, value));
+                        } catch (ParseException e) {
+                            System.err.format("ERROR: Could not parse price quote: '%s'\n", line);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.format("ERROR: Could retrieve historical dividend payments for '%s': %s\n", symbol, e.getMessage());
+            e.printStackTrace(System.err);
+        }
+
+        return prices;
     }
 
     private static double getJsonDoubleValue(JsonObject obj, String memberName) {
@@ -176,52 +288,4 @@ public class UpdateService {
             return -1.0;
         }
     }
-
-    // private static String stripQuotes(String text) {
-    // int length = (text != null) ? text.length() : 0;
-    // if (length > 0 && text.charAt(0) == '\"' && text.charAt(length - 1) == '\"') {
-    // return text.substring(1, length - 1);
-    // } else {
-    // return text;
-    // }
-    // }
-
-    // private void readNewStocks() {
-    // System.out.println("Read new stocks");
-    // try {
-    // Workbook workbook = WorkbookFactory.create(new File("data/portfolio.xlsx"));
-    // Sheet sheet = workbook.getSheet("Goal");
-    // int count = 0;
-    // for (Row row : sheet) {
-    // if (row.getRowNum() > 4) {
-    // Cell cell = row.getCell(1);
-    // if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
-    // String symbol = cell.getStringCellValue();
-    // String name = row.getCell(0).getStringCellValue();
-    // cell = row.getCell(10);
-    // String ratingText = (cell != null) ? cell.getStringCellValue() : null;
-    // cell = row.getCell(12);
-    // String comment = (cell != null) ? cell.getStringCellValue() : null;
-    //
-    // Stock stock = new Stock(symbol, name);
-    // CreditRating creditRating = CreditRating.parse(ratingText);
-    // if (creditRating != null) {
-    // stock.setCreditRating(creditRating);
-    // }
-    // if (comment != null) {
-    // stock.setComment(comment);
-    // }
-    //
-    // config.addStock(stock);
-    // System.out.format("Added stock: %s (%s)\n", symbol, name);
-    // count++;
-    // }
-    // }
-    // }
-    // System.out.format("%d stocks updated\n", count);
-    //
-    // } catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-    // System.err.format("ERROR: Failed to process CCC list: %s\n", e.getMessage());
-    // }
-    // }
 }

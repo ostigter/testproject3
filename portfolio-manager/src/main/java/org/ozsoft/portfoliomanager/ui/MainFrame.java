@@ -88,6 +88,16 @@ public class MainFrame extends JFrame {
         });
         toolBar.add(button);
 
+        button = new JButton("Analyze");
+        button.setToolTipText("Analyze all stocks");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                analyzeStocks();
+            }
+        });
+        toolBar.add(button);
+
         button = new JButton("Add Stock");
         button.setToolTipText("Add a new stock to the watch list");
         button.addActionListener(new ActionListener() {
@@ -162,6 +172,10 @@ public class MainFrame extends JFrame {
             updateTables();
             tabbedPane.setSelectedIndex(2); // 'Watch' tab
         }
+    }
+
+    private void analyzeStocks() {
+        updateService.analyzeAllStocks();
     }
 
     private void exit() {

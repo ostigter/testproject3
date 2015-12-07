@@ -110,16 +110,36 @@ public class StockPriceFrame extends JFrame {
         });
         gbc.gridx = 0;
         gbc.gridy = 3;
-        gbc.gridwidth = 2;
+        gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0.0;
+        gbc.weightx = 1.0;
         gbc.weighty = 0.0;
         gbc.insets = new Insets(10, 10, 10, 10);
         getContentPane().add(updateButton, gbc);
 
+        JButton analyzeButton = new JButton("Analyze");
+        analyzeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                analyze();
+            }
+        });
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.EAST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        getContentPane().add(analyzeButton, gbc);
+
         update();
+
+        analyze();
     }
 
     private void update() {
@@ -143,5 +163,9 @@ public class StockPriceFrame extends JFrame {
             System.err.format("ERROR: Could not retrieve price graph for %s\n", stock);
             e.printStackTrace(System.err);
         }
+    }
+
+    private void analyze() {
+        updateService.printStockAnalysis(stock);
     }
 }
