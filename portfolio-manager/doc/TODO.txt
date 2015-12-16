@@ -1,14 +1,21 @@
 Portfolio Manager - TODO
 ========================
 
+* Show share price change (percentage since last close)
 * Show totals in 'Owned' tab
-* View valuation score
-* Edit target price
-* Show target price score
+* Extend stock analysis score formula (CR, YDG, CY, DGR)
+* View stock analysis details per share
+* Update stock analysis (all stocks) and show scores
+* Set and view stock target price (TP) and index (TPI)
+* Show weight per position ('Owned' tab)
+* Write application log file
+* Write alert log file
+* View alerts (since last update)
 * View transactions ('Transactions' tab)
 * Add transaction
 * Delete transaction
 * View income overview ('Income' tab)
-* Sectors
-* Industries
+* Set/view sector and industry per stock
 * Task progress indicators
+* Export stock analysis scores to CSV file
+* View portfolio diversification (per sector/stock)
