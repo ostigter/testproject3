@@ -29,8 +29,9 @@ import org.ozsoft.portfoliomanager.ui.table.column.DGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.MoneyColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PEColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.table.column.PercChangeColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercentageColumnRenderer;
-import org.ozsoft.portfoliomanager.ui.table.column.PriceColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.table.column.ResultColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YDGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YieldColumnRenderer;
 
@@ -68,7 +69,7 @@ public class OwnedTable extends DataTable {
         ColumnRenderer numberColumnRenderer = new DefaultColumnRenderer(SwingConstants.RIGHT);
         ColumnRenderer centeredColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
         ColumnRenderer ratingColumnRenderer = new CRColumnRenderer();
-        ColumnRenderer priceColumnRenderer = new PriceColumnRenderer();
+        ColumnRenderer percChangeColumnRenderer = new PercChangeColumnRenderer();
         ColumnRenderer peRatioColumnRenderer = new PEColumnRenderer();
         ColumnRenderer divRateColumnRenderer = new DRColumnRenderer();
         ColumnRenderer yieldColumnRenderer = new YieldColumnRenderer();
@@ -76,13 +77,15 @@ public class OwnedTable extends DataTable {
         ColumnRenderer yearsColumnRenderer = new YDGColumnRenderer();
         ColumnRenderer smallMoneyColumnRenderer = new MoneyColumnRenderer(2);
         ColumnRenderer bigMoneyColumnRenderer = new MoneyColumnRenderer(0);
-        ColumnRenderer percentageColumnRenderer = new PercentageColumnRenderer();
+        ColumnRenderer resultColumnRenderer = new ResultColumnRenderer(0);
+        ColumnRenderer percColumnRenderer = new PercentageColumnRenderer();
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("Name", "Company name"));
         columns.add(new Column("Symbol", "Ticker symbol", centeredColumnRenderer));
         columns.add(new Column("CR", "Current credit rating", ratingColumnRenderer));
-        columns.add(new Column("Price", "Current stock price", priceColumnRenderer));
+        columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
+        columns.add(new Column("Change", "Change in stock price since last closing", percChangeColumnRenderer));
         columns.add(new Column("P/E", "Current price-to-earnings ratio", peRatioColumnRenderer));
         columns.add(new Column("DR", "Current dividend rate", divRateColumnRenderer));
         columns.add(new Column("CY", "Current dividend yield", yieldColumnRenderer));
@@ -92,13 +95,13 @@ public class OwnedTable extends DataTable {
         columns.add(new Column("Cost", "Current cost basis", bigMoneyColumnRenderer));
         columns.add(new Column("CPS", "Current cost basis per share", smallMoneyColumnRenderer));
         columns.add(new Column("Value", "Current market value", bigMoneyColumnRenderer));
-        columns.add(new Column("Result", "Current result (value minus cost)", bigMoneyColumnRenderer));
-        columns.add(new Column("Result %", "Current result as percentage of cost", percentageColumnRenderer));
+        columns.add(new Column("Result", "Current result (value minus cost)", resultColumnRenderer));
+        columns.add(new Column("Result %", "Current result as percentage of cost", percChangeColumnRenderer));
         columns.add(new Column("AI", "Annual income based on current yield", bigMoneyColumnRenderer));
         columns.add(new Column("TI", "Overall total income received", bigMoneyColumnRenderer));
-        columns.add(new Column("YOC", "Overall yield on cost", percentageColumnRenderer));
-        columns.add(new Column("TR", "Total return (result plus income)", bigMoneyColumnRenderer));
-        columns.add(new Column("TR %", "Total return as percentage of cost", percentageColumnRenderer));
+        columns.add(new Column("YOC", "Overall yield on cost", percColumnRenderer));
+        columns.add(new Column("TR", "Total return (result plus income)", resultColumnRenderer));
+        columns.add(new Column("TR %", "Total return as percentage of cost", percChangeColumnRenderer));
         columns.add(new Column("Notes", "Notes about this stock"));
 
         setColumns(columns);
@@ -149,8 +152,8 @@ public class OwnedTable extends DataTable {
             double cps = (noOfShares > 0) ? p.getCurrentCost() / noOfShares : 0.0;
             double ai = p.getNoOfShares() * s.getDivRate();
             double yoc = (noOfShares > 0) ? p.getTotalIncome() / noOfShares : 0.0;
-            addRow(s.getName(), s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getPeRatio(), s.getDivRate(), s.getYield(), s.getDivGrowth(),
-                    s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps, p.getCurrentValue(), p.getCurrentResult(),
+            addRow(s.getName(), s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getDivRate(), s.getYield(),
+                    s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps, p.getCurrentValue(), p.getCurrentResult(),
                     p.getCurrentResultPercentage(), ai, p.getTotalIncome(), yoc, p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
         }
 

@@ -27,8 +27,9 @@ import org.ozsoft.portfoliomanager.ui.StockPriceFrame;
 import org.ozsoft.portfoliomanager.ui.table.column.CRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DRColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.table.column.MoneyColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PEColumnRenderer;
-import org.ozsoft.portfoliomanager.ui.table.column.PriceColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.table.column.PercChangeColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YDGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YieldColumnRenderer;
 
@@ -65,7 +66,8 @@ public class StockTable extends DataTable {
     protected void initColumns() {
         ColumnRenderer defaultColumnRenderer = new DefaultColumnRenderer();
         ColumnRenderer centeredColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
-        ColumnRenderer priceColumnRenderer = new PriceColumnRenderer();
+        ColumnRenderer smallMoneyColumnRenderer = new MoneyColumnRenderer(2);
+        ColumnRenderer percChangeColumnRenderer = new PercChangeColumnRenderer();
         ColumnRenderer peRatioColumnRenderer = new PEColumnRenderer();
         ColumnRenderer divRateColumnRenderer = new DRColumnRenderer();
         ColumnRenderer yieldColumnRenderer = new YieldColumnRenderer();
@@ -76,7 +78,8 @@ public class StockTable extends DataTable {
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("Name", "Company name", defaultColumnRenderer));
         columns.add(new Column("Symbol", "Ticker symbol", centeredColumnRenderer));
-        columns.add(new Column("Price", "Current stock price", priceColumnRenderer));
+        columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
+        columns.add(new Column("Change", "Change in stock price since last closing", percChangeColumnRenderer));
         columns.add(new Column("P/E", "Current price-to-earnings ratio", peRatioColumnRenderer));
         columns.add(new Column("DR", "Current dividend rate", divRateColumnRenderer));
         columns.add(new Column("Yield", "Current dividend yield", yieldColumnRenderer));
@@ -156,8 +159,8 @@ public class StockTable extends DataTable {
     public final void update() {
         clear();
         for (Stock s : getStocks()) {
-            addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getPeRatio(), s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(),
-                    s.getCreditRating(), s.getComment());
+            addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getDivRate(), s.getYield(), s.getDivGrowth(),
+                    s.getYearsDivGrowth(), s.getCreditRating(), s.getComment());
         }
         super.update();
     }

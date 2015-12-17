@@ -120,12 +120,15 @@ public class Configuration {
         }
     }
 
-    public void updateStock(String symbol, double price, double peRatio, double divRate) {
+    public void updateStock(String symbol, double price, double prevClose, double peRatio, double divRate) {
         Stock stock = stocks.get(symbol);
         if (stock != null) {
             if (price > 0.0) {
-                stock.setPreviousPrice(stock.getPrice());
+                stock.setPrevClose(stock.getPrice());
                 stock.setPrice(price);
+            }
+            if (prevClose > 0.0) {
+                stock.setPrevClose(prevClose);
             }
             if (peRatio > 0.0) {
                 stock.setPeRatio(peRatio);

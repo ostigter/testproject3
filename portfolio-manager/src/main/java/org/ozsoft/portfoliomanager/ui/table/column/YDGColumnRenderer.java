@@ -29,6 +29,7 @@ public class YDGColumnRenderer extends DefaultColumnRenderer {
                 return String.valueOf(numericValue);
             }
         } else {
+            backgroundColor = Color.RED;
             return "<Error>";
         }
     }

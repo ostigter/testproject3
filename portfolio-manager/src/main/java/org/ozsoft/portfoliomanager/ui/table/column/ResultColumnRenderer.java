@@ -3,10 +3,11 @@ package org.ozsoft.portfoliomanager.ui.table.column;
 import java.awt.Color;
 
 import org.ozsoft.datatable.DefaultColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.UIConstants;
 
-public class MoneyColumnRenderer extends DefaultColumnRenderer {
+public class ResultColumnRenderer extends DefaultColumnRenderer {
 
-    private static final long serialVersionUID = -8744524110427922656L;
+    private static final long serialVersionUID = -2184616889371886011L;
 
     private static final int DEFAULT_DECIMAL_PRECISION = 2;
 
@@ -16,11 +17,11 @@ public class MoneyColumnRenderer extends DefaultColumnRenderer {
 
     private Color textColor;
 
-    public MoneyColumnRenderer() {
+    public ResultColumnRenderer() {
         this(DEFAULT_DECIMAL_PRECISION);
     }
 
-    public MoneyColumnRenderer(int decimalPrecision) {
+    public ResultColumnRenderer(int decimalPrecision) {
         if (decimalPrecision < 0) {
             throw new IllegalArgumentException("Invalid decimalPrecision; must be equal to 0 or greater");
         }
@@ -33,7 +34,7 @@ public class MoneyColumnRenderer extends DefaultColumnRenderer {
         if (value instanceof Double) {
             double numericValue = (double) value;
             if (numericValue > 0.0) {
-                textColor = Color.BLACK;
+                textColor = UIConstants.DARKER_GREEN;
                 return String.format(positiveFormat, numericValue);
             } else if (numericValue < 0.0) {
                 textColor = Color.RED;

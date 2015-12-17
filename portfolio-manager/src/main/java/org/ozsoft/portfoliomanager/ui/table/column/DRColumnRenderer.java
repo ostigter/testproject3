@@ -16,7 +16,7 @@ public class DRColumnRenderer extends DefaultColumnRenderer {
             double numericValue = (double) value;
             if (numericValue >= 0.0) {
                 backgroundColor = Color.WHITE;
-                return String.format("$%.2f", numericValue);
+                return String.format("$ %.2f", numericValue);
             } else {
                 backgroundColor = Color.YELLOW;
                 return "N/A";

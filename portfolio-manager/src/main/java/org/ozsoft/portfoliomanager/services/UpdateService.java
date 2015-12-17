@@ -75,7 +75,7 @@ public class UpdateService {
         try {
             String quote = IOUtils.toString(httpPageReader.downloadFile(String.format(SIMPLE_STOCK_QUOTE_URI, symbol)));
             double newPrice = Double.parseDouble(quote);
-            stock.setPreviousPrice(stock.getPrice());
+            stock.setPrevClose(stock.getPrice());
             stock.setPrice(newPrice);
         } catch (IOException e) {
             System.err.format("ERROR: Failed to retrieve quote for '%s': %s\n", symbol, e.getMessage());
@@ -204,9 +204,10 @@ public class UpdateService {
                 String json = httpPageReader.read(String.format(FULL_STOCK_QUOTE_URI, stock.getSymbol()));
                 JsonObject quote = parser.parse(json).getAsJsonObject().getAsJsonObject("query").getAsJsonObject("results").getAsJsonObject("quote");
                 double price = getJsonDoubleValue(quote, "LastTradePriceOnly");
+                double prevClose = getJsonDoubleValue(quote, "PreviousClose");
                 double peRatio = getJsonDoubleValue(quote, "PERatio");
                 double divRate = getJsonDoubleValue(quote, "DividendShare");
-                config.updateStock(symbol, price, peRatio, divRate);
+                config.updateStock(symbol, price, prevClose, peRatio, divRate);
                 System.out.format("Updated stock price of %s.\n", stock);
                 count++;
 
