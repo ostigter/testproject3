@@ -1,7 +1,6 @@
 Portfolio Manager - TODO
 ========================
 
-* Show totals in 'Owned' tab
 * Extend stock analysis score formula (CR, YDG, CY, DGR)
 * View stock analysis details per share
 * Update stock analysis (all stocks) and show scores

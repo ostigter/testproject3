@@ -12,6 +12,8 @@ public class Position implements Comparable<Position> {
 
     private double totalIncome = 0.0;
 
+    private double realizedResult = 0.0;
+
     private double totalReturn = 0.0;
 
     public Position(Stock stock) {
@@ -67,6 +69,10 @@ public class Position implements Comparable<Position> {
         }
     }
 
+    public double getRealizedResult() {
+        return realizedResult;
+    }
+
     public double getTotalReturn() {
         return getCurrentResult() + totalReturn;
     }
@@ -95,7 +101,9 @@ public class Position implements Comparable<Position> {
             double value = tx.getNoOfShares() * avgPrice;
             currentCost -= value;
             totalCost += tx.getCost();
-            totalReturn += tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCost();
+            double profit = tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCost();
+            realizedResult += profit;
+            totalReturn += profit;
             noOfShares -= tx.getNoOfShares();
             break;
         case DIVIDEND:

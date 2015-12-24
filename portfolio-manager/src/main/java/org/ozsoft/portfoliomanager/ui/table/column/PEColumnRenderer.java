@@ -28,7 +28,8 @@ public class PEColumnRenderer extends DefaultColumnRenderer {
                 return String.format("%.1f", numericValue);
             }
         } else {
-            return "<Error>";
+            backgroundColor = Color.WHITE;
+            return null;
         }
     }
 

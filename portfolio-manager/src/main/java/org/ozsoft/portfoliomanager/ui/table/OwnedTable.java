@@ -100,6 +100,7 @@ public class OwnedTable extends DataTable {
         columns.add(new Column("AI", "Annual income based on current yield", bigMoneyColumnRenderer));
         columns.add(new Column("TI", "Overall total income received", bigMoneyColumnRenderer));
         columns.add(new Column("YOC", "Overall yield on cost", percColumnRenderer));
+        columns.add(new Column("RR", "Total realized result from sales", resultColumnRenderer));
         columns.add(new Column("TR", "Total return (result plus income)", resultColumnRenderer));
         columns.add(new Column("TR %", "Total return as percentage of cost", percChangeColumnRenderer));
         columns.add(new Column("Notes", "Notes about this stock"));
@@ -151,13 +152,16 @@ public class OwnedTable extends DataTable {
             int noOfShares = p.getNoOfShares();
             double cps = (noOfShares > 0) ? p.getCurrentCost() / noOfShares : 0.0;
             double ai = p.getNoOfShares() * s.getDivRate();
-            double yoc = (noOfShares > 0) ? p.getTotalIncome() / noOfShares : 0.0;
+            double yoc = (noOfShares > 0) ? p.getTotalIncome() / p.getTotalCost() * 100.0 : 0.0;
             addRow(s.getName(), s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getDivRate(), s.getYield(),
                     s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps, p.getCurrentValue(), p.getCurrentResult(),
-                    p.getCurrentResultPercentage(), ai, p.getTotalIncome(), yoc, p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
+                    p.getCurrentResultPercentage(), ai, p.getTotalIncome(), yoc, p.getRealizedResult(), p.getTotalReturn(),
+                    p.getTotalReturnPercentage(), s.getComment());
         }
 
-        // TODO: Add totals row.
+        setFooterRow(null, null, null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(),
+                portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getTotalIncome(), 0.0,
+                portfolio.getRealizedResult(), portfolio.getTotalReturn(), portfolio.getTotalReturnPercentage(), null);
 
         super.update();
     }

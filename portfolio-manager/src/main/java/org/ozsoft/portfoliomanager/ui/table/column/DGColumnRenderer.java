@@ -38,7 +38,8 @@ public class DGColumnRenderer extends DefaultColumnRenderer {
                 return String.format("%.1f %%", (double) value);
             }
         } else {
-            return "<Error>";
+            backgroundColor = Color.WHITE;
+            return null;
         }
     }
 

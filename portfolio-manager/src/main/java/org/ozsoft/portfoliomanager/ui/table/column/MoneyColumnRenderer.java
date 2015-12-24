@@ -42,8 +42,7 @@ public class MoneyColumnRenderer extends DefaultColumnRenderer {
                 return null;
             }
         } else {
-            textColor = Color.RED;
-            return "<Error>";
+            return null;
         }
     }
 

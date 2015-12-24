@@ -21,7 +21,11 @@ public class Portfolio {
 
     private double totalValue;
 
+    private double annualIncome;
+
     private double totalIncome;
+
+    private double realizedResult;
 
     private double totalReturn;
 
@@ -74,12 +78,20 @@ public class Portfolio {
         return totalValue;
     }
 
+    public double getAnnualIncome() {
+        return annualIncome;
+    }
+
     public double getTotalIncome() {
         return totalIncome;
     }
 
+    public double getRealizedResult() {
+        return realizedResult;
+    }
+
     public double getTotalReturn() {
-        return getCurrentResult() + totalReturn;
+        return totalReturn;
     }
 
     public double getTotalReturnPercentage() {
@@ -113,7 +125,9 @@ public class Portfolio {
             currentValue += pos.getCurrentValue();
             totalCost += pos.getTotalCost();
             totalValue += pos.getCurrentValue();
+            annualIncome += pos.getNoOfShares() * pos.getStock().getDivRate();
             totalIncome += pos.getTotalIncome();
+            realizedResult += pos.getRealizedResult();
             totalReturn += pos.getTotalReturn();
         }
     }
@@ -124,7 +138,9 @@ public class Portfolio {
         currentValue = 0.0;
         totalCost = 0.0;
         totalValue = 0.0;
+        annualIncome = 0.0;
         totalIncome = 0.0;
+        realizedResult = 0.0;
         totalReturn = 0.0;
     }
 }

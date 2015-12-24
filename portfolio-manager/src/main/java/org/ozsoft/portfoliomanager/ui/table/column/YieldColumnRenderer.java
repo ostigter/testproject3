@@ -30,7 +30,8 @@ public class YieldColumnRenderer extends DefaultColumnRenderer {
             }
             return String.format("%.2f %%", (double) value);
         } else {
-            return "<Error>";
+            backgroundColor = Color.WHITE;
+            return null;
         }
     }
 

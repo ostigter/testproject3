@@ -42,8 +42,8 @@ public class CRColumnRenderer extends DefaultColumnRenderer {
             }
             return ((CreditRating) value).getText();
         } else {
-            backgroundColor = Color.RED;
-            return "<Error>";
+            backgroundColor = Color.WHITE;
+            return null;
         }
     }
 

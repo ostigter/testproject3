@@ -16,7 +16,7 @@ public class PercentageColumnRenderer extends DefaultColumnRenderer {
                 return String.format("%.2f %%", (double) value);
             }
         } else {
-            return "<ERROR>";
+            return null;
         }
     }
 }

@@ -22,8 +22,8 @@ public class DRColumnRenderer extends DefaultColumnRenderer {
                 return "N/A";
             }
         } else {
-            backgroundColor = Color.RED;
-            return "<Error>";
+            backgroundColor = Color.WHITE;
+            return null;
         }
     }
 
