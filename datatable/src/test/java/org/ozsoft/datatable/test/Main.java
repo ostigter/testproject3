@@ -1,5 +1,7 @@
 package org.ozsoft.datatable.test;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,17 +43,28 @@ public class Main {
         DataTable table = new DataTable();
         table.setColumns(columns);
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        frame.getContentPane().add(scrollPane);
-
-        frame.setSize(800, 600);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-
         table.addRow("Johnson & Johnson", "JNJ", 75.00, 27.4, 2.45, 3.5);
         table.addRow("Realty Income", "O", 45.10, 19.7, 1.48, 5.2);
         table.addRow("Wal-Mart", "WMT", 62.85, 12.1, 1.80, 2.44);
-        table.addRow("SandRidge Permian Trust", "PER", 6.45, 8.2, 0.42, 24.3);
+        table.addRow("Orchid Island Capital", "ORC", 9.51, 12.2, 1.68, 17.76);
+
+        table.setFooterRow(null, null, 0.0, 16.85, 0.0, 7.225);
+
         table.update();
+
+        frame.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        frame.getContentPane().add(new JScrollPane(table), gbc);
+
+        // JScrollPane scrollPane = new JScrollPane(table);
+        // frame.getContentPane().add(scrollPane);
+
+        frame.setSize(600, 400);
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }

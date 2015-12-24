@@ -26,7 +26,7 @@ public class DivRateColumnRenderer extends DefaultColumnRenderer {
     }
 
     @Override
-    public Color getBackground() {
+    public Color getForeground() {
         return textColor;
     }
 }

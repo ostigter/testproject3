@@ -1,14 +1,14 @@
 package org.ozsoft.datatable;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
@@ -26,21 +26,27 @@ public class DataTable extends JPanel {
 
     private final Table mainTable;
 
+    private final Table footerTable;
+
     public DataTable() {
-        mainTable = new Table();
-        JScrollPane mainScrollPane = new JScrollPane(mainTable);
+        mainTable = new Table(false);
+        footerTable = new Table(true);
 
-        setLayout(new BorderLayout());
-        add(mainScrollPane, BorderLayout.CENTER);
-    }
-
-    @Override
-    public void addMouseListener(MouseListener listener) {
-        mainTable.addMouseListener(listener);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(mainTable.getTableHeader());
+        add(mainTable);
+        add(footerTable);
     }
 
     public void setColumns(List<Column> columns) {
         mainTable.setColumns(columns);
+
+        List<Column> footerColumns = new ArrayList<Column>();
+        for (Column column : columns) {
+            footerColumns.add(column.getFooterColumn());
+        }
+        footerTable.setColumns(footerColumns);
+        footerTable.setColumnModel(mainTable.getColumnModel());
     }
 
     public int getColumnCount() {
@@ -75,6 +81,11 @@ public class DataTable extends JPanel {
         mainTable.addRow(cellValues);
     }
 
+    public void setFooterRow(Object... cellValues) {
+        footerTable.clear();
+        footerTable.addRow(cellValues);
+    }
+
     public void update() {
         mainTable.update();
     }
@@ -88,29 +99,46 @@ public class DataTable extends JPanel {
         mainTable.setComponentPopupMenu(menu);
     }
 
+    @Override
+    public void addMouseListener(MouseListener listener) {
+        mainTable.addMouseListener(listener);
+    }
+
     private static class Table extends JTable {
 
         private static final long serialVersionUID = 5019884184139593450L;
+
+        private final boolean isFooter;
 
         private DataTableModel model;
 
         private TableRowSorter<TableModel> sorter;
 
-        public Table() {
+        public Table(boolean isFooter) {
+            this.isFooter = isFooter;
             setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+            if (isFooter) {
+                setTableHeader(null);
+                setRowSelectionAllowed(false);
+                setColumnSelectionAllowed(false);
+                setFont(new Font(null, Font.BOLD, 12));
+            }
         }
 
         public void setColumns(List<Column> columns) {
             model = new DataTableModel(columns);
             super.setModel(model);
 
-            sorter = new TableRowSorter<TableModel>(model);
-            setRowSorter(sorter);
-            List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-            sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-            sorter.setSortKeys(sortKeys);
-            sorter.sort();
+            if (!isFooter) {
+                sorter = new TableRowSorter<TableModel>(model);
+                setRowSorter(sorter);
+                List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+                sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+                sorter.setSortKeys(sortKeys);
+                sorter.sort();
+            }
         }
 
         @Override

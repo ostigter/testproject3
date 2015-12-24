@@ -1,5 +1,7 @@
 package org.ozsoft.datatable;
 
+import java.awt.Color;
+
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -9,9 +11,13 @@ public class DefaultColumnRenderer extends DefaultTableCellRenderer implements C
 
     private static final int DEFAULT_DECIMAL_PRECISION = 2;
 
+    protected static final Color FOOTER_BACKGROUND = new Color(0xf0, 0xf0, 0xf0); // silver
+
     private int decimalPrecision = DEFAULT_DECIMAL_PRECISION;
 
     private Integer horizontalAlignment = null;
+
+    private boolean isFooter = false;
 
     public DefaultColumnRenderer() {
         // Empty implementation.
@@ -46,6 +52,15 @@ public class DefaultColumnRenderer extends DefaultTableCellRenderer implements C
     }
 
     @Override
+    public void setFooter(boolean isFooter) {
+        this.isFooter = isFooter;
+    }
+
+    protected boolean isFooter() {
+        return isFooter;
+    }
+
+    @Override
     public String formatValue(Object value) {
         if (value == null) {
             return null;
@@ -68,6 +83,15 @@ public class DefaultColumnRenderer extends DefaultTableCellRenderer implements C
         }
 
         setText(formatValue(value));
+    }
+
+    @Override
+    public Color getBackground() {
+        if (isFooter) {
+            return FOOTER_BACKGROUND;
+        } else {
+            return super.getBackground();
+        }
     }
 
     private void setDefaultHorizontalAlignment(Object value) {

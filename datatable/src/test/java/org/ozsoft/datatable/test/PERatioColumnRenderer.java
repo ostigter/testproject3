@@ -29,6 +29,10 @@ public class PERatioColumnRenderer extends DefaultColumnRenderer {
 
     @Override
     public Color getBackground() {
-        return backgroundColor;
+        if (isFooter()) {
+            return FOOTER_BACKGROUND;
+        } else {
+            return backgroundColor;
+        }
     }
 }

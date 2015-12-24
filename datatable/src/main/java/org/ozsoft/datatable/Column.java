@@ -29,4 +29,9 @@ public class Column {
     public ColumnRenderer getRenderer() {
         return renderer;
     }
+
+    public Column getFooterColumn() {
+        Column footerColumn = new Column(name, tooltip, renderer);
+        return footerColumn;
+    }
 }
