@@ -81,7 +81,6 @@ public class OwnedTable extends DataTable {
         ColumnRenderer percColumnRenderer = new PercentageColumnRenderer();
 
         List<Column> columns = new ArrayList<Column>();
-        columns.add(new Column("Name", "Company name"));
         columns.add(new Column("Symbol", "Ticker symbol", centeredColumnRenderer));
         columns.add(new Column("CR", "Current credit rating", ratingColumnRenderer));
         columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
@@ -95,6 +94,7 @@ public class OwnedTable extends DataTable {
         columns.add(new Column("Cost", "Current cost basis", bigMoneyColumnRenderer));
         columns.add(new Column("CPS", "Current cost basis per share", smallMoneyColumnRenderer));
         columns.add(new Column("Value", "Current market value", bigMoneyColumnRenderer));
+        columns.add(new Column("Weight", "Relative weight in portfolio based on cost", percColumnRenderer));
         columns.add(new Column("Result", "Current result (value minus cost)", resultColumnRenderer));
         columns.add(new Column("Result %", "Current result as percentage of cost", percChangeColumnRenderer));
         columns.add(new Column("AI", "Annual income based on current yield", bigMoneyColumnRenderer));
@@ -151,17 +151,17 @@ public class OwnedTable extends DataTable {
             Stock s = p.getStock();
             int noOfShares = p.getNoOfShares();
             double cps = (noOfShares > 0) ? p.getCurrentCost() / noOfShares : 0.0;
+            double weight = (p.getCurrentCost() / portfolio.getCurrentCost()) * 100.0;
             double ai = p.getNoOfShares() * s.getDivRate();
-            double yoc = (noOfShares > 0) ? p.getTotalIncome() / p.getTotalCost() * 100.0 : 0.0;
-            addRow(s.getName(), s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getDivRate(), s.getYield(),
-                    s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps, p.getCurrentValue(), p.getCurrentResult(),
-                    p.getCurrentResultPercentage(), ai, p.getTotalIncome(), yoc, p.getRealizedResult(), p.getTotalReturn(),
-                    p.getTotalReturnPercentage(), s.getComment());
+            addRow(s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getDivRate(), s.getYield(),
+                    s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps, p.getCurrentValue(), weight,
+                    p.getCurrentResult(), p.getCurrentResultPercentage(), ai, p.getTotalIncome(), p.getYieldOnCost(), p.getRealizedResult(),
+                    p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
         }
 
-        setFooterRow(null, null, null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(),
-                portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getTotalIncome(), 0.0,
-                portfolio.getRealizedResult(), portfolio.getTotalReturn(), portfolio.getTotalReturnPercentage(), null);
+        setFooterRow(null, null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(), null,
+                portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getTotalIncome(),
+                portfolio.getYieldOnCost(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), portfolio.getTotalReturnPercentage(), null);
 
         super.update();
     }
@@ -187,7 +187,7 @@ public class OwnedTable extends DataTable {
 
         int rowIndex = getSelectedRow();
         if (rowIndex >= 0) {
-            String symbol = (String) getCellValue(rowIndex, 1);
+            String symbol = (String) getCellValue(rowIndex, 0);
             stock = config.getStock(symbol);
         }
 

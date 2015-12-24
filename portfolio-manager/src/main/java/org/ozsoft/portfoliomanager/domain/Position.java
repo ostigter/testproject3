@@ -57,6 +57,10 @@ public class Position implements Comparable<Position> {
         return totalCost;
     }
 
+    public double getAnnualIncome() {
+        return noOfShares * stock.getDivRate();
+    }
+
     public double getTotalIncome() {
         return totalIncome;
     }

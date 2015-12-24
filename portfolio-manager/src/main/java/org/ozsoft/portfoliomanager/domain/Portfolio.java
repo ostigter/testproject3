@@ -86,6 +86,14 @@ public class Portfolio {
         return totalIncome;
     }
 
+    public double getYieldOnCost() {
+        if (totalCost > 0.0) {
+            return (totalIncome / totalCost) * 100.0;
+        } else {
+            return 0.0;
+        }
+    }
+
     public double getRealizedResult() {
         return realizedResult;
     }
@@ -125,7 +133,7 @@ public class Portfolio {
             currentValue += pos.getCurrentValue();
             totalCost += pos.getTotalCost();
             totalValue += pos.getCurrentValue();
-            annualIncome += pos.getNoOfShares() * pos.getStock().getDivRate();
+            annualIncome += pos.getAnnualIncome();
             totalIncome += pos.getTotalIncome();
             realizedResult += pos.getRealizedResult();
             totalReturn += pos.getTotalReturn();

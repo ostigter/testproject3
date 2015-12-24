@@ -5,7 +5,6 @@ Portfolio Manager - TODO
 * View stock analysis details per share
 * Update stock analysis (all stocks) and show scores
 * Set and view stock target price (TP) and index (TPI)
-* Show weight per position ('Owned' tab)
 * Write application log file
 * Write alert log file
 * View alerts (since last update)
