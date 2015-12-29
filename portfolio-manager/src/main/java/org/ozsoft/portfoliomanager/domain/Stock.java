@@ -12,6 +12,8 @@ public class Stock implements Comparable<Stock> {
 
     private double peRatio = -1.0;
 
+    private double targetPrice;
+
     private double divRate;
 
     private double divGrowth = -1.0;
@@ -71,6 +73,22 @@ public class Stock implements Comparable<Stock> {
 
     public void setPeRatio(double peRatio) {
         this.peRatio = peRatio;
+    }
+
+    public double getTargetPrice() {
+        return targetPrice;
+    }
+
+    public void setTargetPrice(double targetPrice) {
+        this.targetPrice = targetPrice;
+    }
+
+    public double getTargetPriceIndex() {
+        if (targetPrice > 0.0 && price > 0.0) {
+            return (targetPrice / price) * 100.0;
+        } else {
+            return 0.0;
+        }
     }
 
     public double getDivRate() {

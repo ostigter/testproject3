@@ -32,6 +32,7 @@ import org.ozsoft.portfoliomanager.ui.table.column.PEColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercChangeColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercentageColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.ResultColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.table.column.TPIColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YDGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YieldColumnRenderer;
 
@@ -71,6 +72,7 @@ public class OwnedTable extends DataTable {
         ColumnRenderer ratingColumnRenderer = new CRColumnRenderer();
         ColumnRenderer percChangeColumnRenderer = new PercChangeColumnRenderer();
         ColumnRenderer peRatioColumnRenderer = new PEColumnRenderer();
+        ColumnRenderer tpiColumnRenderer = new TPIColumnRenderer();
         ColumnRenderer divRateColumnRenderer = new DRColumnRenderer();
         ColumnRenderer yieldColumnRenderer = new YieldColumnRenderer();
         ColumnRenderer divGrowthColumnRenderer = new DGColumnRenderer();
@@ -86,6 +88,8 @@ public class OwnedTable extends DataTable {
         columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
         columns.add(new Column("Change", "Change in stock price since last closing", percChangeColumnRenderer));
         columns.add(new Column("P/E", "Current price-to-earnings ratio", peRatioColumnRenderer));
+        columns.add(new Column("TP", "Target price", smallMoneyColumnRenderer));
+        columns.add(new Column("TPI", "Target price index", tpiColumnRenderer));
         columns.add(new Column("DR", "Current dividend rate", divRateColumnRenderer));
         columns.add(new Column("CY", "Current dividend yield", yieldColumnRenderer));
         columns.add(new Column("DGR", "5-year annualized dividend growth rate", divGrowthColumnRenderer));
@@ -153,15 +157,16 @@ public class OwnedTable extends DataTable {
             double cps = (noOfShares > 0) ? p.getCurrentCost() / noOfShares : 0.0;
             double weight = (p.getCurrentCost() / portfolio.getCurrentCost()) * 100.0;
             double ai = p.getNoOfShares() * s.getDivRate();
-            addRow(s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getDivRate(), s.getYield(),
-                    s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps, p.getCurrentValue(), weight,
-                    p.getCurrentResult(), p.getCurrentResultPercentage(), ai, p.getTotalIncome(), p.getYieldOnCost(), p.getRealizedResult(),
-                    p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
+            addRow(s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getTargetPrice(), s.getTargetPriceIndex(),
+                    s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps,
+                    p.getCurrentValue(), weight, p.getCurrentResult(), p.getCurrentResultPercentage(), ai, p.getTotalIncome(), p.getYieldOnCost(),
+                    p.getRealizedResult(), p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
         }
 
-        setFooterRow(null, null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(), null,
-                portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getTotalIncome(),
-                portfolio.getYieldOnCost(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), portfolio.getTotalReturnPercentage(), null);
+        setFooterRow(null, null, null, null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null,
+                portfolio.getCurrentValue(), null, portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(),
+                portfolio.getTotalIncome(), portfolio.getYieldOnCost(), portfolio.getRealizedResult(), portfolio.getTotalReturn(),
+                portfolio.getTotalReturnPercentage(), null);
 
         super.update();
     }

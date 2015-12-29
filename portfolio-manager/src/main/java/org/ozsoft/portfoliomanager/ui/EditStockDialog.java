@@ -25,6 +25,8 @@ public class EditStockDialog extends Dialog {
 
     private JTextField commentField;
 
+    private JTextField targetPriceField;
+
     private JButton applyButton;
 
     private JButton cancelButton;
@@ -77,7 +79,7 @@ public class EditStockDialog extends Dialog {
         dialog.add(label, gbc);
 
         nameField = new JTextField();
-        nameField.setPreferredSize(new Dimension(200, 20));
+        nameField.setPreferredSize(new Dimension(150, 20));
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -102,7 +104,7 @@ public class EditStockDialog extends Dialog {
         dialog.add(label, gbc);
 
         creditRatingBox = new JComboBox<String>();
-        creditRatingBox.setPreferredSize(new Dimension(60, 20));
+        creditRatingBox.setPreferredSize(new Dimension(75, 20));
         for (CreditRating cr : CreditRating.values()) {
             creditRatingBox.addItem(cr.getText());
         }
@@ -141,6 +143,31 @@ public class EditStockDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(5, 5, 5, 10);
         dialog.add(commentField, gbc);
+
+        label = new JLabel("Target Price:");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(5, 10, 5, 5);
+        dialog.add(label, gbc);
+
+        targetPriceField = new JTextField();
+        targetPriceField.setPreferredSize(new Dimension(75, 20));
+        gbc.gridx = 1;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(5, 5, 5, 10);
+        dialog.add(targetPriceField, gbc);
 
         applyButton = new JButton("OK");
         applyButton.addActionListener(new ActionListener() {
@@ -188,11 +215,12 @@ public class EditStockDialog extends Dialog {
         symbolField.setText("");
         creditRatingBox.setSelectedItem("N/A");
         commentField.setText("");
+        targetPriceField.setText("");
 
         nameField.setEditable(true);
         symbolField.setEditable(true);
 
-        commentField.requestFocus();
+        symbolField.requestFocus();
 
         return super.show();
     }
@@ -205,6 +233,12 @@ public class EditStockDialog extends Dialog {
         symbolField.setText(stock.getSymbol());
         creditRatingBox.setSelectedItem(stock.getCreditRating().getText());
         commentField.setText(stock.getComment());
+        double targetPrice = stock.getTargetPrice();
+        if (targetPrice > 0.0) {
+            targetPriceField.setText(String.format("%.2f", targetPrice));
+        } else {
+            targetPriceField.setText("");
+        }
 
         symbolField.setEditable(false);
 
@@ -236,6 +270,16 @@ public class EditStockDialog extends Dialog {
             showError("Please select the stock's credit rating.");
             return;
         }
+        String targetPriceText = targetPriceField.getText().trim();
+        double targetPrice = 0.0;
+        if (targetPriceText.length() > 0) {
+            try {
+                targetPrice = Double.parseDouble(targetPriceText);
+            } catch (NumberFormatException e) {
+                showError("Invalid target price.");
+                return;
+            }
+        }
 
         // Add stock.
         if (stock == null) {
@@ -244,6 +288,7 @@ public class EditStockDialog extends Dialog {
         stock.setName(name);
         stock.setCreditRating(creditRating);
         stock.setComment(commentField.getText());
+        stock.setTargetPrice(targetPrice);
 
         ok();
     }

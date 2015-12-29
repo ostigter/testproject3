@@ -30,6 +30,7 @@ import org.ozsoft.portfoliomanager.ui.table.column.DRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.MoneyColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PEColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercChangeColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.table.column.TPIColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YDGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YieldColumnRenderer;
 
@@ -69,6 +70,7 @@ public class StockTable extends DataTable {
         ColumnRenderer smallMoneyColumnRenderer = new MoneyColumnRenderer(2);
         ColumnRenderer percChangeColumnRenderer = new PercChangeColumnRenderer();
         ColumnRenderer peRatioColumnRenderer = new PEColumnRenderer();
+        ColumnRenderer tpiColumnRenderer = new TPIColumnRenderer();
         ColumnRenderer divRateColumnRenderer = new DRColumnRenderer();
         ColumnRenderer yieldColumnRenderer = new YieldColumnRenderer();
         ColumnRenderer divGrowthColumnRenderer = new DGColumnRenderer();
@@ -81,6 +83,8 @@ public class StockTable extends DataTable {
         columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
         columns.add(new Column("Change", "Change in stock price since last closing", percChangeColumnRenderer));
         columns.add(new Column("P/E", "Current price-to-earnings ratio", peRatioColumnRenderer));
+        columns.add(new Column("TP", "Target price", smallMoneyColumnRenderer));
+        columns.add(new Column("TPI", "Target price index", tpiColumnRenderer));
         columns.add(new Column("DR", "Current dividend rate", divRateColumnRenderer));
         columns.add(new Column("Yield", "Current dividend yield", yieldColumnRenderer));
         columns.add(new Column("DG", "5-year annualized dividend growth", divGrowthColumnRenderer));
@@ -159,8 +163,8 @@ public class StockTable extends DataTable {
     public final void update() {
         clear();
         for (Stock s : getStocks()) {
-            addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getDivRate(), s.getYield(), s.getDivGrowth(),
-                    s.getYearsDivGrowth(), s.getCreditRating(), s.getComment());
+            addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getTargetPrice(), s.getTargetPriceIndex(),
+                    s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(), s.getCreditRating(), s.getComment());
         }
         super.update();
     }

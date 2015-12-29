@@ -2,8 +2,6 @@ package org.ozsoft.portfoliomanager.domain;
 
 public enum CreditRating {
 
-    NA("N/A"),
-
     AAA("AAA"),
 
     AA_PLUS("AA+"),
@@ -42,7 +40,7 @@ public enum CreditRating {
 
     C("C"),
 
-    D("D"),
+    NA("N/A"),
 
     ;
 
