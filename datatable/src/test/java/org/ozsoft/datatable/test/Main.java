@@ -60,9 +60,6 @@ public class Main {
         gbc.weighty = 1.0;
         frame.getContentPane().add(new JScrollPane(table), gbc);
 
-        // JScrollPane scrollPane = new JScrollPane(table);
-        // frame.getContentPane().add(scrollPane);
-
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);

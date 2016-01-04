@@ -2,6 +2,8 @@ package org.ozsoft.datatable;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +34,19 @@ public class DataTable extends JPanel {
         mainTable = new Table(false);
         footerTable = new Table(true);
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(mainTable.getTableHeader());
-        add(mainTable);
-        add(footerTable);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.add(mainTable.getTableHeader());
+        panel.add(mainTable);
+        panel.add(footerTable);
+
+        setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        add(panel, gbc);
     }
 
     public void setColumns(List<Column> columns) {
