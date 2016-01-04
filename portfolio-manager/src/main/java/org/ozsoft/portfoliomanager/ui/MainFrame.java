@@ -114,24 +114,19 @@ public class MainFrame extends JFrame {
         tabbedPane.setBorder(UIConstants.SPACER_BORDER);
 
         ownedTable = new OwnedTable(this);
-        JScrollPane scrollPane = new JScrollPane(ownedTable);
-        tabbedPane.add("Owned", scrollPane);
+        tabbedPane.add("Owned", new JScrollPane(ownedTable));
 
         goalTable = new GoalTable(this);
-        scrollPane = new JScrollPane(goalTable);
-        tabbedPane.add("Goal", scrollPane);
+        tabbedPane.add("Goal", new JScrollPane(goalTable));
 
         watchTable = new WatchTable(this);
-        scrollPane = new JScrollPane(watchTable);
-        tabbedPane.add("Watch", scrollPane);
+        tabbedPane.add("Watch", new JScrollPane(watchTable));
 
         benchTable = new BenchTable(this);
-        scrollPane = new JScrollPane(benchTable);
-        tabbedPane.add("Bench", scrollPane);
+        tabbedPane.add("Bench", new JScrollPane(benchTable));
 
         allTable = new StockTable(this);
-        scrollPane = new JScrollPane(allTable);
-        tabbedPane.add("All", scrollPane);
+        tabbedPane.add("All", new JScrollPane(allTable));
 
         tabbedPane.setToolTipTextAt(0, "Stocks currently or once owned");
         tabbedPane.setToolTipTextAt(1, "Favorite stocks to be owned sooner or later");
