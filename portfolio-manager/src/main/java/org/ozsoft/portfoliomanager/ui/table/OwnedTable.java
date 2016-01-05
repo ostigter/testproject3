@@ -102,8 +102,8 @@ public class OwnedTable extends DataTable {
         columns.add(new Column("Result", "Current result (value minus cost)", resultColumnRenderer));
         columns.add(new Column("Result %", "Current result as percentage of cost", percChangeColumnRenderer));
         columns.add(new Column("AI", "Annual income based on current yield", bigMoneyColumnRenderer));
-        columns.add(new Column("TI", "Overall total income received", bigMoneyColumnRenderer));
-        columns.add(new Column("YOC", "Overall yield on cost", percColumnRenderer));
+        columns.add(new Column("YOC", "Annual yield on cost", percColumnRenderer));
+        columns.add(new Column("TI", "Overall total income received", resultColumnRenderer));
         columns.add(new Column("RR", "Total realized result from sales", resultColumnRenderer));
         columns.add(new Column("TR", "Total return (result plus income)", resultColumnRenderer));
         columns.add(new Column("TR %", "Total return as percentage of cost", percChangeColumnRenderer));
@@ -153,19 +153,16 @@ public class OwnedTable extends DataTable {
         // Populate table with positions.
         for (Position p : portfolio.getPositions()) {
             Stock s = p.getStock();
-            int noOfShares = p.getNoOfShares();
-            double cps = (noOfShares > 0) ? p.getCurrentCost() / noOfShares : 0.0;
             double weight = (p.getCurrentCost() / portfolio.getCurrentCost()) * 100.0;
-            double ai = p.getNoOfShares() * s.getDivRate();
             addRow(s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getTargetPrice(), s.getTargetPriceIndex(),
-                    s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(), cps,
-                    p.getCurrentValue(), weight, p.getCurrentResult(), p.getCurrentResultPercentage(), ai, p.getTotalIncome(), p.getYieldOnCost(),
-                    p.getRealizedResult(), p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
+                    s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(),
+                    p.getCostPerShare(), p.getCurrentValue(), weight, p.getCurrentResult(), p.getCurrentResultPercentage(), p.getAnnualIncome(),
+                    p.getYieldOnCost(), p.getTotalIncome(), p.getRealizedResult(), p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
         }
 
         setFooterRow(null, null, null, null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null,
                 portfolio.getCurrentValue(), null, portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(),
-                portfolio.getTotalIncome(), portfolio.getYieldOnCost(), portfolio.getRealizedResult(), portfolio.getTotalReturn(),
+                portfolio.getYieldOnCost(), portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(),
                 portfolio.getTotalReturnPercentage(), null);
 
         super.update();

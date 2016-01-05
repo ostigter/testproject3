@@ -87,8 +87,8 @@ public class Portfolio {
     }
 
     public double getYieldOnCost() {
-        if (totalCost > 0.0) {
-            return (totalIncome / totalCost) * 100.0;
+        if (currentCost > 0.0) {
+            return (annualIncome / currentCost) * 100.0;
         } else {
             return 0.0;
         }

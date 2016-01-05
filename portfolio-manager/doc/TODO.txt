@@ -1,15 +1,15 @@
 Portfolio Manager - TODO
 ========================
 
+* View transactions ('Transactions' button)
+* Add transaction
+* Delete transaction
 * Extend stock analysis score formula (CR, YDG, CY, DGR)
 * View stock analysis details per share
 * Update stock analysis (all stocks) and show scores
 * Write application log file
 * Write alert log file
 * View alerts (since last update)
-* View transactions ('Transactions' tab)
-* Add transaction
-* Delete transaction
 * View income overview ('Income' tab)
 * Set/view sector and industry per stock
 * Task progress indicators

@@ -57,6 +57,15 @@ public class Position implements Comparable<Position> {
         return totalCost;
     }
 
+    public double getCostPerShare() {
+        double currentInvestment = getCurrentCost();
+        if (currentInvestment > 0.0) {
+            return currentInvestment / noOfShares;
+        } else {
+            return 0.00;
+        }
+    }
+
     public double getAnnualIncome() {
         return noOfShares * stock.getDivRate();
     }
@@ -67,7 +76,7 @@ public class Position implements Comparable<Position> {
 
     public double getYieldOnCost() {
         if (totalCost > 0.0) {
-            return (totalIncome / totalCost) * 100.0;
+            return (getAnnualIncome() / totalCost) * 100.0;
         } else {
             return 0.0;
         }
