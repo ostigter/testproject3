@@ -50,11 +50,11 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 10, 5, 5);
+        gbc.insets = new Insets(5, 10, 5, 0);
         dialog.add(label, gbc);
 
         symbolField = new JTextField();
-        symbolField.setPreferredSize(new Dimension(60, 20));
+        symbolField.setPreferredSize(new Dimension(75, 20));
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -63,7 +63,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 5, 5, 10);
+        gbc.insets = new Insets(5, 5, 0, 10);
         dialog.add(symbolField, gbc);
 
         label = new JLabel("Name:");
@@ -75,7 +75,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(10, 10, 5, 5);
+        gbc.insets = new Insets(5, 10, 0, 5);
         dialog.add(label, gbc);
 
         nameField = new JTextField();
@@ -88,7 +88,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(10, 5, 5, 10);
+        gbc.insets = new Insets(5, 5, 0, 10);
         dialog.add(nameField, gbc);
 
         label = new JLabel("Credit Rating:");
@@ -100,7 +100,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 10, 5, 5);
+        gbc.insets = new Insets(5, 10, 0, 5);
         dialog.add(label, gbc);
 
         creditRatingBox = new JComboBox<String>();
@@ -116,7 +116,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 5, 5, 10);
+        gbc.insets = new Insets(5, 5, 0, 10);
         dialog.add(creditRatingBox, gbc);
 
         label = new JLabel("Notes:");
@@ -128,7 +128,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 10, 5, 5);
+        gbc.insets = new Insets(5, 10, 0, 5);
         dialog.add(label, gbc);
 
         commentField = new JTextField();
@@ -141,7 +141,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 5, 5, 10);
+        gbc.insets = new Insets(5, 5, 0, 10);
         dialog.add(commentField, gbc);
 
         label = new JLabel("Target Price:");
@@ -153,7 +153,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 10, 5, 5);
+        gbc.insets = new Insets(5, 10, 0, 5);
         dialog.add(label, gbc);
 
         targetPriceField = new JTextField();
@@ -166,7 +166,7 @@ public class EditStockDialog extends Dialog {
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 5, 5, 10);
+        gbc.insets = new Insets(5, 5, 0, 10);
         dialog.add(targetPriceField, gbc);
 
         applyButton = new JButton("OK");

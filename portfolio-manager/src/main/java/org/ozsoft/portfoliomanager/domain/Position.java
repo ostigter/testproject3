@@ -2,6 +2,8 @@ package org.ozsoft.portfoliomanager.domain;
 
 public class Position implements Comparable<Position> {
 
+    private static final double MIN_COST = 0.50;
+
     private final Stock stock;
 
     private int noOfShares = 0;
@@ -75,8 +77,8 @@ public class Position implements Comparable<Position> {
     }
 
     public double getYieldOnCost() {
-        if (totalCost > 0.0) {
-            return (getAnnualIncome() / totalCost) * 100.0;
+        if (currentCost > 0.0) {
+            return (getAnnualIncome() / currentCost) * 100.0;
         } else {
             return 0.0;
         }
@@ -113,6 +115,10 @@ public class Position implements Comparable<Position> {
             double avgPrice = currentCost / noOfShares;
             double value = tx.getNoOfShares() * avgPrice;
             currentCost -= value;
+            if (currentCost < MIN_COST) {
+                // Round very low cost down to 0 to avoid rounding errors.
+                currentCost = 0.0;
+            }
             totalCost += tx.getCost();
             double profit = tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCost();
             realizedResult += profit;

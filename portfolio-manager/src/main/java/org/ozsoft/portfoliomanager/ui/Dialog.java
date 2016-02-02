@@ -27,12 +27,14 @@ public abstract class Dialog {
         this.owner = owner;
 
         dialog = new JDialog(owner, true);
+        dialog.setResizable(false);
         dialog.setLayout(new GridBagLayout());
 
         initUI();
     }
 
     public int show() {
+        result = CANCEL;
         dialog.pack();
         dialog.setLocationRelativeTo(owner);
         dialog.setVisible(true);

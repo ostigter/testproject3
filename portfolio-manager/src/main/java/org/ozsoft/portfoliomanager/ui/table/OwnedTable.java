@@ -28,11 +28,9 @@ import org.ozsoft.portfoliomanager.ui.table.column.CRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.MoneyColumnRenderer;
-import org.ozsoft.portfoliomanager.ui.table.column.PEColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercChangeColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercentageColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.ResultColumnRenderer;
-import org.ozsoft.portfoliomanager.ui.table.column.TPIColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YDGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YieldColumnRenderer;
 
@@ -69,14 +67,12 @@ public class OwnedTable extends DataTable {
     protected void initColumns() {
         ColumnRenderer numberColumnRenderer = new DefaultColumnRenderer(SwingConstants.RIGHT);
         ColumnRenderer centeredColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
-        ColumnRenderer ratingColumnRenderer = new CRColumnRenderer();
         ColumnRenderer percChangeColumnRenderer = new PercChangeColumnRenderer();
-        ColumnRenderer peRatioColumnRenderer = new PEColumnRenderer();
-        ColumnRenderer tpiColumnRenderer = new TPIColumnRenderer();
         ColumnRenderer divRateColumnRenderer = new DRColumnRenderer();
         ColumnRenderer yieldColumnRenderer = new YieldColumnRenderer();
         ColumnRenderer divGrowthColumnRenderer = new DGColumnRenderer();
         ColumnRenderer yearsColumnRenderer = new YDGColumnRenderer();
+        ColumnRenderer ratingColumnRenderer = new CRColumnRenderer();
         ColumnRenderer smallMoneyColumnRenderer = new MoneyColumnRenderer(2);
         ColumnRenderer bigMoneyColumnRenderer = new MoneyColumnRenderer(0);
         ColumnRenderer resultColumnRenderer = new ResultColumnRenderer(0);
@@ -84,16 +80,13 @@ public class OwnedTable extends DataTable {
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("Symbol", "Ticker symbol", centeredColumnRenderer));
-        columns.add(new Column("CR", "Current credit rating", ratingColumnRenderer));
         columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
         columns.add(new Column("Change", "Change in stock price since last closing", percChangeColumnRenderer));
-        columns.add(new Column("P/E", "Current price-to-earnings ratio", peRatioColumnRenderer));
-        columns.add(new Column("TP", "Target price", smallMoneyColumnRenderer));
-        columns.add(new Column("TPI", "Target price index", tpiColumnRenderer));
         columns.add(new Column("DR", "Current dividend rate", divRateColumnRenderer));
         columns.add(new Column("CY", "Current dividend yield", yieldColumnRenderer));
         columns.add(new Column("DGR", "5-year annualized dividend growth rate", divGrowthColumnRenderer));
         columns.add(new Column("YDG", "Consecutive years of dividend growth", yearsColumnRenderer));
+        columns.add(new Column("CR", "Current credit rating", ratingColumnRenderer));
         columns.add(new Column("Shares", "Current number of shares owned", numberColumnRenderer));
         columns.add(new Column("Cost", "Current cost basis", bigMoneyColumnRenderer));
         columns.add(new Column("CPS", "Current cost basis per share", smallMoneyColumnRenderer));
@@ -154,16 +147,15 @@ public class OwnedTable extends DataTable {
         for (Position p : portfolio.getPositions()) {
             Stock s = p.getStock();
             double weight = (p.getCurrentCost() / portfolio.getCurrentCost()) * 100.0;
-            addRow(s.getSymbol(), s.getCreditRating(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getTargetPrice(), s.getTargetPriceIndex(),
-                    s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(), p.getNoOfShares(), p.getCurrentCost(),
-                    p.getCostPerShare(), p.getCurrentValue(), weight, p.getCurrentResult(), p.getCurrentResultPercentage(), p.getAnnualIncome(),
-                    p.getYieldOnCost(), p.getTotalIncome(), p.getRealizedResult(), p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
+            addRow(s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(),
+                    s.getCreditRating(), p.getNoOfShares(), p.getCurrentCost(), p.getCostPerShare(), p.getCurrentValue(), weight,
+                    p.getCurrentResult(), p.getCurrentResultPercentage(), p.getAnnualIncome(), p.getYieldOnCost(), p.getTotalIncome(),
+                    p.getRealizedResult(), p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
         }
 
-        setFooterRow(null, null, null, null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null,
-                portfolio.getCurrentValue(), null, portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(),
-                portfolio.getYieldOnCost(), portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(),
-                portfolio.getTotalReturnPercentage(), null);
+        setFooterRow(null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(), null,
+                portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getYieldOnCost(),
+                portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), portfolio.getTotalReturnPercentage(), null);
 
         super.update();
     }

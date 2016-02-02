@@ -2,7 +2,7 @@ package org.ozsoft.portfoliomanager.domain;
 
 public class Transaction implements Comparable<Transaction> {
 
-    private final long date;
+    private long date;
 
     private final TransactionType type;
 
@@ -25,6 +25,10 @@ public class Transaction implements Comparable<Transaction> {
 
     public long getDate() {
         return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
     }
 
     public TransactionType getType() {

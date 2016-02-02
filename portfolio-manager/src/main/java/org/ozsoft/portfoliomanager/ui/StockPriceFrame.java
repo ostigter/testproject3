@@ -20,9 +20,6 @@ public class StockPriceFrame extends JFrame {
 
     private static final long serialVersionUID = -7868161566551066062L;
 
-    // private static final String PRICE_GRAPH_URI_COMPACT =
-    // "http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&l=on&z=m&p=v";
-
     private static final String PRICE_GRAPH_URI = "http://chart.finance.yahoo.com/z?s=%s&t=%s&q=l&l=off&z=m&p=v";
 
     private final Stock stock;
@@ -138,8 +135,6 @@ public class StockPriceFrame extends JFrame {
         getContentPane().add(analyzeButton, gbc);
 
         update();
-
-        analyze();
     }
 
     private void update() {

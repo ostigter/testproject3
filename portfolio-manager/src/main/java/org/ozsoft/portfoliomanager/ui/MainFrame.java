@@ -19,7 +19,6 @@ import org.ozsoft.portfoliomanager.domain.Configuration;
 import org.ozsoft.portfoliomanager.services.UpdateService;
 import org.ozsoft.portfoliomanager.ui.table.BenchTable;
 import org.ozsoft.portfoliomanager.ui.table.GoalTable;
-import org.ozsoft.portfoliomanager.ui.table.OwnedTable;
 import org.ozsoft.portfoliomanager.ui.table.StockTable;
 import org.ozsoft.portfoliomanager.ui.table.WatchTable;
 
@@ -39,7 +38,7 @@ public class MainFrame extends JFrame {
 
     private JTabbedPane tabbedPane;
 
-    private DataTable ownedTable;
+    private OwnedPanel ownedPanel;
 
     private DataTable goalTable;
 
@@ -113,8 +112,8 @@ public class MainFrame extends JFrame {
         tabbedPane = new JTabbedPane();
         tabbedPane.setBorder(UIConstants.SPACER_BORDER);
 
-        ownedTable = new OwnedTable(this);
-        tabbedPane.add("Owned", new JScrollPane(ownedTable));
+        ownedPanel = new OwnedPanel(this);
+        tabbedPane.add("Owned", ownedPanel);
 
         goalTable = new GoalTable(this);
         tabbedPane.add("Goal", new JScrollPane(goalTable));
@@ -144,7 +143,7 @@ public class MainFrame extends JFrame {
     }
 
     public void updateTables() {
-        ownedTable.update();
+        ownedPanel.update();
         goalTable.update();
         watchTable.update();
         benchTable.update();

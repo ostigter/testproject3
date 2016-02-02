@@ -8,8 +8,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
@@ -25,6 +29,8 @@ public class Configuration {
     private static final File CCC_LIST_FILE = new File(DATA_DIR, "CCC_list.xls");
 
     private static final File PORTFOLIO_FILE = new File(DATA_DIR, "portfolio.json");
+
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
     private static Configuration config;
 
@@ -60,7 +66,6 @@ public class Configuration {
         String symbol = stock.getSymbol();
         if (!stocks.containsKey(symbol)) {
             stocks.put(symbol, stock);
-            System.out.format("Added stock: %s\n", stock);
             return true;
         } else {
             return false;
@@ -71,7 +76,6 @@ public class Configuration {
         String symbol = stock.getSymbol();
         if (stocks.containsKey(symbol)) {
             stocks.remove(symbol);
-            System.out.format("Deleted stock: %s\n", stock);
             return true;
         } else {
             return false;
@@ -79,6 +83,20 @@ public class Configuration {
     }
 
     public List<Transaction> getTransactions() {
+        for (Transaction transaction : transactions) {
+            long timestamp = transaction.getDate();
+            String text = String.valueOf(timestamp);
+            if (text.startsWith("2015") || text.startsWith("2016")) {
+                try {
+                    Date date = DATE_FORMAT.parse(text);
+                    transaction.setDate(date.getTime());
+                } catch (ParseException e) {
+                    System.err.println("ERROR: Invalid date: " + timestamp);
+                    e.printStackTrace();
+                }
+            }
+        }
+
         return Collections.unmodifiableList(transactions);
     }
 
