@@ -77,7 +77,17 @@ public class MainFrame extends JFrame {
         toolBar.setBorder(UIConstants.SPACER_BORDER);
         toolBar.setFloatable(false);
 
-        JButton button = new JButton("Update");
+        JButton button = new JButton("Update Prices");
+        button.setToolTipText("Update stock prices (real-time)");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateStockPrices();
+            }
+        });
+        toolBar.add(button);
+
+        button = new JButton("Update All");
         button.setToolTipText("Update all stock data");
         button.addActionListener(new ActionListener() {
             @Override
@@ -87,7 +97,7 @@ public class MainFrame extends JFrame {
         });
         toolBar.add(button);
 
-        button = new JButton("Analyze");
+        button = new JButton("Analyze All");
         button.setToolTipText("Analyze all stocks");
         button.addActionListener(new ActionListener() {
             @Override
@@ -150,6 +160,16 @@ public class MainFrame extends JFrame {
         allTable.update();
     }
 
+    private void updateStockPrices() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                updateService.updatePrices(config.getStocks());
+                updateTables();
+            }
+        });
+    }
+
     private void updateStockData() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -164,7 +184,7 @@ public class MainFrame extends JFrame {
         if (addStockDialog.show() == Dialog.OK) {
             config.addStock(addStockDialog.getStock());
             updateTables();
-            tabbedPane.setSelectedIndex(2); // 'Watch' tab
+            tabbedPane.setSelectedIndex(2); // Jump to 'Watch' tab
         }
     }
 

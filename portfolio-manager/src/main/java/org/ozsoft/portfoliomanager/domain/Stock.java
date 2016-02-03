@@ -8,7 +8,7 @@ public class Stock implements Comparable<Stock> {
 
     private double price;
 
-    private double prevClose = -1.0;
+    private double changePerc;
 
     private double peRatio = -1.0;
 
@@ -51,20 +51,12 @@ public class Stock implements Comparable<Stock> {
         this.price = price;
     }
 
-    public double getPrevClose() {
-        return prevClose;
-    }
-
-    public void setPrevClose(double prevClose) {
-        this.prevClose = prevClose;
-    }
-
     public double getChangePerc() {
-        if (prevClose > 0.0) {
-            return (price - prevClose) / prevClose * 100.0;
-        } else {
-            return 0.0;
-        }
+        return changePerc;
+    }
+
+    public void setChangePerc(double changePerc) {
+        this.changePerc = changePerc;
     }
 
     public double getPeRatio() {

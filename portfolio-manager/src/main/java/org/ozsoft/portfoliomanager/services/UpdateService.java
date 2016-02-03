@@ -12,7 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.EncryptedDocumentException;
@@ -49,7 +51,7 @@ public class UpdateService {
 
     private static final String FULL_STOCK_QUOTE_URI = "http://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+=+'%s'&env=http://datatables.org/alltables.env&format=json";
 
-    private static final String SIMPLE_STOCK_QUOTE_URI = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=l1";
+    // private static final String SIMPLE_STOCK_QUOTE_URI = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=l1";
 
     private static final String HISTORICAL_CLOSINGS_URL = "http://ichart.finance.yahoo.com/table.csv?s=%s";
 
@@ -71,14 +73,12 @@ public class UpdateService {
     }
 
     public void updatePrice(Stock stock) {
-        String symbol = stock.getSymbol();
+        StockUpdater stockUpdater = new StockUpdater(stock, httpPageReader);
+        stockUpdater.start();
         try {
-            String quote = IOUtils.toString(httpPageReader.downloadFile(String.format(SIMPLE_STOCK_QUOTE_URI, symbol)));
-            double newPrice = Double.parseDouble(quote);
-            stock.setPrevClose(stock.getPrice());
-            stock.setPrice(newPrice);
-        } catch (IOException e) {
-            System.err.format("ERROR: Failed to retrieve quote for '%s': %s\n", symbol, e.getMessage());
+            stockUpdater.join();
+        } catch (InterruptedException e) {
+            // Safe to ignore.
         }
     }
 
@@ -192,26 +192,55 @@ public class UpdateService {
         }
     }
 
+    public void updatePrices(Set<Stock> stocks) {
+        System.out.println("Updating real-time stock prices");
+
+        int count = 0;
+
+        Set<StockUpdater> updaters = new HashSet<StockUpdater>(stocks.size());
+        for (Stock stock : stocks) {
+            StockUpdater updater = new StockUpdater(stock, httpPageReader);
+            updater.start();
+            updaters.add(updater);
+        }
+
+        for (StockUpdater updater : updaters) {
+            try {
+                updater.join();
+                if (updater.isUpdated()) {
+                    System.out.format("Updated stock price of %s.\n", updater.getStock());
+                    count++;
+                }
+            } catch (InterruptedException e) {
+                // Safe to ignore.
+            }
+        }
+
+        System.out.format("%s stocks updated.\n", count);
+    }
+
     private void updateAllPrices() {
         System.out.println("Updating stock prices");
 
         int count = 0;
 
         JsonParser parser = new JsonParser();
+
         for (Stock stock : config.getStocks()) {
             String symbol = stock.getSymbol();
             try {
                 String json = httpPageReader.read(String.format(FULL_STOCK_QUOTE_URI, stock.getSymbol()));
                 JsonObject quote = parser.parse(json).getAsJsonObject().getAsJsonObject("query").getAsJsonObject("results").getAsJsonObject("quote");
                 double price = getJsonDoubleValue(quote, "LastTradePriceOnly");
-                double prevClose = getJsonDoubleValue(quote, "PreviousClose");
+                String changePercText = getJsonStringValue(quote, "PercentChange").replaceAll("%", "");
+                double changePerc = Double.parseDouble(changePercText);
                 double peRatio = getJsonDoubleValue(quote, "PERatio");
                 double divRate = getJsonDoubleValue(quote, "DividendShare");
-                config.updateStock(symbol, price, prevClose, peRatio, divRate);
+                config.updateStock(symbol, price, changePerc, peRatio, divRate);
                 System.out.format("Updated stock price of %s.\n", stock);
                 count++;
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 System.err.format("ERROR: Failed to retrieve stock data for '%s': %s\n", symbol, e.getMessage());
             }
         }
@@ -287,6 +316,15 @@ public class UpdateService {
             return elem.getAsDouble();
         } else {
             return -1.0;
+        }
+    }
+
+    private static String getJsonStringValue(JsonObject obj, String memberName) {
+        JsonElement elem = obj.get(memberName);
+        if (!elem.isJsonNull()) {
+            return elem.getAsString();
+        } else {
+            return null;
         }
     }
 }

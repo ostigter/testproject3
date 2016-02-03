@@ -178,13 +178,11 @@ public class OwnedTable extends DataTable {
 
     private Stock getSelectedStock() {
         Stock stock = null;
-
         int rowIndex = getSelectedRow();
         if (rowIndex >= 0) {
             String symbol = (String) getCellValue(rowIndex, 0);
             stock = config.getStock(symbol);
         }
-
         return stock;
     }
 }

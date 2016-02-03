@@ -1,11 +1,10 @@
 package org.ozsoft.portfoliomanager.domain;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 public class PortfolioTest {
 
-    private static final double DELTA = 0.01;
+    // private static final double DELTA = 0.01;
 
     @Test
     public void test() {

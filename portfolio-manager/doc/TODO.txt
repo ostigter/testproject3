@@ -1,7 +1,6 @@
 Portfolio Manager - TODO
 ========================
 
-* Get real-time stock prices
 * Add/edit/delete transaction
 * Task progress indicators
 * Extend stock analysis score formula (CR, YDG, CY, DGR)
