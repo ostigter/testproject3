@@ -10,8 +10,8 @@ public class StockUpdater extends Thread {
 
     private static final String QUOTE_URL = "http://finance.yahoo.com/q?s=%s";
 
-    private static final Pattern PATTERN = Pattern
-            .compile("<span id=\"yfs_l84_.*?\">(.*?)</span>.*<span id=\"yfs_c63_.*?\">.*? class=\"(?:neg_arrow|pos_arrow)\" alt=\"(Up|Down)\">.*<span id=\"yfs_p43_.*?\">\\((.*?)%\\)</span>.*<span id=\"yfs_t53_.*?\">(.*) [A-Z]+</span>");
+    private static final Pattern PATTERN =
+            Pattern.compile("<span id=\"yfs_l84_.*?\">(.*?)</span>.*<span id=\"yfs_c63_.*?\">.*? class=\"(?:neg_arrow|pos_arrow)\" alt=\"(Up|Down)\">.*<span id=\"yfs_p43_.*?\">\\((.*?)%\\)</span>.*<span id=\"yfs_t53_.*?\">(.*) [A-Z]+</span>");
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("hh:mma");
 
@@ -55,7 +55,12 @@ public class StockUpdater extends Thread {
                 if (m.group(2).equals("Down")) {
                     change *= -1;
                 }
-                Date date = DATE_FORMAT.parse(m.group(4));
+                String dateText = m.group(4);
+                int p = dateText.indexOf(',');
+                if (p >= 0) {
+                    dateText = dateText.substring(p + 1).trim();
+                }
+                Date date = DATE_FORMAT.parse(dateText);
 
                 if (price != stock.getPrice()) {
                     stock.setPrice(price);
