@@ -3,17 +3,22 @@ package org.ozsoft.task.example;
 import org.ozsoft.task.Task;
 import org.ozsoft.task.TaskListener;
 
+/**
+ * Example task for testing purposes.
+ * 
+ * @author Oscar Stigter
+ */
 public class ExampleTask extends Task {
 
     public ExampleTask(TaskListener listener) {
         super(listener);
     }
-    
+
     @Override
     protected void doStart() {
         System.out.println("DummyTask: Started");
     }
-    
+
     @Override
     public void run() {
         System.out.println("DummyTask: Running");
@@ -27,7 +32,7 @@ public class ExampleTask extends Task {
         }
         complete();
     }
-    
+
     @Override
     protected void doComplete() {
         System.out.println("DummyTask: Completed");
@@ -37,5 +42,4 @@ public class ExampleTask extends Task {
     protected void doCancel() {
         System.out.println("DummyTask: Canceled");
     }
-
 }
