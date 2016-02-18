@@ -10,14 +10,14 @@ import java.util.TreeSet;
 
 public class Main {
 
-    private static final long POLL_INTERVAL = 5000L;
+    private static final long POLL_INTERVAL = 10000L;
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("hh:mma");
 
-    // private static final String PROXY_HOST = "146.106.91.10";
-    // private static final int PROXY_PORT = 8080;
-    // private static final String PROXY_USERNAME = "";
-    // private static final String PROXY_PASSWORD = "";
+    private static final String PROXY_HOST = "146.106.91.10";
+    private static final int PROXY_PORT = 8080;
+    private static final String PROXY_USERNAME = "";
+    private static final String PROXY_PASSWORD = "";
 
     private final HttpPageReader httpPageReader;
 
@@ -35,11 +35,11 @@ public class Main {
         parseArguments(args);
 
         httpPageReader = new HttpPageReader();
-        // httpPageReader.setUseProxy(true);
-        // httpPageReader.setProxyHost(PROXY_HOST);
-        // httpPageReader.setProxyPort(PROXY_PORT);
-        // httpPageReader.setProxyUsername(PROXY_USERNAME);
-        // httpPageReader.setProxyPassword(PROXY_PASSWORD);
+        httpPageReader.setUseProxy(false);
+        httpPageReader.setProxyHost(PROXY_HOST);
+        httpPageReader.setProxyPort(PROXY_PORT);
+        httpPageReader.setProxyUsername(PROXY_USERNAME);
+        httpPageReader.setProxyPassword(PROXY_PASSWORD);
     }
 
     private void parseArguments(String[] args) {
@@ -93,7 +93,7 @@ public class Main {
         if (isUpdated) {
             System.out.format("\n%s\n", DATE_FORMAT.format(lastDate).toLowerCase());
             for (Stock stock : stocks) {
-                System.out.format("%-5s  %6.2f  (%+.2f%%)\n", stock, stock.getPrice(), stock.getChange());
+                System.out.format("%-5s  %6.2f  (%+.2f%%)  %s\n", stock, stock.getPrice(), stock.getChange(), stock.getChangeFlag().getMarker());
             }
         }
     }

@@ -42,8 +42,7 @@ public class StockUpdater extends Thread {
 
     @Override
     public void run() {
-        // System.out.format("### StockUpdater for '%s' started\n", stock);
-
+        stock.setChangeFlag(ChangeFlag.UNCHANGED);
         String uri = String.format(QUOTE_URL, stock.getSymbol());
         try {
             String content = httpPageReader.read(uri);
@@ -63,6 +62,17 @@ public class StockUpdater extends Thread {
                 Date date = DATE_FORMAT.parse(dateText);
 
                 if (price != stock.getPrice()) {
+                    if (stock.getPrice() == 0.0) {
+                        if (change > 0.0) {
+                            stock.setChangeFlag(ChangeFlag.UP);
+                        } else if (change < 0.0) {
+                            stock.setChangeFlag(ChangeFlag.DOWN);
+                        }
+                    } else if (price > stock.getPrice()) {
+                        stock.setChangeFlag(ChangeFlag.UP);
+                    } else if (price < stock.getPrice()) {
+                        stock.setChangeFlag(ChangeFlag.DOWN);
+                    }
                     stock.setPrice(price);
                     stock.setChange(change);
                     stock.setDate(date);
@@ -71,8 +81,8 @@ public class StockUpdater extends Thread {
             }
 
         } catch (Exception e) {
-            System.err.format("ERROR: Could not get update for stock '%s': %s\n", stock, e.getMessage());
-            e.printStackTrace(System.err);
+            // System.err.format("ERROR: Could not get update for stock '%s': %s\n", stock, e.getMessage());
+            // e.printStackTrace(System.err);
         }
 
         isFinished = true;

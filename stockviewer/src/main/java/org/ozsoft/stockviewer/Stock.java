@@ -12,6 +12,8 @@ public class Stock implements Comparable<Stock> {
 
     private double change;
 
+    private ChangeFlag changeFlag;
+
     public Stock(String symbol) {
         this.symbol = symbol;
     }
@@ -42,6 +44,14 @@ public class Stock implements Comparable<Stock> {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public ChangeFlag getChangeFlag() {
+        return changeFlag;
+    }
+
+    public void setChangeFlag(ChangeFlag changeFlag) {
+        this.changeFlag = changeFlag;
     }
 
     @Override
