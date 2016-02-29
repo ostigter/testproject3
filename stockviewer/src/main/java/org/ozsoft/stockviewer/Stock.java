@@ -14,12 +14,24 @@ public class Stock implements Comparable<Stock> {
 
     private ChangeFlag changeFlag;
 
+    private double peRatio;
+
+    private double divRate;
+
     public Stock(String symbol) {
         this.symbol = symbol;
     }
 
     public String getSymbol() {
         return symbol;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public double getPrice() {
@@ -38,20 +50,28 @@ public class Stock implements Comparable<Stock> {
         this.change = change;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public ChangeFlag getChangeFlag() {
         return changeFlag;
     }
 
     public void setChangeFlag(ChangeFlag changeFlag) {
         this.changeFlag = changeFlag;
+    }
+
+    public double getPeRatio() {
+        return peRatio;
+    }
+
+    public void setPeRatio(double peRatio) {
+        this.peRatio = peRatio;
+    }
+
+    public double getDivRate() {
+        return divRate;
+    }
+
+    public void setDivRate(double divRate) {
+        this.divRate = divRate;
     }
 
     @Override

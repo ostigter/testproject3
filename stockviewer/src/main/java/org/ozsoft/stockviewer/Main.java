@@ -10,9 +10,9 @@ import java.util.TreeSet;
 
 public class Main {
 
-    private static final long POLL_INTERVAL = 10000L;
+    private static final long POLL_INTERVAL = 5000L;
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("hh:mma");
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("h:mma");
 
     private static final String PROXY_HOST = "146.106.91.10";
     private static final int PROXY_PORT = 8080;
