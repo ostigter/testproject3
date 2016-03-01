@@ -2,14 +2,16 @@ Portfolio Manager - TODO
 ========================
 
 * Add/edit/delete transaction
-* Task progress indicators
+* Show/hide closed positions
+* Status bar
+* Task progress indicator
+* Application log
+* Alert log
+* View alerts (since last update)
 * Extend stock analysis score formula (CR, YDG, CY, DGR)
 * View stock analysis details per share
 * Update stock analysis (all stocks) and show scores
 * Export stock analysis scores to CSV file
-* Write application log file
-* Write alert log file
-* View alerts (since last update)
 * View income overview ('Income' tab)
 * Set/view sector and industry per stock
 * View portfolio diversification (per sector/stock)

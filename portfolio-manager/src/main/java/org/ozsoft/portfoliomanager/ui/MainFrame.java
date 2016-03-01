@@ -22,6 +22,11 @@ import org.ozsoft.portfoliomanager.ui.table.GoalTable;
 import org.ozsoft.portfoliomanager.ui.table.StockTable;
 import org.ozsoft.portfoliomanager.ui.table.WatchTable;
 
+/**
+ * The application's main window.
+ * 
+ * @author Oscar Stigter
+ */
 public class MainFrame extends JFrame {
 
     private static final long serialVersionUID = 410441330732167672L;
@@ -50,6 +55,9 @@ public class MainFrame extends JFrame {
 
     private EditStockDialog addStockDialog;
 
+    /**
+     * Constructor.
+     */
     public MainFrame() {
         Locale.setDefault(Locale.US);
 
@@ -60,6 +68,9 @@ public class MainFrame extends JFrame {
         setVisible(true);
     }
 
+    /**
+     * Initializes the UI.
+     */
     private void initUI() {
         setTitle(TITLE);
 
@@ -67,7 +78,7 @@ public class MainFrame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                exit();
+                close();
             }
         });
 
@@ -77,22 +88,12 @@ public class MainFrame extends JFrame {
         toolBar.setBorder(UIConstants.SPACER_BORDER);
         toolBar.setFloatable(false);
 
-        JButton button = new JButton("Update Prices");
-        button.setToolTipText("Update stock prices (real-time)");
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updateStockPrices();
-            }
-        });
-        toolBar.add(button);
-
-        button = new JButton("Update All");
+        JButton button = new JButton("Update All");
         button.setToolTipText("Update all stock data");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updateStockData();
+                updateAllStockData();
             }
         });
         toolBar.add(button);
@@ -102,7 +103,7 @@ public class MainFrame extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                analyzeStocks();
+                analyzeAllStocks();
             }
         });
         toolBar.add(button);
@@ -152,6 +153,9 @@ public class MainFrame extends JFrame {
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 
+    /**
+     * Updates all stock tables (UI refresh).
+     */
     public void updateTables() {
         ownedPanel.update();
         goalTable.update();
@@ -160,26 +164,37 @@ public class MainFrame extends JFrame {
         allTable.update();
     }
 
-    private void updateStockPrices() {
+    /**
+     * Updates all stock data.
+     */
+    private void updateAllStockData() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateService.updatePrices(config.getStocks());
+                updateService.updateAllStockData();
                 updateTables();
             }
         });
     }
 
-    private void updateStockData() {
+    /**
+     * Analyzes all stocks.
+     */
+    private void analyzeAllStocks() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateService.updateStockData();
-                updateTables();
+                updateService.analyzeAllStocks();
             }
         });
     }
 
+    /**
+     * Allows the user to add a new stock. <br />
+     * <br />
+     * 
+     * The new stock will be placed on the watch list.
+     */
     private void addStock() {
         if (addStockDialog.show() == Dialog.OK) {
             config.addStock(addStockDialog.getStock());
@@ -188,11 +203,10 @@ public class MainFrame extends JFrame {
         }
     }
 
-    private void analyzeStocks() {
-        updateService.analyzeAllStocks();
-    }
-
-    private void exit() {
+    /**
+     * Closes the application.
+     */
+    private void close() {
         Configuration.save();
     }
 }

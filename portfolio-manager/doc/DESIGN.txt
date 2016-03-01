@@ -35,7 +35,7 @@ Download charts with different date ranges:
     http://chart.finance.yahoo.com/z?s=IVV&t=5y&q=l&l=on&z=l&p=v&a=r14
     http://chart.finance.yahoo.com/z?s=IVV&t=my&q=l&l=on&z=l&p=v&a=r14
 
-http://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.quotes where symbol = "PER"&env=http://datatables.org/alltables.env&format=json
+http://query.yahooapis.com/v1/public/yql?q=select * from yahoo.finance.quotes where symbol = "CMI"&env=http://datatables.org/alltables.env&format=json
 
 {
 	"query": {

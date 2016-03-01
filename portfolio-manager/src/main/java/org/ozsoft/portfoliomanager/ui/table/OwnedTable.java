@@ -19,7 +19,6 @@ import org.ozsoft.portfoliomanager.domain.Configuration;
 import org.ozsoft.portfoliomanager.domain.Portfolio;
 import org.ozsoft.portfoliomanager.domain.Position;
 import org.ozsoft.portfoliomanager.domain.Stock;
-import org.ozsoft.portfoliomanager.domain.Transaction;
 import org.ozsoft.portfoliomanager.ui.Dialog;
 import org.ozsoft.portfoliomanager.ui.EditStockDialog;
 import org.ozsoft.portfoliomanager.ui.MainFrame;
@@ -135,15 +134,8 @@ public class OwnedTable extends DataTable {
     public final void update() {
         clear();
 
-        // Build portfolio from transactions.
-        Configuration config = Configuration.getInstance();
-        Portfolio portfolio = new Portfolio();
-        for (Transaction transaction : config.getTransactions()) {
-            portfolio.addTransaction(transaction);
-        }
-        portfolio.update(config);
-
-        // Populate table with positions.
+        // Populate table with portfolio positions (owned stocks).
+        Portfolio portfolio = config.getPortfolio();
         for (Position p : portfolio.getPositions()) {
             Stock s = p.getStock();
             double weight = (p.getCurrentCost() / portfolio.getCurrentCost()) * 100.0;
@@ -153,9 +145,12 @@ public class OwnedTable extends DataTable {
                     p.getRealizedResult(), p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
         }
 
+        // Populate footer row with totals.
         setFooterRow(null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(), null,
                 portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getYieldOnCost(),
                 portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), portfolio.getTotalReturnPercentage(), null);
+
+        // System.out.format("\n### Total Return: $ %,.0f\n", portfolio.getTotalReturn());
 
         super.update();
     }

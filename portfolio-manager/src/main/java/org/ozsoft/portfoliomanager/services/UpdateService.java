@@ -33,10 +33,11 @@ import org.ozsoft.portfoliomanager.domain.StockPerformance;
 import org.ozsoft.portfoliomanager.domain.TimeRange;
 import org.ozsoft.portfoliomanager.util.HttpPageReader;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
+/**
+ * Service to update and analyze stocks.
+ * 
+ * @author Oscar Stigter
+ */
 public class UpdateService {
 
     private static final String CCC_LIST_URI = "http://www.dripinvesting.org/Tools/U.S.DividendChampions.xls";
@@ -49,41 +50,50 @@ public class UpdateService {
 
     private static final int DIV_GROWTH_COLUMN_INDEX = CellReference.convertColStringToIndex("AN");
 
-    private static final String FULL_STOCK_QUOTE_URI = "http://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.quotes+where+symbol+=+'%s'&env=http://datatables.org/alltables.env&format=json";
-
-    // private static final String SIMPLE_STOCK_QUOTE_URI = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=l1";
-
     private static final String HISTORICAL_CLOSINGS_URL = "http://ichart.finance.yahoo.com/table.csv?s=%s";
 
-    private static final String HISTORICAL_DIVIDENDS_URL = "http://ichart.finance.yahoo.com/table.csv?s=%s&g=v";
+    // private static final String HISTORICAL_DIVIDENDS_URL = "http://ichart.finance.yahoo.com/table.csv?s=%s&g=v";
 
     private static final DateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("yyyy-MM-dd");
-
-    // private static final DateFormat DATE_FORMAT_LONG = new SimpleDateFormat("MM/dd/yyyy h:mma");
 
     private final Configuration config = Configuration.getInstance();
 
     private final HttpPageReader httpPageReader = new HttpPageReader();
 
-    public void updateStockData() {
-        System.out.println("Updating stocks");
+    /**
+     * Updates all stock data.
+     */
+    public void updateAllStockData() {
         updateStatistics();
         updateAllPrices();
-        Configuration.save();
     }
 
-    public void updatePrice(Stock stock) {
+    /**
+     * Updates the price of a single stock.
+     * 
+     * @param stock
+     *            The stock to update.
+     * 
+     * @return True if the stock was updated (price changed), otherwise false.
+     */
+    public boolean updatePrice(Stock stock) {
+        boolean isUpdated = false;
         StockUpdater stockUpdater = new StockUpdater(stock, httpPageReader);
         stockUpdater.start();
         try {
             stockUpdater.join();
+            isUpdated = stockUpdater.isUpdated();
         } catch (InterruptedException e) {
             // Safe to ignore.
         }
+        return isUpdated;
     }
 
+    /**
+     * Analyzes all stocks based on their historic performance and current valuation (price only).
+     */
     public void analyzeAllStocks() {
-        System.out.println("\nAnalyzing stocks...");
+        System.out.println("\nAnalyzing all stocks...");
         List<StockAnalysis> analyses = new ArrayList<StockAnalysis>();
         for (Stock stock : config.getStocks()) {
             System.out.format("  %s\n", stock);
@@ -97,22 +107,12 @@ public class UpdateService {
         }
     }
 
-    public StockAnalysis analyzeStock(Stock stock) {
-        List<ClosingPrice> prices = getClosingPrices(stock);
-
-        StockPerformance perf10yr = new StockPerformance(prices, TimeRange.TEN_YEAR);
-        StockPerformance perf5yr = new StockPerformance(prices, TimeRange.FIVE_YEAR);
-        StockPerformance perf1yr = new StockPerformance(prices, TimeRange.ONE_YEAR);
-
-        double score = 20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
-                * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
-
-        StockAnalysis analysis = new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(),
-                perf1yr.getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
-
-        return analysis;
-    }
-
+    /**
+     * Analyzes a single stock and prints the results to the console.
+     * 
+     * @param stock
+     *            The stock to analyze.
+     */
     public void printStockAnalysis(Stock stock) {
         StockAnalysis analysis = analyzeStock(stock);
         System.out.format("\nAnalysis for %s:\n\n", analysis.getStock());
@@ -128,53 +128,68 @@ public class UpdateService {
         System.out.format("Score:               %.2f\n", analysis.getScore());
     }
 
+    /**
+     * Updates all stocks based on the latest version of David Fish' CCC list (Excel sheet, updated monthly). <br />
+     * <br />
+     * 
+     * Checks for a newer version of the CCC list and updates the stocks only if present. <br />
+     * <br />
+     * 
+     * Uses the Apache POI framework to parse the Excel sheet.
+     */
     private void updateStatistics() {
         // Download CCC list if missing or newer available
         File cccListFile = config.getCCCListFile();
         long localTimestamp = (cccListFile.exists()) ? cccListFile.lastModified() : -1L;
         try {
-            System.out.println("Check for new version of CCC list");
+            System.out.println("\nChecking for new version of CCC list...");
             long remoteTimestamp = httpPageReader.getFileLastModified(CCC_LIST_URI);
             if (remoteTimestamp > localTimestamp) {
-                System.out.println("Downloading CCC list");
                 downloadCCCList(cccListFile);
-            }
 
-            // Update stock statistics from CCC list
-            System.out.println("Updating stock statistics");
-            try {
-                Workbook workbook = WorkbookFactory.create(cccListFile);
-                Sheet sheet = workbook.getSheet(SHEET_NAME);
-                int count = 0;
-                for (Row row : sheet) {
-                    if (row.getRowNum() > 5) {
-                        Cell cell = row.getCell(SYMBOL_COLUMN_INDEX);
-                        if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                            String symbol = cell.getStringCellValue();
-                            int yearsDivGrowth = (int) Math.floor(row.getCell(YEARS_GROWTH_COLUMN_INDEX).getNumericCellValue());
-                            cell = row.getCell(DIV_GROWTH_COLUMN_INDEX);
-                            double divGrowth = (cell != null && cell.getCellType() == Cell.CELL_TYPE_NUMERIC) ? cell.getNumericCellValue() : -1.0;
+                // Update stock statistics from CCC list
+                System.out.println("Updating stock statistics...");
+                try {
+                    Workbook workbook = WorkbookFactory.create(cccListFile);
+                    Sheet sheet = workbook.getSheet(SHEET_NAME);
+                    int count = 0;
+                    for (Row row : sheet) {
+                        if (row.getRowNum() > 5) {
+                            Cell cell = row.getCell(SYMBOL_COLUMN_INDEX);
+                            if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
+                                String symbol = cell.getStringCellValue();
+                                int yearsDivGrowth = (int) Math.floor(row.getCell(YEARS_GROWTH_COLUMN_INDEX).getNumericCellValue());
+                                cell = row.getCell(DIV_GROWTH_COLUMN_INDEX);
+                                double divGrowth = (cell != null && cell.getCellType() == Cell.CELL_TYPE_NUMERIC) ? cell.getNumericCellValue() : -1.0;
 
-                            Stock stock = config.getStock(symbol);
-                            if (stock != null) {
-                                stock.setDivGrowth(divGrowth);
-                                stock.setYearsDivGrowth(yearsDivGrowth);
-                                count++;
+                                Stock stock = config.getStock(symbol);
+                                if (stock != null) {
+                                    stock.setDivGrowth(divGrowth);
+                                    stock.setYearsDivGrowth(yearsDivGrowth);
+                                    count++;
+                                }
                             }
                         }
                     }
-                }
-                System.out.format("Statistics updated for %d stocks.\n", count);
+                    System.out.format("Statistics updated for %d stocks.\n", count);
 
-            } catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-                System.err.format("ERROR: Failed to process CCC list: %s\n", e.getMessage());
+                } catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+                    System.err.format("ERROR: Failed to process CCC list: %s\n", e.getMessage());
+                }
             }
         } catch (IOException e) {
             System.err.format("ERROR: Failed to download CCC list: %s\n", e.getMessage());
         }
     }
 
+    /**
+     * Downloads the latest version of David Fish' CCC list (Excel sheet).
+     * 
+     * @param file
+     *            The local CCC list file.
+     */
     private void downloadCCCList(File file) {
+        System.out.println("Downloading latest version of the CCC list...");
         InputStream is = null;
         OutputStream os = null;
         try {
@@ -192,63 +207,90 @@ public class UpdateService {
         }
     }
 
-    public void updatePrices(Set<Stock> stocks) {
-        System.out.println("Updating real-time stock prices");
+    /**
+     * Updates all stock prices.
+     * 
+     * @return The number of updated stocks.
+     */
+    private int updateAllPrices() {
+        return updatePrices(config.getStocks());
+    }
 
-        int count = 0;
+    /**
+     * Updates real-time prices for the specified stocks. <br />
+     * <br />
+     * 
+     * Every stock is updated by its own {@see StockUpdater} thread for maximum performance (less total duration, at the
+     * cost of a large CPU and network I/O burst).
+     * 
+     * @param stocks
+     *            The stocks to update.
+     * 
+     * @return The number of updated stocks.
+     */
+    public int updatePrices(Set<Stock> stocks) {
+        System.out.println("\nUpdating stock prices...");
+
+        int updatedCount = 0;
 
         Set<StockUpdater> updaters = new HashSet<StockUpdater>(stocks.size());
         for (Stock stock : stocks) {
             StockUpdater updater = new StockUpdater(stock, httpPageReader);
-            updater.start();
             updaters.add(updater);
+            updater.start();
         }
 
         for (StockUpdater updater : updaters) {
             try {
                 updater.join();
                 if (updater.isUpdated()) {
-                    System.out.format("Updated stock price of %s.\n", updater.getStock());
-                    count++;
+                    System.out.format("Updated price of %s.\n", updater.getStock());
+                    updatedCount++;
                 }
             } catch (InterruptedException e) {
                 // Safe to ignore.
             }
         }
 
-        System.out.format("%s stocks updated.\n", count);
+        System.out.format("%s stocks updated.\n", updatedCount);
+
+        return updatedCount;
     }
 
-    private void updateAllPrices() {
-        System.out.println("Updating stock prices");
+    /**
+     * Analyzes a stock based on its historic performance and current valuation (price only).
+     * 
+     * @param stock
+     *            The stock to analyze.
+     * 
+     * @return The stock analysis result.
+     */
+    private StockAnalysis analyzeStock(Stock stock) {
+        System.out.format("Analyzing %s...\n", stock);
+        List<ClosingPrice> prices = getClosingPrices(stock);
 
-        int count = 0;
+        StockPerformance perf10yr = new StockPerformance(prices, TimeRange.TEN_YEAR);
+        StockPerformance perf5yr = new StockPerformance(prices, TimeRange.FIVE_YEAR);
+        StockPerformance perf1yr = new StockPerformance(prices, TimeRange.ONE_YEAR);
 
-        JsonParser parser = new JsonParser();
+        double score = 20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
+                * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
 
-        for (Stock stock : config.getStocks()) {
-            String symbol = stock.getSymbol();
-            try {
-                String json = httpPageReader.read(String.format(FULL_STOCK_QUOTE_URI, stock.getSymbol()));
-                JsonObject quote = parser.parse(json).getAsJsonObject().getAsJsonObject("query").getAsJsonObject("results").getAsJsonObject("quote");
-                double price = getJsonDoubleValue(quote, "LastTradePriceOnly");
-                String changePercText = getJsonStringValue(quote, "PercentChange").replaceAll("%", "");
-                double changePerc = Double.parseDouble(changePercText);
-                double peRatio = getJsonDoubleValue(quote, "PERatio");
-                double divRate = getJsonDoubleValue(quote, "DividendShare");
-                config.updateStock(symbol, price, changePerc, peRatio, divRate);
-                System.out.format("Updated stock price of %s.\n", stock);
-                count++;
+        StockAnalysis analysis = new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(),
+                perf1yr.getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
 
-            } catch (Exception e) {
-                System.err.format("ERROR: Failed to retrieve stock data for '%s': %s\n", symbol, e.getMessage());
-            }
-        }
-
-        System.out.format("%d stock prices updated\n", count);
+        return analysis;
     }
 
-    public List<ClosingPrice> getClosingPrices(Stock stock) {
+    /**
+     * Retrieves the historic closing prices for a stock.
+     * 
+     * @param stock
+     *            The stock.
+     * 
+     * @return The historic closing prices.
+     */
+    private List<ClosingPrice> getClosingPrices(Stock stock) {
         String symbol = stock.getSymbol();
         String uri = String.format(HISTORICAL_CLOSINGS_URL, symbol);
         List<ClosingPrice> prices = new ArrayList<ClosingPrice>();
@@ -279,52 +321,42 @@ public class UpdateService {
         return prices;
     }
 
-    public List<ClosingPrice> getDividends(Stock stock) {
-        String symbol = stock.getSymbol();
-        String uri = String.format(HISTORICAL_DIVIDENDS_URL, symbol);
-        List<ClosingPrice> prices = new ArrayList<ClosingPrice>();
-        boolean inHeader = true;
-        try {
-            String response = httpPageReader.read(uri);
-            for (String line : response.split("\n")) {
-                if (inHeader) {
-                    inHeader = false;
-                } else {
-                    String[] fields = line.split(",");
-                    if (fields.length == 2) {
-                        try {
-                            Date date = DATE_FORMAT_SHORT.parse(fields[0]);
-                            double value = Double.parseDouble(fields[1]);
-                            prices.add(new ClosingPrice(date, value));
-                        } catch (ParseException e) {
-                            System.err.format("ERROR: Could not parse price quote: '%s'\n", line);
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.err.format("ERROR: Could retrieve historical dividend payments for '%s': %s\n", symbol, e.getMessage());
-            e.printStackTrace(System.err);
-        }
-
-        return prices;
-    }
-
-    private static double getJsonDoubleValue(JsonObject obj, String memberName) {
-        JsonElement elem = obj.get(memberName);
-        if (!elem.isJsonNull()) {
-            return elem.getAsDouble();
-        } else {
-            return -1.0;
-        }
-    }
-
-    private static String getJsonStringValue(JsonObject obj, String memberName) {
-        JsonElement elem = obj.get(memberName);
-        if (!elem.isJsonNull()) {
-            return elem.getAsString();
-        } else {
-            return null;
-        }
-    }
+    // /**
+    // * Retrieves the historic dividends of a stock.
+    // *
+    // * @param stock
+    // * The stock.
+    // *
+    // * @return The historic dividends.
+    // */
+    // private List<ClosingPrice> getDividends(Stock stock) {
+    // String symbol = stock.getSymbol();
+    // String uri = String.format(HISTORICAL_DIVIDENDS_URL, symbol);
+    // List<ClosingPrice> prices = new ArrayList<ClosingPrice>();
+    // boolean inHeader = true;
+    // try {
+    // String response = httpPageReader.read(uri);
+    // for (String line : response.split("\n")) {
+    // if (inHeader) {
+    // inHeader = false;
+    // } else {
+    // String[] fields = line.split(",");
+    // if (fields.length == 2) {
+    // try {
+    // Date date = DATE_FORMAT_SHORT.parse(fields[0]);
+    // double value = Double.parseDouble(fields[1]);
+    // prices.add(new ClosingPrice(date, value));
+    // } catch (ParseException e) {
+    // System.err.format("ERROR: Could not parse price quote: '%s'\n", line);
+    // }
+    // }
+    // }
+    // }
+    // } catch (IOException e) {
+    // System.err.format("ERROR: Could retrieve historical dividend payments for '%s': %s\n", symbol, e.getMessage());
+    // e.printStackTrace(System.err);
+    // }
+    //
+    // return prices;
+    // }
 }

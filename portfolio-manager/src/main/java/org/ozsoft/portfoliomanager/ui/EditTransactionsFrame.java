@@ -7,14 +7,14 @@ import javax.swing.JScrollPane;
 
 import org.ozsoft.portfoliomanager.ui.table.TransactionsTable;
 
-public class TransactionsFrame extends JDialog {
+public class EditTransactionsFrame extends JDialog {
 
     private static final long serialVersionUID = -4942077142767084610L;
 
     private final TransactionsTable transactionsTable;
 
-    public TransactionsFrame(MainFrame mainFrame) {
-        super(mainFrame, "Transactions", true);
+    public EditTransactionsFrame(MainFrame mainFrame) {
+        super(mainFrame, "Edit Transactions", true);
 
         transactionsTable = new TransactionsTable(mainFrame);
         add(new JScrollPane(transactionsTable), BorderLayout.CENTER);

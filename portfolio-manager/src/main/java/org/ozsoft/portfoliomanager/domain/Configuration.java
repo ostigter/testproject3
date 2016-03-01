@@ -58,6 +58,14 @@ public class Configuration {
         return new TreeSet<Stock>(stocks.values());
     }
 
+    public Set<Stock> getOwnedStocks() {
+        Set<Stock> ownedStocks = new TreeSet<Stock>();
+        for (Position position : getPortfolio().getPositions()) {
+            ownedStocks.add(position.getStock());
+        }
+        return ownedStocks;
+    }
+
     public Stock getStock(String symbol) {
         return stocks.get(symbol);
     }
@@ -104,6 +112,15 @@ public class Configuration {
         transactions.add(transaction);
     }
 
+    public Portfolio getPortfolio() {
+        Portfolio portfolio = new Portfolio();
+        for (Transaction transaction : getTransactions()) {
+            portfolio.addTransaction(transaction);
+        }
+        portfolio.update(this);
+        return portfolio;
+    }
+
     private static Configuration load() {
         if (DATA_DIR.isDirectory()) {
             Gson gson = new GsonBuilder().create();
@@ -135,22 +152,6 @@ public class Configuration {
         } catch (IOException e) {
             System.err.println("ERROR: Could not write data file: " + PORTFOLIO_FILE.getAbsolutePath());
             e.printStackTrace(System.err);
-        }
-    }
-
-    public void updateStock(String symbol, double price, double changePerc, double peRatio, double divRate) {
-        Stock stock = stocks.get(symbol);
-        if (stock != null) {
-            if (price > 0.0) {
-                stock.setPrice(price);
-            }
-            stock.setChangePerc(changePerc);
-            if (peRatio > 0.0) {
-                stock.setPeRatio(peRatio);
-            }
-            if (divRate >= 0.0) {
-                stock.setDivRate(divRate);
-            }
         }
     }
 }
