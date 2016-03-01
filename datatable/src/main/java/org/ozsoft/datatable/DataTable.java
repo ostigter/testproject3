@@ -99,6 +99,7 @@ public class DataTable extends JPanel {
 
     public void update() {
         mainTable.update();
+        footerTable.update();
     }
 
     public void clear() {
@@ -211,8 +212,10 @@ public class DataTable extends JPanel {
         public void update() {
             if (model != null) {
                 model.fireTableDataChanged();
-                resizeColumns();
-                sorter.sort();
+                if (!isFooter) {
+                    resizeColumns();
+                    sorter.sort();
+                }
             }
         }
 
