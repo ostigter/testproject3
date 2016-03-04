@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -13,8 +11,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import org.ozsoft.portfoliomanager.domain.Configuration;
-import org.ozsoft.portfoliomanager.domain.Stock;
-import org.ozsoft.portfoliomanager.domain.StockLevel;
 import org.ozsoft.portfoliomanager.services.UpdateService;
 import org.ozsoft.portfoliomanager.ui.table.OwnedTable;
 
@@ -27,9 +23,11 @@ public class OwnedPanel extends JPanel {
 
     private static final long serialVersionUID = -6819380411937781494L;
 
+    private final MainFrame mainFrame;
+
     private final OwnedTable ownedTable;
 
-    private final EditTransactionsFrame editTransactionsFrame;
+    private final TransactionsFrame editTransactionsFrame;
 
     private final Configuration config = Configuration.getInstance();
 
@@ -42,7 +40,9 @@ public class OwnedPanel extends JPanel {
      *            The application's main window.
      */
     public OwnedPanel(MainFrame mainFrame) {
-        editTransactionsFrame = new EditTransactionsFrame(mainFrame);
+        this.mainFrame = mainFrame;
+
+        editTransactionsFrame = new TransactionsFrame(mainFrame);
 
         setLayout(new BorderLayout());
 
@@ -87,7 +87,7 @@ public class OwnedPanel extends JPanel {
             @Override
             public void run() {
                 updateService.updatePrices(config.getOwnedStocks());
-                ownedTable.update();
+                mainFrame.updateTables();
             }
         });
     }

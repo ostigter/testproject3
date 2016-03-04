@@ -4,24 +4,15 @@ public class Transaction implements Comparable<Transaction> {
 
     private long date;
 
-    private final TransactionType type;
+    private String symbol;
 
-    private final String symbol;
+    private TransactionType type;
 
-    private final int noOfShares;
+    private int noOfShares;
 
-    private final double price;
+    private double price;
 
-    private final double cost;
-
-    public Transaction(long date, TransactionType type, String symbol, int noOfShares, double price, double cost) {
-        this.date = date;
-        this.type = type;
-        this.symbol = symbol;
-        this.noOfShares = noOfShares;
-        this.price = price;
-        this.cost = cost;
-    }
+    private double cost;
 
     public long getDate() {
         return date;
@@ -31,24 +22,59 @@ public class Transaction implements Comparable<Transaction> {
         this.date = date;
     }
 
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
     public TransactionType getType() {
         return type;
     }
 
-    public String getSymbol() {
-        return symbol;
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 
     public int getNoOfShares() {
         return noOfShares;
     }
 
+    public void setNoOfShares(int noOfShares) {
+        this.noOfShares = noOfShares;
+    }
+
     public double getPrice() {
         return price;
     }
 
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public double getCost() {
         return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.valueOf(date).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Transaction) {
+            Transaction tx = (Transaction) other;
+            return symbol.equals(tx.getSymbol()) && date == tx.getDate();
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -58,6 +84,6 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public String toString() {
-        return String.format("%s: %s %d $%.2f $%.2f", symbol, type, noOfShares, price, cost);
+        return String.format("%d %s %s %d $%.2f $%.2f", date, symbol, type, noOfShares, price, cost);
     }
 }

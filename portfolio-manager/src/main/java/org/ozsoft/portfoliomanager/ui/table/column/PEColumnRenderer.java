@@ -15,7 +15,7 @@ public class PEColumnRenderer extends DefaultColumnRenderer {
         if (value instanceof Double) {
             double numericValue = (double) value;
             if (numericValue < 0.0) {
-                backgroundColor = Color.YELLOW;
+                backgroundColor = Color.ORANGE;
                 return "N/A";
             } else {
                 if (numericValue > 20.0) {

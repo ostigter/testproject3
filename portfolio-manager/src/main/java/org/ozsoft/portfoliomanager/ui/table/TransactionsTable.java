@@ -17,6 +17,7 @@ import org.ozsoft.datatable.ColumnRenderer;
 import org.ozsoft.datatable.DataTable;
 import org.ozsoft.datatable.DefaultColumnRenderer;
 import org.ozsoft.portfoliomanager.domain.Configuration;
+import org.ozsoft.portfoliomanager.domain.Stock;
 import org.ozsoft.portfoliomanager.domain.Transaction;
 import org.ozsoft.portfoliomanager.domain.TransactionType;
 import org.ozsoft.portfoliomanager.ui.Dialog;
@@ -64,7 +65,8 @@ public class TransactionsTable extends DataTable {
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("Date", "Transaction date", dateColumnRenderer));
-        columns.add(new Column("Stock", "Stock ticker sybol", centerColumnRenderer));
+        columns.add(new Column("Stock name", "Stock name"));
+        columns.add(new Column("Symbol", "Stock ticker sybol", centerColumnRenderer));
         columns.add(new Column("Type", "Transaction type", centerColumnRenderer));
         columns.add(new Column("Shares", "Number of shares", sharesColumnRenderer));
         columns.add(new Column("Price", "Price per share", smallMoneyColumnRenderer));
@@ -110,18 +112,22 @@ public class TransactionsTable extends DataTable {
     public final void update() {
         clear();
         for (Transaction t : config.getTransactions()) {
+            String symbol = t.getSymbol();
+            Stock stock = config.getStock(symbol);
+            String stockName = (stock != null) ? stock.getName() : "<ERROR: Stock deleted>";
             TransactionType type = t.getType();
             int noOfShares = (type == TransactionType.SELL) ? -1 * t.getNoOfShares() : t.getNoOfShares();
             double price = t.getPrice();
             double costs = t.getCost();
             double total = noOfShares * price + costs;
-            addRow(t.getDate(), t.getSymbol(), type, noOfShares, price, costs, total);
+            addRow(t.getDate(), stockName, symbol, type, noOfShares, price, costs, total);
         }
         super.update();
     }
 
     private void addTransaction() {
         if (editTransactionDialog.show() == Dialog.OK) {
+            config.addTransaction(editTransactionDialog.getTransaction());
             update();
         }
     }
@@ -140,7 +146,7 @@ public class TransactionsTable extends DataTable {
         if (transaction != null) {
             if (JOptionPane.showConfirmDialog(null, "Permanently delete transaction?", "Warning", JOptionPane.WARNING_MESSAGE,
                     JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                // TODO: Delete transaction
+                config.deleteTransaction(transaction);
                 update();
             }
         }
@@ -148,12 +154,17 @@ public class TransactionsTable extends DataTable {
 
     private Transaction getSelectedTransaction() {
         Transaction transaction = null;
-
         int rowIndex = getSelectedRow();
         if (rowIndex >= 0) {
-            // TODO: Determine selected transaction
+            int i = 0;
+            for (Transaction tx : config.getTransactions()) {
+                if (i == rowIndex) {
+                    transaction = tx;
+                    break;
+                }
+                i++;
+            }
         }
-
         return transaction;
     }
 }

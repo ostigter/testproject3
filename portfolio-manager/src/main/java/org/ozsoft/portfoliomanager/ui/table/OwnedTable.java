@@ -67,7 +67,6 @@ public class OwnedTable extends DataTable {
         ColumnRenderer numberColumnRenderer = new DefaultColumnRenderer(SwingConstants.RIGHT);
         ColumnRenderer centeredColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
         ColumnRenderer percChangeColumnRenderer = new PercChangeColumnRenderer();
-        ColumnRenderer divRateColumnRenderer = new DRColumnRenderer();
         ColumnRenderer yieldColumnRenderer = new YieldColumnRenderer();
         ColumnRenderer divGrowthColumnRenderer = new DGColumnRenderer();
         ColumnRenderer yearsColumnRenderer = new YDGColumnRenderer();
@@ -78,10 +77,10 @@ public class OwnedTable extends DataTable {
         ColumnRenderer percColumnRenderer = new PercentageColumnRenderer();
 
         List<Column> columns = new ArrayList<Column>();
+        columns.add(new Column("Stock name", "Stock name"));
         columns.add(new Column("Symbol", "Ticker symbol", centeredColumnRenderer));
         columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
         columns.add(new Column("Change", "Change in stock price since last closing", percChangeColumnRenderer));
-        columns.add(new Column("DR", "Current dividend rate", divRateColumnRenderer));
         columns.add(new Column("CY", "Current dividend yield", yieldColumnRenderer));
         columns.add(new Column("DGR", "5-year annualized dividend growth rate", divGrowthColumnRenderer));
         columns.add(new Column("YDG", "Consecutive years of dividend growth", yearsColumnRenderer));
@@ -98,7 +97,6 @@ public class OwnedTable extends DataTable {
         columns.add(new Column("TI", "Overall total income received", resultColumnRenderer));
         columns.add(new Column("RR", "Total realized result from sales", resultColumnRenderer));
         columns.add(new Column("TR", "Total return (result plus income)", resultColumnRenderer));
-        columns.add(new Column("TR %", "Total return as percentage of cost", percChangeColumnRenderer));
         columns.add(new Column("Notes", "Notes about this stock"));
 
         setColumns(columns);
@@ -139,18 +137,16 @@ public class OwnedTable extends DataTable {
         for (Position p : portfolio.getPositions()) {
             Stock s = p.getStock();
             double weight = (p.getCurrentCost() / portfolio.getCurrentCost()) * 100.0;
-            addRow(s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(),
+            addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(),
                     s.getCreditRating(), p.getNoOfShares(), p.getCurrentCost(), p.getCostPerShare(), p.getCurrentValue(), weight,
                     p.getCurrentResult(), p.getCurrentResultPercentage(), p.getAnnualIncome(), p.getYieldOnCost(), p.getTotalIncome(),
-                    p.getRealizedResult(), p.getTotalReturn(), p.getTotalReturnPercentage(), s.getComment());
+                    p.getRealizedResult(), p.getTotalReturn(), "  " + s.getComment());
         }
 
         // Populate footer row with totals.
         setFooterRow(null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(), null,
                 portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getYieldOnCost(),
-                portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), portfolio.getTotalReturnPercentage(), null);
-
-        // System.out.format("\n### Total Return: $ %,.0f\n", portfolio.getTotalReturn());
+                portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), null);
 
         super.update();
     }
@@ -175,7 +171,7 @@ public class OwnedTable extends DataTable {
         Stock stock = null;
         int rowIndex = getSelectedRow();
         if (rowIndex >= 0) {
-            String symbol = (String) getCellValue(rowIndex, 0);
+            String symbol = (String) getCellValue(rowIndex, 1);
             stock = config.getStock(symbol);
         }
         return stock;

@@ -37,7 +37,7 @@ public class MainFrame extends JFrame {
 
     private static final int DEFAULT_HEIGHT = 600;
 
-    private final Configuration config = Configuration.getInstance();
+    private final Configuration config;
 
     private final UpdateService updateService = new UpdateService();
 
@@ -60,6 +60,8 @@ public class MainFrame extends JFrame {
      */
     public MainFrame() {
         Locale.setDefault(Locale.US);
+
+        config = Configuration.getInstance();
 
         initUI();
 

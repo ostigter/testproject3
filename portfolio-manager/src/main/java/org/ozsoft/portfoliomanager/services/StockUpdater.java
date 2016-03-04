@@ -60,7 +60,7 @@ public class StockUpdater extends Thread {
                     changePerc *= -1;
                 }
                 String peRatioText = m.group(4);
-                double peRatio = peRatioText.equals("N/A") ? 0.0 : Double.parseDouble(peRatioText);
+                double peRatio = peRatioText.equals("N/A") ? -1.0 : Double.parseDouble(peRatioText);
                 String divRateString = m.group(5);
                 double divRate = divRateString.equals("N/A") ? 0.0 : Double.parseDouble(divRateString);
 

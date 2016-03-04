@@ -11,10 +11,7 @@ import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -36,11 +33,11 @@ public class Configuration {
 
     private final TreeMap<String, Stock> stocks;
 
-    private final List<Transaction> transactions;
+    private final Set<Transaction> transactions;
 
     private Configuration() {
         stocks = new TreeMap<String, Stock>();
-        transactions = new ArrayList<Transaction>();
+        transactions = new TreeSet<Transaction>();
     }
 
     public static Configuration getInstance() {
@@ -90,7 +87,7 @@ public class Configuration {
         }
     }
 
-    public List<Transaction> getTransactions() {
+    public Set<Transaction> getTransactions() {
         for (Transaction transaction : transactions) {
             long timestamp = transaction.getDate();
             String text = String.valueOf(timestamp);
@@ -103,13 +100,19 @@ public class Configuration {
                     e.printStackTrace();
                 }
             }
+
+            // System.out.println(transaction);
         }
 
-        return Collections.unmodifiableList(transactions);
+        return transactions;
     }
 
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
+    }
+
+    public void deleteTransaction(Transaction transaction) {
+        transactions.remove(transaction);
     }
 
     public Portfolio getPortfolio() {
