@@ -137,6 +137,7 @@ public class TransactionsTable extends DataTable {
         if (transaction != null) {
             if (editTransactionDialog.show(transaction) == Dialog.OK) {
                 update();
+                mainFrame.updateTables();
             }
         }
     }

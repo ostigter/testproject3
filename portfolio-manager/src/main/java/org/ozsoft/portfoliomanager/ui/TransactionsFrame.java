@@ -14,7 +14,7 @@ public class TransactionsFrame extends JDialog {
     private final TransactionsTable transactionsTable;
 
     public TransactionsFrame(MainFrame mainFrame) {
-        super(mainFrame, "Edit Transactions", true);
+        super(mainFrame, "Transactions", true);
 
         transactionsTable = new TransactionsTable(mainFrame);
         add(new JScrollPane(transactionsTable), BorderLayout.CENTER);

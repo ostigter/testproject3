@@ -1,8 +1,10 @@
 package org.ozsoft.portfoliomanager.services;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -101,10 +103,20 @@ public class UpdateService {
         }
         Collections.sort(analyses);
 
-        System.out.println("\nStocks sorted by score:");
-        for (StockAnalysis analysis : analyses) {
-            System.out.println(analysis);
+        // Write analysis results to CSV file.
+        File file = config.getAnalysisResultFile();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write("Symbol; 10-yr CAGR; 5-yr CAGR; 1-yr Change; Volatility; 52-wk High; 52-wk Low; Current Price; 5-yr Discount; 1-yr Discount; Score");
+            writer.newLine();
+            for (StockAnalysis analysis : analyses) {
+                writer.write(analysis.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.format("ERROR: Could not write stock analysis results to file '%s': %s\n", file.getAbsolutePath(), e);
         }
+
+        System.out.format("Analyzed %d stocks, output written to '%s'.\n", analyses.size(), file.getAbsolutePath());
     }
 
     /**
@@ -266,7 +278,6 @@ public class UpdateService {
      * @return The stock analysis result.
      */
     private StockAnalysis analyzeStock(Stock stock) {
-        System.out.format("Analyzing %s...\n", stock);
         List<ClosingPrice> prices = getClosingPrices(stock);
 
         StockPerformance perf10yr = new StockPerformance(prices, TimeRange.TEN_YEAR);

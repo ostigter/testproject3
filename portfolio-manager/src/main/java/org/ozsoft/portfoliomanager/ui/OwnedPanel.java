@@ -27,7 +27,7 @@ public class OwnedPanel extends JPanel {
 
     private final OwnedTable ownedTable;
 
-    private final TransactionsFrame editTransactionsFrame;
+    private final TransactionsFrame transactionsFrame;
 
     private final Configuration config = Configuration.getInstance();
 
@@ -42,7 +42,7 @@ public class OwnedPanel extends JPanel {
     public OwnedPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
 
-        editTransactionsFrame = new TransactionsFrame(mainFrame);
+        transactionsFrame = new TransactionsFrame(mainFrame);
 
         setLayout(new BorderLayout());
 
@@ -57,11 +57,11 @@ public class OwnedPanel extends JPanel {
         });
         buttonPanel.add(button);
 
-        button = new JButton("Edit Transactions");
+        button = new JButton("Transactions");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                editTransactionsFrame.setVisible(true);
+                transactionsFrame.setVisible(true);
             }
         });
         buttonPanel.add(button);
@@ -83,11 +83,13 @@ public class OwnedPanel extends JPanel {
      * Updates the prices of the owned stocks.
      */
     private void updateStockPrices() {
+        mainFrame.showMessageDialog("Updating stock prices, please wait...");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 updateService.updatePrices(config.getOwnedStocks());
                 mainFrame.updateTables();
+                mainFrame.closeMessageDialog();
             }
         });
     }

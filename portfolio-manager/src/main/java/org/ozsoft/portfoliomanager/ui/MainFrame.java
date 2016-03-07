@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 import javax.swing.JButton;
@@ -54,6 +55,8 @@ public class MainFrame extends JFrame {
     private DataTable allTable;
 
     private EditStockDialog addStockDialog;
+
+    private MessageDialog messageDialog;
 
     /**
      * Constructor.
@@ -150,6 +153,8 @@ public class MainFrame extends JFrame {
 
         addStockDialog = new EditStockDialog(this);
 
+        messageDialog = new MessageDialog(this);
+
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setLocationRelativeTo(null);
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -159,22 +164,40 @@ public class MainFrame extends JFrame {
      * Updates all stock tables (UI refresh).
      */
     public void updateTables() {
-        ownedPanel.update();
-        goalTable.update();
-        watchTable.update();
-        benchTable.update();
-        allTable.update();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ownedPanel.update();
+                goalTable.update();
+                watchTable.update();
+                benchTable.update();
+                allTable.update();
+            }
+        });
+    }
+
+    public void showMessageDialog(String message) {
+        messageDialog.show(message);
+    }
+
+    public void closeMessageDialog() {
+        messageDialog.close();
     }
 
     /**
      * Updates all stock data.
+     * 
+     * @throws InterruptedException
+     * @throws InvocationTargetException
      */
     private void updateAllStockData() {
+        showMessageDialog("Updating all stock data, please wait...");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 updateService.updateAllStockData();
                 updateTables();
+                closeMessageDialog();
             }
         });
     }
@@ -183,10 +206,12 @@ public class MainFrame extends JFrame {
      * Analyzes all stocks.
      */
     private void analyzeAllStocks() {
+        showMessageDialog("Analyzing all stocks, please wait...");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 updateService.analyzeAllStocks();
+                closeMessageDialog();
             }
         });
     }

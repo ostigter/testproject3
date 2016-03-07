@@ -27,6 +27,8 @@ public class Configuration {
 
     private static final File PORTFOLIO_FILE = new File(DATA_DIR, "portfolio.json");
 
+    private static final File ANALYSIS_RESULT_FILE = new File(DATA_DIR, "stock_analysis.csv");
+
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
     private static Configuration config;
@@ -49,6 +51,10 @@ public class Configuration {
 
     public File getCCCListFile() {
         return CCC_LIST_FILE;
+    }
+
+    public File getAnalysisResultFile() {
+        return ANALYSIS_RESULT_FILE;
     }
 
     public Set<Stock> getStocks() {

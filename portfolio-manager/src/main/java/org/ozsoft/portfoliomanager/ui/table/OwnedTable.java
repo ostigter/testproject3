@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import org.ozsoft.datatable.Column;
 import org.ozsoft.datatable.ColumnRenderer;
@@ -25,7 +26,6 @@ import org.ozsoft.portfoliomanager.ui.MainFrame;
 import org.ozsoft.portfoliomanager.ui.StockPriceFrame;
 import org.ozsoft.portfoliomanager.ui.table.column.CRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DGColumnRenderer;
-import org.ozsoft.portfoliomanager.ui.table.column.DRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.MoneyColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercChangeColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercentageColumnRenderer;
@@ -162,7 +162,12 @@ public class OwnedTable extends DataTable {
         Stock stock = getSelectedStock();
         if (stock != null) {
             if (editStockDialog.show(stock) == Dialog.OK) {
-                update();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        update();
+                    }
+                });
             }
         }
     }
