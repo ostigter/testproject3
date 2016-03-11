@@ -176,6 +176,13 @@ public class MainFrame extends JFrame {
         });
     }
 
+    /**
+     * Updates the Owned panel (UI refresh).
+     */
+    public void updateOwnedPanel() {
+        ownedPanel.update();
+    }
+
     public void showMessageDialog(String message) {
         messageDialog.show(message);
     }

@@ -147,6 +147,10 @@ public class Configuration {
             config = new Configuration();
         }
 
+        // for (Transaction tx : config.getTransactions()) {
+        // System.out.println(tx);
+        // }
+
         return config;
     }
 

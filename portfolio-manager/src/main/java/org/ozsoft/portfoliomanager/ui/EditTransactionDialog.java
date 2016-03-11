@@ -3,16 +3,21 @@ package org.ozsoft.portfoliomanager.ui;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.jdatepicker.JDateComponentFactory;
@@ -29,6 +34,8 @@ public class EditTransactionDialog extends Dialog {
     private JDatePicker datePicker;
 
     private JComboBox<String> symbolComboBox;
+
+    private JTextField nameText;
 
     private JComboBox<TransactionType> typeComboBox;
 
@@ -94,10 +101,22 @@ public class EditTransactionDialog extends Dialog {
         dialog.add(label, gbc);
 
         symbolComboBox = new JComboBox<String>();
-        for (Stock stock : Configuration.getInstance().getStocks()) {
-            symbolComboBox.addItem(stock.getSymbol());
-        }
-        symbolComboBox.setPreferredSize(new Dimension(60, 20));
+        symbolComboBox.setPreferredSize(new Dimension(75, 20));
+        symbolComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Stock stock = null;
+                String symbol = (String) symbolComboBox.getSelectedItem();
+                if (symbol != null && symbol.length() > 0) {
+                    stock = Configuration.getInstance().getStock(symbol);
+                }
+                if (stock != null) {
+                    nameText.setText(stock.getName());
+                } else {
+                    nameText.setText("");
+                }
+            }
+        });
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
@@ -109,9 +128,35 @@ public class EditTransactionDialog extends Dialog {
         gbc.insets = new Insets(5, 5, 0, 10);
         dialog.add(symbolComboBox, gbc);
 
-        label = new JLabel("Type:");
+        label = new JLabel("Stock name:");
         gbc.gridx = 0;
         gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(5, 10, 0, 5);
+        dialog.add(label, gbc);
+
+        nameText = new JTextField();
+        nameText.setEditable(false);
+        nameText.setPreferredSize(new Dimension(200, 20));
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.weighty = 0.0;
+        gbc.insets = new Insets(5, 5, 0, 10);
+        dialog.add(nameText, gbc);
+
+        label = new JLabel("Type:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -125,9 +170,9 @@ public class EditTransactionDialog extends Dialog {
         typeComboBox.addItem(TransactionType.BUY);
         typeComboBox.addItem(TransactionType.SELL);
         typeComboBox.addItem(TransactionType.DIVIDEND);
-        typeComboBox.setPreferredSize(new Dimension(120, 20));
+        typeComboBox.setPreferredSize(new Dimension(75, 20));
         gbc.gridx = 1;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -139,7 +184,7 @@ public class EditTransactionDialog extends Dialog {
 
         label = new JLabel("Shares:");
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -150,9 +195,9 @@ public class EditTransactionDialog extends Dialog {
         dialog.add(label, gbc);
 
         sharesText = new JTextField();
-        sharesText.setPreferredSize(new Dimension(60, 20));
+        sharesText.setPreferredSize(new Dimension(75, 20));
         gbc.gridx = 1;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -164,7 +209,7 @@ public class EditTransactionDialog extends Dialog {
 
         label = new JLabel("Price:");
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -175,9 +220,9 @@ public class EditTransactionDialog extends Dialog {
         dialog.add(label, gbc);
 
         priceText = new JTextField();
-        priceText.setPreferredSize(new Dimension(60, 20));
+        priceText.setPreferredSize(new Dimension(75, 20));
         gbc.gridx = 1;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -189,7 +234,7 @@ public class EditTransactionDialog extends Dialog {
 
         label = new JLabel("Costs:");
         gbc.gridx = 0;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -200,9 +245,9 @@ public class EditTransactionDialog extends Dialog {
         dialog.add(label, gbc);
 
         costsText = new JTextField();
-        costsText.setPreferredSize(new Dimension(60, 20));
+        costsText.setPreferredSize(new Dimension(75, 20));
         gbc.gridx = 1;
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -211,6 +256,8 @@ public class EditTransactionDialog extends Dialog {
         gbc.weighty = 0.0;
         gbc.insets = new Insets(5, 5, 0, 10);
         dialog.add(costsText, gbc);
+
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
 
         okButton = new JButton("OK");
         okButton.setPreferredSize(new Dimension(75, 20));
@@ -221,15 +268,15 @@ public class EditTransactionDialog extends Dialog {
             }
         });
         gbc.gridx = 0;
-        gbc.gridy = 6;
+        gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0.0;
+        gbc.weightx = 1.0;
         gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 10, 5, 10);
-        dialog.add(okButton, gbc);
+        gbc.insets = new Insets(0, 0, 0, 10);
+        buttonPanel.add(okButton, gbc);
 
         cancelButton = new JButton("Cancel");
         cancelButton.setPreferredSize(new Dimension(75, 20));
@@ -240,15 +287,26 @@ public class EditTransactionDialog extends Dialog {
             }
         });
         gbc.gridx = 1;
-        gbc.gridy = 6;
+        gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 0.0;
-        gbc.weighty = 0.0;
-        gbc.insets = new Insets(5, 5, 10, 10);
-        dialog.add(cancelButton, gbc);
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.insets = new Insets(0, 10, 0, 0);
+        buttonPanel.add(cancelButton, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 7;
+        gbc.gridwidth = 2;
+        gbc.gridheight = 1;
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        dialog.add(buttonPanel, gbc);
     }
 
     @Override
@@ -259,10 +317,22 @@ public class EditTransactionDialog extends Dialog {
     public int show(Transaction transaction) {
         this.transaction = transaction;
 
+        // Populate combobox wih all stock symbols, sorted alphabetically.
+        Set<String> symbols = new TreeSet<String>();
+        for (Stock stock : Configuration.getInstance().getStocks()) {
+            symbols.add(stock.getSymbol());
+        }
+        symbolComboBox.removeAllItems();
+        symbolComboBox.addItem("");
+        for (String symbol : symbols) {
+            symbolComboBox.addItem(symbol);
+        }
+
         if (transaction == null) {
             dialog.setTitle("Add Transaction");
             ((UtilDateModel) datePicker.getModel()).setValue(new Date());
-            symbolComboBox.setSelectedIndex(0);
+            symbolComboBox.setSelectedItem("");
+            // nameText.setText("");
             typeComboBox.setSelectedItem(TransactionType.DIVIDEND);
             sharesText.setText("");
             priceText.setText("");
@@ -271,9 +341,13 @@ public class EditTransactionDialog extends Dialog {
             dialog.setTitle("Edit Transaction");
             ((UtilDateModel) datePicker.getModel()).setValue(new Date(transaction.getDate()));
             symbolComboBox.setSelectedItem(transaction.getSymbol());
+            String symbol = transaction.getSymbol();
+            Stock stock = Configuration.getInstance().getStock(symbol);
+            String name = (stock != null) ? stock.getName() : "";
+            nameText.setText(name);
             typeComboBox.setSelectedItem(transaction.getType());
             sharesText.setText(String.valueOf(transaction.getNoOfShares()));
-            priceText.setText(String.format("%.2f", transaction.getPrice()));
+            priceText.setText(String.format("%.4f", transaction.getPrice()));
             costsText.setText(String.format("%.2f", transaction.getCost()));
         }
 
@@ -287,15 +361,55 @@ public class EditTransactionDialog extends Dialog {
             transaction = new Transaction();
         }
 
-        long date = ((Date) datePicker.getModel().getValue()).getTime();
-        TransactionType type = (TransactionType) typeComboBox.getSelectedItem();
+        Date date = (Date) datePicker.getModel().getValue();
+        if (date == null) {
+            JOptionPane.showMessageDialog(null, "No date selected.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
         String symbol = (String) symbolComboBox.getSelectedItem();
-        int noOfShares = Integer.parseInt(sharesText.getText());
-        double price = Double.parseDouble(priceText.getText());
-        double cost = Double.parseDouble(costsText.getText());
+        if (symbol == null || symbol.length() == 0) {
+            JOptionPane.showMessageDialog(null, "No stock symbol selected.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        TransactionType type = (TransactionType) typeComboBox.getSelectedItem();
+
+        int noOfShares = -1;
+        try {
+            noOfShares = Integer.parseInt(sharesText.getText());
+        } catch (NumberFormatException e) {
+            // Handled by range check below.
+        }
+        if (noOfShares < 1) {
+            JOptionPane.showMessageDialog(null, "Invalid number of shares (must be at least 1).", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        double price = -1.0;
+        try {
+            price = Double.parseDouble(priceText.getText());
+        } catch (NumberFormatException e) {
+            // Handled by range check below.
+        }
+        if (price < 0.01) {
+            JOptionPane.showMessageDialog(null, "Invalid price (must be greater than $0.01).", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        double cost = 0.0;
+        try {
+            cost = Double.parseDouble(costsText.getText());
+        } catch (NumberFormatException e) {
+            // Handled by range check below.
+        }
+        if (cost < 0.0) {
+            JOptionPane.showMessageDialog(null, "Invalid costs (must be equal to or greater than $0).", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         transaction.setSymbol(symbol);
-        transaction.setDate(date);
+        transaction.setDate(date.getTime());
         transaction.setType(type);
         transaction.setNoOfShares(noOfShares);
         transaction.setPrice(price);

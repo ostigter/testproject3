@@ -134,9 +134,10 @@ public class OwnedTable extends DataTable {
 
         // Populate table with portfolio positions (owned stocks).
         Portfolio portfolio = config.getPortfolio();
+        double currentPortfolioCost = portfolio.getCurrentCost();
         for (Position p : portfolio.getPositions()) {
             Stock s = p.getStock();
-            double weight = (p.getCurrentCost() / portfolio.getCurrentCost()) * 100.0;
+            double weight = (currentPortfolioCost > 0.0) ? (p.getCurrentCost() / currentPortfolioCost) * 100.0 : 0.0;
             addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(),
                     s.getCreditRating(), p.getNoOfShares(), p.getCurrentCost(), p.getCostPerShare(), p.getCurrentValue(), weight,
                     p.getCurrentResult(), p.getCurrentResultPercentage(), p.getAnnualIncome(), p.getYieldOnCost(), p.getTotalIncome(),
@@ -144,7 +145,7 @@ public class OwnedTable extends DataTable {
         }
 
         // Populate footer row with totals.
-        setFooterRow(null, null, null, null, null, null, null, null, null, portfolio.getCurrentCost(), null, portfolio.getCurrentValue(), null,
+        setFooterRow(null, null, null, null, null, null, null, null, null, currentPortfolioCost, null, portfolio.getCurrentValue(), null,
                 portfolio.getCurrentResult(), portfolio.getCurrentResultPercentage(), portfolio.getAnnualIncome(), portfolio.getYieldOnCost(),
                 portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), null);
 

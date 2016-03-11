@@ -229,7 +229,7 @@ public class StockTable extends DataTable {
             String msg = String.format("Permanently delete stock with symbol '%s'?", stock.getSymbol());
             if (JOptionPane.showConfirmDialog(null, msg, "Warning", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                 config.deleteStock(stock);
-                update();
+                mainFrame.updateTables();
             }
         }
     }

@@ -66,6 +66,7 @@ public class UpdateService {
      * Updates all stock data.
      */
     public void updateAllStockData() {
+        System.out.println("Updating all stock data...");
         updateStatistics();
         updateAllPrices();
     }
@@ -158,36 +159,35 @@ public class UpdateService {
             long remoteTimestamp = httpPageReader.getFileLastModified(CCC_LIST_URI);
             if (remoteTimestamp > localTimestamp) {
                 downloadCCCList(cccListFile);
+            }
+            // Update stock statistics from CCC list
+            System.out.println("Updating stock statistics...");
+            try {
+                Workbook workbook = WorkbookFactory.create(cccListFile);
+                Sheet sheet = workbook.getSheet(SHEET_NAME);
+                int count = 0;
+                for (Row row : sheet) {
+                    if (row.getRowNum() > 5) {
+                        Cell cell = row.getCell(SYMBOL_COLUMN_INDEX);
+                        if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
+                            String symbol = cell.getStringCellValue();
+                            int yearsDivGrowth = (int) Math.floor(row.getCell(YEARS_GROWTH_COLUMN_INDEX).getNumericCellValue());
+                            cell = row.getCell(DIV_GROWTH_COLUMN_INDEX);
+                            double divGrowth = (cell != null && cell.getCellType() == Cell.CELL_TYPE_NUMERIC) ? cell.getNumericCellValue() : -1.0;
 
-                // Update stock statistics from CCC list
-                System.out.println("Updating stock statistics...");
-                try {
-                    Workbook workbook = WorkbookFactory.create(cccListFile);
-                    Sheet sheet = workbook.getSheet(SHEET_NAME);
-                    int count = 0;
-                    for (Row row : sheet) {
-                        if (row.getRowNum() > 5) {
-                            Cell cell = row.getCell(SYMBOL_COLUMN_INDEX);
-                            if (cell != null && cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                                String symbol = cell.getStringCellValue();
-                                int yearsDivGrowth = (int) Math.floor(row.getCell(YEARS_GROWTH_COLUMN_INDEX).getNumericCellValue());
-                                cell = row.getCell(DIV_GROWTH_COLUMN_INDEX);
-                                double divGrowth = (cell != null && cell.getCellType() == Cell.CELL_TYPE_NUMERIC) ? cell.getNumericCellValue() : -1.0;
-
-                                Stock stock = config.getStock(symbol);
-                                if (stock != null) {
-                                    stock.setDivGrowth(divGrowth);
-                                    stock.setYearsDivGrowth(yearsDivGrowth);
-                                    count++;
-                                }
+                            Stock stock = config.getStock(symbol);
+                            if (stock != null) {
+                                stock.setDivGrowth(divGrowth);
+                                stock.setYearsDivGrowth(yearsDivGrowth);
+                                count++;
                             }
                         }
                     }
-                    System.out.format("Statistics updated for %d stocks.\n", count);
-
-                } catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-                    System.err.format("ERROR: Failed to process CCC list: %s\n", e.getMessage());
                 }
+                System.out.format("Statistics updated for %d stocks.\n", count);
+
+            } catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
+                System.err.format("ERROR: Failed to process CCC list: %s\n", e.getMessage());
             }
         } catch (IOException e) {
             System.err.format("ERROR: Failed to download CCC list: %s\n", e.getMessage());

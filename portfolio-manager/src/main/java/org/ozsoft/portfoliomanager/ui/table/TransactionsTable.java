@@ -61,7 +61,8 @@ public class TransactionsTable extends DataTable {
         ColumnRenderer centerColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
         ColumnRenderer dateColumnRenderer = new DateColumnRenderer();
         ColumnRenderer sharesColumnRenderer = new SharesColumnRenderer();
-        ColumnRenderer smallMoneyColumnRenderer = new MoneyColumnRenderer(2);
+        ColumnRenderer moneyColumnRenderer = new MoneyColumnRenderer(2);
+        ColumnRenderer priceColumnRenderer = new MoneyColumnRenderer(4);
 
         List<Column> columns = new ArrayList<Column>();
         columns.add(new Column("Date", "Transaction date", dateColumnRenderer));
@@ -69,9 +70,9 @@ public class TransactionsTable extends DataTable {
         columns.add(new Column("Symbol", "Stock ticker sybol", centerColumnRenderer));
         columns.add(new Column("Type", "Transaction type", centerColumnRenderer));
         columns.add(new Column("Shares", "Number of shares", sharesColumnRenderer));
-        columns.add(new Column("Price", "Price per share", smallMoneyColumnRenderer));
-        columns.add(new Column("Costs", "Transaction costs, incl. broker fees, valuta costs, etc.", smallMoneyColumnRenderer));
-        columns.add(new Column("Total", "Total transaction value", smallMoneyColumnRenderer));
+        columns.add(new Column("Price", "Price per share", priceColumnRenderer));
+        columns.add(new Column("Costs", "Transaction costs, incl. broker fees, valuta costs, etc.", moneyColumnRenderer));
+        columns.add(new Column("Total", "Total transaction value", moneyColumnRenderer));
         setColumns(columns);
     }
 
@@ -125,10 +126,11 @@ public class TransactionsTable extends DataTable {
         super.update();
     }
 
-    private void addTransaction() {
+    public void addTransaction() {
         if (editTransactionDialog.show() == Dialog.OK) {
             config.addTransaction(editTransactionDialog.getTransaction());
             update();
+            mainFrame.updateOwnedPanel();
         }
     }
 
@@ -137,7 +139,7 @@ public class TransactionsTable extends DataTable {
         if (transaction != null) {
             if (editTransactionDialog.show(transaction) == Dialog.OK) {
                 update();
-                mainFrame.updateTables();
+                mainFrame.updateOwnedPanel();
             }
         }
     }
@@ -149,6 +151,7 @@ public class TransactionsTable extends DataTable {
                     JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                 config.deleteTransaction(transaction);
                 update();
+                mainFrame.updateOwnedPanel();
             }
         }
     }
