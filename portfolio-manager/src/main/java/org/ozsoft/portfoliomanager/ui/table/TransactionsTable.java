@@ -119,9 +119,15 @@ public class TransactionsTable extends DataTable {
             TransactionType type = t.getType();
             int noOfShares = (type == TransactionType.SELL) ? -1 * t.getNoOfShares() : t.getNoOfShares();
             double price = t.getPrice();
-            double costs = t.getCost();
-            double total = noOfShares * price + costs;
-            addRow(t.getDate(), stockName, symbol, type, noOfShares, price, costs, total);
+            double cost = t.getCost();
+
+            double total = noOfShares * price;
+            if (type == TransactionType.BUY) {
+                total += cost;
+            } else {
+                total -= cost;
+            }
+            addRow(t.getDate(), stockName, symbol, type, noOfShares, price, cost, total);
         }
         super.update();
     }
