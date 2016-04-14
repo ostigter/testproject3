@@ -8,10 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -29,17 +28,17 @@ public class Configuration {
 
     private static final File ANALYSIS_RESULT_FILE = new File(DATA_DIR, "stock_analysis.csv");
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+    // private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
     private static Configuration config;
 
     private final TreeMap<String, Stock> stocks;
 
-    private final Set<Transaction> transactions;
+    private final List<Transaction> transactions;
 
     private Configuration() {
         stocks = new TreeMap<String, Stock>();
-        transactions = new TreeSet<Transaction>();
+        transactions = new ArrayList<Transaction>();
     }
 
     public static Configuration getInstance() {
@@ -93,21 +92,14 @@ public class Configuration {
         }
     }
 
-    public Set<Transaction> getTransactions() {
-        for (Transaction transaction : transactions) {
-            long timestamp = transaction.getDate();
-            String text = String.valueOf(timestamp);
-            if (text.startsWith("2015") || text.startsWith("2016")) {
-                try {
-                    Date date = DATE_FORMAT.parse(text);
-                    transaction.setDate(date.getTime());
-                } catch (ParseException e) {
-                    System.err.println("ERROR: Invalid date: " + timestamp);
-                    e.printStackTrace();
-                }
-            }
+    public List<Transaction> getTransactions() {
+        // TODO: Only sort and update IDs when needed (dirty flag).
+        Collections.sort(transactions);
 
-            // System.out.println(transaction);
+        // Update transaction IDs (incremental, sorted by date).
+        int id = 1;
+        for (Transaction transaction : transactions) {
+            transaction.setId(id++);
         }
 
         return transactions;
@@ -146,10 +138,6 @@ public class Configuration {
         if (config == null) {
             config = new Configuration();
         }
-
-        // for (Transaction tx : config.getTransactions()) {
-        // System.out.println(tx);
-        // }
 
         return config;
     }

@@ -58,6 +58,7 @@ public class TransactionsTable extends DataTable {
     }
 
     protected void initColumns() {
+        ColumnRenderer idColumnRenderer = new DefaultColumnRenderer(SwingConstants.RIGHT);
         ColumnRenderer centerColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
         ColumnRenderer dateColumnRenderer = new DateColumnRenderer();
         ColumnRenderer sharesColumnRenderer = new SharesColumnRenderer();
@@ -65,6 +66,7 @@ public class TransactionsTable extends DataTable {
         ColumnRenderer priceColumnRenderer = new MoneyColumnRenderer(4);
 
         List<Column> columns = new ArrayList<Column>();
+        columns.add(new Column("ID", "Transaction ID", idColumnRenderer));
         columns.add(new Column("Date", "Transaction date", dateColumnRenderer));
         columns.add(new Column("Stock name", "Stock name"));
         columns.add(new Column("Symbol", "Stock ticker sybol", centerColumnRenderer));
@@ -120,14 +122,14 @@ public class TransactionsTable extends DataTable {
             int noOfShares = (type == TransactionType.SELL) ? -1 * t.getNoOfShares() : t.getNoOfShares();
             double price = t.getPrice();
             double cost = t.getCost();
-
             double total = noOfShares * price;
             if (type == TransactionType.BUY) {
                 total += cost;
             } else {
                 total -= cost;
             }
-            addRow(t.getDate(), stockName, symbol, type, noOfShares, price, cost, total);
+
+            addRow(t.getId(), t.getDate(), stockName, symbol, type, noOfShares, price, cost, total);
         }
         super.update();
     }
@@ -166,13 +168,12 @@ public class TransactionsTable extends DataTable {
         Transaction transaction = null;
         int rowIndex = getSelectedRow();
         if (rowIndex >= 0) {
-            int i = 0;
+            int id = (int) getCellValue(rowIndex, 0);
             for (Transaction tx : config.getTransactions()) {
-                if (i == rowIndex) {
+                if (tx.getId() == id) {
                     transaction = tx;
                     break;
                 }
-                i++;
             }
         }
         return transaction;

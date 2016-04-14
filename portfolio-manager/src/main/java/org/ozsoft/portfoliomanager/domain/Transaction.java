@@ -2,6 +2,8 @@ package org.ozsoft.portfoliomanager.domain;
 
 public class Transaction implements Comparable<Transaction> {
 
+    private int id;
+
     private long date;
 
     private String symbol;
@@ -13,6 +15,14 @@ public class Transaction implements Comparable<Transaction> {
     private double price;
 
     private double cost;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public long getDate() {
         return date;
@@ -79,11 +89,17 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public int compareTo(Transaction other) {
-        return (int) (date - other.getDate());
+        if (date < other.getDate()) {
+            return -1;
+        } else if (date > other.getDate()) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public String toString() {
-        return String.format("%d %s %s %d $%.2f $%.2f", date, symbol, type, noOfShares, price, cost);
+        return String.format("%d %d %s %s %d $%.2f $%.2f", id, date, symbol, type, noOfShares, price, cost);
     }
 }
