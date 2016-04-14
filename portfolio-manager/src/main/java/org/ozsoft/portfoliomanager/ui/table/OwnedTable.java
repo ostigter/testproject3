@@ -150,6 +150,10 @@ public class OwnedTable extends DataTable {
                 portfolio.getTotalIncome(), portfolio.getRealizedResult(), portfolio.getTotalReturn(), null);
 
         super.update();
+
+        // Force table's footer row to repaint (possibly needed because of a Swing bug)
+        repaint();
+        revalidate();
     }
 
     private void viewStockPrice() {
