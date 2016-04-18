@@ -40,7 +40,7 @@ public enum CreditRating {
 
     C("C"),
 
-    NA("N/A"),
+    NA("N/R"),
 
     ;
 

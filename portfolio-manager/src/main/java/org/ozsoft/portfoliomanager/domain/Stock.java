@@ -6,6 +6,8 @@ public class Stock implements Comparable<Stock> {
 
     private String name;
 
+    private Exchange exchange = Exchange.UNKNOWN;
+
     private double price;
 
     private double changePerc;
@@ -21,6 +23,8 @@ public class Stock implements Comparable<Stock> {
     private int yearsDivGrowth = -1;
 
     private CreditRating creditRating = CreditRating.NA;
+
+    private int starRating = -1;
 
     private String comment;
 
@@ -41,6 +45,14 @@ public class Stock implements Comparable<Stock> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Exchange getExchange() {
+        return exchange;
+    }
+
+    public void setExchange(Exchange exchange) {
+        this.exchange = exchange;
     }
 
     public double getPrice() {
@@ -141,6 +153,14 @@ public class Stock implements Comparable<Stock> {
 
     public void setCreditRating(CreditRating creditRating) {
         this.creditRating = creditRating;
+    }
+
+    public int getStarRating() {
+        return starRating;
+    }
+
+    public void setStarRating(int starRating) {
+        this.starRating = starRating;
     }
 
     @Override

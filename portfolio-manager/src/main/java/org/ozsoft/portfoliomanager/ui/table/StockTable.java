@@ -27,6 +27,7 @@ import org.ozsoft.portfoliomanager.ui.StockPriceFrame;
 import org.ozsoft.portfoliomanager.ui.table.column.CRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.DRColumnRenderer;
+import org.ozsoft.portfoliomanager.ui.table.column.MSRColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.MoneyColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PEColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.PercChangeColumnRenderer;
@@ -71,6 +72,7 @@ public class StockTable extends DataTable {
         ColumnRenderer percChangeColumnRenderer = new PercChangeColumnRenderer();
         ColumnRenderer peRatioColumnRenderer = new PEColumnRenderer();
         ColumnRenderer tpiColumnRenderer = new TPIColumnRenderer();
+        ColumnRenderer msrColumnRenderer = new MSRColumnRenderer();
         ColumnRenderer divRateColumnRenderer = new DRColumnRenderer();
         ColumnRenderer yieldColumnRenderer = new YieldColumnRenderer();
         ColumnRenderer divGrowthColumnRenderer = new DGColumnRenderer();
@@ -85,6 +87,7 @@ public class StockTable extends DataTable {
         columns.add(new Column("P/E", "Current price-to-earnings ratio", peRatioColumnRenderer));
         columns.add(new Column("TP", "Target price", smallMoneyColumnRenderer));
         columns.add(new Column("TPI", "Target price index", tpiColumnRenderer));
+        columns.add(new Column("MSR", "Current Morningstar Star Rating for value", msrColumnRenderer));
         columns.add(new Column("DR", "Current dividend rate", divRateColumnRenderer));
         columns.add(new Column("Yield", "Current dividend yield", yieldColumnRenderer));
         columns.add(new Column("DG", "5-year annualized dividend growth", divGrowthColumnRenderer));
@@ -164,7 +167,7 @@ public class StockTable extends DataTable {
         clear();
         for (Stock s : getStocks()) {
             addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getPeRatio(), s.getTargetPrice(), s.getTargetPriceIndex(),
-                    s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(), s.getCreditRating(), s.getComment());
+                    s.getStarRating(), s.getDivRate(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(), s.getCreditRating(), s.getComment());
         }
         super.update();
     }
