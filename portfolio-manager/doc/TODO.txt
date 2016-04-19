@@ -1,13 +1,11 @@
 Portfolio Manager - TODO
 ========================
 
-* Add/edit/delete transaction
-* Show/hide closed positions
 * Status bar
-* Task progress indicator
 * Application log
 * Alert log
 * View alerts (since last update)
+* Task progress indicator
 * Extend stock analysis score formula (CR, YDG, CY, DGR)
 * View stock analysis details per share
 * Update stock analysis (all stocks) and show scores

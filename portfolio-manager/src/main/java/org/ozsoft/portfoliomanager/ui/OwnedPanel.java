@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -24,6 +25,8 @@ public class OwnedPanel extends JPanel {
     private static final long serialVersionUID = -6819380411937781494L;
 
     private final MainFrame mainFrame;
+
+    private final JCheckBox showClosedPositionsCheck;
 
     private final OwnedTable ownedTable;
 
@@ -66,6 +69,16 @@ public class OwnedPanel extends JPanel {
         });
         buttonPanel.add(button);
 
+        showClosedPositionsCheck = new JCheckBox("Show closed positions");
+        showClosedPositionsCheck.setSelected(config.getShowClosedPositions());
+        showClosedPositionsCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleShowClosedPositions();
+            }
+        });
+        buttonPanel.add(showClosedPositionsCheck);
+
         add(buttonPanel, BorderLayout.NORTH);
 
         ownedTable = new OwnedTable(mainFrame);
@@ -92,5 +105,13 @@ public class OwnedPanel extends JPanel {
                 mainFrame.closeMessageDialog();
             }
         });
+    }
+
+    /**
+     * Handles the toggling whether to show or hide closed positions.
+     */
+    private void toggleShowClosedPositions() {
+        config.setShowClosedPositions(showClosedPositionsCheck.isSelected());
+        update();
     }
 }

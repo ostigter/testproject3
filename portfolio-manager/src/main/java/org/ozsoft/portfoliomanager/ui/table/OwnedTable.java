@@ -132,16 +132,20 @@ public class OwnedTable extends DataTable {
     public final void update() {
         clear();
 
+        boolean showClosedPositions = config.getShowClosedPositions();
+
         // Populate table with portfolio positions (owned stocks).
         Portfolio portfolio = config.getPortfolio();
         double currentPortfolioCost = portfolio.getCurrentCost();
         for (Position p : portfolio.getPositions()) {
-            Stock s = p.getStock();
-            double weight = (currentPortfolioCost > 0.0) ? (p.getCurrentCost() / currentPortfolioCost) * 100.0 : 0.0;
-            addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(),
-                    s.getCreditRating(), p.getNoOfShares(), p.getCurrentCost(), p.getCostPerShare(), p.getCurrentValue(), weight,
-                    p.getCurrentResult(), p.getCurrentResultPercentage(), p.getAnnualIncome(), p.getYieldOnCost(), p.getTotalIncome(),
-                    p.getRealizedResult(), p.getTotalReturn(), "  " + s.getComment());
+            if (p.getNoOfShares() > 0 || showClosedPositions) {
+                Stock s = p.getStock();
+                double weight = (currentPortfolioCost > 0.0) ? (p.getCurrentCost() / currentPortfolioCost) * 100.0 : 0.0;
+                addRow(s.getName(), s.getSymbol(), s.getPrice(), s.getChangePerc(), s.getYield(), s.getDivGrowth(), s.getYearsDivGrowth(),
+                        s.getCreditRating(), p.getNoOfShares(), p.getCurrentCost(), p.getCostPerShare(), p.getCurrentValue(), weight,
+                        p.getCurrentResult(), p.getCurrentResultPercentage(), p.getAnnualIncome(), p.getYieldOnCost(), p.getTotalIncome(),
+                        p.getRealizedResult(), p.getTotalReturn(), "  " + s.getComment());
+            }
         }
 
         // Populate footer row with totals.

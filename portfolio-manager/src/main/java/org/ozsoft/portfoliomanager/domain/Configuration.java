@@ -32,6 +32,8 @@ public class Configuration {
 
     private static Configuration config;
 
+    private boolean showClosedPositions = false;
+
     private final TreeMap<String, Stock> stocks;
 
     private final List<Transaction> transactions;
@@ -120,6 +122,14 @@ public class Configuration {
         }
         portfolio.update(this);
         return portfolio;
+    }
+
+    public boolean getShowClosedPositions() {
+        return showClosedPositions;
+    }
+
+    public void setShowClosedPositions(boolean showClosedPositions) {
+        this.showClosedPositions = showClosedPositions;
     }
 
     private static Configuration load() {
