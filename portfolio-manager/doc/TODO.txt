@@ -1,7 +1,6 @@
 Portfolio Manager - TODO
 ========================
 
-* Status bar
 * Application log
 * Alert log
 * View alerts (since last update)

@@ -96,13 +96,15 @@ public class OwnedPanel extends JPanel {
      * Updates the prices of the owned stocks.
      */
     private void updateStockPrices() {
+        mainFrame.setStatus("Updating stock prices...");
         mainFrame.showMessageDialog("Updating stock prices, please wait...");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateService.updatePrices(config.getOwnedStocks());
+                int updatedStocks = updateService.updatePrices(config.getOwnedStocks());
                 mainFrame.updateTables();
                 mainFrame.closeMessageDialog();
+                mainFrame.setStatus(String.format("%d stock prices updated.", updatedStocks));
             }
         });
     }

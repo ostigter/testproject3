@@ -10,10 +10,12 @@ import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EtchedBorder;
 
 import org.ozsoft.datatable.DataTable;
 import org.ozsoft.portfoliomanager.domain.Configuration;
@@ -53,6 +55,8 @@ public class MainFrame extends JFrame {
     private DataTable benchTable;
 
     private DataTable allTable;
+
+    private JLabel statusLabel;
 
     private EditStockDialog addStockDialog;
 
@@ -151,9 +155,20 @@ public class MainFrame extends JFrame {
 
         getContentPane().add(tabbedPane, BorderLayout.CENTER);
 
+        statusLabel = new JLabel();
+        statusLabel.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        getContentPane().add(statusLabel, BorderLayout.SOUTH);
+
         addStockDialog = new EditStockDialog(this);
 
         messageDialog = new MessageDialog(this);
+
+        int noOfStocks = config.getStocks().size();
+        if (noOfStocks > 0) {
+            setStatus(String.format("Tracking %d stocks.", noOfStocks));
+        } else {
+            setStatus("No stocks defined.");
+        }
 
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setLocationRelativeTo(null);
@@ -191,6 +206,14 @@ public class MainFrame extends JFrame {
         messageDialog.close();
     }
 
+    public void setStatus(String status) {
+        if (status == null || status.isEmpty()) {
+            statusLabel.setText(" ");
+        } else {
+            statusLabel.setText(status);
+        }
+    }
+
     /**
      * Updates all stock data.
      * 
@@ -198,13 +221,15 @@ public class MainFrame extends JFrame {
      * @throws InvocationTargetException
      */
     private void updateAllStockData() {
+        setStatus("Updating stock data...");
         showMessageDialog("Updating all stock data, please wait...");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateService.updateAllStockData();
+                int updatedStocks = updateService.updateAllStockData();
                 updateTables();
                 closeMessageDialog();
+                setStatus(String.format("%d stocks updated.", updatedStocks));
             }
         });
     }
@@ -213,12 +238,14 @@ public class MainFrame extends JFrame {
      * Analyzes all stocks.
      */
     private void analyzeAllStocks() {
+        setStatus("Analyzing stocks...");
         showMessageDialog("Analyzing all stocks, please wait...");
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                updateService.analyzeAllStocks();
+                String resultMessage = updateService.analyzeAllStocks();
                 closeMessageDialog();
+                setStatus(resultMessage);
             }
         });
     }

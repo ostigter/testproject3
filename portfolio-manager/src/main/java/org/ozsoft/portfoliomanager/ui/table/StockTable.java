@@ -221,7 +221,7 @@ public class StockTable extends DataTable {
         Stock stock = getSelectedStock();
         if (stock != null) {
             if (editStockDialog.show(stock) == Dialog.OK) {
-                update();
+                mainFrame.updateTables();
             }
         }
     }

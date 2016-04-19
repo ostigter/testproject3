@@ -64,11 +64,13 @@ public class UpdateService {
 
     /**
      * Updates all stock data.
+     * 
+     * @return The number of updated stocks.
      */
-    public void updateAllStockData() {
+    public int updateAllStockData() {
         System.out.println("Updating all stock data...");
         updateStatistics();
-        updateAllPrices();
+        return updateAllPrices();
     }
 
     /**
@@ -94,8 +96,10 @@ public class UpdateService {
 
     /**
      * Analyzes all stocks based on their historic performance and current valuation (price only).
+     * 
+     * @return Message indicating the result of the analysis.
      */
-    public void analyzeAllStocks() {
+    public String analyzeAllStocks() {
         System.out.println("\nAnalyzing all stocks...");
         List<StockAnalysis> analyses = new ArrayList<StockAnalysis>();
         for (Stock stock : config.getStocks()) {
@@ -103,6 +107,8 @@ public class UpdateService {
             analyses.add(analyzeStock(stock));
         }
         Collections.sort(analyses);
+
+        String resultMessage = null;
 
         // Write analysis results to CSV file.
         File file = config.getAnalysisResultFile();
@@ -113,11 +119,14 @@ public class UpdateService {
                 writer.write(analysis.toString());
                 writer.newLine();
             }
+            resultMessage = String.format("Analyzed %d stocks, output written to '%s'.\n", analyses.size(), file.getAbsolutePath());
+
         } catch (IOException e) {
-            System.err.format("ERROR: Could not write stock analysis results to file '%s': %s\n", file.getAbsolutePath(), e);
+            resultMessage = String.format("Could not write stock analysis results to file '%s': %s\n", file.getAbsolutePath(), e);
+            System.err.println(resultMessage);
         }
 
-        System.out.format("Analyzed %d stocks, output written to '%s'.\n", analyses.size(), file.getAbsolutePath());
+        return resultMessage;
     }
 
     /**
