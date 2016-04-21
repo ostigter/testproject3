@@ -15,6 +15,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -30,6 +33,8 @@ public class Configuration {
 
     // private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
+    private static final Logger LOGGER = LogManager.getLogger(Configuration.class);
+
     private static Configuration config;
 
     private boolean showClosedPositions = false;
@@ -41,6 +46,7 @@ public class Configuration {
     private Configuration() {
         stocks = new TreeMap<String, Stock>();
         transactions = new ArrayList<Transaction>();
+        LOGGER.info("Configuration created");
     }
 
     public static Configuration getInstance() {
@@ -139,8 +145,7 @@ public class Configuration {
                 try (Reader reader = new BufferedReader(new FileReader(PORTFOLIO_FILE))) {
                     config = gson.fromJson(reader, Configuration.class);
                 } catch (IOException e) {
-                    System.err.println("ERROR: Could not read data file: " + PORTFOLIO_FILE.getAbsolutePath());
-                    e.printStackTrace(System.err);
+                    LOGGER.error("Could not read data file: " + PORTFOLIO_FILE.getAbsolutePath(), e);
                 }
             }
         }
@@ -161,8 +166,7 @@ public class Configuration {
         try (Writer writer = new BufferedWriter(new FileWriter(PORTFOLIO_FILE))) {
             gson.toJson(config, writer);
         } catch (IOException e) {
-            System.err.println("ERROR: Could not write data file: " + PORTFOLIO_FILE.getAbsolutePath());
-            e.printStackTrace(System.err);
+            LOGGER.error("Could not write data file: " + PORTFOLIO_FILE.getAbsolutePath(), e);
         }
     }
 }

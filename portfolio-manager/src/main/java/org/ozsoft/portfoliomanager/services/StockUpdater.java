@@ -3,6 +3,8 @@ package org.ozsoft.portfoliomanager.services;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.ozsoft.portfoliomanager.domain.Exchange;
 import org.ozsoft.portfoliomanager.domain.Stock;
 import org.ozsoft.portfoliomanager.util.HttpPageReader;
@@ -21,10 +23,12 @@ public class StockUpdater extends Thread {
 
     private static final String MORNINGSTAR_QUOTE_URI = "http://www.morningstar.com/stocks/%s/%s/quote.html";
 
-    private static final Pattern YAHOO_QUOTE_PATTERN = Pattern
-            .compile("<span class=\"rtq_exch\">.*?(NYSE|NasdaqGS).*?</span>.*<span id=\"yfs_l84_.*?\">(.*?)</span>.*<span id=\"yfs_c63_.*?\">.*? class=\"(?:neg_arrow|pos_arrow)\" alt=\"(Up|Down)\">.*<span id=\"yfs_p43_.*?\">\\((.*?)%\\)</span>(?s).*>P/E <.*? class=\"yfnc_tabledata1\">(.*?)</td>.*>Div &amp; Yield:</th><td class=\"yfnc_tabledata1\">(.*?) \\(");
+    private static final Pattern YAHOO_QUOTE_PATTERN =
+            Pattern.compile("<span class=\"rtq_exch\">.*?(NYSE|NasdaqGS).*?</span>.*<span id=\"yfs_l84_.*?\">(.*?)</span>.*<span id=\"yfs_c63_.*?\">.*? class=\"(?:neg_arrow|pos_arrow)\" alt=\"(Up|Down)\">.*<span id=\"yfs_p43_.*?\">\\((.*?)%\\)</span>(?s).*>P/E <.*? class=\"yfnc_tabledata1\">(.*?)</td>.*>Div &amp; Yield:</th><td class=\"yfnc_tabledata1\">(.*?) \\(");
 
     private static final Pattern MORNINGSTAR_QUOTE_PATTERN = Pattern.compile("\"starRating\":([0-9])");
+
+    private static final Logger LOGGER = LogManager.getLogger(StockUpdater.class);
 
     private final Stock stock;
 
@@ -93,8 +97,7 @@ public class StockUpdater extends Thread {
                 stock.setStarRating(starRating);
             }
         } catch (Exception e) {
-            System.err.format("ERROR: Could not get update for stock '%s': %s\n", stock, e.getMessage());
-            e.printStackTrace(System.err);
+            LOGGER.error(String.format("Could not get update for stock '%s'", stock), e);
         }
 
         isFinished = true;

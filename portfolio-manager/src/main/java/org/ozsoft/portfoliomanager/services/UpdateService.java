@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -58,6 +60,8 @@ public class UpdateService {
 
     private static final DateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("yyyy-MM-dd");
 
+    private static final Logger LOGGER = LogManager.getLogger(UpdateService.class);
+
     private final Configuration config = Configuration.getInstance();
 
     private final HttpPageReader httpPageReader = new HttpPageReader();
@@ -68,7 +72,7 @@ public class UpdateService {
      * @return The number of updated stocks.
      */
     public int updateAllStockData() {
-        System.out.println("Updating all stock data...");
+        LOGGER.debug("Updating all stock data");
         updateStatistics();
         return updateAllPrices();
     }
@@ -100,10 +104,9 @@ public class UpdateService {
      * @return Message indicating the result of the analysis.
      */
     public String analyzeAllStocks() {
-        System.out.println("\nAnalyzing all stocks...");
+        LOGGER.debug("\nAnalyzing all stocks...");
         List<StockAnalysis> analyses = new ArrayList<StockAnalysis>();
         for (Stock stock : config.getStocks()) {
-            System.out.format("  %s\n", stock);
             analyses.add(analyzeStock(stock));
         }
         Collections.sort(analyses);
@@ -164,13 +167,13 @@ public class UpdateService {
         File cccListFile = config.getCCCListFile();
         long localTimestamp = (cccListFile.exists()) ? cccListFile.lastModified() : -1L;
         try {
-            System.out.println("\nChecking for new version of CCC list...");
+            LOGGER.debug("\nChecking for new version of CCC list...");
             long remoteTimestamp = httpPageReader.getFileLastModified(CCC_LIST_URI);
             if (remoteTimestamp > localTimestamp) {
                 downloadCCCList(cccListFile);
             }
             // Update stock statistics from CCC list
-            System.out.println("Updating stock statistics...");
+            LOGGER.debug("Updating stock statistics...");
             try {
                 Workbook workbook = WorkbookFactory.create(cccListFile);
                 Sheet sheet = workbook.getSheet(SHEET_NAME);
@@ -210,7 +213,7 @@ public class UpdateService {
      *            The local CCC list file.
      */
     private void downloadCCCList(File file) {
-        System.out.println("Downloading latest version of the CCC list...");
+        LOGGER.debug("Downloading latest version of the CCC list...");
         InputStream is = null;
         OutputStream os = null;
         try {
@@ -241,8 +244,8 @@ public class UpdateService {
      * Updates real-time prices for the specified stocks. <br />
      * <br />
      * 
-     * Every stock is updated by its own {@see StockUpdater} thread for maximum performance (less total duration, at the
-     * cost of a large CPU and network I/O burst).
+     * Every stock is updated by its own {@see StockUpdater} thread for maximum performance (less total duration, at the cost of a large CPU and
+     * network I/O burst).
      * 
      * @param stocks
      *            The stocks to update.
@@ -250,7 +253,7 @@ public class UpdateService {
      * @return The number of updated stocks.
      */
     public int updatePrices(Set<Stock> stocks) {
-        System.out.println("\nUpdating stock prices...");
+        LOGGER.debug("\nUpdating stock prices...");
 
         int updatedCount = 0;
 
@@ -293,11 +296,13 @@ public class UpdateService {
         StockPerformance perf5yr = new StockPerformance(prices, TimeRange.FIVE_YEAR);
         StockPerformance perf1yr = new StockPerformance(prices, TimeRange.ONE_YEAR);
 
-        double score = 20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
-                * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
+        double score =
+                20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
+                        * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
 
-        StockAnalysis analysis = new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(),
-                perf1yr.getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
+        StockAnalysis analysis =
+                new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(), perf1yr
+                        .getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
 
         return analysis;
     }
@@ -334,13 +339,11 @@ public class UpdateService {
                 }
             }
         } catch (IOException e) {
-            System.err.format("ERROR: Could retrieve historical prices for '%s': %s\n", symbol, e.getMessage());
-            e.printStackTrace(System.err);
+            LOGGER.error(String.format("Could retrieve historical prices for '%s'", symbol), e);
         }
 
         return prices;
     }
-
     // /**
     // * Retrieves the historic dividends of a stock.
     // *
