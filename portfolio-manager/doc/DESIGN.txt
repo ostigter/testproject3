@@ -1,5 +1,5 @@
-Portfolio Manager - DESIGN
-==========================
+DESIGN
+======
 
 
 Download CSV file with latest price info:

@@ -1,8 +1,6 @@
 Portfolio Manager - TODO
 ========================
 
-* Application log
-* Add license file
 * Add file headers
 * Update JavaDoc
 * Update unit tests
