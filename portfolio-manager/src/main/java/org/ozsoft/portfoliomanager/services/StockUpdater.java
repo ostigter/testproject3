@@ -1,3 +1,21 @@
+// This file is part of the 'portfolio-manager' (Portfolio Manager)
+// project, an open source stock portfolio manager application
+// written in Java.
+//
+// Copyright 2015 Oscar Stigter
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package org.ozsoft.portfoliomanager.services;
 
 import java.util.regex.Matcher;
@@ -23,8 +41,8 @@ public class StockUpdater extends Thread {
 
     private static final String MORNINGSTAR_QUOTE_URI = "http://www.morningstar.com/stocks/%s/%s/quote.html";
 
-    private static final Pattern YAHOO_QUOTE_PATTERN =
-            Pattern.compile("<span class=\"rtq_exch\">.*?(NYSE|NasdaqGS).*?</span>.*<span id=\"yfs_l84_.*?\">(.*?)</span>.*<span id=\"yfs_c63_.*?\">.*? class=\"(?:neg_arrow|pos_arrow)\" alt=\"(Up|Down)\">.*<span id=\"yfs_p43_.*?\">\\((.*?)%\\)</span>(?s).*>P/E <.*? class=\"yfnc_tabledata1\">(.*?)</td>.*>Div &amp; Yield:</th><td class=\"yfnc_tabledata1\">(.*?) \\(");
+    private static final Pattern YAHOO_QUOTE_PATTERN = Pattern
+            .compile("<span class=\"rtq_exch\">.*?(NYSE|NasdaqGS).*?</span>.*<span id=\"yfs_l84_.*?\">(.*?)</span>.*<span id=\"yfs_c63_.*?\">.*? class=\"(?:neg_arrow|pos_arrow)\" alt=\"(Up|Down)\">.*<span id=\"yfs_p43_.*?\">\\((.*?)%\\)</span>(?s).*>P/E <.*? class=\"yfnc_tabledata1\">(.*?)</td>.*>Div &amp; Yield:</th><td class=\"yfnc_tabledata1\">(.*?) \\(");
 
     private static final Pattern MORNINGSTAR_QUOTE_PATTERN = Pattern.compile("\"starRating\":([0-9])");
 

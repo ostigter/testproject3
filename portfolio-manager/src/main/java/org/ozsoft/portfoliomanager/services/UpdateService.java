@@ -1,3 +1,21 @@
+// This file is part of the 'portfolio-manager' (Portfolio Manager)
+// project, an open source stock portfolio manager application
+// written in Java.
+//
+// Copyright 2015 Oscar Stigter
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package org.ozsoft.portfoliomanager.services;
 
 import java.io.BufferedOutputStream;
@@ -72,7 +90,7 @@ public class UpdateService {
      * @return The number of updated stocks.
      */
     public int updateAllStockData() {
-        LOGGER.debug("Updating all stock data");
+        // LOGGER.debug("Updating all stock data");
         updateStatistics();
         return updateAllPrices();
     }
@@ -104,7 +122,7 @@ public class UpdateService {
      * @return Message indicating the result of the analysis.
      */
     public String analyzeAllStocks() {
-        LOGGER.debug("\nAnalyzing all stocks...");
+        // LOGGER.debug("Analyzing all stocks");
         List<StockAnalysis> analyses = new ArrayList<StockAnalysis>();
         for (Stock stock : config.getStocks()) {
             analyses.add(analyzeStock(stock));
@@ -122,11 +140,12 @@ public class UpdateService {
                 writer.write(analysis.toString());
                 writer.newLine();
             }
-            resultMessage = String.format("Analyzed %d stocks, output written to '%s'.\n", analyses.size(), file.getAbsolutePath());
+            resultMessage = String.format("Analyzed %d stocks, output written to '%s'", analyses.size(), file.getAbsolutePath());
+            LOGGER.info(resultMessage);
 
         } catch (IOException e) {
-            resultMessage = String.format("Could not write stock analysis results to file '%s': %s\n", file.getAbsolutePath(), e);
-            System.err.println(resultMessage);
+            resultMessage = String.format("Could not write stock analysis results to file '%s'", file.getAbsolutePath());
+            LOGGER.error(resultMessage, e);
         }
 
         return resultMessage;
@@ -167,13 +186,13 @@ public class UpdateService {
         File cccListFile = config.getCCCListFile();
         long localTimestamp = (cccListFile.exists()) ? cccListFile.lastModified() : -1L;
         try {
-            LOGGER.debug("\nChecking for new version of CCC list...");
+            // LOGGER.debug("Checking for new version of CCC list");
             long remoteTimestamp = httpPageReader.getFileLastModified(CCC_LIST_URI);
             if (remoteTimestamp > localTimestamp) {
                 downloadCCCList(cccListFile);
             }
             // Update stock statistics from CCC list
-            LOGGER.debug("Updating stock statistics...");
+            // LOGGER.debug("Updating stock statistics");
             try {
                 Workbook workbook = WorkbookFactory.create(cccListFile);
                 Sheet sheet = workbook.getSheet(SHEET_NAME);
@@ -196,13 +215,13 @@ public class UpdateService {
                         }
                     }
                 }
-                System.out.format("Statistics updated for %d stocks.\n", count);
+                LOGGER.info(String.format("Statistics updated for %d stocks", count));
 
             } catch (EncryptedDocumentException | InvalidFormatException | IOException e) {
-                System.err.format("ERROR: Failed to process CCC list: %s\n", e.getMessage());
+                LOGGER.error("Failed to process CCC list", e);
             }
         } catch (IOException e) {
-            System.err.format("ERROR: Failed to download CCC list: %s\n", e.getMessage());
+            LOGGER.error("Failed to download CCC list", e);
         }
     }
 
@@ -213,7 +232,7 @@ public class UpdateService {
      *            The local CCC list file.
      */
     private void downloadCCCList(File file) {
-        LOGGER.debug("Downloading latest version of the CCC list...");
+        LOGGER.debug("Downloading latest version of the CCC list");
         InputStream is = null;
         OutputStream os = null;
         try {
@@ -223,7 +242,7 @@ public class UpdateService {
             IOUtils.closeQuietly(os);
             IOUtils.closeQuietly(is);
         } catch (IOException e) {
-            System.err.format("ERROR: Failed to download CCC list: %s\n", e.getMessage());
+            LOGGER.error("Failed to download CCC list", e);
             file.delete();
         } finally {
             IOUtils.closeQuietly(os);
@@ -244,8 +263,8 @@ public class UpdateService {
      * Updates real-time prices for the specified stocks. <br />
      * <br />
      * 
-     * Every stock is updated by its own {@see StockUpdater} thread for maximum performance (less total duration, at the cost of a large CPU and
-     * network I/O burst).
+     * Every stock is updated by its own {@see StockUpdater} thread for maximum performance (less total duration, at the
+     * cost of a large CPU and network I/O burst).
      * 
      * @param stocks
      *            The stocks to update.
@@ -253,7 +272,7 @@ public class UpdateService {
      * @return The number of updated stocks.
      */
     public int updatePrices(Set<Stock> stocks) {
-        LOGGER.debug("\nUpdating stock prices...");
+        // LOGGER.debug("Updating stock prices");
 
         int updatedCount = 0;
 
@@ -268,7 +287,7 @@ public class UpdateService {
             try {
                 updater.join();
                 if (updater.isUpdated()) {
-                    System.out.format("Updated price of %s.\n", updater.getStock());
+                    // LOGGER.trace("Updated price of %s", updater.getStock());
                     updatedCount++;
                 }
             } catch (InterruptedException e) {
@@ -276,7 +295,7 @@ public class UpdateService {
             }
         }
 
-        System.out.format("%s stocks updated.\n", updatedCount);
+        LOGGER.info(String.format("%s stocks updated", updatedCount));
 
         return updatedCount;
     }
@@ -296,13 +315,11 @@ public class UpdateService {
         StockPerformance perf5yr = new StockPerformance(prices, TimeRange.FIVE_YEAR);
         StockPerformance perf1yr = new StockPerformance(prices, TimeRange.ONE_YEAR);
 
-        double score =
-                20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
-                        * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
+        double score = 20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
+                * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
 
-        StockAnalysis analysis =
-                new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(), perf1yr
-                        .getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
+        StockAnalysis analysis = new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(),
+                perf1yr.getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
 
         return analysis;
     }
@@ -333,7 +350,7 @@ public class UpdateService {
                             double value = Double.parseDouble(fields[6]);
                             prices.add(new ClosingPrice(date, value));
                         } catch (ParseException e) {
-                            System.err.format("ERROR: Could not parse price quote: '%s'\n", line);
+                            LOGGER.error(String.format("Could not parse price quote: '%s'", line), e);
                         }
                     }
                 }
@@ -370,13 +387,14 @@ public class UpdateService {
     // double value = Double.parseDouble(fields[1]);
     // prices.add(new ClosingPrice(date, value));
     // } catch (ParseException e) {
-    // System.err.format("ERROR: Could not parse price quote: '%s'\n", line);
+    // LOGGER.error(String.format("ERROR: Could not parse price quote: '%s'\n", line);
     // }
     // }
     // }
     // }
     // } catch (IOException e) {
-    // System.err.format("ERROR: Could retrieve historical dividend payments for '%s': %s\n", symbol, e.getMessage());
+    // LOGGER.error(String.format("ERROR: Could retrieve historical dividend payments for '%s': %s\n", symbol,
+    // e.getMessage());
     // e.printStackTrace(System.err);
     // }
     //

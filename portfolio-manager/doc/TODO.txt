@@ -1,7 +1,6 @@
 Portfolio Manager - TODO
 ========================
 
-* Add file headers
 * Update JavaDoc
 * Update unit tests
 * Alert log

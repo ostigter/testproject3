@@ -6,10 +6,10 @@
     <groupId>org.ozsoft.portfoliomanager</groupId>
     <artifactId>portfolio-manager</artifactId>
     <version>0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
     <description>Desktop application to manage a stock portfolio</description>
-
     <inceptionYear>2015</inceptionYear>
     <developers>
         <developer>
