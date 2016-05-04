@@ -22,6 +22,19 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+/**
+ * Wrapper around the Swing {@link javax.swing.JTable}, extending it with several features like:
+ * <ul>
+ * <li>automatic column width resizing</li>
+ * <li>footer row</li>
+ * <li>column tooltips</li>
+ * <li>API for custom column rendering</li>
+ * <li>API for adding, modifying and retrieving row and cell values</li>
+ * <li>one single API, avoiding separate table model, selection model and cell renderer APIs</li>
+ * </ul>
+ * 
+ * @author Oscar
+ */
 public class DataTable extends JPanel {
 
     private static final long serialVersionUID = 3822671047219990819L;
@@ -30,6 +43,9 @@ public class DataTable extends JPanel {
 
     private final Table footerTable;
 
+    /**
+     * Constructor.
+     */
     public DataTable() {
         mainTable = new Table(false);
         footerTable = new Table(true);
@@ -49,6 +65,12 @@ public class DataTable extends JPanel {
         add(panel, gbc);
     }
 
+    /**
+     * Sets the column definitions.
+     * 
+     * @param columns
+     *            The column definitions.
+     */
     public void setColumns(List<Column> columns) {
         mainTable.setColumns(columns);
 
@@ -60,50 +82,129 @@ public class DataTable extends JPanel {
         footerTable.setColumnModel(mainTable.getColumnModel());
     }
 
+    /**
+     * Returns the number of columns.
+     * 
+     * @return The number of columns.
+     */
     public int getColumnCount() {
         return mainTable.getColumnCount();
     }
 
+    /**
+     * Returns the columns.
+     * 
+     * @return The columns.
+     */
     public Column[] getColumns() {
         return mainTable.getColumns();
     }
 
+    /**
+     * Returns the number of rows.
+     * 
+     * @return The number of rows.
+     */
     public int getRowCount() {
         return mainTable.getRowCount();
     }
 
+    /**
+     * Returns the rows.
+     * 
+     * @return The rows.
+     */
     public Row[] getRows() {
         return mainTable.getRows();
     }
 
+    /**
+     * Returns a cell's value.
+     * 
+     * @param rowIndex
+     *            The row index (0-based).
+     * @param columnIndex
+     *            The column index (0-based).
+     * 
+     * @return The cell value.
+     */
     public Object getCellValue(int rowIndex, int columnIndex) {
         return mainTable.getCellValue(rowIndex, columnIndex);
     }
 
+    /**
+     * Sets a cell's value.
+     * 
+     * @param rowIndex
+     *            The row index (0-based).
+     * @param columnIndex
+     *            The column index (0-based).
+     * @param value
+     *            The new cell value.
+     */
     public void setCellValue(int rowIndex, int columnIndex, Object value) {
         mainTable.setCellValue(rowIndex, columnIndex, value);
     }
 
+    /**
+     * Returns the currently selected row index.
+     * 
+     * @return The selected row index (0-based).
+     */
     public int getSelectedRow() {
         return mainTable.getSelectedRow();
     }
 
+    /**
+     * Adds a row with cell values. <br />
+     * <br />
+     * 
+     * <b>NOTE:</b> The number of cell values must be equal to the number of columns! <br />
+     * <br />
+     * 
+     * A <code>null</code> can be used for empty cells.
+     * 
+     * @param cellValues
+     *            The cell values.
+     */
     public void addRow(Object... cellValues) {
         mainTable.addRow(cellValues);
     }
 
+    /**
+     * Sets the cell values for the footer row. <br />
+     * <br />
+     * 
+     * <b>NOTE:</b> The number of cell values must be equal to the number of columns! <br />
+     * <br />
+     * 
+     * A <code>null</code> can be used for empty cells.
+     * 
+     * @param cellValues
+     *            The cell values.
+     */
     public void setFooterRow(Object... cellValues) {
         footerTable.clear();
         footerTable.addRow(cellValues);
     }
 
+    /**
+     * Updates the table, refreshing the UI. <br />
+     * <br />
+     * 
+     * To be called when the underlying model has been changed.
+     */
     public void update() {
         mainTable.update();
         footerTable.update();
     }
 
+    /**
+     * Clears the table by deleting all rows (including the footer row).
+     */
     public void clear() {
         mainTable.clear();
+        footerTable.clear();
     }
 
     @Override
@@ -116,6 +217,11 @@ public class DataTable extends JPanel {
         mainTable.addMouseListener(listener);
     }
 
+    /**
+     * Inner table class.
+     * 
+     * @author Oscar Stigter
+     */
     private static class Table extends JTable {
 
         private static final long serialVersionUID = 5019884184139593450L;
@@ -126,6 +232,12 @@ public class DataTable extends JPanel {
 
         private TableRowSorter<TableModel> sorter;
 
+        /**
+         * Constructor.
+         * 
+         * @param isFooter
+         *            <code>true</code> if this table is the footer table, otherwise <code>false</code>.
+         */
         public Table(boolean isFooter) {
             this.isFooter = isFooter;
             setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -139,6 +251,12 @@ public class DataTable extends JPanel {
             }
         }
 
+        /**
+         * Sets the column definitions.
+         * 
+         * @param columns
+         *            The column definitions.
+         */
         public void setColumns(List<Column> columns) {
             model = new DataTableModel(columns);
             super.setModel(model);
@@ -158,6 +276,11 @@ public class DataTable extends JPanel {
             return (model != null) ? model.getColumnCount() : 0;
         }
 
+        /**
+         * Returns the column definitios.
+         * 
+         * @return The column definitions.
+         */
         public Column[] getColumns() {
             return (model != null) ? model.getColumns() : null;
         }
@@ -167,10 +290,25 @@ public class DataTable extends JPanel {
             return (model != null) ? model.getRowCount() : 0;
         }
 
+        /**
+         * Returns the rows.
+         * 
+         * @return The rows.
+         */
         public Row[] getRows() {
             return (model != null) ? model.getRows() : null;
         }
 
+        /**
+         * Returns a cell's value.
+         * 
+         * @param rowIndex
+         *            The row index (0-based).
+         * @param columnIndex
+         *            The column index (0-based).
+         * 
+         * @return The cell value.
+         */
         public Object getCellValue(int rowIndex, int columnIndex) {
             if (model == null) {
                 throw new IllegalStateException("Model not set");
@@ -180,6 +318,16 @@ public class DataTable extends JPanel {
             return model.getValueAt(modelIndex, columnIndex);
         }
 
+        /**
+         * Sets a cell's value.
+         * 
+         * @param rowIndex
+         *            The row index (0-based).
+         * @param columnIndex
+         *            The column index (0-based).
+         * @param value
+         *            The new cell value.
+         */
         public void setCellValue(int rowIndex, int columnIndex, Object value) {
             if (model == null) {
                 throw new IllegalStateException("Model not set");
@@ -201,6 +349,18 @@ public class DataTable extends JPanel {
             return model.getCellRenderer(rowIndex, columnIndex);
         }
 
+        /**
+         * Adds a row with cell values. <br />
+         * <br />
+         * 
+         * <b>NOTE:</b> The number of cell values must be equal to the number of columns! <br />
+         * <br />
+         * 
+         * A <code>null</code> can be used for empty cells.
+         * 
+         * @param cellValues
+         *            The cell values.
+         */
         public void addRow(Object... cellValues) {
             if (model == null) {
                 throw new IllegalStateException("Model not set");
@@ -209,6 +369,12 @@ public class DataTable extends JPanel {
             model.addRow(cellValues);
         }
 
+        /**
+         * Updates the table, refreshing the UI. <br />
+         * <br />
+         * 
+         * To be called when the underlying model has been changed.
+         */
         public void update() {
             if (model != null) {
                 model.fireTableDataChanged();
@@ -219,12 +385,18 @@ public class DataTable extends JPanel {
             }
         }
 
+        /**
+         * Clears the table by deleting all rows.
+         */
         public void clear() {
             if (model != null) {
                 model.clear();
             }
         }
 
+        /**
+         * Resizes all columns based on the width of the largest cell value.
+         */
         private void resizeColumns() {
             int columnCount = getColumnCount();
             int rowCount = getRowCount();
@@ -260,6 +432,11 @@ public class DataTable extends JPanel {
             }
         }
 
+        /**
+         * Data table model.
+         * 
+         * @author Oscar Stigter
+         */
         private static class DataTableModel extends AbstractTableModel {
 
             private static final long serialVersionUID = -1718244270107253916L;
@@ -270,6 +447,12 @@ public class DataTable extends JPanel {
 
             private final List<Row> rows;
 
+            /**
+             * Constructor.
+             * 
+             * @param columns
+             *            The column definitions.
+             */
             public DataTableModel(List<Column> columns) {
                 if (columns == null || columns.isEmpty()) {
                     throw new IllegalArgumentException("Null or empty columns");
@@ -331,6 +514,16 @@ public class DataTable extends JPanel {
                 return false;
             }
 
+            /**
+             * Returns a cell's {@link TableCellRenderer}.
+             * 
+             * @param rowIndex
+             *            The row index (0-based).
+             * @param columnIndex
+             *            The column index (0-based).
+             * 
+             * @return The cell's {@link TableCellRenderer}.
+             */
             public TableCellRenderer getCellRenderer(int rowIndex, int columnIndex) {
                 if (columnIndex < getColumnCount()) {
                     TableCellRenderer columnRenderer = (TableCellRenderer) columns.get(columnIndex).getRenderer();
@@ -340,6 +533,18 @@ public class DataTable extends JPanel {
                 }
             }
 
+            /**
+             * Adds a row with cell values. <br />
+             * <br />
+             * 
+             * <b>NOTE:</b> The number of cell values must be equal to the number of columns! <br />
+             * <br />
+             * 
+             * A <code>null</code> can be used for empty cells.
+             * 
+             * @param cellValues
+             *            The cell values.
+             */
             public void addRow(Object... cellValues) {
                 int columnCount = getColumnCount();
                 if (cellValues.length != columnCount) {
@@ -351,14 +556,27 @@ public class DataTable extends JPanel {
                 rows.add(row);
             }
 
+            /**
+             * Returns the column definitions.
+             * 
+             * @return The column definitions.
+             */
             public Column[] getColumns() {
                 return columns.toArray(new Column[0]);
             }
 
+            /**
+             * Returns the rows.
+             * 
+             * @return The rows.
+             */
             public Row[] getRows() {
                 return rows.toArray(new Row[0]);
             }
 
+            /**
+             * Clears the model by deleting all rows.
+             */
             public void clear() {
                 rows.clear();
             }

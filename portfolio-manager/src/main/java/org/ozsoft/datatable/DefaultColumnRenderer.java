@@ -5,6 +5,11 @@ import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
+/**
+ * Default column renderer.
+ * 
+ * @author Oscar Stigter
+ */
 public class DefaultColumnRenderer extends DefaultTableCellRenderer implements ColumnRenderer {
 
     private static final long serialVersionUID = -6888931596009424634L;
@@ -19,19 +24,41 @@ public class DefaultColumnRenderer extends DefaultTableCellRenderer implements C
 
     private boolean isFooter = false;
 
+    /**
+     * No-args constructor, using all default settings.
+     */
     public DefaultColumnRenderer() {
         // Empty implementation.
     }
 
+    /**
+     * Constructor with a specific horizontal alignment.
+     * 
+     * @param horizontalAlignment
+     *            The horizontal alignment as {@link javax.swing.SwingConstants}.
+     */
     public DefaultColumnRenderer(int horizontalAlignment) {
         setHorizontalAlignment(horizontalAlignment);
     }
 
+    /**
+     * Constructor with a specific horizontal alignment and decimal precision.
+     * 
+     * @param horizontalAlignment
+     *            The horizontal alignment as {@link javax.swing.SwingConstants}.
+     * @param decimalPrecision
+     *            The decimal precision.
+     */
     public DefaultColumnRenderer(int horizontalAlignment, int decimalPrecision) {
         setHorizontalAlignment(horizontalAlignment);
         setDecimalPrecision(decimalPrecision);
     }
 
+    /**
+     * Returns the decimal precision.
+     * 
+     * @return The decimal precision.
+     */
     public final int getDecimalPrecision() {
         return decimalPrecision;
     }
@@ -56,6 +83,11 @@ public class DefaultColumnRenderer extends DefaultTableCellRenderer implements C
         this.isFooter = isFooter;
     }
 
+    /**
+     * Returns whether this column renderer is for the footer row.
+     * 
+     * @return <code>true</code> if for the footer row, otherwis <code>false</code>.
+     */
     protected boolean isFooter() {
         return isFooter;
     }
@@ -94,6 +126,12 @@ public class DefaultColumnRenderer extends DefaultTableCellRenderer implements C
         }
     }
 
+    /**
+     * Sets the default horizontal alignment based on a cell value.
+     * 
+     * @param value
+     *            The cell value.
+     */
     private void setDefaultHorizontalAlignment(Object value) {
         if (value instanceof Number) {
             horizontalAlignment = SwingConstants.RIGHT;
