@@ -28,11 +28,10 @@
         <File name="File" fileName="log/application.log" append="true">
             <PatternLayout pattern="%d %-5level %m%n" />
         </File>
-
     </Appenders>
 
     <Loggers>
-        <Root level="TRACE">
+        <Root level="DEBUG">
             <AppenderRef ref="Console" />
             <AppenderRef ref="File" />
         </Root>
