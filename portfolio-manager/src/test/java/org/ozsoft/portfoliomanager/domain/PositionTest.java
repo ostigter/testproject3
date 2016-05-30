@@ -2,6 +2,7 @@ package org.ozsoft.portfoliomanager.domain;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.ozsoft.portfoliomanager.test.TestUtil;
 
 public class PositionTest {
 
@@ -28,7 +29,7 @@ public class PositionTest {
 
         // BUY 100 @ $20 ($5 costs)
         stock.setPrice(20.00);
-        position.addTransaction(createTransaction(1, 1L, TransactionType.BUY, symbol, 100, 20.00, 5.00));
+        position.addTransaction(TestUtil.createTransaction(1, 1L, TransactionType.BUY, symbol, 100, 20.00, 5.00));
         Assert.assertEquals(100, position.getNoOfShares());
         Assert.assertEquals(2005.00, position.getCurrentCost(), DELTA);
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
@@ -40,7 +41,7 @@ public class PositionTest {
         Assert.assertEquals(-0.25, position.getTotalReturnPercentage(), DELTA);
 
         // DIVIDEND 100 @ $1.00
-        position.addTransaction(createTransaction(2, 2L, TransactionType.DIVIDEND, symbol, 100, 1.00, 0.00));
+        position.addTransaction(TestUtil.createTransaction(2, 2L, TransactionType.DIVIDEND, symbol, 100, 1.00, 0.00));
         Assert.assertEquals(100, position.getNoOfShares());
         Assert.assertEquals(2005.00, position.getCurrentCost(), DELTA);
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
@@ -65,7 +66,7 @@ public class PositionTest {
         Assert.assertEquals(-45.14, position.getTotalReturnPercentage(), DELTA);
 
         // BUY another 100 @ $10 ($5 costs)
-        position.addTransaction(createTransaction(3, 3L, TransactionType.BUY, symbol, 100, 10.00, 5.00));
+        position.addTransaction(TestUtil.createTransaction(3, 3L, TransactionType.BUY, symbol, 100, 10.00, 5.00));
         Assert.assertEquals(200, position.getNoOfShares());
         Assert.assertEquals(3010.00, position.getCurrentCost(), DELTA);
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
@@ -92,7 +93,7 @@ public class PositionTest {
 
         // DIVIDEND 200 @ $1.25
         stock.setDivRate(1.25);
-        position.addTransaction(createTransaction(4, 4L, TransactionType.DIVIDEND, symbol, 200, 1.25, 0.00));
+        position.addTransaction(TestUtil.createTransaction(4, 4L, TransactionType.DIVIDEND, symbol, 200, 1.25, 0.00));
         Assert.assertEquals(200, position.getNoOfShares());
         Assert.assertEquals(3010.00, position.getCurrentCost(), DELTA);
         Assert.assertEquals(4000.00, position.getCurrentValue(), DELTA);
@@ -105,7 +106,7 @@ public class PositionTest {
         Assert.assertEquals(+44.52, position.getTotalReturnPercentage(), DELTA);
 
         // SELL 200 @ $20 ($10 costs)
-        position.addTransaction(createTransaction(5, 5L, TransactionType.SELL, symbol, 200, 20.00, 10.00));
+        position.addTransaction(TestUtil.createTransaction(5, 5L, TransactionType.SELL, symbol, 200, 20.00, 10.00));
         Assert.assertEquals(0, position.getNoOfShares());
         Assert.assertEquals(0.00, position.getCurrentCost(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentValue(), DELTA);
@@ -116,17 +117,5 @@ public class PositionTest {
         Assert.assertEquals(0.00, position.getYieldOnCost(), DELTA);
         Assert.assertEquals(+1330.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(+44.04, position.getTotalReturnPercentage(), DELTA);
-    }
-
-    private Transaction createTransaction(int id, long date, TransactionType type, String symbol, int noOfShares, double price, double cost) {
-        Transaction tx = new Transaction();
-        tx.setId(id);
-        tx.setDate(date);
-        tx.setType(type);
-        tx.setSymbol(symbol);
-        tx.setNoOfShares(noOfShares);
-        tx.setPrice(price);
-        tx.setCost(cost);
-        return tx;
     }
 }

@@ -1,90 +1,99 @@
 package org.ozsoft.portfoliomanager.domain;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.ozsoft.portfoliomanager.test.TestUtil;
 
 public class PortfolioTest {
 
-    // private static final double DELTA = 0.01;
+    private static final double DELTA = 0.01;
 
     @Test
     public void test() {
-        // // Create new (empty) portfolio.
-        // Portfolio portfolio = new Portfolio();
-        // Assert.assertEquals(0.00, portfolio.getCurrentCost(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getCurrentValue(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getCurrentChange(), DELTA);
-        //
-        // // Add positions for some stocks.
-        // Stock stock1 = new Stock("TST1", "Test Stock 1");
-        // stock1.setPrice(20.00);
-        // Stock stock2 = new Stock("TST2", "Test Stock 2");
-        // stock2.setPrice(10.00);
-        // Assert.assertNull(portfolio.getPosition(stock1));
-        // Assert.assertNull(portfolio.getPosition(stock2));
-        //
-        // // Add a BUY transactions for stock 1.
-        // portfolio.addTransaction(new Transaction(1L, TransactionType.BUY, stock1, 100, 20.00, 5.00));
-        // portfolio.update();
-        // Assert.assertEquals(2005.00, portfolio.getCurrentCost(), DELTA);
-        // Assert.assertEquals(2000.00, portfolio.getCurrentValue(), DELTA);
-        // Assert.assertEquals(-5.00, portfolio.getCurrentChange(), DELTA);
-        // Assert.assertEquals(-0.25, portfolio.getCurrentChangePercentage(), DELTA);
-        // Assert.assertEquals(2005.00, portfolio.getTotalCost(), DELTA);
-        // Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getTotalDividend(), DELTA);
-        // Assert.assertEquals(-10.00, portfolio.getTotalReturn(), DELTA);
-        // Assert.assertEquals(-0.50, portfolio.getTotalReturnPercentage(), DELTA);
-        //
-        // // Add a BUY transaction for stock 2
-        // portfolio.addTransaction(new Transaction(2L, TransactionType.BUY, stock2, 100, 10.00, 1.00));
-        // portfolio.update();
-        // Assert.assertEquals(3006.00, portfolio.getCurrentCost(), DELTA);
-        // Assert.assertEquals(3000.00, portfolio.getCurrentValue(), DELTA);
-        // Assert.assertEquals(-6.00, portfolio.getCurrentChange(), DELTA);
-        // Assert.assertEquals(-0.20, portfolio.getCurrentChangePercentage(), DELTA);
-        // Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
-        // Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getTotalDividend(), DELTA);
-        // Assert.assertEquals(-12.00, portfolio.getTotalReturn(), DELTA);
-        // Assert.assertEquals(-0.40, portfolio.getTotalReturnPercentage(), DELTA);
-        //
-        // // Add a DIVIDEND transaction for stock 1
-        // portfolio.addTransaction(new Transaction(3L, TransactionType.DIVIDEND, stock1, 100, 1.00, 0.00));
-        // portfolio.update();
-        // Assert.assertEquals(3006.00, portfolio.getCurrentCost(), DELTA);
-        // Assert.assertEquals(3000.00, portfolio.getCurrentValue(), DELTA);
-        // Assert.assertEquals(-6.00, portfolio.getCurrentChange(), DELTA);
-        // Assert.assertEquals(-0.20, portfolio.getCurrentChangePercentage(), DELTA);
-        // Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
-        // Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
-        // Assert.assertEquals(100.00, portfolio.getTotalDividend(), DELTA);
-        // Assert.assertEquals(88.00, portfolio.getTotalReturn(), DELTA);
-        // Assert.assertEquals(2.93, portfolio.getTotalReturnPercentage(), DELTA);
-        //
-        // // Add a SELL transaction for stock 2
-        // portfolio.addTransaction(new Transaction(4L, TransactionType.SELL, stock2, 100, 15.00, 2.00));
-        // portfolio.update();
-        // Assert.assertEquals(2005.00, portfolio.getCurrentCost(), DELTA);
-        // Assert.assertEquals(2000.00, portfolio.getCurrentValue(), DELTA);
-        // Assert.assertEquals(-5.00, portfolio.getCurrentChange(), DELTA);
-        // Assert.assertEquals(-0.25, portfolio.getCurrentChangePercentage(), DELTA);
-        // Assert.assertEquals(3008.00, portfolio.getTotalCost(), DELTA);
-        // Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
-        // Assert.assertEquals(100.00, portfolio.getTotalDividend(), DELTA);
-        // Assert.assertEquals(587.00, portfolio.getTotalReturn(), DELTA);
-        // Assert.assertEquals(19.51, portfolio.getTotalReturnPercentage(), DELTA);
-        //
-        // // Add a SELL transaction for stock 1
-        // portfolio.addTransaction(new Transaction(5L, TransactionType.SELL, stock1, 100, 25.00, 5.00));
-        // portfolio.update();
-        // Assert.assertEquals(0.00, portfolio.getCurrentCost(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getCurrentValue(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getCurrentChange(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getCurrentChangePercentage(), DELTA);
-        // Assert.assertEquals(3013.00, portfolio.getTotalCost(), DELTA);
-        // Assert.assertEquals(0.00, portfolio.getTotalValue(), DELTA);
-        // Assert.assertEquals(100.00, portfolio.getTotalDividend(), DELTA);
-        // Assert.assertEquals(1087.00, portfolio.getTotalReturn(), DELTA);
-        // Assert.assertEquals(36.08, portfolio.getTotalReturnPercentage(), DELTA);
+        Configuration config = Configuration.getInstance();
+
+        // Create new (empty) portfolio.
+        Portfolio portfolio = new Portfolio();
+        Assert.assertEquals(0.00, portfolio.getCurrentCost(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getCurrentValue(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getCurrentResult(), DELTA);
+
+        // Add positions for some stocks.
+        String symbol1 = "TST1";
+        Stock stock1 = new Stock(symbol1, "Test Stock 1");
+        config.addStock(stock1);
+        String symbol2 = "TST2";
+        Stock stock2 = new Stock(symbol2, "Test Stock 2");
+        config.addStock(stock2);
+        Assert.assertNull(portfolio.getPosition(stock1));
+        Assert.assertNull(portfolio.getPosition(stock2));
+
+        // BUY 100 stock 1 @ $20 ($5 costs)
+        stock1.setPrice(20.00);
+        portfolio.addTransaction(TestUtil.createTransaction(1, 1L, TransactionType.BUY, symbol1, 100, 20.00, 5.00));
+        portfolio.update(config);
+        Assert.assertEquals(2005.00, portfolio.getCurrentCost(), DELTA);
+        Assert.assertEquals(2000.00, portfolio.getCurrentValue(), DELTA);
+        Assert.assertEquals(-5.00, portfolio.getCurrentResult(), DELTA);
+        Assert.assertEquals(-0.25, portfolio.getCurrentResultPercentage(), DELTA);
+        Assert.assertEquals(2005.00, portfolio.getTotalCost(), DELTA);
+        Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
+        Assert.assertEquals(-5.00, portfolio.getTotalReturn(), DELTA);
+        Assert.assertEquals(-0.25, portfolio.getTotalReturnPercentage(), DELTA);
+
+        // BUY 100 stock 2 @ $10 ($1 costs)
+        stock2.setPrice(10.00);
+        portfolio.addTransaction(TestUtil.createTransaction(2, 2L, TransactionType.BUY, symbol2, 100, 10.00, 1.00));
+        portfolio.update(config);
+        Assert.assertEquals(3006.00, portfolio.getCurrentCost(), DELTA);
+        Assert.assertEquals(3000.00, portfolio.getCurrentValue(), DELTA);
+        Assert.assertEquals(-6.00, portfolio.getCurrentResult(), DELTA);
+        Assert.assertEquals(-0.20, portfolio.getCurrentResultPercentage(), DELTA);
+        Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
+        Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
+        Assert.assertEquals(-6.00, portfolio.getTotalReturn(), DELTA);
+        Assert.assertEquals(-0.20, portfolio.getTotalReturnPercentage(), DELTA);
+
+        // DIVIDEND stock 1 100 @ $1.00
+        stock1.setDivRate(1.00);
+        portfolio.addTransaction(TestUtil.createTransaction(3, 3L, TransactionType.DIVIDEND, symbol1, 100, 1.00, 0.00));
+        portfolio.update(config);
+        Assert.assertEquals(3006.00, portfolio.getCurrentCost(), DELTA);
+        Assert.assertEquals(3000.00, portfolio.getCurrentValue(), DELTA);
+        Assert.assertEquals(-6.00, portfolio.getCurrentResult(), DELTA);
+        Assert.assertEquals(-0.20, portfolio.getCurrentResultPercentage(), DELTA);
+        Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
+        Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
+        Assert.assertEquals(94.00, portfolio.getTotalReturn(), DELTA);
+        Assert.assertEquals(3.13, portfolio.getTotalReturnPercentage(), DELTA);
+
+        // SELL stock 2 100 @ $15 ($2 costs)
+        portfolio.addTransaction(TestUtil.createTransaction(4, 4L, TransactionType.SELL, symbol2, 100, 15.00, 2.00));
+        portfolio.update(config);
+        Assert.assertEquals(2005.00, portfolio.getCurrentCost(), DELTA);
+        Assert.assertEquals(2000.00, portfolio.getCurrentValue(), DELTA);
+        Assert.assertEquals(-5.00, portfolio.getCurrentResult(), DELTA);
+        Assert.assertEquals(-0.25, portfolio.getCurrentResultPercentage(), DELTA);
+        Assert.assertEquals(3008.00, portfolio.getTotalCost(), DELTA);
+        Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
+        Assert.assertEquals(592.00, portfolio.getTotalReturn(), DELTA);
+        Assert.assertEquals(19.68, portfolio.getTotalReturnPercentage(), DELTA);
+
+        // Add a SELL transaction for stock 1
+        portfolio.addTransaction(TestUtil.createTransaction(5, 5L, TransactionType.SELL, symbol1, 100, 25.00, 5.00));
+        portfolio.update(config);
+        Assert.assertEquals(0.00, portfolio.getCurrentCost(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getCurrentValue(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getCurrentResult(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getCurrentResultPercentage(), DELTA);
+        Assert.assertEquals(3013.00, portfolio.getTotalCost(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
+        Assert.assertEquals(1087.00, portfolio.getTotalReturn(), DELTA);
+        Assert.assertEquals(36.08, portfolio.getTotalReturnPercentage(), DELTA);
     }
 }

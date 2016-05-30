@@ -2,7 +2,8 @@ Portfolio Manager - TODO
 ========================
 
 * Update JavaDoc
-* Update unit tests
+* Promote to top-level GitHub project
+* Show portfolio results (cost, income, total result, per month, quarter and year)
 * Alert log
 * View alerts (since last update)
 * Task progress indicator

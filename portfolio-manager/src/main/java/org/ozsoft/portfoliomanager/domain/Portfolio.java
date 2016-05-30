@@ -121,6 +121,7 @@ public class Portfolio {
     }
 
     public double getTotalReturnPercentage() {
+        // FIXME: Total result % based on average, all-time cost
         if (totalCost > 0.0) {
             return (getTotalReturn() / totalCost) * 100.0;
         } else {

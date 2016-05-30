@@ -29,6 +29,7 @@ import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
@@ -260,16 +261,19 @@ public class MainFrame extends JFrame {
      * Analyzes all stocks.
      */
     private void analyzeAllStocks() {
-        setStatus("Analyzing stocks...");
-        showMessageDialog("Analyzing all stocks, please wait...");
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                String resultMessage = updateService.analyzeAllStocks();
-                closeMessageDialog();
-                setStatus(resultMessage);
-            }
-        });
+        if (JOptionPane.showConfirmDialog(this, "Analyze all stocks now? (This may take several minutes.)", "Analyze All Stocks",
+                JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+            setStatus("Analyzing stocks...");
+            showMessageDialog("Analyzing all stocks, please wait...");
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    String resultMessage = updateService.analyzeAllStocks();
+                    closeMessageDialog();
+                    setStatus(resultMessage);
+                }
+            });
+        }
     }
 
     /**
