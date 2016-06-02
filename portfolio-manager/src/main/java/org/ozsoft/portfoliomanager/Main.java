@@ -37,5 +37,6 @@ public class Main {
                 LOGGER.info("Application started");
             }
         });
+        // Configuration.getInstance().getPortfolio().printResults();
     }
 }

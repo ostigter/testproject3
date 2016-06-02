@@ -1,9 +1,10 @@
 Portfolio Manager - TODO
 ========================
 
+* Configuration option to subtract dividend tax
 * Update JavaDoc
-* Promote to top-level GitHub project
-* Show portfolio results (cost, income, total result, per month, quarter and year)
+* Promote to its own GitHub project
+* Show portfolio results (costbase, income, total result, per month, quarter and year)
 * Alert log
 * View alerts (since last update)
 * Task progress indicator
