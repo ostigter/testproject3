@@ -49,6 +49,8 @@ public class Configuration {
 
     private static final File ANALYSIS_RESULT_FILE = new File(DATA_DIR, "stock_analysis.csv");
 
+    private static final double DIVIDEND_TAX_RATE = 0.15;
+
     // private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
 
     private static final Logger LOGGER = LogManager.getLogger(Configuration.class);
@@ -56,6 +58,8 @@ public class Configuration {
     private static Configuration config;
 
     private boolean showClosedPositions = false;
+
+    private boolean subtractDividendTax = true;
 
     private final TreeMap<String, Stock> stocks;
 
@@ -155,6 +159,18 @@ public class Configuration {
 
     public void setShowClosedPositions(boolean showClosedPositions) {
         this.showClosedPositions = showClosedPositions;
+    }
+
+    public boolean isSubtractDividendTax() {
+        return subtractDividendTax;
+    }
+
+    public void setSubtractDividendTax(boolean subtractDividendTax) {
+        this.subtractDividendTax = subtractDividendTax;
+    }
+
+    public static double getDividendTaxRate() {
+        return DIVIDEND_TAX_RATE;
     }
 
     private static Configuration load() {

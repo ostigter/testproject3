@@ -11,12 +11,21 @@ public class PortfolioTest {
     @Test
     public void test() {
         Configuration config = Configuration.getInstance();
+        config.setSubtractDividendTax(false);
 
         // Create new (empty) portfolio.
         Portfolio portfolio = new Portfolio();
         Assert.assertEquals(0.00, portfolio.getCurrentCost(), DELTA);
         Assert.assertEquals(0.00, portfolio.getCurrentValue(), DELTA);
         Assert.assertEquals(0.00, portfolio.getCurrentResult(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getCurrentResultPercentage(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalCost(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getAnnualIncome(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getYieldOnCost(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalReturn(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getTotalReturnPercentage(), DELTA);
 
         // Add positions for some stocks.
         String symbol1 = "TST1";
@@ -30,6 +39,7 @@ public class PortfolioTest {
 
         // BUY 100 stock 1 @ $20 ($5 costs)
         stock1.setPrice(20.00);
+        stock1.setDivRate(1.00);
         portfolio.addTransaction(TestUtil.createTransaction(1, 1L, TransactionType.BUY, symbol1, 100, 20.00, 5.00));
         portfolio.update(config);
         Assert.assertEquals(2005.00, portfolio.getCurrentCost(), DELTA);
@@ -38,12 +48,15 @@ public class PortfolioTest {
         Assert.assertEquals(-0.25, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(2005.00, portfolio.getTotalCost(), DELTA);
         Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(100.00, portfolio.getAnnualIncome(), DELTA);
+        Assert.assertEquals(4.99, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
         Assert.assertEquals(-5.00, portfolio.getTotalReturn(), DELTA);
         Assert.assertEquals(-0.25, portfolio.getTotalReturnPercentage(), DELTA);
 
         // BUY 100 stock 2 @ $10 ($1 costs)
         stock2.setPrice(10.00);
+        stock2.setDivRate(0.25);
         portfolio.addTransaction(TestUtil.createTransaction(2, 2L, TransactionType.BUY, symbol2, 100, 10.00, 1.00));
         portfolio.update(config);
         Assert.assertEquals(3006.00, portfolio.getCurrentCost(), DELTA);
@@ -52,6 +65,8 @@ public class PortfolioTest {
         Assert.assertEquals(-0.20, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
         Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(125.00, portfolio.getAnnualIncome(), DELTA);
+        Assert.assertEquals(4.16, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
         Assert.assertEquals(-6.00, portfolio.getTotalReturn(), DELTA);
         Assert.assertEquals(-0.20, portfolio.getTotalReturnPercentage(), DELTA);
@@ -66,9 +81,22 @@ public class PortfolioTest {
         Assert.assertEquals(-0.20, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
         Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(125.00, portfolio.getAnnualIncome(), DELTA);
+        Assert.assertEquals(4.16, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
         Assert.assertEquals(94.00, portfolio.getTotalReturn(), DELTA);
         Assert.assertEquals(3.13, portfolio.getTotalReturnPercentage(), DELTA);
+
+        // Recalculate with subtracted dividend tax
+        config.setSubtractDividendTax(true);
+        portfolio.update(config);
+        Assert.assertEquals(0.85 * 125.00, portfolio.getAnnualIncome(), DELTA);
+        Assert.assertEquals(0.85 * 100.00, portfolio.getTotalIncome(), DELTA);
+        Assert.assertEquals(79.00, portfolio.getTotalReturn(), DELTA);
+        Assert.assertEquals(2.63, portfolio.getTotalReturnPercentage(), DELTA);
+
+        // Disable dividend tax subtraction again
+        config.setSubtractDividendTax(false);
 
         // SELL stock 2 100 @ $15 ($2 costs)
         portfolio.addTransaction(TestUtil.createTransaction(4, 4L, TransactionType.SELL, symbol2, 100, 15.00, 2.00));
@@ -79,6 +107,8 @@ public class PortfolioTest {
         Assert.assertEquals(-0.25, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3008.00, portfolio.getTotalCost(), DELTA);
         Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(100.00, portfolio.getAnnualIncome(), DELTA);
+        Assert.assertEquals(4.99, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
         Assert.assertEquals(592.00, portfolio.getTotalReturn(), DELTA);
         Assert.assertEquals(19.68, portfolio.getTotalReturnPercentage(), DELTA);
@@ -92,6 +122,8 @@ public class PortfolioTest {
         Assert.assertEquals(0.00, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3013.00, portfolio.getTotalCost(), DELTA);
         Assert.assertEquals(0.00, portfolio.getTotalValue(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getAnnualIncome(), DELTA);
+        Assert.assertEquals(0.00, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
         Assert.assertEquals(1087.00, portfolio.getTotalReturn(), DELTA);
         Assert.assertEquals(36.08, portfolio.getTotalReturnPercentage(), DELTA);

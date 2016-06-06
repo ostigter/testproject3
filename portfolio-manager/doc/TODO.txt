@@ -1,9 +1,9 @@
 Portfolio Manager - TODO
 ========================
 
-* Configuration option to subtract dividend tax
 * Update JavaDoc
 * Promote to its own GitHub project
+* Configuration dialog
 * Show portfolio results (costbase, income, total result, per month, quarter and year)
 * Alert log
 * View alerts (since last update)
@@ -15,3 +15,4 @@ Portfolio Manager - TODO
 * View income overview ('Income' tab)
 * Set/view sector and industry per stock
 * View portfolio diversification (per sector/stock)
+* Daily portfolio backup

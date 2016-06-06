@@ -10,6 +10,8 @@ public class PositionTest {
 
     @Test
     public void test() {
+        Configuration.getInstance().setSubtractDividendTax(false);
+
         String symbol = "TST";
         Stock stock = new Stock(symbol, "Test Stock");
         stock.setPrice(10.00);
@@ -22,8 +24,9 @@ public class PositionTest {
         Assert.assertEquals(0.00, position.getCurrentValue(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(0.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(0.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(0.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(0.00, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(0.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(0.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(0.00, position.getTotalReturnPercentage(), DELTA);
 
@@ -35,8 +38,9 @@ public class PositionTest {
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
         Assert.assertEquals(-5.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(2005.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(0.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(100.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(4.99, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(0.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(-5.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(-0.25, position.getTotalReturnPercentage(), DELTA);
 
@@ -47,8 +51,9 @@ public class PositionTest {
         Assert.assertEquals(2000.00, position.getCurrentValue(), DELTA);
         Assert.assertEquals(-5.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(2005.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(100.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(4.99, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(+95.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(+4.74, position.getTotalReturnPercentage(), DELTA);
 
@@ -60,8 +65,9 @@ public class PositionTest {
         Assert.assertEquals(-1005.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(-50.12, position.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(2005.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(100.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(4.99, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(-905.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(-45.14, position.getTotalReturnPercentage(), DELTA);
 
@@ -73,8 +79,9 @@ public class PositionTest {
         Assert.assertEquals(-1010.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(-33.55, position.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3010.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(200.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(6.64, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(-910.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(-30.23, position.getTotalReturnPercentage(), DELTA);
 
@@ -86,8 +93,9 @@ public class PositionTest {
         Assert.assertEquals(+990.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(+32.89, position.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3010.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(200.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(6.64, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(100.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(+1090.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(+36.21, position.getTotalReturnPercentage(), DELTA);
 
@@ -100,8 +108,9 @@ public class PositionTest {
         Assert.assertEquals(+990.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(+32.89, position.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3010.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(350.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(250.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(8.31, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(350.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(+1340.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(+44.52, position.getTotalReturnPercentage(), DELTA);
 
@@ -113,8 +122,9 @@ public class PositionTest {
         Assert.assertEquals(0.00, position.getCurrentResult(), DELTA);
         Assert.assertEquals(0.00, position.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3020.00, position.getTotalCost(), DELTA);
-        Assert.assertEquals(350.00, position.getTotalIncome(), DELTA);
+        Assert.assertEquals(0.00, position.getAnnualIncome(), DELTA);
         Assert.assertEquals(0.00, position.getYieldOnCost(), DELTA);
+        Assert.assertEquals(350.00, position.getTotalIncome(), DELTA);
         Assert.assertEquals(+1330.00, position.getTotalReturn(), DELTA);
         Assert.assertEquals(+44.04, position.getTotalReturnPercentage(), DELTA);
     }

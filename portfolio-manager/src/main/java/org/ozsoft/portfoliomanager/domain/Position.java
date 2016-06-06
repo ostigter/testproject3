@@ -22,6 +22,8 @@ public class Position implements Comparable<Position> {
 
     private static final double MIN_COST = 0.50;
 
+    private final Configuration config = Configuration.getInstance();
+
     private final Stock stock;
 
     private int noOfShares = 0;
@@ -87,7 +89,11 @@ public class Position implements Comparable<Position> {
     }
 
     public double getAnnualIncome() {
-        return noOfShares * stock.getDivRate();
+        double annualIncome = noOfShares * stock.getDivRate();
+        if (config.isSubtractDividendTax()) {
+            annualIncome *= (1.0 - Configuration.getDividendTaxRate());
+        }
+        return annualIncome;
     }
 
     public double getTotalIncome() {
@@ -120,36 +126,39 @@ public class Position implements Comparable<Position> {
 
     public void addTransaction(Transaction tx) {
         switch (tx.getType()) {
-        case BUY:
-            this.noOfShares += tx.getNoOfShares();
-            double cost = (tx.getNoOfShares() * tx.getPrice()) + tx.getCost();
-            currentCost += cost;
-            totalCost += cost;
-            break;
-        case SELL:
-            if (tx.getNoOfShares() > noOfShares) {
-                throw new IllegalArgumentException("Cannot sell more shares than owned");
-            }
-            double avgPrice = currentCost / noOfShares;
-            double value = tx.getNoOfShares() * avgPrice;
-            currentCost -= value;
-            if (currentCost < MIN_COST) {
-                // Round very low cost down to 0 to avoid rounding errors.
-                currentCost = 0.0;
-            }
-            totalCost += tx.getCost();
-            double profit = tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCost();
-            realizedResult += profit;
-            totalReturn += profit;
-            noOfShares -= tx.getNoOfShares();
-            break;
-        case DIVIDEND:
-            double income = tx.getNoOfShares() * tx.getPrice();
-            totalIncome += income;
-            totalReturn += income;
-            break;
-        default:
-            throw new IllegalArgumentException("Invalid transaction type");
+            case BUY:
+                this.noOfShares += tx.getNoOfShares();
+                double cost = (tx.getNoOfShares() * tx.getPrice()) + tx.getCost();
+                currentCost += cost;
+                totalCost += cost;
+                break;
+            case SELL:
+                if (tx.getNoOfShares() > noOfShares) {
+                    throw new IllegalArgumentException("Cannot sell more shares than owned");
+                }
+                double avgPrice = currentCost / noOfShares;
+                double value = tx.getNoOfShares() * avgPrice;
+                currentCost -= value;
+                if (currentCost < MIN_COST) {
+                    // Round very low cost down to 0 to avoid rounding errors.
+                    currentCost = 0.0;
+                }
+                totalCost += tx.getCost();
+                double profit = tx.getNoOfShares() * (tx.getPrice() - avgPrice) - tx.getCost();
+                realizedResult += profit;
+                totalReturn += profit;
+                noOfShares -= tx.getNoOfShares();
+                break;
+            case DIVIDEND:
+                double income = tx.getNoOfShares() * tx.getPrice();
+                if (config.isSubtractDividendTax()) {
+                    income *= (1.0 - Configuration.getDividendTaxRate());
+                }
+                totalIncome += income;
+                totalReturn += income;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid transaction type");
         }
     }
 
