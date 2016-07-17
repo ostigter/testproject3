@@ -100,11 +100,11 @@ public class UpdateService {
      * 
      * @param stock
      *            The stock to update.
-     * 
      * @return True if the stock was updated (price changed), otherwise false.
      */
     public boolean updatePrice(Stock stock) {
         boolean isUpdated = false;
+
         StockUpdater stockUpdater = new StockUpdater(stock, httpPageReader);
         stockUpdater.start();
         try {
@@ -113,6 +113,7 @@ public class UpdateService {
         } catch (InterruptedException e) {
             // Safe to ignore.
         }
+
         return isUpdated;
     }
 
@@ -134,7 +135,8 @@ public class UpdateService {
         // Write analysis results to CSV file.
         File file = config.getAnalysisResultFile();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            writer.write("Symbol; 10-yr CAGR; 5-yr CAGR; 1-yr Change; Volatility; 52-wk High; 52-wk Low; Current Price; 5-yr Discount; 1-yr Discount; Score");
+            writer.write(
+                    "Symbol; 10-yr CAGR; 5-yr CAGR; 1-yr Change; Volatility; 52-wk High; 52-wk Low; Current Price; 5-yr Discount; 1-yr Discount; Score");
             writer.newLine();
             for (StockAnalysis analysis : analyses) {
                 writer.write(analysis.toString());
@@ -175,10 +177,8 @@ public class UpdateService {
     /**
      * Updates all stocks based on the latest version of David Fish' CCC list (Excel sheet, updated monthly). <br />
      * <br />
-     * 
      * Checks for a newer version of the CCC list and updates the stocks only if present. <br />
      * <br />
-     * 
      * Uses the Apache POI framework to parse the Excel sheet.
      */
     private void updateStatistics() {
@@ -262,32 +262,28 @@ public class UpdateService {
     /**
      * Updates real-time prices for the specified stocks. <br />
      * <br />
-     * 
-     * Every stock is updated by its own {@see StockUpdater} thread for maximum performance (less total duration, at the
-     * cost of a large CPU and network I/O burst).
+     * Every stock is updated by its own {@see StockUpdater} thread for maximum performance (less total duration, at the cost of a large CPU and
+     * network I/O burst).
      * 
      * @param stocks
      *            The stocks to update.
-     * 
      * @return The number of updated stocks.
      */
     public int updatePrices(Set<Stock> stocks) {
-        // LOGGER.debug("Updating stock prices");
+        LOGGER.debug(String.format("Updating %d stock prices", stocks.size()));
 
-        int updatedCount = 0;
-
-        Set<StockUpdater> updaters = new HashSet<StockUpdater>(stocks.size());
+        Set<StockUpdater> updaters = new HashSet<StockUpdater>();
         for (Stock stock : stocks) {
             StockUpdater updater = new StockUpdater(stock, httpPageReader);
             updaters.add(updater);
             updater.start();
         }
 
+        int updatedCount = 0;
         for (StockUpdater updater : updaters) {
             try {
                 updater.join();
                 if (updater.isUpdated()) {
-                    // LOGGER.trace("Updated price of %s", updater.getStock());
                     updatedCount++;
                 }
             } catch (InterruptedException e) {
@@ -305,7 +301,6 @@ public class UpdateService {
      * 
      * @param stock
      *            The stock to analyze.
-     * 
      * @return The stock analysis result.
      */
     private StockAnalysis analyzeStock(Stock stock) {
@@ -315,8 +310,8 @@ public class UpdateService {
         StockPerformance perf5yr = new StockPerformance(prices, TimeRange.FIVE_YEAR);
         StockPerformance perf1yr = new StockPerformance(prices, TimeRange.ONE_YEAR);
 
-        double score = 20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr()) - 0.5
-                * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
+        double score = 20.0 + perf10yr.getCagr() + perf5yr.getCagr() - 12.0 + 2.0 * (perf5yr.getCagr() - perf10yr.getCagr())
+                - 0.5 * (perf10yr.getVolatility() - 10.0) + 0.5 * perf1yr.getDiscount();
 
         StockAnalysis analysis = new StockAnalysis(stock, perf10yr.getCagr(), perf5yr.getCagr(), perf1yr.getChangePerc(), perf10yr.getVolatility(),
                 perf1yr.getHighPrice(), perf1yr.getLowPrice(), perf1yr.getEndPrice(), perf5yr.getDiscount(), perf1yr.getDiscount(), score);
@@ -329,7 +324,6 @@ public class UpdateService {
      * 
      * @param stock
      *            The stock.
-     * 
      * @return The historic closing prices.
      */
     private List<ClosingPrice> getClosingPrices(Stock stock) {

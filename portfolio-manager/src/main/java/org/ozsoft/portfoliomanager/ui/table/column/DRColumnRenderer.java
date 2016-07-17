@@ -32,7 +32,7 @@ public class DRColumnRenderer extends DefaultColumnRenderer {
     public String formatValue(Object value) {
         if (value instanceof Double) {
             double numericValue = (double) value;
-            if (numericValue >= 0.0) {
+            if (numericValue > 0.0) {
                 backgroundColor = null;
                 return String.format("$ %.2f", numericValue);
             } else {

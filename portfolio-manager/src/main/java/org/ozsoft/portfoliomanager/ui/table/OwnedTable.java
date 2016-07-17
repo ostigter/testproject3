@@ -99,7 +99,7 @@ public class OwnedTable extends DataTable {
         columns.add(new Column("Symbol", "Ticker symbol", centeredColumnRenderer));
         columns.add(new Column("Price", "Current stock price", smallMoneyColumnRenderer));
         columns.add(new Column("Change", "Change in stock price since last closing", percChangeColumnRenderer));
-        columns.add(new Column("CY", "Current dividend yield", yieldColumnRenderer));
+        columns.add(new Column("Yield", "Current dividend yield", yieldColumnRenderer));
         columns.add(new Column("DGR", "5-year annualized dividend growth rate", divGrowthColumnRenderer));
         columns.add(new Column("YDG", "Consecutive years of dividend growth", yearsColumnRenderer));
         columns.add(new Column("CR", "Current credit rating", ratingColumnRenderer));

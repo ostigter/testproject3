@@ -36,7 +36,7 @@ public class Stock implements Comparable<Stock> {
 
     private double divRate;
 
-    private double divGrowth = -1.0;
+    private double divGrowth = 0.0;
 
     private int yearsDivGrowth = -1;
 
@@ -122,7 +122,7 @@ public class Stock implements Comparable<Stock> {
     }
 
     public double getYield() {
-        if (price > 0.0) {
+        if (price > 0.0 && divRate > 0.0) {
             double yield = (divRate / price) * 100.0;
             if (yield < 0.0) {
                 yield = 0.0;

@@ -33,7 +33,7 @@ public class DGColumnRenderer extends DefaultColumnRenderer {
     public String formatValue(Object value) {
         if (value instanceof Double) {
             double percValue = (double) value;
-            if (percValue < 0.0) {
+            if (percValue <= 0.0) {
                 backgroundColor = Color.YELLOW;
                 return "N/A";
             } else {

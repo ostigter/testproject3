@@ -18,6 +18,7 @@
 
 package org.ozsoft.portfoliomanager.services;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,19 +31,15 @@ import org.ozsoft.portfoliomanager.util.HttpPageReader;
 /**
  * Thread that updates the share price of a single stock. <br />
  * <br />
- * 
- * Grabs the latest, real-time share price from the stock's Yahoo! Finance stock summary page (HTML).
+ * Gets the latest (delayed) share price from the Yahoo! Finance API and Morningstar's value rating.
  * 
  * @author Oscar Stigter
  */
 public class StockUpdater extends Thread {
 
-    private static final String YAHOO_QUOTE_URI = "http://finance.yahoo.com/q?s=%s";
+    private static final String YAHOO_STOCK_QUOTE_URI = "http://download.finance.yahoo.com/d/quotes.csv?s=%s&f=l1p2rd";
 
     private static final String MORNINGSTAR_QUOTE_URI = "http://www.morningstar.com/stocks/%s/%s/quote.html";
-
-    private static final Pattern YAHOO_QUOTE_PATTERN = Pattern
-            .compile("<span class=\"rtq_exch\">.*?(NYSE|NasdaqGS).*?</span>.*<span id=\"yfs_l84_.*?\">(.*?)</span>.*<span id=\"yfs_c63_.*?\">.*? class=\"(?:neg_arrow|pos_arrow)\" alt=\"(Up|Down)\">.*<span id=\"yfs_p43_.*?\">\\((.*?)%\\)</span>(?s).*>P/E <.*? class=\"yfnc_tabledata1\">(.*?)</td>.*>Div &amp; Yield:</th><td class=\"yfnc_tabledata1\">(.*?) \\(");
 
     private static final Pattern MORNINGSTAR_QUOTE_PATTERN = Pattern.compile("\"starRating\":([0-9])");
 
@@ -76,46 +73,41 @@ public class StockUpdater extends Thread {
     @Override
     public void run() {
         try {
-            String content = httpPageReader.read(String.format(YAHOO_QUOTE_URI, stock.getSymbol()));
-            Matcher m = YAHOO_QUOTE_PATTERN.matcher(content);
-            if (m.find()) {
-                String exchangeText = m.group(1);
-                if (exchangeText.equals("NYSE")) {
-                    stock.setExchange(Exchange.NYSE);
-                } else if (exchangeText.equals("NasdaqGS")) {
-                    stock.setExchange(Exchange.NASDAQ);
-                } else {
-                    stock.setExchange(Exchange.UNKNOWN);
+            // Get stock quote from Yahoo Finance API
+            // LOGGER.debug("Requesting stock quote for " + stock);
+            String line = httpPageReader.read(String.format(YAHOO_STOCK_QUOTE_URI, stock.getSymbol()));
+            // LOGGER.debug(String.format("CSV line for '%s': '%s'", stock, line));
+            String[] fields = line.split(",");
+            if (fields.length == 4) {
+                try {
+                    double price = Double.parseDouble(fields[0]);
+                    if (price != stock.getPrice()) {
+                        double changePerc = Double.parseDouble(fields[1].replaceAll("[\"%]", ""));
+                        stock.setPrice(price);
+                        stock.setChangePerc(changePerc);
+                        stock.setPeRatio(fields[2].equals("N/A") ? -1.0 : Double.parseDouble(fields[2]));
+                        stock.setDivRate(fields[3].equals("N/A") ? 0.0 : Double.parseDouble(fields[3]));
+                        isUpdated = true;
+                        // LOGGER.debug(String.format("Updated stock price of '%s'", stock));
+                    }
+                } catch (NumberFormatException e) {
+                    LOGGER.error(String.format("Could not parse stock quote for %s: '%s'", stock, line), e);
                 }
-                double price = Double.parseDouble(m.group(2));
-                double changePerc = Double.parseDouble(m.group(4));
-                if (m.group(3).equals("Down")) {
-                    changePerc *= -1;
-                }
-                String peRatioText = m.group(5);
-                double peRatio = peRatioText.equals("N/A") ? -1.0 : Double.parseDouble(peRatioText);
-                String divRateString = m.group(6);
-                double divRate = divRateString.equals("N/A") ? 0.0 : Double.parseDouble(divRateString);
-
-                if (price != stock.getPrice()) {
-                    stock.setPrice(price);
-                    stock.setChangePerc(changePerc);
-                    stock.setPeRatio(peRatio);
-                    stock.setDivRate(divRate);
-                    isUpdated = true;
-                }
-
-                int starRating = -1;
-                String exchangeId = (stock.getExchange() == Exchange.NYSE) ? "xnys" : "xnas";
-                content = httpPageReader.read(String.format(MORNINGSTAR_QUOTE_URI, exchangeId, stock.getSymbol()));
-                m = MORNINGSTAR_QUOTE_PATTERN.matcher(content);
-                if (m.find()) {
-                    starRating = Integer.parseInt(m.group(1));
-                }
-                stock.setStarRating(starRating);
+            } else {
+                LOGGER.error(String.format("Invalid number of CSV fields returned for %s: '%s'", stock, line));
             }
-        } catch (Exception e) {
-            LOGGER.error(String.format("Could not get update for stock '%s'", stock), e);
+
+            int starRating = -1;
+            String exchangeId = (stock.getExchange() == Exchange.NYSE) ? "xnys" : "xnas";
+            String content = httpPageReader.read(String.format(MORNINGSTAR_QUOTE_URI, exchangeId, stock.getSymbol()));
+            Matcher m = MORNINGSTAR_QUOTE_PATTERN.matcher(content);
+            if (m.find()) {
+                starRating = Integer.parseInt(m.group(1));
+            }
+            stock.setStarRating(starRating);
+
+        } catch (IOException e) {
+            LOGGER.error("Failed to retrieve full stock quote for " + stock, e);
         }
 
         isFinished = true;
