@@ -75,7 +75,7 @@ public class StockUpdater extends Thread {
         try {
             // Get stock quote from Yahoo Finance API
             // LOGGER.debug("Requesting stock quote for " + stock);
-            String line = httpPageReader.read(String.format(YAHOO_STOCK_QUOTE_URI, stock.getSymbol()));
+            String line = httpPageReader.read(String.format(YAHOO_STOCK_QUOTE_URI, stock.getSymbol())).trim();
             // LOGGER.debug(String.format("CSV line for '%s': '%s'", stock, line));
             String[] fields = line.split(",");
             if (fields.length == 4) {

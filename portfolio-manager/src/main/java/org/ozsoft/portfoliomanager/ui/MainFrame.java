@@ -24,7 +24,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -89,8 +88,6 @@ public class MainFrame extends JFrame {
      * Constructor.
      */
     public MainFrame() {
-        Locale.setDefault(Locale.US);
-
         config = Configuration.getInstance();
 
         initUI();

@@ -29,6 +29,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -68,6 +69,8 @@ public class Configuration {
     private Configuration() {
         stocks = new TreeMap<String, Stock>();
         transactions = new ArrayList<Transaction>();
+
+        Locale.setDefault(Locale.US);
     }
 
     public static Configuration getInstance() {

@@ -162,6 +162,7 @@ public class Portfolio {
     }
 
     public void printResults() {
+        Configuration config = Configuration.getInstance();
         List<Transaction> transactions = new ArrayList<Transaction>(this.transactions);
         Calendar firstDay = getDay(transactions.get(0).getDate());
         Calendar lastDay = getDay(new Date().getTime());
@@ -177,8 +178,10 @@ public class Portfolio {
         Results totalResult = new Results();
 
         int daysInMonth = 1;
+        int totalDays = 1;
         double currentCost = 0.0;
         Map<Integer, Double> costPerDay = new TreeMap<Integer, Double>();
+        Map<Integer, Double> overallCosts = new TreeMap<Integer, Double>();
 
         Calendar day = firstDay;
         while (!day.after(lastDay)) {
@@ -191,7 +194,11 @@ public class Portfolio {
             if (tx != null) {
                 switch (tx.getType()) {
                     case DIVIDEND:
-                        double income = tx.getNoOfShares() * tx.getPrice() - tx.getCost();
+                        double income = tx.getNoOfShares() * tx.getPrice();
+                        if (config.isSubtractDividendTax()) {
+                            income *= (1.0 - config.getDividendTaxRate());
+                        }
+                        income -= tx.getCost();
                         monthlyResult.addIncome(income);
                         quarterlyResult.addIncome(income);
                         annualResult.addIncome(income);
@@ -204,6 +211,12 @@ public class Portfolio {
                             costPerDay.put(daysInMonth, costs);
                         } else {
                             costPerDay.put(daysInMonth, dayCosts + costs);
+                        }
+                        Double dayCosts2 = overallCosts.get(totalDays);
+                        if (dayCosts2 == null) {
+                            overallCosts.put(totalDays, costs);
+                        } else {
+                            overallCosts.put(totalDays, dayCosts2 + costs);
                         }
                         currentCost += costs;
                         monthlyResult.addCosts(costs);
@@ -220,10 +233,17 @@ public class Portfolio {
                         } else {
                             costPerDay.put(daysInMonth, dayCosts - costs);
                         }
+                        dayCosts2 = overallCosts.get(totalDays);
+                        if (dayCosts2 == null) {
+                            overallCosts.put(totalDays, -costs);
+                        } else {
+                            overallCosts.put(totalDays, dayCosts2 - costs);
+                        }
                         currentCost -= costs;
                         break;
                 }
             } else {
+                totalDays++;
                 day.add(Calendar.DAY_OF_YEAR, 1);
                 if (1 + day.get(Calendar.MONTH) != month) {
                     double sum = 0.0;
@@ -241,6 +261,7 @@ public class Portfolio {
                     daysInMonth++;
                 }
                 costPerDay.put(daysInMonth, currentCost);
+                overallCosts.put(totalDays, currentCost);
                 if ((int) Math.ceil(month / 3.0) != quarter) {
                     System.out.format("%d-Q%d: Costbase: $%,.0f, Income: $%,.0f\n", year, quarter, currentCost, quarterlyResult.getIncome());
                     quarterlyResult.clear();
@@ -257,7 +278,14 @@ public class Portfolio {
         System.out.format("%02d-%d: Costbase: $%,.0f, Income: $%,.0f\n", month, year, currentCost, monthlyResult.getIncome());
         System.out.format("%d-Q%d: Costbase: $%,.0f, Income: $%,.0f\n", year, quarter, currentCost, quarterlyResult.getIncome());
         System.out.format("%d: Costbase: $%,.0f, Income: $%,.0f\n", year, currentCost, annualResult.getIncome());
-        System.out.format("Overall: Costbase: $%,.0f, Income: $%,.0f\n", currentCost, totalResult.getIncome());
+
+        double sum = 0.0;
+        for (Integer dayNr : overallCosts.keySet()) {
+            // System.out.format("### %04d: Costbase: $%,.0f\n", dayNr, overallCosts.get(dayNr));
+            sum += overallCosts.get(dayNr);
+        }
+        double avgCost = sum / totalDays;
+        System.out.format("Overall: Costbase: $%,.0f, Income: $%,.0f\n", avgCost, totalResult.getIncome());
     }
 
     private void clear() {
