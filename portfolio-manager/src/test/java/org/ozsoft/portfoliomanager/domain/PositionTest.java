@@ -4,10 +4,19 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ozsoft.portfoliomanager.test.TestUtil;
 
+/**
+ * JUnit test suite for the {@link Position} class.
+ * 
+ * @author Oscar Stigter
+ */
 public class PositionTest {
 
+    /** Comparison delta for monetary values (doubles). */
     private static final double DELTA = 0.01;
 
+    /**
+     * Performs the actual test.
+     */
     @Test
     public void test() {
         Configuration.getInstance().setSubtractDividendTax(false);

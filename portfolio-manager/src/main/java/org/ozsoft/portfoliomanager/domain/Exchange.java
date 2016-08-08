@@ -18,11 +18,19 @@
 
 package org.ozsoft.portfoliomanager.domain;
 
+/**
+ * Stock exchange.
+ * 
+ * @author Oscar Stigter
+ */
 public enum Exchange {
 
+    /** New York Stock Exchange (NYSE) in New York. */
     NYSE,
 
+    /** NASDAQ Stock Exchange in New York. */
     NASDAQ,
 
+    /** Unknown. */
     UNKNOWN,
 }

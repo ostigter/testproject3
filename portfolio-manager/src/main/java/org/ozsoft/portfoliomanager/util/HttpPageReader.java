@@ -85,6 +85,17 @@ public class HttpPageReader {
         return IOUtils.toString(connection.getInputStream());
     }
 
+    /**
+     * Retrieves the last modified date of a remote file (if set) over HTTP.
+     * 
+     * @param uri
+     *            The URI of the remote file.
+     * 
+     * @return The last modified date if found, otherwise -1L.
+     * 
+     * @throws IOException
+     *             If the remote file could not be found, or the last modified date could not be determined.
+     */
     public long getFileLastModified(String uri) throws IOException {
         long timestamp = -1L;
 
@@ -116,6 +127,17 @@ public class HttpPageReader {
         return timestamp;
     }
 
+    /**
+     * Retrieves (downloads) a remote file over HTTP.
+     * 
+     * @param uri
+     *            The URI of the remote file.
+     * 
+     * @return The file contents.
+     * 
+     * @throws IOException
+     *             If the file could not be found or retrieved.
+     */
     public InputStream downloadFile(String uri) throws IOException {
         updateProxySettings();
         URL url = new URL(uri);
@@ -125,6 +147,9 @@ public class HttpPageReader {
         return connection.getInputStream();
     }
 
+    /**
+     * Updates the HTTP proxy settings (if used).
+     */
     private void updateProxySettings() {
         if (useProxy) {
             System.setProperty("http.proxyHost", proxyHost);

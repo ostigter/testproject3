@@ -14,7 +14,7 @@ public class Results {
 
     public Results() {
         lastDay = Calendar.getInstance();
-        lastDay.set(Calendar.YEAR, 1900);
+        lastDay.set(Calendar.YEAR, -4000); // 4000 BC (prehistoric)
         clear();
     }
 

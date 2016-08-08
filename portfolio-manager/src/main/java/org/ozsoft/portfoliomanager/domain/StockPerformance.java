@@ -23,6 +23,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Stock performance during a specific time range.
+ * 
+ * @author Oscar Stigter
+ */
 public class StockPerformance {
 
     private final List<ClosingPrice> prices;

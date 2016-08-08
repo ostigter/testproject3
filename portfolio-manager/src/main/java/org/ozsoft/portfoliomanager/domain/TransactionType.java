@@ -18,22 +18,41 @@
 
 package org.ozsoft.portfoliomanager.domain;
 
+/**
+ * Transaction type.
+ * 
+ * @author Oscar Stigter
+ */
 public enum TransactionType {
 
+    /** Buy shares. */
     BUY("Buy"),
 
+    /** Sell shares. */
     SELL("Sell"),
 
+    /** Receive dividend. */
     DIVIDEND("Dividend"),
 
     ;
 
     private final String name;
 
+    /**
+     * Constructor.
+     * 
+     * @param name
+     *            The name.
+     */
     private TransactionType(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the name.
+     * 
+     * @return The name.
+     */
     public String getName() {
         return name;
     }

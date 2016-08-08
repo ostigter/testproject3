@@ -22,6 +22,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Stock closing price.
+ * 
+ * @author Oscar Stigter
+ */
 public class ClosingPrice implements Comparable<ClosingPrice> {
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");

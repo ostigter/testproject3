@@ -4,10 +4,19 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.ozsoft.portfoliomanager.test.TestUtil;
 
+/**
+ * JUnit test suite for the {@link Portfolio} class.
+ * 
+ * @author Oscar Stigter
+ */
 public class PortfolioTest {
 
+    /** Comparison delta for monetary values (doubles). */
     private static final double DELTA = 0.01;
 
+    /**
+     * Performs the actual test.
+     */
     @Test
     public void test() {
         Configuration config = Configuration.getInstance();
@@ -20,7 +29,6 @@ public class PortfolioTest {
         Assert.assertEquals(0.00, portfolio.getCurrentResult(), DELTA);
         Assert.assertEquals(0.00, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(0.00, portfolio.getTotalCost(), DELTA);
-        Assert.assertEquals(0.00, portfolio.getTotalValue(), DELTA);
         Assert.assertEquals(0.00, portfolio.getAnnualIncome(), DELTA);
         Assert.assertEquals(0.00, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
@@ -47,7 +55,6 @@ public class PortfolioTest {
         Assert.assertEquals(-5.00, portfolio.getCurrentResult(), DELTA);
         Assert.assertEquals(-0.25, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(2005.00, portfolio.getTotalCost(), DELTA);
-        Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
         Assert.assertEquals(100.00, portfolio.getAnnualIncome(), DELTA);
         Assert.assertEquals(4.99, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
@@ -64,7 +71,6 @@ public class PortfolioTest {
         Assert.assertEquals(-6.00, portfolio.getCurrentResult(), DELTA);
         Assert.assertEquals(-0.20, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
-        Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
         Assert.assertEquals(125.00, portfolio.getAnnualIncome(), DELTA);
         Assert.assertEquals(4.16, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(0.00, portfolio.getTotalIncome(), DELTA);
@@ -80,7 +86,6 @@ public class PortfolioTest {
         Assert.assertEquals(-6.00, portfolio.getCurrentResult(), DELTA);
         Assert.assertEquals(-0.20, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3006.00, portfolio.getTotalCost(), DELTA);
-        Assert.assertEquals(3000.00, portfolio.getTotalValue(), DELTA);
         Assert.assertEquals(125.00, portfolio.getAnnualIncome(), DELTA);
         Assert.assertEquals(4.16, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
@@ -106,7 +111,6 @@ public class PortfolioTest {
         Assert.assertEquals(-5.00, portfolio.getCurrentResult(), DELTA);
         Assert.assertEquals(-0.25, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3008.00, portfolio.getTotalCost(), DELTA);
-        Assert.assertEquals(2000.00, portfolio.getTotalValue(), DELTA);
         Assert.assertEquals(100.00, portfolio.getAnnualIncome(), DELTA);
         Assert.assertEquals(4.99, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);
@@ -121,7 +125,6 @@ public class PortfolioTest {
         Assert.assertEquals(0.00, portfolio.getCurrentResult(), DELTA);
         Assert.assertEquals(0.00, portfolio.getCurrentResultPercentage(), DELTA);
         Assert.assertEquals(3013.00, portfolio.getTotalCost(), DELTA);
-        Assert.assertEquals(0.00, portfolio.getTotalValue(), DELTA);
         Assert.assertEquals(0.00, portfolio.getAnnualIncome(), DELTA);
         Assert.assertEquals(0.00, portfolio.getYieldOnCost(), DELTA);
         Assert.assertEquals(100.00, portfolio.getTotalIncome(), DELTA);

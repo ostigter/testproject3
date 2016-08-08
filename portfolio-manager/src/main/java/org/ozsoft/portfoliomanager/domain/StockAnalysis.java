@@ -18,6 +18,11 @@
 
 package org.ozsoft.portfoliomanager.domain;
 
+/**
+ * Proprietary analysis results of a specific stock.
+ * 
+ * @author Oscar Stigter
+ */
 public class StockAnalysis implements Comparable<StockAnalysis> {
 
     private final Stock stock;

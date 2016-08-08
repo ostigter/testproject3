@@ -18,46 +18,71 @@
 
 package org.ozsoft.portfoliomanager.domain;
 
+/**
+ * Stock credit rating from S&P, Moody's and/or Fitch.
+ * 
+ * @author Oscar Stigter
+ */
 public enum CreditRating {
 
+    /** AAA, the highest rating. */
     AAA("AAA"),
 
+    /** AA+ (investment grade). */
     AA_PLUS("AA+"),
 
+    /** AA (investment grade). */
     AA("AA"),
 
+    /** AA- (investment grade). */
     AA_MINUS("AA-"),
 
+    /** A+ (investment grade). */
     A_PLUS("A+"),
 
+    /** A (investment grade). */
     A("A"),
 
+    /** A- (investment grade). */
     A_MINUS("A-"),
 
+    /** BBB+ (investment grade). */
     BBB_PLUS("BBB+"),
 
+    /** BBB (investment grade). */
     BBB("BBB"),
 
+    /** BBB- (lowest investment-grade rating). */
     BBB_MINUS("BBB-"),
 
+    /** BB+ (highest non-investment-grade rating). */
     BB_PLUS("BB+"),
 
+    /** BB (non-investment grade). */
     BB("BB"),
 
+    /** BB- (non-investment grade). */
     BB_MINUS("BB-"),
 
+    /** B+ (non-investment grade). */
     B_PLUS("B+"),
 
+    /** B (non-investment grade). */
     B("B"),
 
+    /** B- (non-investment grade). */
     B_MINUS("B-"),
 
+    /** CCC (non-investment grade). */
     CCC("CCC"),
 
+    /** CC (non-investment grade). */
     CC("CC"),
 
+    /** C (lowest grade, barely above bankruptcy). */
     C("C"),
 
+    /** Not rated (neutral). */
     NA("N/R"),
 
     ;

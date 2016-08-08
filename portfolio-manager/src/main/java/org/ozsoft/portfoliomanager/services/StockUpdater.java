@@ -53,19 +53,33 @@ public class StockUpdater extends Thread {
 
     private boolean isUpdated = false;
 
+    /**
+     * Constructor.
+     * 
+     * @param stock
+     *            The stock.
+     * @param httpPageReader
+     *            The {@link HttpPageReader} (possibly shared).
+     */
     public StockUpdater(Stock stock, HttpPageReader httpPageReader) {
         this.stock = stock;
         this.httpPageReader = httpPageReader;
     }
 
+    /**
+     * Returns wheher the update operation has finished.
+     * 
+     * @return {@code true} if finished, otherwise {@code false}.
+     */
     public boolean isFinished() {
         return isFinished;
     }
 
-    public Stock getStock() {
-        return stock;
-    }
-
+    /**
+     * Returns whether the stock was updated (based on it's current price).
+     * 
+     * @return {@code true} if updated, otherwise {@code false}.
+     */
     public boolean isUpdated() {
         return isUpdated;
     }
@@ -82,9 +96,8 @@ public class StockUpdater extends Thread {
                 try {
                     double price = Double.parseDouble(fields[0]);
                     if (price != stock.getPrice()) {
-                        double changePerc = Double.parseDouble(fields[1].replaceAll("[\"%]", ""));
                         stock.setPrice(price);
-                        stock.setChangePerc(changePerc);
+                        stock.setChangePerc(fields[2].equals("N/A") ? 0.0 : Double.parseDouble(fields[1].replaceAll("[\"%]", "")));
                         stock.setPeRatio(fields[2].equals("N/A") ? -1.0 : Double.parseDouble(fields[2]));
                         stock.setDivRate(fields[3].equals("N/A") ? 0.0 : Double.parseDouble(fields[3]));
                         isUpdated = true;
@@ -97,6 +110,7 @@ public class StockUpdater extends Thread {
                 LOGGER.error(String.format("Invalid number of CSV fields returned for %s: '%s'", stock, line));
             }
 
+            // Get Morningstar value rating (if rated).
             int starRating = -1;
             String exchangeId = (stock.getExchange() == Exchange.NYSE) ? "xnys" : "xnas";
             String content = httpPageReader.read(String.format(MORNINGSTAR_QUOTE_URI, exchangeId, stock.getSymbol()));

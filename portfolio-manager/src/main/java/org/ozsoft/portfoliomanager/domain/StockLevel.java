@@ -18,13 +18,23 @@
 
 package org.ozsoft.portfoliomanager.domain;
 
+/**
+ * The 'level' at which a specific stock is tracked.
+ * 
+ * @author Oscar Stigter
+ *
+ */
 public enum StockLevel {
 
+    /** Stock is being tracked only ('watch' list). */
     WATCH,
 
+    /** Stock has been promoted to the 'goal/wish' list. */
     GOAL,
 
+    /** Stock is currently owned (open position in portfolio). */
     OWNED,
 
+    /** Stock has been demoted to the 'bench'. */
     BENCH,
 }

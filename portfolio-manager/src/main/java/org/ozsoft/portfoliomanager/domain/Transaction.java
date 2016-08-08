@@ -18,6 +18,11 @@
 
 package org.ozsoft.portfoliomanager.domain;
 
+/**
+ * Stock transaction.
+ * 
+ * @author Oscar Stigter
+ */
 public class Transaction implements Comparable<Transaction> {
 
     private int id;
@@ -34,58 +39,135 @@ public class Transaction implements Comparable<Transaction> {
 
     private double cost;
 
+    /**
+     * Returns the transaction ID.
+     * 
+     * @return The transaction ID.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets the transaction ID.
+     * 
+     * @param id
+     *            The transaction ID.
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Returns the transaction date.
+     * 
+     * @return The transaction date as timestamp in milliseconds.
+     */
     public long getDate() {
         return date;
     }
 
+    /**
+     * Sets the transaction date.
+     * 
+     * @param date
+     *            The transaction date as timestamp in milliseconds.
+     */
     public void setDate(long date) {
         this.date = date;
     }
 
+    /**
+     * Returns the stock's ticker symbol.
+     * 
+     * @return The stock's ticker symbol.
+     */
     public String getSymbol() {
         return symbol;
     }
 
+    /**
+     * Sets the stock's ticker symbol.
+     * 
+     * @param symbol
+     *            The stock's ticker symbol.
+     */
     public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
 
+    /**
+     * Returns the transaction type.
+     * 
+     * @return The transaction type.
+     */
     public TransactionType getType() {
         return type;
     }
 
+    /**
+     * Sets the transaction type.
+     * 
+     * @param type
+     *            The transaction type.
+     */
     public void setType(TransactionType type) {
         this.type = type;
     }
 
+    /**
+     * Returns the number of shares.
+     * 
+     * @return The number of shares.
+     */
     public int getNoOfShares() {
         return noOfShares;
     }
 
+    /**
+     * Sets the number of shares.
+     * 
+     * @param noOfShares
+     *            The number of shares.
+     */
     public void setNoOfShares(int noOfShares) {
         this.noOfShares = noOfShares;
     }
 
+    /**
+     * Returns the price per share.
+     * 
+     * @return The price per share.
+     */
     public double getPrice() {
         return price;
     }
 
+    /**
+     * Sets the price per share.
+     * 
+     * @param price
+     *            The price per share.
+     */
     public void setPrice(double price) {
         this.price = price;
     }
 
+    /**
+     * Returns the transaction costs (e.g. brokerage fees; if any).
+     * 
+     * @return The transaction costs.
+     */
     public double getCost() {
         return cost;
     }
 
+    /**
+     * Sets the transaction costs (e.g. brokerage fees; if any).
+     * 
+     * @param cost
+     *            The transaction costs.
+     */
     public void setCost(double cost) {
         this.cost = cost;
     }

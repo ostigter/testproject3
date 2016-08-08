@@ -3,7 +3,7 @@ DESIGN
 
 
 Download CSV file with latest price info:
-    http://download.finance.yahoo.com/d/quotes.csv?s=IVV&f=d1t1l1
+    http://download.finance.yahoo.com/d/quotes.csv?s=MSFT&f=d1t1l1
 Response:
     "9/30/2015","4:06pm",9.25
 

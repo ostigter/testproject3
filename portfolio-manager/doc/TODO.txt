@@ -1,10 +1,11 @@
 Portfolio Manager - TODO
 ========================
 
-* Update JavaDoc
-* Promote to its own GitHub project
+* Promote to own GitHub project
+* Only allow never-owned stocks to be deleted
+* Show portfolio results (costbase, income, total return, per month, quarter and year)
+* Show stock performance (total return over 1, 3, 5 and 10 year)
 * Configuration dialog
-* Show portfolio results (costbase, income, total result, per month, quarter and year)
 * Alert log
 * View alerts (since last update)
 * Task progress indicator

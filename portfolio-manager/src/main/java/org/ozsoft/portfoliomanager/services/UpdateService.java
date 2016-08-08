@@ -177,8 +177,10 @@ public class UpdateService {
     /**
      * Updates all stocks based on the latest version of David Fish' CCC list (Excel sheet, updated monthly). <br />
      * <br />
+     * 
      * Checks for a newer version of the CCC list and updates the stocks only if present. <br />
      * <br />
+     * 
      * Uses the Apache POI framework to parse the Excel sheet.
      */
     private void updateStatistics() {

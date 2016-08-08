@@ -21,6 +21,11 @@ package org.ozsoft.portfoliomanager.domain;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Time range.
+ * 
+ * @author Oscar Stigter
+ */
 public enum TimeRange {
 
     TEN_YEAR(Calendar.YEAR, -10, 10),

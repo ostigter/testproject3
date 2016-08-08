@@ -40,6 +40,14 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * The applcation's configuration. <br />
+ * <br />
+ * 
+ * Implemented as singleton for easy use.
+ * 
+ * @author Oscar Stigter
+ */
 public class Configuration {
 
     private static final File DATA_DIR = new File("data");
@@ -66,6 +74,9 @@ public class Configuration {
 
     private final List<Transaction> transactions;
 
+    /**
+     * Constructor.
+     */
     private Configuration() {
         stocks = new TreeMap<String, Stock>();
         transactions = new ArrayList<Transaction>();
@@ -73,6 +84,11 @@ public class Configuration {
         Locale.setDefault(Locale.US);
     }
 
+    /**
+     * Returns the singleton instance.
+     * 
+     * @return The singleton instance.
+     */
     public static Configuration getInstance() {
         if (config == null) {
             config = Configuration.load();
@@ -80,30 +96,71 @@ public class Configuration {
         return config;
     }
 
+    /**
+     * Returns the latest downloaded CCC list file (Excel sheet), or {@code null} if not present (stock data has never been updated).
+     * 
+     * @return The CCC list file.
+     */
     public File getCCCListFile() {
         return CCC_LIST_FILE;
     }
 
+    /**
+     * Returns the latest generated analysis result file, or {@code null} if not present (analysis has never been run).
+     * 
+     * @return The analysis result file.
+     */
     public File getAnalysisResultFile() {
         return ANALYSIS_RESULT_FILE;
     }
 
+    /**
+     * Returns all stocks, sorted by their name.
+     * 
+     * @return All stocks.
+     */
     public Set<Stock> getStocks() {
         return new TreeSet<Stock>(stocks.values());
     }
 
+    /**
+     * Returns all currently owned stocks (open postions).
+     * 
+     * @return
+     */
     public Set<Stock> getOwnedStocks() {
         Set<Stock> ownedStocks = new TreeSet<Stock>();
         for (Position position : getPortfolio().getPositions()) {
-            ownedStocks.add(position.getStock());
+            if (position.getNoOfShares() > 0) {
+                ownedStocks.add(position.getStock());
+            }
         }
         return ownedStocks;
     }
 
+    /**
+     * Returns a stock based on its symbol.
+     * 
+     * @param symbol
+     *            The stock's symbol.
+     * 
+     * @return The stock if found, otherwise {@code null}.
+     */
     public Stock getStock(String symbol) {
         return stocks.get(symbol);
     }
 
+    /**
+     * Adds a new stock. <br />
+     * <br />
+     * 
+     * Only adds a stock if is new, based on its symbol.
+     * 
+     * @param stock
+     *            The stock.
+     * 
+     * @return {@code true} if the stock was added, otherwise {@code false}.
+     */
     public boolean addStock(Stock stock) {
         String symbol = stock.getSymbol();
         if (!stocks.containsKey(symbol)) {
@@ -115,7 +172,16 @@ public class Configuration {
         }
     }
 
+    /**
+     * Permenently deletes a stock (including all data).
+     * 
+     * @param stock
+     *            The stock.
+     * 
+     * @return {@code true} if the stock was deleted, otherwise {@code false}.
+     */
     public boolean deleteStock(Stock stock) {
+        // TODO: Only allow deleting stocks that have never been owned (no open or closed positions).
         String symbol = stock.getSymbol();
         if (stocks.containsKey(symbol)) {
             stocks.remove(symbol);
@@ -126,6 +192,11 @@ public class Configuration {
         }
     }
 
+    /**
+     * Returns all transactions, sorted by date.
+     * 
+     * @return The transactions.
+     */
     public List<Transaction> getTransactions() {
         // TODO: Only sort and update IDs when needed (dirty flag).
         Collections.sort(transactions);
@@ -139,14 +210,31 @@ public class Configuration {
         return transactions;
     }
 
+    /**
+     * Adds a transaction.
+     * 
+     * @param transaction
+     *            The transaction.
+     */
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
     }
 
+    /**
+     * Deletes a transaction.
+     * 
+     * @param transaction
+     *            The transaction.
+     */
     public void deleteTransaction(Transaction transaction) {
         transactions.remove(transaction);
     }
 
+    /**
+     * Returns the current stock portfolio.
+     * 
+     * @return The portfolio.
+     */
     public Portfolio getPortfolio() {
         Portfolio portfolio = new Portfolio();
         for (Transaction transaction : getTransactions()) {
@@ -156,26 +244,58 @@ public class Configuration {
         return portfolio;
     }
 
+    /**
+     * Returns whether to show closed (sold) positions.
+     * 
+     * @return Whether to show closed positions.
+     */
     public boolean getShowClosedPositions() {
         return showClosedPositions;
     }
 
+    /**
+     * Sets wether to show closed (sold) positions.
+     * 
+     * @param showClosedPositions
+     *            Whether to show closed positions.
+     */
     public void setShowClosedPositions(boolean showClosedPositions) {
         this.showClosedPositions = showClosedPositions;
     }
 
-    public boolean isSubtractDividendTax() {
-        return subtractDividendTax;
-    }
-
-    public void setSubtractDividendTax(boolean subtractDividendTax) {
-        this.subtractDividendTax = subtractDividendTax;
-    }
-
+    /**
+     * Returns the dividend tax rate.
+     * 
+     * @return The dividend tax rate.
+     */
     public static double getDividendTaxRate() {
         return DIVIDEND_TAX_RATE;
     }
 
+    /**
+     * Returns whether to automatically subtract dividend tax from received dividends.
+     * 
+     * @return Whether to subtract dividend tax.
+     */
+    public boolean isSubtractDividendTax() {
+        return subtractDividendTax;
+    }
+
+    /**
+     * Sets whether to automatically subtract dividend tax from received dividends.
+     * 
+     * @param subtractDividendTax
+     *            Whether to subtract dividend tax.
+     */
+    public void setSubtractDividendTax(boolean subtractDividendTax) {
+        this.subtractDividendTax = subtractDividendTax;
+    }
+
+    /**
+     * Loads the configuration from file.
+     * 
+     * @return The configuration.
+     */
     private static Configuration load() {
         if (DATA_DIR.isDirectory()) {
             Gson gson = new GsonBuilder().create();
@@ -197,6 +317,9 @@ public class Configuration {
         return config;
     }
 
+    /**
+     * Saves the configuration to file.
+     */
     public static void save() {
         if (!DATA_DIR.exists()) {
             DATA_DIR.mkdirs();
