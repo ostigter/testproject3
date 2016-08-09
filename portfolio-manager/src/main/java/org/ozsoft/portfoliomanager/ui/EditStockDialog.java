@@ -236,7 +236,7 @@ public class EditStockDialog extends Dialog {
         dialog.setTitle("Add Stock");
         nameField.setText("");
         symbolField.setText("");
-        creditRatingBox.setSelectedItem(CreditRating.NR.getText());
+        creditRatingBox.setSelectedItem(CreditRating.NA.getText());
         commentField.setText("");
         targetPriceField.setText("");
 
@@ -286,7 +286,7 @@ public class EditStockDialog extends Dialog {
             showError("Please enter the stock's symbol.");
             return;
         }
-        CreditRating creditRating = CreditRating.NR;
+        CreditRating creditRating = CreditRating.NA;
         if (creditRatingBox.getSelectedIndex() > -1) {
             creditRating = CreditRating.parse((String) creditRatingBox.getSelectedItem());
         } else {

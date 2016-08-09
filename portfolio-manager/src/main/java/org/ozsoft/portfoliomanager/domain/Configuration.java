@@ -131,7 +131,7 @@ public class Configuration {
     public Set<Stock> getOwnedStocks() {
         Set<Stock> ownedStocks = new TreeSet<Stock>();
         for (Position position : getPortfolio().getPositions()) {
-            if (position.getNoOfShares() > 0) {
+            if (showClosedPositions || position.getNoOfShares() > 0) {
                 ownedStocks.add(position.getStock());
             }
         }
@@ -242,6 +242,24 @@ public class Configuration {
         }
         portfolio.update(this);
         return portfolio;
+    }
+
+    /**
+     * Returns whether a position (open or closed) exists for the specified stock.
+     * 
+     * @param stock
+     *            The stock.
+     * 
+     * @return {@code true} is a position exists, otherwise {@code false}.
+     */
+    public boolean hasPosition(Stock stock) {
+        String symbol = stock.getSymbol();
+        for (Transaction tx : transactions) {
+            if (tx.getSymbol().equals(symbol)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

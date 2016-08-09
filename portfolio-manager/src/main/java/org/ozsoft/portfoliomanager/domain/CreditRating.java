@@ -83,7 +83,7 @@ public enum CreditRating {
     C("C"),
 
     /** Not rated (neutral). */
-    NR("N/R"),
+    NA("N/R"),
 
     ;
 

@@ -47,7 +47,7 @@ public class CRColumnRenderer extends DefaultColumnRenderer {
     @Override
     public String formatValue(Object value) {
         if (value instanceof CreditRating) {
-            if (value == CreditRating.NR) {
+            if (value == CreditRating.NA) {
                 backgroundColor = Color.LIGHT_GRAY;
             } else {
                 int ordinalValue = ((CreditRating) value).ordinal();
