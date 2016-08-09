@@ -19,7 +19,7 @@ public class PositionTest {
      */
     @Test
     public void test() {
-        Configuration.getInstance().setSubtractDividendTax(false);
+        Configuration.getInstance().setDeductIncomeTax(false);
 
         String symbol = "TST";
         Stock stock = new Stock(symbol, "Test Stock");

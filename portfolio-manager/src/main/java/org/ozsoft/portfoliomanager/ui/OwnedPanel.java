@@ -46,6 +46,8 @@ public class OwnedPanel extends JPanel {
 
     private final JCheckBox showClosedPositionsCheck;
 
+    private final JCheckBox deductIncomeTaxCheck;
+
     private final OwnedTable ownedTable;
 
     private final TransactionsFrame transactionsFrame;
@@ -97,6 +99,16 @@ public class OwnedPanel extends JPanel {
         });
         buttonPanel.add(showClosedPositionsCheck);
 
+        deductIncomeTaxCheck = new JCheckBox("Deduct dividend tax");
+        deductIncomeTaxCheck.setSelected(config.isDeductIncomeTax());
+        deductIncomeTaxCheck.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleDeductIncomeTax();
+            }
+        });
+        buttonPanel.add(deductIncomeTaxCheck);
+
         add(buttonPanel, BorderLayout.NORTH);
 
         ownedTable = new OwnedTable(mainFrame);
@@ -132,6 +144,14 @@ public class OwnedPanel extends JPanel {
      */
     private void toggleShowClosedPositions() {
         config.setShowClosedPositions(showClosedPositionsCheck.isSelected());
+        update();
+    }
+
+    /**
+     * Handles the toggling whether to automatically deduct income tax.
+     */
+    private void toggleDeductIncomeTax() {
+        config.setDeductIncomeTax(deductIncomeTaxCheck.isSelected());
         update();
     }
 }

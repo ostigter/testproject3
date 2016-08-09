@@ -142,8 +142,8 @@ public class Position implements Comparable<Position> {
 
     public double getAnnualIncome() {
         double annualIncome = noOfShares * stock.getDivRate();
-        if (config.isSubtractDividendTax()) {
-            annualIncome *= (1.0 - Configuration.getDividendTaxRate());
+        if (config.isDeductIncomeTax()) {
+            annualIncome *= (1.0 - Configuration.getIncomeTaxRate());
         }
         return annualIncome;
     }
@@ -210,8 +210,8 @@ public class Position implements Comparable<Position> {
                 break;
             case DIVIDEND:
                 double income = tx.getNoOfShares() * tx.getPrice();
-                if (config.isSubtractDividendTax()) {
-                    income *= (1.0 - Configuration.getDividendTaxRate());
+                if (config.isDeductIncomeTax()) {
+                    income *= (1.0 - Configuration.getIncomeTaxRate());
                 }
                 totalIncome += income;
                 totalReturn += income;
