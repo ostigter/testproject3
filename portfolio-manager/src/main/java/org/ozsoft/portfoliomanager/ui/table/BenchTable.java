@@ -25,10 +25,21 @@ import org.ozsoft.portfoliomanager.domain.Stock;
 import org.ozsoft.portfoliomanager.domain.StockLevel;
 import org.ozsoft.portfoliomanager.ui.MainFrame;
 
+/**
+ * Table with the stocks that have been demoted to the 'Bench' list.
+ *
+ * @author Oscar Stigter
+ */
 public class BenchTable extends StockTable {
 
     private static final long serialVersionUID = 1693684402003141159L;
 
+    /**
+     * Constructor.
+     *
+     * @param mainFrame
+     *            The application's main window.
+     */
     public BenchTable(MainFrame mainFrame) {
         super(mainFrame);
     }

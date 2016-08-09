@@ -33,6 +33,11 @@ import javax.swing.JTextField;
 import org.ozsoft.portfoliomanager.domain.CreditRating;
 import org.ozsoft.portfoliomanager.domain.Stock;
 
+/**
+ * Dialog for adding or editing a stock.
+ *
+ * @author Oscar Stigter
+ */
 public class EditStockDialog extends Dialog {
 
     private JTextField nameField;
@@ -231,7 +236,7 @@ public class EditStockDialog extends Dialog {
         dialog.setTitle("Add Stock");
         nameField.setText("");
         symbolField.setText("");
-        creditRatingBox.setSelectedItem("N/A");
+        creditRatingBox.setSelectedItem(CreditRating.NR.getText());
         commentField.setText("");
         targetPriceField.setText("");
 
@@ -281,7 +286,7 @@ public class EditStockDialog extends Dialog {
             showError("Please enter the stock's symbol.");
             return;
         }
-        CreditRating creditRating = CreditRating.NA;
+        CreditRating creditRating = CreditRating.NR;
         if (creditRatingBox.getSelectedIndex() > -1) {
             creditRating = CreditRating.parse((String) creditRatingBox.getSelectedItem());
         } else {
@@ -305,7 +310,8 @@ public class EditStockDialog extends Dialog {
         }
         stock.setName(name);
         stock.setCreditRating(creditRating);
-        stock.setComment(commentField.getText());
+        String comment = commentField.getText().trim();
+        stock.setComment((comment.length() > 0) ? comment : null);
         stock.setTargetPrice(targetPrice);
 
         ok();

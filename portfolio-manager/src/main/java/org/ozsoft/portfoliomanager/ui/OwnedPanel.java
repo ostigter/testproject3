@@ -35,7 +35,7 @@ import org.ozsoft.portfoliomanager.ui.table.OwnedTable;
 
 /**
  * Panel with the portfolio of owned stocks and transactions.
- * 
+ *
  * @author Oscar Stigter.
  */
 public class OwnedPanel extends JPanel {
@@ -56,7 +56,7 @@ public class OwnedPanel extends JPanel {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mainFrame
      *            The application's main window.
      */
@@ -111,7 +111,7 @@ public class OwnedPanel extends JPanel {
     }
 
     /**
-     * Updates the prices of the owned stocks.
+     * Updates the prices of the owned stocks (open positions).
      */
     private void updateStockPrices() {
         mainFrame.setStatus("Updating stock prices...");

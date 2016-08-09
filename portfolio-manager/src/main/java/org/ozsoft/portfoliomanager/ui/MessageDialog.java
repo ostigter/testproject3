@@ -30,8 +30,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
 /**
- * Message dialog for temporarily showing a single-line message.
- * 
+ * Message dialog for temporarily showing a single-line message (e.g. status/progress).
+ *
  * @author Oscar Stigter
  */
 public class MessageDialog extends JDialog {
@@ -42,6 +42,12 @@ public class MessageDialog extends JDialog {
 
     private final JLabel messageLabel;
 
+    /**
+     * Constructor.
+     *
+     * @param mainFrame
+     *            The application's main window.
+     */
     public MessageDialog(MainFrame mainFrame) {
         super(mainFrame, false);
 
@@ -68,13 +74,26 @@ public class MessageDialog extends JDialog {
         setSize(400, 100);
     }
 
+    /**
+     * Shows the dialog with the specified message.
+     *
+     * @param message
+     *            The message.
+     */
     public void show(String message) {
-        messageLabel.setText(message);
-        setLocationRelativeTo(mainFrame);
-        setVisible(true);
+        if (!isVisible()) {
+            messageLabel.setText(message);
+            setLocationRelativeTo(mainFrame);
+            setVisible(true);
+        }
     }
 
+    /**
+     * Closes the dialog.
+     */
     public void close() {
-        setVisible(false);
+        if (isVisible()) {
+            setVisible(false);
+        }
     }
 }

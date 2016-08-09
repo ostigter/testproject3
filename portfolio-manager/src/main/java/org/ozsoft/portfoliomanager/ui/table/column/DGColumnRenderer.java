@@ -23,6 +23,11 @@ import java.awt.Color;
 import org.ozsoft.datatable.DefaultColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.UIConstants;
 
+/**
+ * Column renderer for the 5-year dividend growth (DG) column.
+ *
+ * @author Oscar Stigter
+ */
 public class DGColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = 7036417211003108327L;

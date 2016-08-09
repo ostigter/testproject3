@@ -25,8 +25,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- * Abstract base class for Swing dialogs.
- * 
+ * Abstract base class for dialogs.
+ *
  * @author Oscar Stigter
  */
 public abstract class Dialog {

@@ -26,12 +26,20 @@ import javax.swing.SwingConstants;
 
 import org.ozsoft.datatable.DefaultColumnRenderer;
 
+/**
+ * Column renderer for date values.
+ *
+ * @author Oscar Stigter
+ */
 public class DateColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -8106605471380329103L;
 
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yyyy");
 
+    /**
+     * Constructor.
+     */
     public DateColumnRenderer() {
         super(SwingConstants.CENTER);
     }

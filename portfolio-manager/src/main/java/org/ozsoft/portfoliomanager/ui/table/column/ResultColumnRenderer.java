@@ -23,6 +23,11 @@ import java.awt.Color;
 import org.ozsoft.datatable.DefaultColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.UIConstants;
 
+/**
+ * Column renderer for monetary result (profit/loss) values.
+ *
+ * @author Oscar Stigter
+ */
 public class ResultColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -2184616889371886011L;

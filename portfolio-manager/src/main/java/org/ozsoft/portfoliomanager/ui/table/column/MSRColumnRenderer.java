@@ -26,8 +26,8 @@ import org.ozsoft.datatable.DefaultColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.UIConstants;
 
 /**
- * Table cell renderer for Morningstar Star Rating (1 to 5 stars).
- * 
+ * Column renderer for Morningstar value rating values (1 to 5 stars).
+ *
  * @author Oscar Stigter
  */
 public class MSRColumnRenderer extends DefaultColumnRenderer {

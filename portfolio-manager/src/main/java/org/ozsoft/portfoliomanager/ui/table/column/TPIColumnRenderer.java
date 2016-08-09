@@ -23,8 +23,8 @@ import java.awt.Color;
 import org.ozsoft.datatable.DefaultColumnRenderer;
 
 /**
- * Target price index column renderer.
- * 
+ * Column renderer for the Target Price Index (TPI) column.
+ *
  * @author Oscar Stigter
  */
 public class TPIColumnRenderer extends DefaultColumnRenderer {

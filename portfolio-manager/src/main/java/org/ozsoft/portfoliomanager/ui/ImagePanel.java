@@ -29,12 +29,29 @@ import javax.swing.JPanel;
 
 import org.apache.commons.io.IOUtils;
 
+/**
+ * Panel with an bitmap image. <br />
+ * <br />
+ *
+ * The panel will automatically resize to fit the image.
+ *
+ * @author Oscar Stigter
+ */
 public class ImagePanel extends JPanel {
 
     private static final long serialVersionUID = -7868161566551066062L;
 
     private BufferedImage image;
 
+    /**
+     * Constructor.
+     *
+     * @param is
+     *            The image as an {@code InputStream}.
+     *
+     * @throws IOException
+     *             If the image is not specified ({@code null}) or could not be constructed.
+     */
     public void setImage(InputStream is) throws IOException {
         if (is == null) {
             throw new IllegalArgumentException("Null input stream");

@@ -25,10 +25,21 @@ import org.ozsoft.portfoliomanager.domain.Stock;
 import org.ozsoft.portfoliomanager.domain.StockLevel;
 import org.ozsoft.portfoliomanager.ui.MainFrame;
 
+/**
+ * Table with the stocks on the 'Watch' list.
+ *
+ * @author Oscar Stigter
+ */
 public class WatchTable extends StockTable {
 
     private static final long serialVersionUID = 2887619997782643958L;
 
+    /**
+     * Constructor.
+     *
+     * @param mainFrame
+     *            The application's main window.
+     */
     public WatchTable(MainFrame mainFrame) {
         super(mainFrame);
     }

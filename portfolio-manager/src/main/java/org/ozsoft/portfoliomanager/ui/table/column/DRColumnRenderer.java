@@ -22,6 +22,11 @@ import java.awt.Color;
 
 import org.ozsoft.datatable.DefaultColumnRenderer;
 
+/**
+ * Column renderer for the dividend rate (DR) column.
+ *
+ * @author Oscar Stigter
+ */
 public class DRColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -8744524110427922656L;

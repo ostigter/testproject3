@@ -47,7 +47,7 @@ import org.ozsoft.portfoliomanager.ui.table.WatchTable;
 
 /**
  * The application's main window.
- * 
+ *
  * @author Oscar Stigter
  */
 public class MainFrame extends JFrame {
@@ -236,7 +236,7 @@ public class MainFrame extends JFrame {
 
     /**
      * Updates all stock data.
-     * 
+     *
      * @throws InterruptedException
      * @throws InvocationTargetException
      */
@@ -274,10 +274,10 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Allows the user to add a new stock. <br />
+     * Handles a click of the 'Add Stock' button. <br />
      * <br />
-     * 
-     * The new stock will be placed on the watch list.
+     *
+     * The new stock will be placed to the 'watch' list.
      */
     private void addStock() {
         if (addStockDialog.show() == Dialog.OK) {

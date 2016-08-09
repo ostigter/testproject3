@@ -23,11 +23,19 @@ import java.awt.Color;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
+/**
+ * Defines UI-specific constants.
+ *
+ * @author Oscar Stigter
+ */
 public interface UIConstants {
 
+    /** Dark green color. */
     Color DARK_GREEN = new Color(0, 160, 0);
 
+    /** Darker green color. */
     Color DARKER_GREEN = new Color(0, 0x80, 0);
 
+    /** Spacer border. */
     Border SPACER_BORDER = new EmptyBorder(10, 10, 10, 10);
 }

@@ -22,6 +22,11 @@ import java.awt.Color;
 
 import org.ozsoft.datatable.DefaultColumnRenderer;
 
+/**
+ * Column renderer for the P/E ratio column.
+ *
+ * @author Oscar Stigter
+ */
 public class PEColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = 4924544217201385488L;

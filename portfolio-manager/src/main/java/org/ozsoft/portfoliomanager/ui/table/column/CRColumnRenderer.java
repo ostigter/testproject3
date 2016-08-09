@@ -28,7 +28,7 @@ import org.ozsoft.portfoliomanager.ui.UIConstants;
 
 /**
  * Credit rating column renderer.
- * 
+ *
  * @author Oscar Stigter
  */
 public class CRColumnRenderer extends DefaultColumnRenderer {
@@ -37,6 +37,9 @@ public class CRColumnRenderer extends DefaultColumnRenderer {
 
     private Color backgroundColor;
 
+    /**
+     * Constructor.
+     */
     public CRColumnRenderer() {
         setHorizontalAlignment(SwingUtilities.CENTER);
     }
@@ -44,7 +47,7 @@ public class CRColumnRenderer extends DefaultColumnRenderer {
     @Override
     public String formatValue(Object value) {
         if (value instanceof CreditRating) {
-            if (value == CreditRating.NA) {
+            if (value == CreditRating.NR) {
                 backgroundColor = Color.LIGHT_GRAY;
             } else {
                 int ordinalValue = ((CreditRating) value).ordinal();

@@ -25,6 +25,11 @@ import org.ozsoft.portfoliomanager.domain.Stock;
 import org.ozsoft.portfoliomanager.domain.StockLevel;
 import org.ozsoft.portfoliomanager.ui.MainFrame;
 
+/**
+ * Table with the stocks that have been promoted to the 'Goal' list.
+ *
+ * @author Oscar Stigter
+ */
 public class GoalTable extends StockTable {
 
     private static final long serialVersionUID = 1406716019847307872L;

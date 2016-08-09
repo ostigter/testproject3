@@ -20,6 +20,11 @@ package org.ozsoft.portfoliomanager.ui.table.column;
 
 import org.ozsoft.datatable.DefaultColumnRenderer;
 
+/**
+ * Column renderer for (neutral) percentage values.
+ *
+ * @author Oscar Stigter
+ */
 public class PercentageColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -765351086313615291L;

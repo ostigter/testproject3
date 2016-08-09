@@ -47,6 +47,11 @@ import org.ozsoft.portfoliomanager.domain.Stock;
 import org.ozsoft.portfoliomanager.domain.Transaction;
 import org.ozsoft.portfoliomanager.domain.TransactionType;
 
+/**
+ * Dialog for creating or editing a transaction.
+ *
+ * @author Oscar Stigter
+ */
 public class EditTransactionDialog extends Dialog {
 
     private JDatePicker datePicker;

@@ -53,6 +53,11 @@ import org.ozsoft.portfoliomanager.ui.table.column.TPIColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YDGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YieldColumnRenderer;
 
+/**
+ * Generic table for showing stock details.
+ *
+ * @author Oscar Stigter
+ */
 public class StockTable extends DataTable {
 
     private static final long serialVersionUID = -1991423181259068250L;
@@ -63,6 +68,12 @@ public class StockTable extends DataTable {
 
     protected final EditStockDialog editStockDialog;
 
+    /**
+     * Constructor.
+     *
+     * @param mainFrame
+     *            The application's main window.
+     */
     public StockTable(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
 
@@ -83,6 +94,9 @@ public class StockTable extends DataTable {
         editStockDialog = new EditStockDialog(mainFrame);
     }
 
+    /**
+     * Initializes the table columns.
+     */
     protected void initColumns() {
         ColumnRenderer defaultColumnRenderer = new DefaultColumnRenderer();
         ColumnRenderer centeredColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
@@ -116,6 +130,9 @@ public class StockTable extends DataTable {
         setColumns(columns);
     }
 
+    /**
+     * Initializes the table's context menu.
+     */
     protected void initContextMenu() {
         JPopupMenu contextMenu = new JPopupMenu();
 
@@ -190,14 +207,27 @@ public class StockTable extends DataTable {
         super.update();
     }
 
+    /**
+     * Returns the current configuration.
+     *
+     * @return The configuration.
+     */
     protected final Configuration getConfig() {
         return config;
     }
 
+    /**
+     * Returns all stocks.
+     *
+     * @return The stocks.
+     */
     protected Set<Stock> getStocks() {
         return getConfig().getStocks();
     }
 
+    /**
+     * Handles the 'View stock price...' menu item.
+     */
     private void viewStockPrice() {
         Stock stock = getSelectedStock();
         if (stock != null) {
@@ -205,6 +235,9 @@ public class StockTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Move to goal portfolio' menu item.
+     */
     private void moveStockToGoalPortfolio() {
         Stock stock = getSelectedStock();
         if (stock != null) {
@@ -215,6 +248,9 @@ public class StockTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Move to watch list' menu item.
+     */
     private void moveStockToWatchList() {
         Stock stock = getSelectedStock();
         if (stock != null) {
@@ -225,6 +261,9 @@ public class StockTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Move to bench' menu item.
+     */
     private void moveStockToBench() {
         Stock stock = getSelectedStock();
         if (stock != null) {
@@ -235,6 +274,9 @@ public class StockTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Edit stock...' menu item.
+     */
     private void editStock() {
         Stock stock = getSelectedStock();
         if (stock != null) {
@@ -244,17 +286,26 @@ public class StockTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Delete stock' menu item.
+     */
     private void deleteStock() {
         Stock stock = getSelectedStock();
         if (stock != null) {
             String msg = String.format("Permanently delete stock with symbol '%s'?", stock.getSymbol());
-            if (JOptionPane.showConfirmDialog(null, msg, "Warning", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+            if (JOptionPane.showConfirmDialog(null, msg, "Warning", JOptionPane.WARNING_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                 config.deleteStock(stock);
                 mainFrame.updateTables();
             }
         }
     }
 
+    /**
+     * Returns the currently selected stock.
+     *
+     * @return The selected stock, or {@code null} if no stock is selected.
+     */
     private Stock getSelectedStock() {
         Stock stock = null;
 

@@ -23,6 +23,11 @@ import java.awt.Color;
 import org.ozsoft.datatable.DefaultColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.UIConstants;
 
+/**
+ * Column renderer for percentage change values.
+ *
+ * @author Oscar Stigter
+ */
 public class PercChangeColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -7786489823544289457L;

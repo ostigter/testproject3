@@ -22,6 +22,14 @@ import java.awt.Color;
 
 import org.ozsoft.datatable.DefaultColumnRenderer;
 
+/**
+ * Column renderer for monetary values. <br />
+ * <br />
+ *
+ * Currently, only values in US dollars are supported.
+ *
+ * @author Oscar Stigter
+ */
 public class MoneyColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -8744524110427922656L;

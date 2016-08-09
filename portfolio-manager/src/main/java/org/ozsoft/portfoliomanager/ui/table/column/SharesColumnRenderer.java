@@ -24,12 +24,20 @@ import javax.swing.SwingConstants;
 
 import org.ozsoft.datatable.DefaultColumnRenderer;
 
+/**
+ * Column renderer for the Number Of Shares (Shares) column.
+ *
+ * @author Oscar Stigter
+ */
 public class SharesColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -4207280209997046453L;
 
     private Color textColor;
 
+    /**
+     * Constructor.
+     */
     public SharesColumnRenderer() {
         super(SwingConstants.RIGHT);
     }

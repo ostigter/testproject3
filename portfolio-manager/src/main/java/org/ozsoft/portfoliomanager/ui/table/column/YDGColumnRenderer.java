@@ -23,6 +23,11 @@ import java.awt.Color;
 import org.ozsoft.datatable.DefaultColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.UIConstants;
 
+/**
+ * Column renderer for the consecutive number of years of dividend growth.
+ *
+ * @author Oscar Stigter
+ */
 public class YDGColumnRenderer extends DefaultColumnRenderer {
 
     private static final long serialVersionUID = -8644113732788006823L;

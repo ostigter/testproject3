@@ -51,6 +51,14 @@ import org.ozsoft.portfoliomanager.ui.table.column.ResultColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YDGColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.YieldColumnRenderer;
 
+/**
+ * Table with the stocks that are currently owned or have been at some point in time, i.e. all open and closed positions. <br />
+ * <br />
+ *
+ * Upon each refresh, the positions and portfolio statistics are generated based on the transactions.
+ *
+ * @author Oscar Stigter
+ */
 public class OwnedTable extends DataTable {
 
     private static final long serialVersionUID = -7051733783546691662L;
@@ -61,6 +69,12 @@ public class OwnedTable extends DataTable {
 
     protected final EditStockDialog editStockDialog;
 
+    /**
+     * Constructor.
+     *
+     * @param mainFrame
+     *            The application's main window.
+     */
     public OwnedTable(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
 
@@ -81,6 +95,9 @@ public class OwnedTable extends DataTable {
         editStockDialog = new EditStockDialog(mainFrame);
     }
 
+    /**
+     * Initializes the table columns.
+     */
     protected void initColumns() {
         ColumnRenderer numberColumnRenderer = new DefaultColumnRenderer(SwingConstants.RIGHT);
         ColumnRenderer centeredColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
@@ -120,6 +137,9 @@ public class OwnedTable extends DataTable {
         setColumns(columns);
     }
 
+    /**
+     * Initializes the table's context menu.
+     */
     protected void initContextMenu() {
         JPopupMenu contextMenu = new JPopupMenu();
 
@@ -134,7 +154,7 @@ public class OwnedTable extends DataTable {
 
         contextMenu.addSeparator();
 
-        menuItem = new JMenuItem("Edit Stock...");
+        menuItem = new JMenuItem("Edit stock...");
         menuItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -173,11 +193,14 @@ public class OwnedTable extends DataTable {
 
         super.update();
 
-        // Force table's footer row to repaint (possibly needed because of a Swing bug)
+        // Force table's footer row to repaint (appearently needed because of a Swing bug)
         repaint();
         revalidate();
     }
 
+    /**
+     * Handles the 'Show stock price...' menu item.
+     */
     private void viewStockPrice() {
         Stock stock = getSelectedStock();
         if (stock != null) {
@@ -185,6 +208,9 @@ public class OwnedTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Edit stock...' menu item.
+     */
     private void editStock() {
         Stock stock = getSelectedStock();
         if (stock != null) {
@@ -199,13 +225,20 @@ public class OwnedTable extends DataTable {
         }
     }
 
+    /**
+     * Returns the currently selected stock.
+     *
+     * @return The selected stock, or {@code null} if no stock is selected.
+     */
     private Stock getSelectedStock() {
         Stock stock = null;
+
         int rowIndex = getSelectedRow();
         if (rowIndex >= 0) {
             String symbol = (String) getCellValue(rowIndex, 1);
             stock = config.getStock(symbol);
         }
+
         return stock;
     }
 }

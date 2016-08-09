@@ -34,6 +34,14 @@ import org.ozsoft.portfoliomanager.domain.Stock;
 import org.ozsoft.portfoliomanager.services.UpdateService;
 import org.ozsoft.portfoliomanager.util.HttpPageReader;
 
+/**
+ * Window showing the current share price and graphs for a specific stock. <br />
+ * <br />
+ *
+ * Uses the Yahoo Finance chart API (delayed).
+ *
+ * @author Oscar Stigter
+ */
 public class StockPriceFrame extends JFrame {
 
     private static final long serialVersionUID = -7868161566551066062L;
@@ -56,6 +64,12 @@ public class StockPriceFrame extends JFrame {
 
     private final ImagePanel sevenDaysGraphPanel;
 
+    /**
+     * Shows the window for the specified stock.
+     *
+     * @param stock
+     *            The stock.
+     */
     public static void show(Stock stock) {
         JFrame frame = new StockPriceFrame(stock);
         frame.setResizable(false);
@@ -63,6 +77,12 @@ public class StockPriceFrame extends JFrame {
         frame.setVisible(true);
     }
 
+    /**
+     * Private constructor.
+     *
+     * @param stock
+     *            The stock to show the price and graphs for.
+     */
     private StockPriceFrame(Stock stock) {
         super(stock.getSymbol() + " - Stock price");
 
@@ -155,6 +175,9 @@ public class StockPriceFrame extends JFrame {
         update();
     }
 
+    /**
+     * Updates the stock's current price and graphs.
+     */
     private void update() {
         String symbol = stock.getSymbol();
 

@@ -45,6 +45,11 @@ import org.ozsoft.portfoliomanager.ui.table.column.DateColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.MoneyColumnRenderer;
 import org.ozsoft.portfoliomanager.ui.table.column.SharesColumnRenderer;
 
+/**
+ * Table with the transactions.
+ *
+ * @author Oscar Stigter
+ */
 public class TransactionsTable extends DataTable {
 
     private static final long serialVersionUID = -6959086848794121532L;
@@ -55,6 +60,12 @@ public class TransactionsTable extends DataTable {
 
     private final EditTransactionDialog editTransactionDialog;
 
+    /**
+     * Constructor.
+     *
+     * @param mainFrame
+     *            The application's main window.
+     */
     public TransactionsTable(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
 
@@ -75,6 +86,9 @@ public class TransactionsTable extends DataTable {
         });
     }
 
+    /**
+     * Initializes the table columns
+     */
     protected void initColumns() {
         ColumnRenderer idColumnRenderer = new DefaultColumnRenderer(SwingConstants.RIGHT);
         ColumnRenderer centerColumnRenderer = new DefaultColumnRenderer(SwingConstants.CENTER);
@@ -96,6 +110,9 @@ public class TransactionsTable extends DataTable {
         setColumns(columns);
     }
 
+    /**
+     * Initializes the table's context menu.
+     */
     protected void initContextMenu() {
         JPopupMenu contextMenu = new JPopupMenu();
 
@@ -152,6 +169,9 @@ public class TransactionsTable extends DataTable {
         super.update();
     }
 
+    /**
+     * Handles a click of the 'Add Transaction...' button.
+     */
     public void addTransaction() {
         if (editTransactionDialog.show() == Dialog.OK) {
             config.addTransaction(editTransactionDialog.getTransaction());
@@ -160,6 +180,9 @@ public class TransactionsTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Edit transaction...' menu item.
+     */
     private void editTransaction() {
         Transaction transaction = getSelectedTransaction();
         if (transaction != null) {
@@ -170,6 +193,9 @@ public class TransactionsTable extends DataTable {
         }
     }
 
+    /**
+     * Handles the 'Delete transaction' menu item.
+     */
     private void deleteTransaction() {
         Transaction transaction = getSelectedTransaction();
         if (transaction != null) {
@@ -182,8 +208,14 @@ public class TransactionsTable extends DataTable {
         }
     }
 
+    /**
+     * Returns the currently selected transaction.
+     *
+     * @return The selected transaction, or {@code null} if no transaction is selected.
+     */
     private Transaction getSelectedTransaction() {
         Transaction transaction = null;
+
         int rowIndex = getSelectedRow();
         if (rowIndex >= 0) {
             int id = (int) getCellValue(rowIndex, 0);
@@ -194,6 +226,7 @@ public class TransactionsTable extends DataTable {
                 }
             }
         }
+
         return transaction;
     }
 }

@@ -30,12 +30,23 @@ import javax.swing.JScrollPane;
 
 import org.ozsoft.portfoliomanager.ui.table.TransactionsTable;
 
+/**
+ * Modal window to view and edit portfolio transactions.
+ *
+ * @author Oscar Stigter
+ */
 public class TransactionsFrame extends JDialog {
 
     private static final long serialVersionUID = -4942077142767084610L;
 
     private final TransactionsTable transactionsTable;
 
+    /**
+     * Constructor.
+     *
+     * @param mainFrame
+     *            The application's main window.
+     */
     public TransactionsFrame(MainFrame mainFrame) {
         super(mainFrame, "Transactions", true);
 
@@ -63,6 +74,9 @@ public class TransactionsFrame extends JDialog {
         setLocationRelativeTo(mainFrame);
     }
 
+    /**
+     * Handles a click of the 'Add Transaction' button.
+     */
     private void addTransaction() {
         transactionsTable.addTransaction();
     }
