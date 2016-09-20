@@ -1,0 +1,57 @@
+User stories
+------------
+
+* Create an album
+* Edit the properties on an album
+* Delete an album
+* Import one or more photos from disk to a an album
+* View an album
+* View a photo
+* Select the cover photo for an album
+* Sort photos in an album by date (ascending or descending) or custom ordering
+* Reorder one or more photos within an album
+* Add one or more tags to one or more photos
+* Remove one or more tags from one or more photos
+* Find albums based on title, date and/or tags
+* Find photos based on date and/or tags
+* Copy one or more photos to an album
+* Move one or more photos to another album
+* Automatically create albums per month
+* Remove one or more photos from an album
+* Permentently delete one or more photos (from all albums)
+* Export one or more photos to disk
+* Create an incremental backup of all albums to disk
+* Restore one or more albums from a backup from disk
+* Delete unused tags
+
+Backups
+-------
+
+* Smallest backup item is a single album
+* Data per backup per album:
+    * ID
+    * name
+    * user date
+    * creation date
+    * modification date 
+    * tag IDs
+    * photo IDs (ordered)
+    * sort mode (asc/desc/custom)
+* Data per backup per photo:
+    * ID
+    * date taken 
+    * import date
+    * modification date
+    * full size
+    
+backups/
+    000000001.zip
+        album.dat
+        000000001.jpg
+        000000002.jpg
+        000000003.jpg
+    000000002.zip
+        album.dat
+        000000004.jpg
+        000000005.jpg
+        000000006.jpg
