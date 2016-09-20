@@ -45,7 +45,7 @@ public class Stock implements Comparable<Stock> {
 
     private int yearsDivGrowth = -1;
 
-    private CreditRating creditRating = CreditRating.NR;
+    private CreditRating creditRating = CreditRating.NA;
 
     private int starRating = -1;
 

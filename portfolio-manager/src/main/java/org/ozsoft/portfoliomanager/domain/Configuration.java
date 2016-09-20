@@ -58,9 +58,7 @@ public class Configuration {
 
     private static final File ANALYSIS_RESULT_FILE = new File(DATA_DIR, "stock_analysis.csv");
 
-    private static final double DIVIDEND_TAX_RATE = 0.15;
-
-    // private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyyMMdd");
+    private static final double INCOME_TAX_RATE = 0.15;
 
     private static final Logger LOGGER = LogManager.getLogger(Configuration.class);
 
@@ -68,7 +66,7 @@ public class Configuration {
 
     private boolean showClosedPositions = false;
 
-    private boolean subtractDividendTax = true;
+    private boolean deductIncomeTax = false;
 
     private final TreeMap<String, Stock> stocks;
 
@@ -131,7 +129,7 @@ public class Configuration {
     public Set<Stock> getOwnedStocks() {
         Set<Stock> ownedStocks = new TreeSet<Stock>();
         for (Position position : getPortfolio().getPositions()) {
-            if (position.getNoOfShares() > 0) {
+            if (showClosedPositions || position.getNoOfShares() > 0) {
                 ownedStocks.add(position.getStock());
             }
         }
@@ -245,6 +243,24 @@ public class Configuration {
     }
 
     /**
+     * Returns whether a position (open or closed) exists for the specified stock.
+     * 
+     * @param stock
+     *            The stock.
+     * 
+     * @return {@code true} is a position exists, otherwise {@code false}.
+     */
+    public boolean hasPosition(Stock stock) {
+        String symbol = stock.getSymbol();
+        for (Transaction tx : transactions) {
+            if (tx.getSymbol().equals(symbol)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns whether to show closed (sold) positions.
      * 
      * @return Whether to show closed positions.
@@ -264,31 +280,32 @@ public class Configuration {
     }
 
     /**
-     * Returns the dividend tax rate.
+     * Returns the income tax rate.
      * 
-     * @return The dividend tax rate.
+     * @return The income tax rate.
      */
-    public static double getDividendTaxRate() {
-        return DIVIDEND_TAX_RATE;
+    public static double getIncomeTaxRate() {
+        // TODO: Make income tax rate configurable.
+        return INCOME_TAX_RATE;
     }
 
     /**
-     * Returns whether to automatically subtract dividend tax from received dividends.
+     * Returns whether to automatically deduct income tax from received income.
      * 
-     * @return Whether to subtract dividend tax.
+     * @return Whether to deduct income tax.
      */
-    public boolean isSubtractDividendTax() {
-        return subtractDividendTax;
+    public boolean isDeductIncomeTax() {
+        return deductIncomeTax;
     }
 
     /**
-     * Sets whether to automatically subtract dividend tax from received dividends.
+     * Sets whether to automatically deduct income tax from received income.
      * 
-     * @param subtractDividendTax
-     *            Whether to subtract dividend tax.
+     * @param deductIncomeTax
+     *            Whether to deduct income tax.
      */
-    public void setSubtractDividendTax(boolean subtractDividendTax) {
-        this.subtractDividendTax = subtractDividendTax;
+    public void setDeductIncomeTax(boolean deductIncomeTax) {
+        this.deductIncomeTax = deductIncomeTax;
     }
 
     /**

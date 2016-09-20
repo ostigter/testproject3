@@ -20,7 +20,7 @@ public class PortfolioTest {
     @Test
     public void test() {
         Configuration config = Configuration.getInstance();
-        config.setSubtractDividendTax(false);
+        config.setDeductIncomeTax(false);
 
         // Create new (empty) portfolio.
         Portfolio portfolio = new Portfolio();
@@ -93,7 +93,7 @@ public class PortfolioTest {
         Assert.assertEquals(3.13, portfolio.getTotalReturnPercentage(), DELTA);
 
         // Recalculate with subtracted dividend tax
-        config.setSubtractDividendTax(true);
+        config.setDeductIncomeTax(true);
         portfolio.update(config);
         Assert.assertEquals(0.85 * 125.00, portfolio.getAnnualIncome(), DELTA);
         Assert.assertEquals(0.85 * 100.00, portfolio.getTotalIncome(), DELTA);
@@ -101,7 +101,7 @@ public class PortfolioTest {
         Assert.assertEquals(2.63, portfolio.getTotalReturnPercentage(), DELTA);
 
         // Disable dividend tax subtraction again
-        config.setSubtractDividendTax(false);
+        config.setDeductIncomeTax(false);
 
         // SELL stock 2 100 @ $15 ($2 costs)
         portfolio.addTransaction(TestUtil.createTransaction(4, 4L, TransactionType.SELL, symbol2, 100, 15.00, 2.00));

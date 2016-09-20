@@ -292,11 +292,17 @@ public class StockTable extends DataTable {
     private void deleteStock() {
         Stock stock = getSelectedStock();
         if (stock != null) {
-            String msg = String.format("Permanently delete stock with symbol '%s'?", stock.getSymbol());
-            if (JOptionPane.showConfirmDialog(null, msg, "Warning", JOptionPane.WARNING_MESSAGE,
-                    JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                config.deleteStock(stock);
-                mainFrame.updateTables();
+            if (config.hasPosition(stock)) {
+                String msg = String.format("Stock with symbol '%s' cannot be deleted because it is used in a one or more transactions.",
+                        stock.getSymbol());
+                JOptionPane.showMessageDialog(null, msg, "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                String msg = String.format("Permanently delete stock with symbol '%s'?", stock.getSymbol());
+                if (JOptionPane.showConfirmDialog(null, msg, "Warning", JOptionPane.WARNING_MESSAGE,
+                        JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                    config.deleteStock(stock);
+                    mainFrame.updateTables();
+                }
             }
         }
     }
