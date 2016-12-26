@@ -11,7 +11,7 @@ public class Main implements TorrentListener {
 
     // private static final String TORRENT_PATH = "src/test/resources/torrent/test.torrent";
 
-    private static final String MAGNET_URI = "magnet:?xt=urn:btih:53896C2A6391A69A672041139E023C018C0F4AFF&dn=arrow+s03e19+hdtv+x264+lol+ettv&tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce&tr=udp%3A%2F%2Fopen.demonii.com%3A1337";
+    private static final String MAGNET_URI = "magnet:?xt=urn:btih:b00f7b95cf527d30b36b3fa3946817d2a9b958d7";
 
     private static final String SAVE_PATH = "D:/Downloads/Torrents";
 
