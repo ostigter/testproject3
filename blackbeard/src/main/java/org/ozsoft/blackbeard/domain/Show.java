@@ -19,13 +19,13 @@ public class Show implements Serializable, Comparable<Show> {
 
     private static final Episode[] EMPTY_EPISODE_ARRAY = new Episode[0];
 
-    /** TVRage ID. */
+    /** TVMaze ID. */
     private final int id;
 
     /** Name. */
     private final String name;
 
-    /** TVRage link. */
+    /** TVMaze link. */
     private final String link;
 
     /** Status. */
@@ -37,13 +37,11 @@ public class Show implements Serializable, Comparable<Show> {
     /** Timestamp of last update. */
     private transient long updateTime;
 
-    public Show(int id, String name, String link) {
+    public Show(int id, String name, String link, ShowStatus status) {
         this.id = id;
         this.name = name;
         this.link = link;
-
-        setStatus(ShowStatus.RUNNING);
-
+        this.status = status;
         episodes = new TreeMap<Integer, Episode>();
     }
 
@@ -114,12 +112,12 @@ public class Show implements Serializable, Comparable<Show> {
     }
 
     @Override
-    public String toString() {
-        return name;
+    public int compareTo(Show other) {
+        return name.compareTo(other.getName());
     }
 
     @Override
-    public int compareTo(Show other) {
-        return name.compareTo(other.getName());
+    public String toString() {
+        return String.format("%s (%s)", name, status.getName());
     }
 }

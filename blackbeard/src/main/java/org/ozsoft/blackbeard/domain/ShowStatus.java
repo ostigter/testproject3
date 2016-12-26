@@ -1,7 +1,7 @@
 package org.ozsoft.blackbeard.domain;
 
 /**
- * TV show status.
+ * TV show status (TVMaze).
  * 
  * @author Oscar Stigter
  */
@@ -10,14 +10,11 @@ public enum ShowStatus {
     /** Running, active season (continuing). */
     RUNNING("Running"),
 
-    /** Running, waiting for the start of the next season. */
-    RETURNING("Returning"),
-
-    /** Ended according to schedule (last episode has been aired). */
+    /** Ended or canceled. */
     ENDED("Ended"),
 
-    /** Canceled, possibly ending without conclusion. */
-    CANCELED("Canceled"),
+    /** Unknown (to be determined). */
+    UNKNOWN("Unknown"),
 
     ;
 
@@ -29,5 +26,20 @@ public enum ShowStatus {
 
     public String getName() {
         return name;
+    }
+
+    public static ShowStatus parse(String status) {
+        if (status != null) {
+            status = status.toUpperCase();
+            if (status.equals("RUNNING")) {
+                return ShowStatus.RUNNING;
+            } else if (status.equals("ENDED")) {
+                return ShowStatus.ENDED;
+            } else {
+                return ShowStatus.UNKNOWN;
+            }
+        } else {
+            return ShowStatus.UNKNOWN;
+        }
     }
 }

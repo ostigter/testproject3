@@ -2,87 +2,80 @@ BlackBeard design
 =================
 
 
-TV show info
-------------
+TV show info (TVMaze.com)
+-------------------------
 
-http://services.tvrage.com/feeds/search.php?show=arrow
+API documentation URL:
+http://www.tvmaze.com/api
 
-<?xml version="1.0" encoding="UTF-8"?>
-<Results>
-    <show>
-        <showid>30715</showid>
-        <name>Arrow</name>
-        <link>http://www.tvrage.com/Arrow</link>
-        <country>US</country>
-        <started>2012</started>
-        <ended>0</ended>
-        <seasons>3</seasons>
-        <status>Returning Series</status>
-        <classification>Scripted</classification>
-        <genres>
-            <genre>Action</genre>
-            <genre>Super Heroes</genre>
-        </genres>
-    </show>
-</Results>
+Search shows (multiple results):
+http://api.tvmaze.com/search/shows?q=the+walking+dead
 
-http://services.tvrage.com/feeds/episode_list.php?sid=30715
+Search shows (single result, best match):
+http://api.tvmaze.com/singlesearch/shows?q=the+walking+dead
+{"id":73,"url":"http://www.tvmaze.com/shows/73/the-walking-dead","name":"The Walking Dead","type":"Scripted","language":"English","genres":["Drama","Action","Horror"],"status":"Running","runtime":60,"premiered":"2010-10-31","schedule":{"time":"21:00","days":["Sunday"]},"rating":{"average":8.6},"weight":41,"network":{"id":20,"name":"AMC","country":{"name":"United States","code":"US","timezone":"America/New_York"}},"webChannel":null,"externals":{"tvrage":25056,"thetvdb":153021,"imdb":"tt1520211"},"image":{"medium":"http://tvmazecdn.com/uploads/images/medium_portrait/67/168817.jpg","original":"http://tvmazecdn.com/uploads/images/original_untouched/67/168817.jpg"},"summary":"<p><strong>The Walking Dead</strong> tells the story of the months and years that follow after a zombie apocalypse. It follows a group of survivors, led by former police officer Rick Grimes, who travel in search of a safe and secure home. As the world overrun by the dead takes its toll on the survivors, their interpersonal conflicts present a greater danger to their continuing survival than the walkers that roam the country. Over time, the characters are changed by the constant exposure to death and some grow willing to do anything to survive.</p><p>Based on the comic book series of the same name by Robert Kirkman, Tony Moore, and Charlie Adlard.</p>","updated":1479922226,"_links":{"self":{"href":"http://api.tvmaze.com/shows/73"},"previousepisode":{"href":"http://api.tvmaze.com/episodes/895796"},"nextepisode":{"href":"http://api.tvmaze.com/episodes/895797"}}}
 
-<?xml version="1.0" encoding="UTF-8" ?>
-<Show>
-    <name>Arrow</name>
-    <totalseasons>3</totalseasons>
-    <Episodelist>
-        <Season no="1">
-            <episode>
-                <epnum>1</epnum>
-                <seasonnum>01</seasonnum>
-                <prodnum>29687B</prodnum>
-                <airdate>2012-10-10</airdate>
-                <link>http://www.tvrage.com/Arrow/episodes/1065165400</link>
-                <title>Pilot</title>
-            </episode>
-            <episode>
-                <epnum>2</epnum>
-                <seasonnum>02</seasonnum>
-                <prodnum>2J7302</prodnum>
-                <airdate>2012-10-17</airdate>
-                <link>http://www.tvrage.com/Arrow/episodes/1065218084</link>
-                <title>Honor Thy Father</title>
-            </episode>
-            <!-- ... -->
-            <episode>
-                <epnum>56</epnum>
-                <seasonnum>10</seasonnum>
-                <prodnum/>
-                <airdate>2015-01-21</airdate>
-                <link>http://www.tvrage.com/Arrow/episodes/1065728382</link>
-                <title>Left Behind</title>
-            </episode>
-        </Season>
-        <Special>
-            <episode>
-                <season>2</season>
-                <airdate>2013-10-02</airdate>
-                <link>http://www.tvrage.com/Arrow/episodes/1065395329</link>
-                <title>Year One</title>
-            </episode>
-        </Special>
-    </Episodelist>
-</Show>
+Retrieve show details:
+http://api.tvmaze.com/shows/73
+{"id":73,"url":"http://www.tvmaze.com/shows/73/the-walking-dead","name":"The Walking Dead","type":"Scripted","language":"English","genres":["Drama","Action","Horror"],"status":"Running","runtime":60,"premiered":"2010-10-31","schedule":{"time":"21:00","days":["Sunday"]},"rating":{"average":8.6},"weight":41,"network":{"id":20,"name":"AMC","country":{"name":"United States","code":"US","timezone":"America/New_York"}},"webChannel":null,"externals":{"tvrage":25056,"thetvdb":153021,"imdb":"tt1520211"},"image":{"medium":"http://tvmazecdn.com/uploads/images/medium_portrait/67/168817.jpg","original":"http://tvmazecdn.com/uploads/images/original_untouched/67/168817.jpg"},"summary":"<p><strong>The Walking Dead</strong> tells the story of the months and years that follow after a zombie apocalypse. It follows a group of survivors, led by former police officer Rick Grimes, who travel in search of a safe and secure home. As the world overrun by the dead takes its toll on the survivors, their interpersonal conflicts present a greater danger to their continuing survival than the walkers that roam the country. Over time, the characters are changed by the constant exposure to death and some grow willing to do anything to survive.</p><p>Based on the comic book series of the same name by Robert Kirkman, Tony Moore, and Charlie Adlard.</p>","updated":1479922226,"_links":{"self":{"href":"http://api.tvmaze.com/shows/73"},"previousepisode":{"href":"http://api.tvmaze.com/episodes/895796"},"nextepisode":{"href":"http://api.tvmaze.com/episodes/895797"}}}
+
+Retrieve a show's episode list:
+http://api.tvmaze.com/shows/73/episodes?specials=1
+[{
+    "id": 707345,
+    "url": "http://www.tvmaze.com/episodes/707345/the-walking-dead-7x01-the-day-will-come-when-you-wont-be",
+    "name": "The Day Will Come When You Won't Be",
+    "season": 7,
+    "number": 1,
+    "airdate": "2016-10-23",
+    "airtime": "21:00",
+    "airstamp": "2016-10-23T21:00:00-04:00",
+    "runtime": 60,
+    "image": {
+        "medium": "http://tvmazecdn.com/uploads/images/medium_landscape/81/204734.jpg",
+        "original": "http://tvmazecdn.com/uploads/images/original_untouched/81/204734.jpg"
+    },
+    "summary": "<p>Last season ended with Rick and our group kneeling helplessly before Negan and his group; what Negan does will haunt those who survive forever.</p>",
+    "_links": {
+        "self": {
+            "href": "http://api.tvmaze.com/episodes/707345"
+        }
+},
+{
+    "id": 4150,
+    "url": "http://www.tvmaze.com/episodes/4150/the-walking-dead-s02-special-the-walking-dead-webisodes-torn-apart",
+    "name": "The Walking Dead Webisodes: Torn Apart",
+    "season": 2,
+    "number": null,
+    "airdate": "2011-10-03",
+    "airtime": "21:00",
+    "airstamp": "2011-10-03T21:00:00-04:00",
+    "runtime": 60,
+    "image": null,
+    "summary": "",
+    "_links": {
+        "self": {
+            "href": "http://api.tvmaze.com/episodes/4150"
+        }
+    }
+},
+...
+]
 
 
-Search providers (Torrent index sites)
+Torrent search providers (index sites)
 --------------------------------------
 
-KickAss:
-http://kickass.to/search/%s category:TV verified:1/?rss=1&page=%d
-http://kickass.so/search/the walking dead s01e01 category:TV verified:1/?rss=1
+ExtraTorrent search URL:
+http://extratorrent.cc/rss.xml?type=search&cid=8&search=%s
 
 BitSnoop:
 http://bitsnoop.com/search/video/%s/c/d/%d/?fmt=rss
-http://bitsnoop.com/search/video/the walking dead s01e01/c/d/1/?fmt=rss
+http://bitsnoop.com/search/video/the+walking+deads07e05/c/d/1/?fmt=rss
 
+
+Classes
+-------
 
 class Show {
     int id
@@ -94,9 +87,8 @@ class Show {
 
 enum ShowStatus {
     RUNNING
-    RETURNING
-    FINISHED
-    CANCELED
+    ENDED
+    UNKNOWN
 }
 
 class Episode {
@@ -111,12 +103,14 @@ class Episode {
 enum EpisodeStatus {
     NOT_YET_AIRED
     NEW
+    DOWNLOADING
     DOWNLOADED
     WATCHED
 }
 
-Configuration
--------------
+
+Configurion file
+----------------
 
 Configuration {
     shows: [
