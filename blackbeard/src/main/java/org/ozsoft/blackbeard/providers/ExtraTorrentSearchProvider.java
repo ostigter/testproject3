@@ -6,20 +6,17 @@ import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.util.http.HttpClient;
 
 /**
- * Kickass Torrents (KAT) search provider. <br />
- * <br />
- * 
- * Obsolete since KAT has been taken down.
+ * ExtraTorrent search provider.
  * 
  * @author Oscar Stigter
  */
-public class KickAssSearchProvider extends AbstractSearchProvider {
+public class ExtraTorrentSearchProvider extends AbstractSearchProvider {
 
-    private static final String URI = "http://kickass.to/usearch/%s/?rss=1";
+    private static final String URI = "http://extratorrent.cc/rss.xml?type=search&cid=8&search=%s";
 
     @Override
     public Set<Torrent> search(String text, HttpClient httpClient) {
-        String uri = String.format(URI, encodeUrl(text + " category:TV verified:1"));
+        String uri = String.format(URI, encodeUrl(text));
         return searchTorrentsFromRssFeed(uri, httpClient);
     }
 }

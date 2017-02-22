@@ -15,7 +15,6 @@ import java.util.regex.Pattern;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.http.HttpStatus;
 import org.ozsoft.blackbeard.data.Configuration;
@@ -24,13 +23,12 @@ import org.ozsoft.blackbeard.domain.EpisodeStatus;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.Torrent;
 import org.ozsoft.blackbeard.parsers.EpisodeListParser;
+import org.ozsoft.blackbeard.parsers.ParseException;
 import org.ozsoft.blackbeard.parsers.ShowListParser;
-import org.ozsoft.blackbeard.providers.BitSnoopSearchProvider;
-import org.ozsoft.blackbeard.providers.KickAssSearchProvider;
+import org.ozsoft.blackbeard.providers.ExtraTorrentSearchProvider;
 import org.ozsoft.blackbeard.providers.SearchProvider;
 import org.ozsoft.blackbeard.util.http.HttpClient;
 import org.ozsoft.blackbeard.util.http.HttpResponse;
-import org.xml.sax.SAXException;
 
 /**
  * TV show service.
@@ -43,11 +41,11 @@ public class ShowService implements Serializable {
 
     private static final long serialVersionUID = 9026865382985469495L;
 
-    private static final String TVRAGE_SHOW_SEARCH_URL = "http://services.tvrage.com/feeds/search.php?show=%s";
+    private static final String TVMAZE_SHOW_SEARCH_URL = "http://api.tvmaze.com/search/shows?q=%s";
 
-    private static final String TVRAGE_EPISODE_LIST_URL = "http://services.tvrage.com/feeds/episode_list.php?sid=%d";
+    private static final String TVMAZE_EPISODE_LIST_URL = "http://api.tvmaze.com/shows/%d/episodes?specials=1";
 
-    private static final Pattern EPISODE_PATTERN = Pattern.compile("^.*s(\\d+)e(\\d+).*$");
+    private static final Pattern EPISODE_PATTERN = Pattern.compile("^.*[sS](\\d+)[eE](\\d+).*$");
 
     private static final String UTF8 = "UTF-8";
 
@@ -70,8 +68,8 @@ public class ShowService implements Serializable {
     static {
         // Set torrent search providers.
         searchProviders = new HashSet<SearchProvider>();
-        searchProviders.add(new KickAssSearchProvider());
-        searchProviders.add(new BitSnoopSearchProvider());
+        searchProviders.add(new ExtraTorrentSearchProvider());
+        // searchProviders.add(new BitSnoopSearchProvider());
     }
 
     public ShowService() {
@@ -113,7 +111,7 @@ public class ShowService implements Serializable {
      */
     public List<Show> searchShows(String text) {
         List<Show> shows = new ArrayList<Show>();
-        String uri = String.format(TVRAGE_SHOW_SEARCH_URL, encodeUrl(text));
+        String uri = String.format(TVMAZE_SHOW_SEARCH_URL, encodeUrl(text));
         try {
             HttpResponse httpResponse = httpClient.executeGet(uri);
             int statusCode = httpResponse.getStatusCode();
@@ -122,7 +120,7 @@ public class ShowService implements Serializable {
             } else {
                 System.err.format("ERROR: Could not retrieve list of shows from URI '%s' (HTTP status: %d)\n", uri, statusCode);
             }
-        } catch (IOException | SAXException | ParserConfigurationException e) {
+        } catch (IOException | ParseException e) {
             System.err.format("ERROR: Could not retrieve or parse list of shows from URI '%s'\n", uri);
             e.printStackTrace();
         }
@@ -132,7 +130,7 @@ public class ShowService implements Serializable {
 
     public void updateEpisodes(Show show) {
         if ((System.currentTimeMillis() - show.getUpdateTime()) > MIN_UPDATE_INTERVAL) {
-            String uri = String.format(TVRAGE_EPISODE_LIST_URL, show.getId());
+            String uri = String.format(TVMAZE_EPISODE_LIST_URL, show.getId());
             try {
                 HttpResponse httpResponse = httpClient.executeGet(uri);
                 int statusCode = httpResponse.getStatusCode();
@@ -151,7 +149,7 @@ public class ShowService implements Serializable {
                 } else {
                     System.err.format("ERROR: Could not retrieve or parse episode list from URI '%s' (HTTP status: %d)\n", uri, statusCode);
                 }
-            } catch (IOException | SAXException | ParserConfigurationException e) {
+            } catch (IOException | ParseException e) {
                 System.err.format("ERROR: Could not parse episode list from URI '%s'\n", uri);
                 e.printStackTrace();
             }

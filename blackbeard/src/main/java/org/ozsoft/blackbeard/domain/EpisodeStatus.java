@@ -13,6 +13,9 @@ public enum EpisodeStatus {
     /** Aired on TV, but not downloaded yet. */
     NEW("New"),
 
+    // /** Currently being downloaded. */
+    // DOWNLOADING("Downloading"),
+
     /** Downloaded, but not yet watched. */
     DOWNLOADED("Downloaded"),
 

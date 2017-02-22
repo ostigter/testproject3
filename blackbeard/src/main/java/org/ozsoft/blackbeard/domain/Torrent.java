@@ -22,9 +22,6 @@ public class Torrent implements Serializable, Comparable<Torrent> {
     /** Number of seeders. */
     private final int seederCount;
 
-    /** Number of leechers. */
-    private final int leecherCount;
-
     /** Magnet link URI. */
     private final String magnetUri;
 
@@ -34,11 +31,10 @@ public class Torrent implements Serializable, Comparable<Torrent> {
     /** Score. */
     private int score;
 
-    public Torrent(String title, long size, int seederCount, int leecherCount, String magnetUri, boolean isVerified) {
+    public Torrent(String title, long size, int seederCount, String magnetUri, boolean isVerified) {
         this.title = title;
         this.size = size;
         this.seederCount = seederCount;
-        this.leecherCount = leecherCount;
         this.magnetUri = magnetUri;
         this.isVerified = isVerified;
         calculateScore();
@@ -54,10 +50,6 @@ public class Torrent implements Serializable, Comparable<Torrent> {
 
     public int getSeederCount() {
         return seederCount;
-    }
-
-    public int getLeecherCount() {
-        return leecherCount;
     }
 
     public String getMagnetUri() {

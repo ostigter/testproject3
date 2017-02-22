@@ -1,119 +1,42 @@
 package org.ozsoft.blackbeard.parsers;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.apache.commons.io.IOUtils;
 import org.ozsoft.blackbeard.domain.Show;
 import org.ozsoft.blackbeard.domain.ShowStatus;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
- * SAX parser for show lists from TVRage.
+ * Parser for TVMaze show search results (JSON).
  * 
  * @author Oscar Stigter
  */
 public class ShowListParser {
 
-    private static final SAXParserFactory SAX_PARSER_FACTORY;
+    public static List<Show> parse(String text) throws ParseException {
+        ArrayList<Show> shows = new ArrayList<Show>();
 
-    static {
-        SAX_PARSER_FACTORY = SAXParserFactory.newInstance();
-        SAX_PARSER_FACTORY.setNamespaceAware(true);
-        SAX_PARSER_FACTORY.setValidating(false);
-        SAX_PARSER_FACTORY.setXIncludeAware(false);
         try {
-            SAX_PARSER_FACTORY.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-        } catch (Exception e) {
-            System.err.println("Could not create SAXParserFactory");
-            e.printStackTrace(System.err);
-        }
-    }
-
-    public static List<Show> parse(String text) throws ParserConfigurationException, SAXException, IOException {
-        SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
-        ShowListHandler handler = new ShowListHandler();
-        parser.parse(new InputSource(IOUtils.toInputStream(text)), handler);
-        return handler.getShows();
-    }
-
-    /**
-     * SAX content handler for show lists. <br />
-     * <br />
-     * 
-     * After parsing the show list, the {@link getShows} method can be used to retrieve the shows. <br />
-     * <br />
-     * 
-     * @author Oscar Stigter
-     */
-    private static class ShowListHandler extends DefaultHandler {
-
-        private final List<Show> shows;
-
-        private String nodePath = "";
-
-        private final StringBuilder text = new StringBuilder();
-
-        private int id;
-
-        private String name;
-
-        private String link;
-
-        private boolean isRunning;
-
-        /**
-         * Constructor.
-         */
-        public ShowListHandler() {
-            shows = new ArrayList<Show>();
-        }
-
-        /**
-         * Returns the shows specified in the RSS feed.
-         * 
-         * @return The {@link Show}s.
-         */
-        public List<Show> getShows() {
-            return shows;
-        }
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) {
-            nodePath = String.format("%s/%s", nodePath, localName);
-            text.setLength(0);
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName) {
-            // System.out.format("### endElement: '%s', text = '%s'\n", localName, text.toString());
-            if (nodePath.equals("/Results/show/showid")) {
-                id = Integer.parseInt(text.toString());
-            } else if (nodePath.equals("/Results/show/name")) {
-                name = text.toString();
-            } else if (nodePath.equals("/Results/show/link")) {
-                link = text.toString();
-            } else if (nodePath.equals("/Results/show/ended")) {
-                isRunning = !Boolean.parseBoolean(text.toString());
-            } else if (nodePath.equals("/Results/show")) {
-                Show show = new Show(id, name, link);
-                show.setStatus(isRunning ? ShowStatus.RUNNING : ShowStatus.ENDED);
+            JsonArray resultArray = new JsonParser().parse(text).getAsJsonArray();
+            for (JsonElement elem : resultArray) {
+                JsonObject resultObject = elem.getAsJsonObject();
+                JsonObject showObject = resultObject.get("show").getAsJsonObject();
+                int id = showObject.get("id").getAsInt();
+                String name = showObject.get("name").getAsString();
+                String link = showObject.get("url").getAsString();
+                String status = showObject.get("status").getAsString();
+                Show show = new Show(id, name, link, ShowStatus.parse(status));
                 shows.add(show);
             }
-            nodePath = nodePath.substring(0, nodePath.lastIndexOf('/'));
+        } catch (Exception e) {
+            throw new ParseException("Could not parse TVMaze show search results", e);
         }
 
-        @Override
-        public void characters(char[] buffer, int start, int length) {
-            text.append(String.copyValueOf(buffer, start, length));
-        }
+        return shows;
     }
 }

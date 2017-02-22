@@ -27,7 +27,7 @@ public class Episode implements Serializable {
     /** Air date (null if not yet aired). */
     private final Date airDate;
 
-    /** TVRage link. */
+    /** TVMaze link. */
     private final String link;
 
     /** Status (BlackBeard). */

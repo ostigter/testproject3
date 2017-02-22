@@ -41,7 +41,9 @@ public class Configuration implements Serializable {
             } catch (ClassNotFoundException e) {
                 // Can never happen.
             }
-        } else {
+        }
+
+        if (shows == null) {
             // Create new configuration.
             shows = new HashMap<Integer, Show>();
         }
