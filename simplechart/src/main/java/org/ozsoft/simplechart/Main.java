@@ -1,5 +1,7 @@
 package org.ozsoft.simplechart;
 
+import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -11,10 +13,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class Main {
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("d-MMM-yy");
+    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd-MMM-yy", Locale.US);
 
     public static void main(String[] args) throws Exception {
         Chart chart = new Chart();
@@ -22,7 +29,15 @@ public class Main {
         chart.setXAxisLabel("Date");
         chart.setYAxisLabel("Closing price ($)");
         chart.setDataPoints(readDataPointsFromCsvFile(new File("JNJ_closings.csv")));
-        chart.renderImage();
+        BufferedImage image = chart.renderImage();
+
+        JFrame frame = new JFrame("Simple chart");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JLabel label = new JLabel(new ImageIcon(image));
+        frame.getContentPane().add(label, BorderLayout.CENTER);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
     private static List<DataPoint> readDataPointsFromCsvFile(File file) throws IOException {

@@ -2,33 +2,40 @@ package org.ozsoft.simplechart;
 
 public enum TimeScale {
 
-    MILLISECONDS("milliseconds", 1),
+    MILLISECONDS("milliseconds", "SSS", 1),
 
-    SECONDS("seconds", 1000 * MILLISECONDS.getMilliseconds()),
+    SECONDS("seconds", "ss", 1000 * MILLISECONDS.getMilliseconds()),
 
-    MINUTES("minutes", 60 * SECONDS.getMilliseconds()),
+    MINUTES("minutes", "mm", 60 * SECONDS.getMilliseconds()),
 
-    HOURS("hours", 60 * MINUTES.getMilliseconds()),
+    HOURS("hours", "HH", 60 * MINUTES.getMilliseconds()),
 
-    DAYS("days", 24 * HOURS.getMilliseconds()),
+    DAYS("days", "dd", 24 * HOURS.getMilliseconds()),
 
-    MONTHS("months", 28 * DAYS.getMilliseconds()),
+    MONTHS("months", "MM", 28 * DAYS.getMilliseconds()),
 
-    YEARS("years", 12 * MONTHS.getMilliseconds()),
+    YEARS("years", "yy", 12 * MONTHS.getMilliseconds()),
 
     ;
 
     private String name;
 
+    private String format;
+
     private long milliseconds;
 
-    private TimeScale(String name, long milliseconds) {
+    private TimeScale(String name, String format, long milliseconds) {
         this.name = name;
+        this.format = format;
         this.milliseconds = milliseconds;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getFormat() {
+        return format;
     }
 
     public long getMilliseconds() {
