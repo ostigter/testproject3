@@ -25,9 +25,10 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         Chart chart = new Chart();
-        chart.setCaption("Johnson & Johnson (JNJ)");
-        chart.setXAxisLabel("Date");
-        chart.setYAxisLabel("Closing price ($)");
+//        chart.setCaption("Johnson & Johnson (JNJ)");
+//        chart.setXAxisLabel("Date");
+//        chart.setYAxisLabel("Closing price ($)");
+//      chart.setDataPoints(getDataPoints());
         chart.setDataPoints(readDataPointsFromCsvFile(new File("JNJ_closings.csv")));
         BufferedImage image = chart.renderImage();
 
@@ -65,4 +66,27 @@ public class Main {
 
         return dataPoints;
     }
+
+//    private static List<DataPoint> getDataPoints() {
+//        List<DataPoint> dataPoints = new ArrayList<DataPoint>();
+//        dataPoints.add(createDataPoint("01-Jan-1970", "101.00"));
+//        dataPoints.add(createDataPoint("02-Jan-1970", "102.00"));
+//        dataPoints.add(createDataPoint("03-Jan-1970", "103.00"));
+//        dataPoints.add(createDataPoint("04-Jan-1970", "104.00"));
+//        dataPoints.add(createDataPoint("05-Jan-1970", "105.00"));
+//        dataPoints.add(createDataPoint("06-Jan-1970", "106.00"));
+//        dataPoints.add(createDataPoint("07-Jan-1970", "107.00"));
+//        dataPoints.add(createDataPoint("08-Jan-1970", "108.00"));
+//        dataPoints.add(createDataPoint("09-Jan-1970", "109.00"));
+//        dataPoints.add(createDataPoint("10-Jan-1970", "110.00"));
+//        return dataPoints;
+//    }
+//
+//    private static DataPoint createDataPoint(String date, String value) {
+//        try {
+//            return new DataPoint(DATE_FORMAT.parse(date), new BigDecimal(value));
+//        } catch (ParseException e) {
+//            throw new IllegalArgumentException("ERROR: Invalid date: " + date);
+//        }
+//    }
 }
