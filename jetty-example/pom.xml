@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<jetty.version>9.3.0.M1</jetty.version>
+		<jetty.version>9.4.34.v20201102</jetty.version>
 		<jsf.version>2.2.9</jsf.version>
 	</properties>
 
