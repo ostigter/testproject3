@@ -22,7 +22,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<commons-io.version>2.4</commons-io.version>
-        <httpcomponents.version>4.4</httpcomponents.version>
+        <httpcomponents.version>4.5.13</httpcomponents.version>
         <weld.version>2.2.9.Final</weld.version>
         <jsf.version>2.2.9</jsf.version>
         <primefaces.version>5.1.RC1</primefaces.version>
