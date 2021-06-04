@@ -23,7 +23,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<commons-io.version>2.7</commons-io.version>
-		<httpcomponents.version>4.4</httpcomponents.version>
+		<httpcomponents.version>4.5.13</httpcomponents.version>
 	</properties>
 
 	<dependencies>
