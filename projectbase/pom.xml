@@ -26,7 +26,7 @@
         <primefaces.version>5.0</primefaces.version>
         <primefaces.glass-x.version>1.0.10</primefaces.glass-x.version>
         <junit.version>4.11</junit.version>
-        <h2.version>1.4.181</h2.version>
+        <h2.version>2.0.206</h2.version>
     </properties>
 
     <dependencies>
