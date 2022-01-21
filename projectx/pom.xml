@@ -28,7 +28,7 @@
         <hibernate.version>4.0.1.Final</hibernate.version>
         <postgresql.version>9.0-801.jdbc4</postgresql.version>
         <junit.version>4.8</junit.version>
-        <h2.version>1.3.153</h2.version>
+        <h2.version>2.1.210</h2.version>
     </properties>
 
     <dependencies>
