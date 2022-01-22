@@ -25,7 +25,7 @@
         <javaee.version>7.0</javaee.version>
         <primefaces.version>5.0</primefaces.version>
         <primefaces.glass-x.version>1.0.10</primefaces.glass-x.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.13.1</junit.version>
         <h2.version>2.1.210</h2.version>
     </properties>
 
