@@ -30,7 +30,7 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<javaee.version>7.0</javaee.version>
 		<war.plugin.version>2.4</war.plugin.version>
-		<resteasy.version>3.0.8.Final</resteasy.version>
+		<resteasy.version>3.14.0.Final</resteasy.version>
 	</properties>
 
 	<dependencies>
