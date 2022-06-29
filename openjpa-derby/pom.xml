@@ -22,7 +22,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <derby-version>10.6.1.0</derby-version>
+        <derby-version>10.14.2.0</derby-version>
         <openjpa-version>2.0.0</openjpa-version>
         <junit-version>4.7</junit-version>
     </properties>
