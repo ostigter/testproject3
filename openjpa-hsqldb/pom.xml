@@ -24,7 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hsqldb-version>1.8.0.10</hsqldb-version>
         <openjpa-version>2.2.2</openjpa-version>
-        <junit-version>4.7</junit-version>
+        <junit-version>4.13.1</junit-version>
     </properties>
 
     <dependencies>
