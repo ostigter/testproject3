@@ -31,7 +31,7 @@
         <hibernate.version>4.0.1.Final</hibernate.version>
         <slf4j.version>1.6.1</slf4j.version>
         <postgresql.version>9.0-801.jdbc4</postgresql.version>
-        <metadata-extractor.version>2.4.0-beta-1</metadata-extractor.version>
+        <metadata-extractor.version>2.18.0</metadata-extractor.version>
     </properties>
 
     <dependencies>
