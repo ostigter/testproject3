@@ -23,7 +23,7 @@
         <java.version>1.7</java.version>
         <commons-io.version>2.4</commons-io.version>
         <hibernate.version>4.1.7.Final</hibernate.version>
-        <h2.version>2.1.210</h2.version>
+        <h2.version>2.2.220</h2.version>
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.6.1</slf4j.version>
         <metadata-extractor.version>2.18.0</metadata-extractor.version>
