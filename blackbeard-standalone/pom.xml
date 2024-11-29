@@ -25,7 +25,7 @@
         <httpcomponents.version>4.4</httpcomponents.version>
         <weld.version>2.2.9.Final</weld.version>
         <jsf.version>2.2.9</jsf.version>
-        <primefaces.version>5.1.RC1</primefaces.version>
+        <primefaces.version>6.0</primefaces.version>
         <primefaces.glass-x.version>1.0.10</primefaces.glass-x.version>
 	</properties>
 
