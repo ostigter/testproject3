@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jfreechart-version>1.0.0</jfreechart-version>
         <log4j-version>1.2.16</log4j-version>
-        <junit-version>4.8</junit-version>
+        <junit-version>4.13.1</junit-version>
     </properties>
 
     <dependencies>
