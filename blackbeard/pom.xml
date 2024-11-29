@@ -23,7 +23,7 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
         <javaee-web.version>6.0</javaee-web.version>
         <maven-war-plugin.version>2.6</maven-war-plugin.version>
-        <primefaces.version>5.1.RC1</primefaces.version>
+        <primefaces.version>6.0</primefaces.version>
         <primefaces.glass-x.version>1.0.10</primefaces.glass-x.version>
 		<commons-io.version>2.4</commons-io.version>
         <httpcomponents.version>4.4</httpcomponents.version>
